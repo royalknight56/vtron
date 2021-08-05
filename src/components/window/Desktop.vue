@@ -1,13 +1,13 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 18:32:27
+ * @LastEditTime: 2021-08-05 19:20:22
  * @Description: 
  * @FilePath: /myindex/src/components/window/Desktop.vue
 -->
 <template>
     <div class="desk_outer">
         <div class="desk_item" v-for="item in deskList" @dblclick="openApp(item)">
-            <div class="item_img"><img width="80" :src="item.icon"></div>
+            <div class="item_img"><img width="60" :src="item.icon"></div>
             <div class="item_name">{{ item.name }}</div>
         </div>
     </div>
@@ -19,13 +19,15 @@ import Test1 from "./apps/Test1.vue";
 import Test2 from "./apps/Test2.vue";
 import Test3 from "./apps/Test3.vue";
 import app_console from "./apps/app_console.vue";
+import app_vscode from "./apps/app_vscode.vue";
 import { DragWindow } from "./libs/DragWindow";
 
 let appMap: { [T: string]: Component } = {
     Test1,
     Test2,
     Test3,
-    app_console
+    app_console,
+    app_vscode
 }
 let appRegMap = {
 }
@@ -41,7 +43,7 @@ let deskList: Array<deskItem> = [
     {
         name: '我的电脑',
         apptemp: 'Test1',
-        icon:'/computer.png',
+        icon:'/电脑.png',
         width:400,
         height:400
     }, {
@@ -62,7 +64,14 @@ let deskList: Array<deskItem> = [
         icon:'/default.png',
         width:400,
         height:400
+    },{
+        name: 'vscode',
+        apptemp: "app_vscode",
+        icon:'/default.png',
+        width:600,
+        height:500
     }
+    
 ]
 function openApp(item: deskItem) {
     if (appMap[item.apptemp] != null) {

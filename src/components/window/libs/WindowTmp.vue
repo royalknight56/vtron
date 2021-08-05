@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 12:20:56
+ * @LastEditTime: 2021-08-05 20:06:58
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -11,8 +11,14 @@
             <div @click="hideWindow()" class="winbutton hide_button">_</div>
             <div @click="closeWindow()" class="winbutton close_button">✕</div>
         </div>
-        <div ref="winmount" class="main" @mousedown.stop="predown">
+        <div ref="winmount" class="main" :class="{resizeing:resizemode!='null'}" @mousedown.stop="predown">
             <!-- <div ></div> -->
+        </div>
+        <div class="right_border" @mousedown.stop="dragStart($event,'r')">
+
+        </div>
+        <div class="bottom_border" @mousedown.stop="dragStart($event,'b')">
+            
         </div>
     </div>
 </template>
@@ -91,15 +97,15 @@ function onFocus() {
 }
 
 let iftop = computed(() => props.app.IPC.iftop)
+
+let winWidth = ref(props.width)
+let winHeight = ref(props.height)
 onMounted(() => {
 
-
     customerStyle.value = {
-        width: props.width + 'px',
-        height: props.height + 'px',
+        width: computed(() => winWidth.value + 'px'),
+        height: computed(() =>winHeight.value + 'px'),
         zIndex: computed(() => {
-
-
             return props.app.IPC.zindex
         }),
         visibility: computed(() => {
@@ -119,6 +125,50 @@ onMounted(() => {
 
     createApp(props.app.content).mount(<Element><any>winmount.value)
 })
+let resizemode = ref('null')
+let mosStartX=ref(0);
+let mosStartY=ref(0);
+
+let winStartX=ref(0);
+let winStartY=ref(0);
+document.addEventListener('mousemove',(e)=>{
+    if(e.buttons==1){
+
+    }else{
+        return
+    }
+    if(winWidth.value<100){
+        winWidth.value=100
+        resizemode.value='null'
+        return
+    }
+    if(winHeight.value<100){
+        winHeight.value=100
+        resizemode.value='null'
+        return
+    }
+    if(resizemode.value=='r'){
+        winWidth.value = winStartX.value+ e.pageX-mosStartX.value
+    }else if(resizemode.value=='b'){
+        winHeight.value = winStartY.value+ e.pageY-mosStartY.value
+    }else{
+        return
+    }
+    // e.preventDefault()
+    // e.stopPropagation()
+})
+document.addEventListener("mouseup",()=>{
+    resizemode.value='null'
+})
+function dragStart(e:MouseEvent,dire:string) {
+    resizemode.value=dire
+    mosStartX.value=e.pageX
+    mosStartY.value=e.pageY
+
+    winStartX.value=winWidth.value
+    winStartY.value=winHeight.value
+
+}
 
 </script>
 <style>
@@ -194,5 +244,26 @@ onMounted(() => {
     position: absolute;
     right: 30px;
     top: 0;
+}
+
+.right_border{
+    cursor: ew-resize;
+    position: absolute;
+    right: -12px;
+    background-color: rgba(0, 0, 0, 0);
+    width: 10px;
+    height: 100%;
+}
+.bottom_border{
+    cursor: ns-resize;
+    position: absolute;
+    bottom: -12px;
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    height: 10px;
+}
+.resizeing{
+    user-select: none;
+    pointer-events: none;
 }
 </style>

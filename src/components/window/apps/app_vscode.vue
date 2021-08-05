@@ -1,17 +1,12 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 20:04:15
+ * @LastEditTime: 2021-08-05 19:18:04
  * @Description: 
- * @FilePath: /myindex/src/components/window/apps/Test3.vue
--->
-<template>
+ * @FilePath: /myindex/src/components/window/apps/app_vscode.vue
+--><template>
     <div class="outer">
-        <div class="uper">
-            <input class="urlinput" v-model="urlinput" @keydown="urlkey"/>
-            <button class="change button" @click="changeUrl">-</button>
-        </div>
-        
-        <iframe class="broifame" :src="urlsrc"></iframe>
+
+        <iframe class="broifame" src="https://github1s.com/"></iframe>
     </div>
 </template>
 <script lang="ts" setup>
@@ -25,9 +20,6 @@ function urlkey(e:KeyboardEvent) {
 }
 function changeUrl() {
     urlsrc.value=urlinput.value
-}
-window.open=<any>function(e:any) {
-    console.log(e)
 }
 </script>
 <style>

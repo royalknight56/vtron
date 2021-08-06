@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 09:30:00
+ * @LastEditTime: 2021-08-06 09:36:03
  * @Description: 
  * @FilePath: /myindex/src/components/states/bluescen.vue
 -->
@@ -47,7 +47,7 @@ let stat = computerCTC.getInstance().stats;
     top: 0;
     width: 100%;
     height: 100%;
-
+    z-index: -50;
 }
 .blueclass{
     z-index: 10001;

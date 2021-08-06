@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 20:04:15
+ * @LastEditTime: 2021-08-06 10:51:51
  * @Description: 
  * @FilePath: /myindex/src/components/window/apps/Test3.vue
 -->
@@ -47,8 +47,39 @@ iframe {
 .urlinput {
     width: 100%;
 }
+.tablist{
+    box-sizing: border-box;
+    position: relative;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 12px;
+    height: 46px;
+    padding: 8px 3px 4px 3px;
+    background: #dee1e6;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+
+    box-sizing: border-box;
+    position: relative;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 12px;
+    height: 46px;
+    padding: 8px 3px 4px 3px;
+    background: #dee1e6;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+}
 .uper{
     display: flex;
+
+    box-sizing: border-box;
+    position: relative;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 12px;
+    height: 46px;
+    padding: 8px 3px 4px 3px;
+    background: #dee1e6;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
 }
 .broifame{
     /* height: 100%; */

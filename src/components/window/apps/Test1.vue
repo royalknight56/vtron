@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 18:32:33
+ * @LastEditTime: 2021-08-06 10:55:20
  * @Description: 
  * @FilePath: /myindex/src/components/window/apps/Test1.vue
 -->
@@ -18,7 +18,7 @@
     <div class="desk_outer">
         <div class="desk_item" v-for="item in currentList" @dblclick="openFolder(item)">
             <div class="item_img">
-                <img width="50" src="/folder.png" />
+                <img width="50" src="/newFolder.ico" />
             </div>
             <div class="item_name">{{ item.name }}</div>
         </div>
@@ -137,6 +137,12 @@ function newFolder() {
     text-align: center;
     width: 50px;
     transition: all 0.1s;
+    background: #FFFFFF;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 12px;
+    border: 2px solid white;
+    padding: 0px 4px;
+    transition: 0.1s;
 }
 .button:hover{
     background-color: rgba(0, 0, 0, 0.137);

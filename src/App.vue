@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 09:31:46
+ * @LastEditTime: 2021-08-06 09:36:54
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -35,7 +35,7 @@ let test2 = ref(null)
 let test3 = ref(null)
 
 onMounted(() => {
-  new DragWindow(100,100,'帮助',200,200,Help)
+  new DragWindow(100,100,'关于',200,100,Help)
 
   computerCTC.getInstance().openPower()
   // console.log(test1.value)
@@ -88,7 +88,7 @@ body{
   overflow: hidden;
   height: 100vh;
   width: 100vw;
-  background-color: rgb(8, 130, 190);
+  background-color: rgb(0, 119, 210);
 }
 .dragobj {
   cursor: all-scroll;

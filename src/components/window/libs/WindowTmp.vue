@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 20:06:58
+ * @LastEditTime: 2021-08-06 11:03:00
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -193,10 +193,19 @@ function dragStart(e:MouseEvent,dire:string) {
 
     display: flex;
     flex-direction: column;
+
+    /**/
+    border: #0078D7;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%), 0 7px 19px rgb(0 0 0 / 58%);
+    padding: 0px;
+
+
 }
 .topwin {
-    border: 2px solid rgba(84, 158, 255, 0.616);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.253);
+    border: 1px solid #0078D7;
+    box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%), 0 7px 19px rgb(0 0 0 / 90%);
 }
 .topwin .uper {
     /* background-color: rgba(192, 192, 192, 0.795); */
@@ -215,6 +224,12 @@ function dragStart(e:MouseEvent,dire:string) {
 }
 .title {
     padding: 0 10px;
+    color: black;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    display: inline;
+    padding: 20px;
 }
 .main {
     position: relative;
@@ -230,6 +245,13 @@ function dragStart(e:MouseEvent,dire:string) {
     background-color: rgba(149, 182, 243, 0);
     text-align: center;
     transition: all 0.1s;
+
+    background: #FFFFFF;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 12px;
+    border: 2px solid white;
+    padding: 0px 4px;
+    transition: 0.1s;
 }
 .winbutton:hover {
     background-color: rgb(149, 182, 243);
@@ -239,6 +261,9 @@ function dragStart(e:MouseEvent,dire:string) {
     position: absolute;
     right: 0;
     top: 0;
+}
+.close_button:hover{
+    background-color: red;
 }
 .hide_button {
     position: absolute;

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 11:03:00
+ * @LastEditTime: 2021-08-06 18:31:29
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -20,6 +20,7 @@
         <div class="bottom_border" @mousedown.stop="dragStart($event,'b')">
             
         </div>
+        <div class="right_bottom_border" @mousedown.stop="dragStart($event,'rb')"></div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -151,6 +152,9 @@ document.addEventListener('mousemove',(e)=>{
         winWidth.value = winStartX.value+ e.pageX-mosStartX.value
     }else if(resizemode.value=='b'){
         winHeight.value = winStartY.value+ e.pageY-mosStartY.value
+    }else if(resizemode.value=='rb'){
+        winWidth.value = winStartX.value+ e.pageX-mosStartX.value
+        winHeight.value = winStartY.value+ e.pageY-mosStartY.value
     }else{
         return
     }
@@ -241,7 +245,7 @@ function dragStart(e:MouseEvent,dire:string) {
 .winbutton {
     cursor: pointer;
     height: 30px;
-    width: 30px;
+    width: 35px;
     background-color: rgba(149, 182, 243, 0);
     text-align: center;
     transition: all 0.1s;
@@ -254,7 +258,7 @@ function dragStart(e:MouseEvent,dire:string) {
     transition: 0.1s;
 }
 .winbutton:hover {
-    background-color: rgb(149, 182, 243);
+    background-color: rgba(149, 182, 243, 0.356);
     color: white;
 }
 .close_button {
@@ -267,8 +271,9 @@ function dragStart(e:MouseEvent,dire:string) {
 }
 .hide_button {
     position: absolute;
-    right: 30px;
+    right: 35px;
     top: 0;
+    text-align: center;
 }
 
 .right_border{
@@ -285,6 +290,15 @@ function dragStart(e:MouseEvent,dire:string) {
     bottom: -12px;
     background-color: rgba(0, 0, 0, 0);
     width: 100%;
+    height: 10px;
+}
+.right_bottom_border{
+    cursor: nwse-resize;
+    position: absolute;
+    right: -12px;
+    bottom: -12px;
+    background-color: rgba(0, 0, 0, 0);
+    width: 10px;
     height: 10px;
 }
 .resizeing{

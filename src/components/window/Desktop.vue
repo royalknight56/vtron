@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 19:20:22
+ * @LastEditTime: 2021-08-05 20:13:32
  * @Description: 
  * @FilePath: /myindex/src/components/window/Desktop.vue
 -->
@@ -55,19 +55,19 @@ let deskList: Array<deskItem> = [
     }, {
         name: '浏览器',
         apptemp: 'Test3',
-        icon:'/default.png',
+        icon:'/浏览器.png',
         width:600,
         height:500
     },{
         name: '终端',
         apptemp: 'app_console',
-        icon:'/default.png',
+        icon:'/终端.png',
         width:400,
         height:400
     },{
         name: 'vscode',
         apptemp: "app_vscode",
-        icon:'/default.png',
+        icon:'/vscode.png',
         width:600,
         height:500
     }

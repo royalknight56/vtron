@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-04 19:05:54
+ * @LastEditTime: 2021-08-06 09:31:46
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -9,6 +9,7 @@
     <TaskBarVue></TaskBarVue>
     <MenuListVue></MenuListVue>
     <DesktopVue></DesktopVue>
+    <bluescenVue></bluescenVue>
   </div>
 </template>
 
@@ -16,13 +17,17 @@
 
 import { ref } from '@vue/reactivity';
 import { onMounted } from '@vue/runtime-core';
-import HelloWorld from './components/HelloWorld.vue'
 import {DragWindow} from './components/window/libs/DragWindow'
+import bluescenVue$1 from './components/states/bluescen.vue';
+
 import TaskBarVue from './components/window/TaskBar.vue';
 import MenuListVue from './components/window/MenuList.vue';
 import DesktopVue from './components/window/Desktop.vue';
 import Test1 from "./components/window/apps/Test1.vue"
 import Help from './components/window/apps/Help.vue';
+import bluescenVue from './components/states/bluescen.vue';
+import { computerCTC } from './components/computerCTC';
+
 
 
 let test1 = ref(null)
@@ -32,6 +37,7 @@ let test3 = ref(null)
 onMounted(() => {
   new DragWindow(100,100,'帮助',200,200,Help)
 
+  computerCTC.getInstance().openPower()
   // console.log(test1.value)
   // let a = new DragElement(0, 0, <HTMLElement><any>test1.value);
   // let b = new DragElement(0, 0, <HTMLElement><any>test2.value);

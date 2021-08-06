@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 18:32:58
+ * @LastEditTime: 2021-08-06 09:32:05
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
 -->
@@ -24,6 +24,9 @@ import type { PropType } from "@vue/runtime-core";
 import type { PageItem } from "./libs/WindowIPC"
 import { WindowIPC } from "./libs/WindowIPC"
 import { MenuIPC } from "./libs/MenuIPC"
+import { computerCTC } from "../computerCTC";
+
+
 
 let winlist = WindowIPC.getInstance().pageMap
 
@@ -38,8 +41,8 @@ function barClick(item: PageItem) {
 function barFirskClick(e: MouseEvent) {
     MenuIPC.getInstance().callMenu(0, e.pageY,
         [
-            { name: '关机', func: () => { console.log("关机") } },
-            { name: '重启', func: () => { console.log("重启") } }
+            { name: '关机', func: () => { console.log("关机"); computerCTC.getInstance().closePower() } },
+            { name: '重启', func: () => { console.log("重启"); computerCTC.getInstance().restartPower() } }
 
         ]
     )

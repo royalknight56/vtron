@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 09:32:05
+ * @LastEditTime: 2021-08-06 19:05:16
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
 -->
@@ -17,15 +17,16 @@
             @click="barClick(item)"
             @contextmenu.prevent="rightClick($event, item)"
         >{{ item.title }}</div>
+        <MagnetVue v-if="ifMagnetShow"></MagnetVue>
     </div>
 </template>
 <script lang="ts" setup>
-import type { PropType } from "@vue/runtime-core";
+import { ref } from "@vue/runtime-core";
 import type { PageItem } from "./libs/WindowIPC"
 import { WindowIPC } from "./libs/WindowIPC"
 import { MenuIPC } from "./libs/MenuIPC"
 import { computerCTC } from "../computerCTC";
-
+import MagnetVue from "./Magnet.vue";
 
 
 let winlist = WindowIPC.getInstance().pageMap
@@ -38,14 +39,22 @@ function barClick(item: PageItem) {
         WindowIPC.getInstance().upSetWindowIndex(item.id)
     }
 }
-function barFirskClick(e: MouseEvent) {
-    MenuIPC.getInstance().callMenu(0, e.pageY,
-        [
-            { name: '关机', func: () => { console.log("关机"); computerCTC.getInstance().closePower() } },
-            { name: '重启', func: () => { console.log("重启"); computerCTC.getInstance().restartPower() } }
 
-        ]
-    )
+let ifMagnetShow = ref(false)
+function barFirskClick(e: MouseEvent) {
+    ifMagnetShow.value = true
+    document.addEventListener("click", (e) => {
+        ifMagnetShow.value = false
+    }, {
+        once: true
+    })
+    // MenuIPC.getInstance().callMenu(0, e.pageY,
+    //     [
+    //         { name: '关机', func: () => { console.log("关机"); computerCTC.getInstance().closePower() } },
+    //         { name: '重启', func: () => { console.log("重启"); computerCTC.getInstance().restartPower() } }
+
+    //     ]
+    // )
 }
 function rightClick(e: MouseEvent, item: PageItem) {
     if (item.ifShow) {
@@ -98,10 +107,9 @@ function rightClick(e: MouseEvent, item: PageItem) {
     overflow: hidden;
     transition: all 0.1s;
 }
-.winitem:hover{
+.winitem:hover {
     /* filter: brightness(130%); */
     background-color: rgba(255, 255, 255, 0.164);
-
 }
 .winitem_first {
     user-select: none;
@@ -133,8 +141,7 @@ function rightClick(e: MouseEvent, item: PageItem) {
     background-color: rgba(255, 255, 255, 0.37);
     /* border: 1px solid rgb(87, 147, 182); */
 }
-.topwin:hover{
+.topwin:hover {
     background-color: rgba(255, 255, 255, 0.438);
-
 }
 </style>

@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 18:45:37
+ * @LastEditTime: 2021-08-09 19:04:11
  * @Description: 
- * @FilePath: /myindex/src/components/window/apps/app_console.vue
+ * @FilePath: /myindex/src/apps/app_console.vue
 -->
 <template>
     <div class="consoleline" ref="inputref" @keydown="onkeydown">
@@ -26,7 +26,7 @@
 </template>
 <script lang="ts" setup>import { reactive, ref } from "@vue/reactivity";
 import { nextTick, onMounted } from "@vue/runtime-core";
-import {consoleIPC} from "../libs/consoleIPC"
+import {consoleIPC} from "../components/window/libs/consoleIPC"
 //Hugesoft [version 0.00.10000.100\n(c) 2021 Hugesoft .Inc All rights reserved\n\n
 let inputvalue = ref('')
 let text = ref({text:''})

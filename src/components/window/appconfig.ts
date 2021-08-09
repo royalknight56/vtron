@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 16:56:52
+ * @LastEditTime: 2021-08-09 19:28:46
  * @Description: 
  * @FilePath: /myindex/src/components/window/appconfig.ts
  */
@@ -42,6 +42,13 @@ let appList:Array<appInfo> = [
         icon:'/vscode.png',
         width:600,
         height:500
+    },
+    {
+        name: '后台管理',
+        apptemp: "Adm_loading",
+        icon:'/term.ico',
+        width:300,
+        height:400
     }
 ]
 

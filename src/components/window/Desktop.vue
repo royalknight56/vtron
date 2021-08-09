@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 15:41:02
+ * @LastEditTime: 2021-08-09 19:16:57
  * @Description: 
  * @FilePath: /myindex/src/components/window/Desktop.vue
 -->
@@ -19,10 +19,11 @@
 import { DragWindow } from "./libs/DragWindow";
 import { appList } from "./appconfig";
 import type { appInfo } from "./appconfig";
+
 let deskList: Array<appInfo> = appList;
 function openApp(item: appInfo) {
-    import('./apps/' + item.apptemp + '.vue').then((mod) => {
-        let win = new DragWindow(100, 100, item.name, item.width, item.height, mod.default)
+    import('../../apps/' + item.apptemp + '.vue').then((mod) => {
+        let win = new DragWindow(100, 100, item.name, item.width, item.height, {content:mod.default})
     })
 }
 </script>

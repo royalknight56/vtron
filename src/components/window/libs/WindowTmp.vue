@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 18:31:29
+ * @LastEditTime: 2021-08-09 19:44:11
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -11,16 +11,17 @@
             <div @click="hideWindow()" class="winbutton hide_button">_</div>
             <div @click="closeWindow()" class="winbutton close_button">✕</div>
         </div>
-        <div ref="winmount" class="main" :class="{resizeing:resizemode!='null'}" @mousedown.stop="predown">
+        <div
+            ref="winmount"
+            class="main"
+            :class="{ resizeing: resizemode != 'null' }"
+            @mousedown.stop="predown"
+        >
             <!-- <div ></div> -->
         </div>
-        <div class="right_border" @mousedown.stop="dragStart($event,'r')">
-
-        </div>
-        <div class="bottom_border" @mousedown.stop="dragStart($event,'b')">
-            
-        </div>
-        <div class="right_bottom_border" @mousedown.stop="dragStart($event,'rb')"></div>
+        <div class="right_border" @mousedown.stop="dragStart($event, 'r')"></div>
+        <div class="bottom_border" @mousedown.stop="dragStart($event, 'b')"></div>
+        <div class="right_bottom_border" @mousedown.stop="dragStart($event, 'rb')"></div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -41,7 +42,9 @@ interface appint {
     },
     content: Object
     zindex: Ref<number>
-    IPC: PageItem
+    IPC: PageItem,
+    props: any,
+    use: Array<any>
 }
 let props = defineProps({
     title: {
@@ -105,7 +108,7 @@ onMounted(() => {
 
     customerStyle.value = {
         width: computed(() => winWidth.value + 'px'),
-        height: computed(() =>winHeight.value + 'px'),
+        height: computed(() => winHeight.value + 'px'),
         zIndex: computed(() => {
             return props.app.IPC.zindex
         }),
@@ -123,54 +126,66 @@ onMounted(() => {
             }
         }),
     }
+    if(props.app.props){
+        props.app.props.IPC=props.app.IPC
+    }else{
+        props.app.props={}
+        props.app.props.IPC=props.app.IPC
+    }
+    let montapp = createApp(props.app.content, props.app.props)
+    if (props.app.use) {
+        for (let i = 0; i < props.app.use.length; i++) {
+            montapp.use(props.app.use[i])
+        }
+    }
 
-    createApp(props.app.content).mount(<Element><any>winmount.value)
+    montapp.mount(<Element><any>winmount.value)
 })
 let resizemode = ref('null')
-let mosStartX=ref(0);
-let mosStartY=ref(0);
+let mosStartX = ref(0);
+let mosStartY = ref(0);
 
-let winStartX=ref(0);
-let winStartY=ref(0);
-document.addEventListener('mousemove',(e)=>{
-    if(e.buttons==1){
+let winStartX = ref(0);
+let winStartY = ref(0);
+document.addEventListener('mousemove', (e) => {
+    if (e.buttons == 1) {
 
-    }else{
+    } else {
         return
     }
-    if(winWidth.value<100){
-        winWidth.value=100
-        resizemode.value='null'
+    if (winWidth.value < 100) {
+        winWidth.value = 100
+        resizemode.value = 'null'
         return
     }
-    if(winHeight.value<100){
-        winHeight.value=100
-        resizemode.value='null'
+    if (winHeight.value < 100) {
+        winHeight.value = 100
+        resizemode.value = 'null'
         return
     }
-    if(resizemode.value=='r'){
-        winWidth.value = winStartX.value+ e.pageX-mosStartX.value
-    }else if(resizemode.value=='b'){
-        winHeight.value = winStartY.value+ e.pageY-mosStartY.value
-    }else if(resizemode.value=='rb'){
-        winWidth.value = winStartX.value+ e.pageX-mosStartX.value
-        winHeight.value = winStartY.value+ e.pageY-mosStartY.value
-    }else{
+    if (resizemode.value == 'r') {
+        winWidth.value = winStartX.value + e.pageX - mosStartX.value
+    } else if (resizemode.value == 'b') {
+        winHeight.value = winStartY.value + e.pageY - mosStartY.value
+    } else if (resizemode.value == 'rb') {
+        winWidth.value = winStartX.value + e.pageX - mosStartX.value
+        winHeight.value = winStartY.value + e.pageY - mosStartY.value
+    } else {
         return
     }
     // e.preventDefault()
     // e.stopPropagation()
 })
-document.addEventListener("mouseup",()=>{
-    resizemode.value='null'
+document.addEventListener("mouseup", () => {
+    resizemode.value = 'null'
 })
-function dragStart(e:MouseEvent,dire:string) {
-    resizemode.value=dire
-    mosStartX.value=e.pageX
-    mosStartY.value=e.pageY
+function dragStart(e: MouseEvent, dire: string) {
+    resizemode.value = dire
+    mosStartX.value = e.pageX
+    mosStartY.value = e.pageY
 
-    winStartX.value=winWidth.value
-    winStartY.value=winHeight.value
+    winStartX.value = winWidth.value
+    winStartY.value = winHeight.value
 
 }
 
@@ -193,23 +208,23 @@ function dragStart(e:MouseEvent,dire:string) {
     background-color: rgb(255, 255, 255);
 
     /* border: 1px solid rgb(194, 194, 194); */
-    border: 2px solid rgb(194, 194, 194);;
+    border: 2px solid rgb(194, 194, 194);
 
     display: flex;
     flex-direction: column;
 
     /**/
-    border: #0078D7;
+    border: #0078d7;
     border-width: 1px;
     border-style: solid;
-    box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%), 0 7px 19px rgb(0 0 0 / 58%);
+    box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
+        0 7px 19px rgb(0 0 0 / 58%);
     padding: 0px;
-
-
 }
 .topwin {
-    border: 1px solid #0078D7;
-    box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%), 0 7px 19px rgb(0 0 0 / 90%);
+    border: 1px solid #0078d7;
+    box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
+        0 7px 19px rgb(0 0 0 / 90%);
 }
 .topwin .uper {
     /* background-color: rgba(192, 192, 192, 0.795); */
@@ -229,7 +244,7 @@ function dragStart(e:MouseEvent,dire:string) {
 .title {
     padding: 0 10px;
     color: black;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-family: "Segoe UI", Tahoma, sans-serif;
     font-weight: 400;
     font-size: 12px;
     display: inline;
@@ -250,8 +265,8 @@ function dragStart(e:MouseEvent,dire:string) {
     text-align: center;
     transition: all 0.1s;
 
-    background: #FFFFFF;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #ffffff;
+    font-family: "Segoe UI", Tahoma, sans-serif;
     font-size: 12px;
     border: 2px solid white;
     padding: 0px 4px;
@@ -266,7 +281,7 @@ function dragStart(e:MouseEvent,dire:string) {
     right: 0;
     top: 0;
 }
-.close_button:hover{
+.close_button:hover {
     background-color: red;
 }
 .hide_button {
@@ -276,7 +291,7 @@ function dragStart(e:MouseEvent,dire:string) {
     text-align: center;
 }
 
-.right_border{
+.right_border {
     cursor: ew-resize;
     position: absolute;
     right: -12px;
@@ -284,7 +299,7 @@ function dragStart(e:MouseEvent,dire:string) {
     width: 10px;
     height: 100%;
 }
-.bottom_border{
+.bottom_border {
     cursor: ns-resize;
     position: absolute;
     bottom: -12px;
@@ -292,7 +307,7 @@ function dragStart(e:MouseEvent,dire:string) {
     width: 100%;
     height: 10px;
 }
-.right_bottom_border{
+.right_bottom_border {
     cursor: nwse-resize;
     position: absolute;
     right: -12px;
@@ -301,7 +316,7 @@ function dragStart(e:MouseEvent,dire:string) {
     width: 10px;
     height: 10px;
 }
-.resizeing{
+.resizeing {
     user-select: none;
     pointer-events: none;
 }

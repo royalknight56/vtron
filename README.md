@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 17:34:27
+ * @LastEditTime: 2021-08-09 19:18:51
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -12,6 +12,11 @@
 <a href="http://myim.online" target="_blank">Demo</a>
 <!-- : [myim.online](http://myim.online) -->
 
+# Usage
+
+## 开发流程
+
+1，在apps文件夹下新建vue文件，这个是窗口的内容
 
 
 # Component 组件
@@ -45,15 +50,15 @@ win10的任务栏
 
 ```js
 import {DragWindow} from './components/window/libs/DragWindow'
-import Help from './components/window/apps/Help.vue';
-new DragWindow(100,100,'关于',200,100,Help)
+import Help from './apps/Help.vue';
+new DragWindow(100,100,'关于',200,100,{content:Help})
 
 ```
 
 DragWindow参数：
 
 ```js
-DragWindow(x:number,y:number,title:string,width:number,height:number,content:Object)
+DragWindow(x:number,y:number,title:string,width:number,height:number,app:Object)
 ```
 
 |  名称   | 含义  |
@@ -63,7 +68,13 @@ DragWindow(x:number,y:number,title:string,width:number,height:number,content:Obj
 | title  | 窗口名称 |
 | width  | 窗口宽度 |
 | height  | 窗口高度 |
-| content  | 窗口的vue对象 |
+| app  | 窗口的选项 |
+
+app:{
+    content:窗口的vue对象
+    props:传递给vue对象的props
+    use:挂载的插件的数组
+}
 
 ## MenuIPC
 

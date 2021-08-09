@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 15:16:16
+ * @LastEditTime: 2021-08-09 16:46:53
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/computerCTC.ts
  */
@@ -34,7 +34,7 @@ class computerCTC {
         this.stats.screen='close'
         setTimeout(()=>{
             this.stats.screen='blue'
-        },1000)
+        },100)
         setTimeout(()=>{
             this.stats.screen='common'
         },2000)
@@ -46,21 +46,12 @@ class computerCTC {
         },2000)
 
         setTimeout(()=>{
-            this.stats.screen='blue'
-        },4000)
+            this.stats.screen='close'
+        },5000)
 
         setTimeout(()=>{
             window.location.reload()
         },6000)
-
-        
-        // setTimeout(()=>{
-        //     this.stats.screen='blue'
-        // },4000)
-
-        // setTimeout(()=>{
-        //     this.stats.screen='common'
-        // },6345)
     }
 }
 export {

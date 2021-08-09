@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 14:44:53
+ * @LastEditTime: 2021-08-09 17:28:09
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
@@ -20,7 +20,7 @@ class DragWindow extends DragElement{
         let div = document.createElement('div')
         div.className='dragwin'
 
-        let id= "dragwinelementhash89103"+WindowIPC.getInstance().getWinnum();//获得一个id
+        let id= WindowIPC.getInstance().getWinid();//获得一个id
         div.id=id
         document.getElementById('winid')?.appendChild(div);
         // document.body.appendChild(div);

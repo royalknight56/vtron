@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 15:34:17
+ * @LastEditTime: 2021-08-09 16:56:52
  * @Description: 
  * @FilePath: /myindex/src/components/window/appconfig.ts
  */
@@ -43,7 +43,6 @@ let appList:Array<appInfo> = [
         width:600,
         height:500
     }
-    
 ]
 
 export {appList,appInfo}

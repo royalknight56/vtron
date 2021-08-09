@@ -1,8 +1,7 @@
-import { reactive, ref, Ref, UnwrapNestedRefs } from "@vue/reactivity";
-import { toHandlers } from "@vue/runtime-core";
+import { reactive, UnwrapNestedRefs } from "@vue/reactivity";
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 11:27:40
+ * @LastEditTime: 2021-08-09 17:29:37
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
@@ -14,7 +13,8 @@ interface PageItem {
     zindex: number,
     ifShow: boolean,
     iftop: boolean,
-    ifDestory: boolean
+    ifDestory: boolean,
+    ifMax:boolean
 }
 interface pageMapInter {
     [index: string]: PageItem
@@ -39,7 +39,10 @@ class WindowIPC {
     getWinnum() {
         return this.winnum
     }
-    registerWindow(id: string, title: string) {
+    getWinid():string {
+        return "dragwinelementhash89103"+this.getWinnum()
+    }
+    registerWindow(id: string, title: string):PageItem {
         if (this.pageMap[id]) {
             return this.pageMap[id]
         } else {
@@ -50,7 +53,8 @@ class WindowIPC {
                 zindex: 0,
                 ifShow: true,
                 iftop: false,
-                ifDestory: false
+                ifDestory: false,
+                ifMax:false
             });
 
             this.pageIndex.push(id)
@@ -64,7 +68,7 @@ class WindowIPC {
         this.pageIndex.splice(ind, 1)
     }
 
-    upSetWindowIndex(id: string) {
+    upSetWindowIndex(id: string):number {
         for (let key in this.pageMap) {
             this.pageMap[key].iftop = false
         }

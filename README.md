@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 11:35:34
+ * @LastEditTime: 2021-08-09 17:34:27
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -17,24 +17,24 @@
 # Component 组件
 
 <span style="color:#999;text-align:center">
-建议在单独页面中加入以下全部组件
+建议在单独页面中加入以下组件
 </span>
 
 ```html
-    <TaskBarVue></TaskBarVue>
-    <MenuListVue></MenuListVue>
-    <DesktopVue></DesktopVue>
-    <BluescenVue></BluescenVue>
+<winVue></winVue>
+```
+```js
+import winVue from "./components/win.vue";
 ```
     
-### TaskBar
+<!-- ### TaskBar
 win10的任务栏
 ### MenuList
 右键的菜单
 ### Desktop
 桌面的图标
 ### Bluescen
-屏幕状态
+屏幕状态 -->
 
 # Class 类
 
@@ -71,4 +71,86 @@ DragWindow(x:number,y:number,title:string,width:number,height:number,content:Obj
 
 ## WindowIPC
 
-单例模式
+这个类是单例，用于集中管理窗口的状态信息。储存了窗口的状态HashMap
+
+单例模式，调用类的静态成员函数getInstance获取实例
+
+```js
+WindowIPC.getInstance()
+```
+### 实例属性：
+
+```ts
+pageMap: UnwrapNestedRefs<pageMapInter>;//窗口的hashMap
+```
+### 成员函数：
+
+#### getWinnum
+```ts
+getWinnum() 
+```
+用于获取窗口编号
+
+#### registerWindow
+```ts
+registerWindow(id: string, title: string):PageItem 
+```
+注册一个窗口，需要id，标题
+
+返回PageItem
+
+PageItem：
+```ts
+interface PageItem {
+    id: string,
+    wid: number,
+    title: string,
+    zindex: number,
+    ifShow: boolean,
+    iftop: boolean,
+    ifDestory: boolean,
+    ifMax:boolean
+}
+```
+
+#### unRegisterWindow
+```ts
+unRegisterWindow(id: string) 
+```
+注销一个窗口的注册信息
+
+
+#### upSetWindowIndex
+```ts
+upSetWindowIndex(id: string):number
+```
+将窗口移动到顶层
+
+
+#### hideWindow
+
+```ts
+hideWindow(id: string)
+```
+最小化一个窗口
+
+#### showWindow
+
+```ts
+showWindow(id: string)
+```
+显示窗口
+
+#### destoryWindow
+
+```ts
+destoryWindow(id: string)
+```
+销毁窗口
+
+#### maxWindow
+
+```ts
+maxWindow(id: string) 
+```
+最大化窗口

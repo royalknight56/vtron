@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 09:36:54
+ * @LastEditTime: 2021-08-09 11:28:52
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -9,7 +9,7 @@
     <TaskBarVue></TaskBarVue>
     <MenuListVue></MenuListVue>
     <DesktopVue></DesktopVue>
-    <bluescenVue></bluescenVue>
+    <BluescenVue></BluescenVue>
   </div>
 </template>
 
@@ -18,14 +18,13 @@
 import { ref } from '@vue/reactivity';
 import { onMounted } from '@vue/runtime-core';
 import {DragWindow} from './components/window/libs/DragWindow'
-import bluescenVue$1 from './components/states/bluescen.vue';
 
 import TaskBarVue from './components/window/TaskBar.vue';
 import MenuListVue from './components/window/MenuList.vue';
 import DesktopVue from './components/window/Desktop.vue';
 import Test1 from "./components/window/apps/Test1.vue"
 import Help from './components/window/apps/Help.vue';
-import bluescenVue from './components/states/bluescen.vue';
+import BluescenVue from './components/states/bluescen.vue';
 import { computerCTC } from './components/computerCTC';
 
 
@@ -90,14 +89,13 @@ body{
   width: 100vw;
   background-color: rgb(0, 119, 210);
 }
-.dragobj {
+/* .dragobj {
   cursor: all-scroll;
   position: absolute;
   user-select: none;
   width: 100px;
   height: 100px;
   background-color: #2c3e50;
-  /* transition: all 2s; */
 }
 .cube3 {
   z-index: -1;
@@ -106,6 +104,5 @@ body{
   user-select: none;
   width: 100px;
   height: 100px;
-  /* transition: all 0.2s; */
-}
+} */
 </style>

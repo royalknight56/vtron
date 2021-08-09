@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 11:24:11
+ * @LastEditTime: 2021-08-09 11:32:57
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -10,6 +10,28 @@
 </span>
 
 Demo: [myim.online](http://myim.online)
+
+# Component 组件
+
+<span style="color:#999;text-align:center">
+建议在单独页面中加入以下全部组件
+</span>
+
+```html
+    <TaskBarVue></TaskBarVue>
+    <MenuListVue></MenuListVue>
+    <DesktopVue></DesktopVue>
+    <BluescenVue></BluescenVue>
+```
+    
+### TaskBar
+win10的任务栏
+### MenuList
+右键的菜单
+### Desktop
+桌面的图标
+### Bluescen
+屏幕状态
 
 # Class 类
 

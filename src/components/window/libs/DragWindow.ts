@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 11:28:20
+ * @LastEditTime: 2021-08-09 14:44:53
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
@@ -22,7 +22,8 @@ class DragWindow extends DragElement{
 
         let id= "dragwinelementhash89103"+WindowIPC.getInstance().getWinnum();//获得一个id
         div.id=id
-        document.body.appendChild(div);
+        document.getElementById('winid')?.appendChild(div);
+        // document.body.appendChild(div);
 
         let app:any ={}
         let pageInfo = WindowIPC.getInstance().registerWindow(id,title);//在IPC中注册

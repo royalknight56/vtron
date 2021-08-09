@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 19:05:16
+ * @LastEditTime: 2021-08-09 15:13:35
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
 -->
@@ -25,7 +25,7 @@ import { ref } from "@vue/runtime-core";
 import type { PageItem } from "./libs/WindowIPC"
 import { WindowIPC } from "./libs/WindowIPC"
 import { MenuIPC } from "./libs/MenuIPC"
-import { computerCTC } from "../computerCTC";
+import { computerCTC } from "./libs/computerCTC";
 import MagnetVue from "./Magnet.vue";
 
 

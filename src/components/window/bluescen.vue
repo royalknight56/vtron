@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 09:36:03
+ * @LastEditTime: 2021-08-09 15:13:34
  * @Description: 
- * @FilePath: /myindex/src/components/states/bluescen.vue
+ * @FilePath: /myindex/src/components/window/bluescen.vue
 -->
 <template>
 <div class="outer" :class="{blueclass:stat.screen=='blue',blackclass:stat.screen=='close'}">
@@ -35,7 +35,7 @@
     
 </template>
 <script lang="ts" setup>
-import { computerCTC } from "../computerCTC";
+import { computerCTC } from "./libs/computerCTC";
 
 
 let stat = computerCTC.getInstance().stats;
@@ -48,6 +48,7 @@ let stat = computerCTC.getInstance().stats;
     width: 100%;
     height: 100%;
     z-index: -50;
+    background-color: rgb(0, 119, 210);
 }
 .blueclass{
     z-index: 10001;

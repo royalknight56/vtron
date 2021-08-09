@@ -1,8 +1,8 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 09:34:18
+ * @LastEditTime: 2021-08-09 15:16:16
  * @Description: 
- * @FilePath: /myindex/src/components/computerCTC.ts
+ * @FilePath: /myindex/src/components/window/libs/computerCTC.ts
  */
 import { reactive } from "vue";
 
@@ -31,8 +31,6 @@ class computerCTC {
         },1000)
     }
     openPower(){
-        
-
         this.stats.screen='close'
         setTimeout(()=>{
             this.stats.screen='blue'

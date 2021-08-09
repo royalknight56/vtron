@@ -1,27 +1,49 @@
-# Vue 3 + Typescript + Vite
+<!--
+ * @Author: zhangweiyuan-Royal
+ * @LastEditTime: 2021-08-09 11:24:11
+ * @Description: 
+ * @FilePath: /myindex/README.md
+-->
+# Win10 UI 框架 Vue3
 
-This template should help get you started developing with Vue 3 and Typescript in Vite.
+<span style="color:#999;text-align:center">推荐 Vue 3 + Typescript + Vite + Using `<script setup>`
+</span>
 
-## Recommended IDE Setup
+Demo: [myim.online](http://myim.online)
 
-[VSCode](https://code.visualstudio.com/) + [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur). Make sure to enable `vetur.experimental.templateInterpolationService` in settings!
+# Class 类
 
-### If Using `<script setup>`
+## DragWindow
 
-[`<script setup>`](https://github.com/vuejs/rfcs/pull/227) is a feature that is currently in RFC stage. To get proper IDE support for the syntax, use [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) instead of Vetur (and disable Vetur).
+引入DragWindow类
+构造对象，使用后会在屏幕上显示一个窗口
 
-## Type Support For `.vue` Imports in TS
+```js
+import {DragWindow} from './components/window/libs/DragWindow'
+import Help from './components/window/apps/Help.vue';
+new DragWindow(100,100,'关于',200,100,Help)
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can use the following:
+```
 
-### If Using Volar
+DragWindow参数：
 
-Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
+```js
+DragWindow(x:number,y:number,title:string,width:number,height:number,content:Object)
+```
 
-### If Using Vetur
+|  名称   | 含义  |
+|  ----  | ----  |
+| x  | 左上角位置坐标x |
+| y  | 左上角位置坐标y |
+| title  | 窗口名称 |
+| width  | 窗口宽度 |
+| height  | 窗口高度 |
+| content  | 窗口的vue对象 |
 
-1. Install and add `@vuedx/typescript-plugin-vue` to the [plugins section](https://www.typescriptlang.org/tsconfig#plugins) in `tsconfig.json`
-2. Delete `src/shims-vue.d.ts` as it is no longer needed to provide module info to Typescript
-3. Open `src/main.ts` in VSCode
-4. Open the VSCode command palette
-5. Search and run "Select TypeScript version" -> "Use workspace version"
+## MenuIPC
+
+单例模式
+
+## WindowIPC
+
+单例模式

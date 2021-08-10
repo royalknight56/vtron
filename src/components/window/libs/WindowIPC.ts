@@ -1,7 +1,7 @@
 import { reactive, UnwrapNestedRefs } from "@vue/reactivity";
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 15:34:14
+ * @LastEditTime: 2021-08-10 16:57:38
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
@@ -67,7 +67,7 @@ class WindowIPC {
             return this.pageMap[id]
         }
     }
-    unRegisterWindow(id: string) {
+    private unRegisterWindow(id: string) {
         delete this.pageMap[id]
         let ind = this.pageIndex.indexOf(id)
         this.pageIndex.splice(ind, 1)

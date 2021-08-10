@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 15:38:09
+ * @LastEditTime: 2021-08-10 17:01:54
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -9,15 +9,35 @@
 <span style="color:#999;text-align:center">推荐 Vue 3 + Typescript + Vite + Using `<script setup>`
 </span>
 
-<a href="http://myim.online" target="_blank">Demo</a>
+<a href="http://myim.online" target="_blank">Demo</a>|<a href="http://myim.online" target="_blank">Demo</a>|<a href="http://myim.online" target="_blank">Demo</a>
 <!-- : [myim.online](http://myim.online) -->
 
 # Usage
 
 ## 开发流程
+1. 引入winVue租组件
 
-1，在apps文件夹下新建vue文件，这个是窗口的内容
+```html
+<winVue></winVue>
+```
+```js
+import winVue from "./components/win.vue";
+```
 
+2. 在apps文件夹下新建vue文件，这个是窗口的内容
+
+3. 在components/window/appconfig.ts下配置桌面的图标
+格式：
+
+```js
+{
+    name: 图标名称,
+    apptemp: 组件文件名,
+    icon:public图标路径,
+    width:宽度,
+    height:高度
+}
+```
 
 # Component 组件
 
@@ -78,6 +98,11 @@ app:{
 }
 ```
 
+usage:
+```js
+new DragWindow(0, 0, 'Admin后台管理', 300, 400, { content: AdmVue, use: [ElementPlus] })
+```
+
 ## MenuIPC
 
 单例模式
@@ -126,13 +151,6 @@ interface PageItem {
 }
 ```
 
-#### unRegisterWindow
-```ts
-unRegisterWindow(id: string) 
-```
-注销一个窗口的注册信息
-
-
 #### upSetWindowIndex
 ```ts
 upSetWindowIndex(id: string):number
@@ -167,3 +185,17 @@ destoryWindow(id: string)
 maxWindow(id: string) 
 ```
 最大化窗口
+
+#### on
+
+```ts
+on(ev:string,func:Function)
+```
+注册一个事件
+
+#### on
+
+```ts
+emit(ev:string,...args:any)
+```
+触发一个事件

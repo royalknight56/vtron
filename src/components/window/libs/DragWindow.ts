@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 19:15:51
+ * @LastEditTime: 2021-08-10 16:09:19
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
@@ -13,7 +13,6 @@ import {WindowIPC} from "./WindowIPC"
 
 class DragWindow extends DragElement{
     zindex:number;
-    
     constructor(x:number,y:number,title:string,width:number,height:number,app:any){
         
         
@@ -39,6 +38,8 @@ class DragWindow extends DragElement{
         super(x,y,div)
 
         this.zindex=WindowIPC.getInstance().winnum;
+
+        WindowIPC.getInstance().upSetWindowIndex(id)
 
     }
 }

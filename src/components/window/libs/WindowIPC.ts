@@ -1,7 +1,7 @@
 import { reactive, UnwrapNestedRefs } from "@vue/reactivity";
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 17:29:37
+ * @LastEditTime: 2021-08-10 15:34:14
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
@@ -19,15 +19,20 @@ interface PageItem {
 interface pageMapInter {
     [index: string]: PageItem
 }
+interface eventMapInter {
+    [index: string]: Function
+}
 class WindowIPC {
     private static instance: WindowIPC;
     winnum: number;
     pageMap: UnwrapNestedRefs<pageMapInter>;
     pageIndex: string[];
+    eventMap:eventMapInter;
     private constructor() {
         this.winnum = 0;
         this.pageMap = reactive({});
         this.pageIndex = [];
+        this.eventMap={}
     }
     static getInstance() {
         if (this.instance == undefined) {
@@ -103,6 +108,12 @@ class WindowIPC {
     }
     maxWindow(id: string) {
 
+    }
+    on(ev:string,func:Function){
+        this.eventMap[ev]=func
+    }
+    emit(ev:string,...args:any){
+        this.eventMap[ev]?.(...args)
     }
 
 }

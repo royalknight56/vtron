@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 19:18:51
+ * @LastEditTime: 2021-08-10 15:38:09
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -70,11 +70,13 @@ DragWindow(x:number,y:number,title:string,width:number,height:number,app:Object)
 | height  | 窗口高度 |
 | app  | 窗口的选项 |
 
+```js
 app:{
     content:窗口的vue对象
     props:传递给vue对象的props
     use:挂载的插件的数组
 }
+```
 
 ## MenuIPC
 

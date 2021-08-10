@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 19:44:11
+ * @LastEditTime: 2021-08-10 10:23:46
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -27,8 +27,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from "@vue/reactivity";
 import type { Ref } from "@vue/reactivity"
-import type { ToRefs } from "@vue/reactivity";
-import { computed, nextTick, onMounted, watch, } from "@vue/runtime-core";
+import { computed, onMounted } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core"
 import { createApp } from "@vue/runtime-dom";
 
@@ -126,6 +125,7 @@ onMounted(() => {
             }
         }),
     }
+    
     if(props.app.props){
         props.app.props.IPC=props.app.IPC
     }else{

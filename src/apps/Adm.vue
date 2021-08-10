@@ -1,11 +1,12 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 19:53:22
+ * @LastEditTime: 2021-08-10 15:36:10
  * @Description: 
  * @FilePath: /myindex/src/apps/Adm.vue
 -->
 <template>
     <div>
+        {{msg}}
         <el-radio v-model="radio1" label="1">备选项</el-radio>
         <el-radio v-model="radio1" label="2">备选项</el-radio>
         <br>
@@ -25,13 +26,17 @@ import { ref } from "@vue/reactivity";
 import { DragWindow } from "../components/window/libs/DragWindow";
 import askDialogVue from "./askDialog.vue";
 import ElementPlus from 'element-plus';
+import { WindowIPC } from "../components/window/libs/WindowIPC";
 
 let radio1 = ref(1)
 let radio2 = ref(1)
 let radio3 = ref(1)
 let input = ref('')
 let bolvalue = ref(true)
-
+let msg = ref('')
+WindowIPC.getInstance().on('testEvent',(arg:string)=>{
+    msg.value=arg
+})
 function submit() {
     new DragWindow(0,0,'确定提交？',300,400,{content:askDialogVue,use:[ElementPlus]})
 }

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 17:01:54
+ * @LastEditTime: 2021-08-10 17:17:51
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -105,16 +105,56 @@ new DragWindow(0, 0, 'Admin后台管理', 300, 400, { content: AdmVue, use: [Ele
 
 ## MenuIPC
 
-单例模式
+这个类是单例模式，用于管理右键菜单（弹出菜单）。在引入MenuListVue组件后，可以在屏幕上调出菜单
+
+调用类的静态成员函数getInstance获取实例
+
+```js
+MenuIPC.getInstance():WindowIPC
+```
+### 实例属性：
+
+### 成员函数：
+
+#### callMenu
+
+```ts
+callMenu(x:number,y:number,list:UnwrapNestedRefs<Array<menuItem>>)
+```
+
+|  名称   | 含义  |
+|  ----  | ----  |
+| x  | 左上角位置坐标x |
+| y  | 左上角位置坐标y |
+| list  | 选项菜单数组 |
+
+```ts
+interface menuItem{
+    name:string,
+    func:Function
+}
+```
+usage:
+```ts
+MenuIPC.getInstance().callMenu(e.pageX, e.pageY,
+        [
+            { name: '关机', func: () => { 
+                console.log("关机"); computerCTC.getInstance().closePower() } },
+            { name: '重启', func: () => { 
+                console.log("重启"); computerCTC.getInstance().restartPower() } }
+
+        ]
+    )
+```
 
 ## WindowIPC
 
-这个类是单例，用于集中管理窗口的状态信息。储存了窗口的状态HashMap
+这个类是单例模式，用于集中管理窗口的状态信息。储存了窗口的状态HashMap
 
-单例模式，调用类的静态成员函数getInstance获取实例
+调用类的静态成员函数getInstance获取实例
 
 ```js
-WindowIPC.getInstance()
+WindowIPC.getInstance():WindowIPC
 ```
 ### 实例属性：
 
@@ -193,7 +233,7 @@ on(ev:string,func:Function)
 ```
 注册一个事件
 
-#### on
+#### emit
 
 ```ts
 emit(ev:string,...args:any)

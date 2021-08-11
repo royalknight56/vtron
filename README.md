@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 17:17:51
+ * @LastEditTime: 2021-08-10 20:30:40
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -9,19 +9,24 @@
 <span style="color:#999;text-align:center">推荐 Vue 3 + Typescript + Vite + Using `<script setup>`
 </span>
 
+本框架可以让你的页面像win10视窗系统一样，变为一个网页上的win10系统。
+
 <a href="http://myim.online" target="_blank">Demo</a>|<a href="http://myim.online" target="_blank">Demo</a>|<a href="http://myim.online" target="_blank">Demo</a>
 <!-- : [myim.online](http://myim.online) -->
 
 # Usage
 
 ## 开发流程
-1. 引入winVue租组件
 
+推荐clone本仓库，在本仓库基础上修改，模版在/template目录下
+
+1. 引入winVue租组件（clone可以跳过此步骤）
+ 
 ```html
-<winVue></winVue>
+<WinVue></WinVue>
 ```
 ```js
-import winVue from "./components/win.vue";
+import WinVue from "./components/win.vue";
 ```
 
 2. 在apps文件夹下新建vue文件，这个是窗口的内容
@@ -46,12 +51,11 @@ import winVue from "./components/win.vue";
 </span>
 
 ```html
-<winVue></winVue>
+<WinVue></WinVue>
 ```
 ```js
-import winVue from "./components/win.vue";
+import WinVue from "./components/win.vue";
 ```
-    
 <!-- ### TaskBar
 win10的任务栏
 ### MenuList

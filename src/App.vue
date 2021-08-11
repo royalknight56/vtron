@@ -1,24 +1,24 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 14:37:52
+ * @LastEditTime: 2021-08-10 20:53:16
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
 <template>
   <div class="outer">
-    <winVue></winVue>
+    <WinVue></WinVue>
   </div>
 </template>
 
-<script lang="ts" setup>
-import winVue from "./components/win.vue";
+<script setup lang="ts">
+import WinVue from "./components/win.vue";
 
 </script>
 <style scoped>
 .outer{
   position: relative;
-  width: 90vw;
-  height: 90vh;
+  width: 100vw;
+  height: 100vh;
 }
 </style>
 <style>
@@ -30,14 +30,12 @@ import winVue from "./components/win.vue";
   /* color: #2c3e50; */
   /* margin-top: 60px; */
 }
-/* body{
+body{
   padding: 0;
   margin: 0;
   overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-  background-color: rgb(0, 119, 210);
-} */
+
+}
 /* .dragobj {
   cursor: all-scroll;
   position: absolute;

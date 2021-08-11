@@ -1,31 +1,20 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 15:36:10
+ * @LastEditTime: 2021-08-10 20:59:19
  * @Description: 
  * @FilePath: /myindex/src/apps/Adm.vue
 -->
 <template>
     <div>
         {{msg}}
-        <el-radio v-model="radio1" label="1">备选项</el-radio>
-        <el-radio v-model="radio1" label="2">备选项</el-radio>
-        <br>
-        <el-checkbox v-model="radio2" disabled>备选项1</el-checkbox>
-        <el-checkbox v-model="radio2" disabled>备选项</el-checkbox>
-        <br>
-        <el-input v-model="input" placeholder="请输入内容"></el-input>
-        <el-input-number v-model="radio3" :min="1" :max="10" label="描述文字"></el-input-number>
-        <br>
-        <el-switch v-model="bolvalue" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
-        <br>
-        <el-button type="primary" @click="submit">确定</el-button>
+        <button @click="submit">确定</button>
     </div>
 </template>
 <script lang="ts" setup>
 import { ref } from "@vue/reactivity";
 import { DragWindow } from "../components/window/libs/DragWindow";
 import askDialogVue from "./askDialog.vue";
-import ElementPlus from 'element-plus';
+// import ElementPlus from 'element-plus';
 import { WindowIPC } from "../components/window/libs/WindowIPC";
 
 let radio1 = ref(1)
@@ -38,7 +27,9 @@ WindowIPC.getInstance().on('testEvent',(arg:string)=>{
     msg.value=arg
 })
 function submit() {
-    new DragWindow(0,0,'确定提交？',300,400,{content:askDialogVue,use:[ElementPlus]})
+    // new DragWindow(0,0,'确定提交？',300,400,{content:askDialogVue,use:[ElementPlus]})
+    new DragWindow(0,0,'确定提交？',300,400,{content:askDialogVue})
+
 }
 </script>
 

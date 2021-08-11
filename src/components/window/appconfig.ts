@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 19:28:46
+ * @LastEditTime: 2021-08-10 19:45:28
  * @Description: 
  * @FilePath: /myindex/src/components/window/appconfig.ts
  */
@@ -49,7 +49,14 @@ let appList:Array<appInfo> = [
         icon:'/term.ico',
         width:300,
         height:400
-    }
+    },
+    {
+        name: '点个star',
+        apptemp: "GitStars",
+        icon:'/GitHub.png',
+        width:300,
+        height:400
+    },
 ]
 
 export {appList,appInfo}

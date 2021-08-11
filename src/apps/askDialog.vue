@@ -1,13 +1,13 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 15:35:28
+ * @LastEditTime: 2021-08-10 20:59:42
  * @Description: 
  * @FilePath: /myindex/src/apps/askDialog.vue
 -->
 <template>
 确定？
-<el-button type="primary" @click="close('确定')">确定</el-button>
-  <el-button type="danger" @click="close('取消')">取消</el-button>
+<button  @click="close('确定')">确定</button>
+  <button @click="close('取消')">取消</button>
 </template>
 <script lang="ts" setup>
 import type { PropType } from "@vue/runtime-core";

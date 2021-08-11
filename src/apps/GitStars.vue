@@ -1,17 +1,14 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 20:58:10
+ * @LastEditTime: 2021-08-10 20:56:29
  * @Description: 
- * @FilePath: /myindex/src/apps/Adm_loading.vue
+ * @FilePath: /myindex/src/apps/GitStars.vue
 -->
 <template>
     <div>Loading</div>
 </template>
 <script lang="ts" setup>
 
-import { DragWindow } from "../components/window/libs/DragWindow";
-import AdmVue from "./Adm.vue";
-// import ElementPlus from 'element-plus';
 import type { PageItem } from "../components/window/libs/WindowIPC"
 import { WindowIPC } from "../components/window/libs/WindowIPC"
 import type { PropType } from "@vue/runtime-core"
@@ -25,9 +22,8 @@ setTimeout(() => {
     if (props.IPC?.id) {
         WindowIPC.getInstance().destoryWindow(props.IPC?.id)
     }
-
-    new DragWindow(0, 0, 'Admin后台管理', 300, 400, { content: AdmVue })
-}, 1000)
+    window.open('https://github.com/royalknight56/vue-windows10')
+})
 
 
 </script>

@@ -3,7 +3,7 @@ import { DefineComponent,App, VueElement,ComponentPublicInstance } from "vue";
 import { CreateAppFunction } from '@vue/runtime-core';
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 14:37:03
+ * @LastEditTime: 2021-08-17 14:42:37
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
@@ -20,7 +20,7 @@ interface PageItem {
     ifMax:boolean,
     width:number,
     height:number,
-    content:DefineComponent,
+    content:DefineComponent<{}, {}, any>,
     props:any,
 
     appPointer: App|null
@@ -58,7 +58,7 @@ class WindowIPC {
     getWinid():string {
         return "dragwinelementhash89103"+this.getWinnum()
     }
-    registerWindow(id: string, title: string,width:number,height:number,content:DefineComponent,props:any):PageItem {
+    registerWindow(id: string, title: string,width:number,height:number,content:DefineComponent<{}, {}, any>,props:any):PageItem {
         if (this.pageMap[id]) {
             return this.pageMap[id]
         } else {

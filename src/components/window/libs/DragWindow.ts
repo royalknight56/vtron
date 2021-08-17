@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 14:37:28
+ * @LastEditTime: 2021-08-17 14:42:39
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
@@ -21,7 +21,7 @@ interface ctxInter{
     props?:any
 }
 interface ctxPar{
-    content:any,
+    content:DefineComponent<{}, {}, any>,
     // use?: Array<any>,
     props?:any
 }

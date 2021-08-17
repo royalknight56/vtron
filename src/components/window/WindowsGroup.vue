@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 12:20:06
+ * @LastEditTime: 2021-08-17 16:50:18
  * @Description: 
  * @FilePath: /myindex/src/components/window/WindowsGroup.vue
 -->
@@ -12,7 +12,7 @@
         :ref="'ref'+item.id"
         >
         <teleport to="body">
-            <WindowTmpVue v-bind="{ctx:{IPC:item}}"></WindowTmpVue>
+            <!-- <WindowTmpVue :ref="(el)=>{}" v-bind="{ctx:{IPC:item}}"></WindowTmpVue> -->
         </teleport>
         </div>
 </template>

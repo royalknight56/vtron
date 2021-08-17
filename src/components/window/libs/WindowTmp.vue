@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 14:51:25
+ * @LastEditTime: 2021-08-17 16:47:06
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -35,7 +35,6 @@ import type { PropType } from "@vue/runtime-core"
 import { WindowIPC } from "./WindowIPC"
 import type { PageItem } from "./WindowIPC"
 import { MenuIPC } from "../libs/MenuIPC"
-
 
 let props = defineProps({
 

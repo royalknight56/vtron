@@ -1,13 +1,18 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 20:59:19
+ * @LastEditTime: 2021-08-17 17:13:31
  * @Description: 
  * @FilePath: /myindex/src/apps/Adm.vue
 -->
 <template>
     <div>
         {{msg}}
-        <button @click="submit">确定</button>
+        <!-- <button >确定</button> -->
+        <el-radio v-model="radio1" label="1">备选项1</el-radio>
+        <el-radio v-model="radio1" label="2">备选项2</el-radio><br>
+        <el-checkbox v-model="radio2">备选项</el-checkbox><br>
+        <el-input-number v-model="radio3" :min="1" :max="10" label="描述文字"></el-input-number><br>
+        <el-button @click="submit" type="success">确定</el-button>
     </div>
 </template>
 <script lang="ts" setup>

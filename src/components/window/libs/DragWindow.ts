@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 14:49:00
+ * @LastEditTime: 2021-08-17 16:51:03
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
@@ -25,7 +25,7 @@ interface ctxPar{
     props?:any
 }
 class DragWindow extends DragElement{
-    constructor(x:number,y:number,title:string,width:number,height:number,ctxpar:ctxPar){
+    constructor(x:number,y:number,title:string,width:number,height:number,ctxpar:ctxPar,use?:any){
         
         
         let div = document.createElement('div')
@@ -40,6 +40,12 @@ class DragWindow extends DragElement{
         
 
         pageInfo.appPointer=createApp(WindowTmpVue,{ctx:pageInfo})
+        if(use){
+            console.log(use)
+            for(let i=0;i<use.length;i++){
+                pageInfo.appPointer.use(use[i])
+            }
+        }
         pageInfo.appPointer.mount("#"+id)
         WindowIPC.getInstance().mountWindow(id,pageInfo.appPointer)
         super(x,y,div)

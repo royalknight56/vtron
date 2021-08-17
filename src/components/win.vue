@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 12:23:29
+ * @LastEditTime: 2021-08-17 14:48:35
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -25,7 +25,7 @@ import DesktopVue from './window/Desktop.vue';
 import BluescenVue from './window/bluescen.vue';
 
 import { computerCTC } from './window/libs/computerCTC';
-import WindowsGroupVue from './window/WindowsGroup.vue';
+// import WindowsGroupVue from './window/WindowsGroup.vue';
 
 
 onMounted(() => {

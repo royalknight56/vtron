@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-03 14:44:42
+ * @LastEditTime: 2021-08-17 14:53:24
  * @Description: 可以拖动的窗口
  * @FilePath: /myindex/src/components/window/DragWindow.vue
 -->
@@ -14,8 +14,6 @@
 </div>
 </template>
 <script lang="ts" setup>
-import { PropType } from "@vue/runtime-core";
-
 interface mwindow{
     title:string
 };

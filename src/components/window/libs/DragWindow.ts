@@ -1,22 +1,21 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 14:42:39
+ * @LastEditTime: 2021-08-17 14:49:00
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
-import { createApp, reactive, ref ,App} from "@vue/runtime-dom";
+import { createApp} from "@vue/runtime-dom";
 import { DragElement } from "./DragElement";
 import WindowTmpVue from "./WindowTmp.vue";
 
 
 import {PageItem, WindowIPC} from "./WindowIPC"
 import type { DefineComponent } from "@vue/runtime-core";
-import { ComponentPublicInstance } from "vue";
+
 
 
 interface ctxInter{
-    // app:App<Element>
-    // content:DefineComponent,
+
     IPC:PageItem,
     props?:any
 }

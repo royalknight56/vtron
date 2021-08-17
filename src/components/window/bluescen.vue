@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 15:13:34
+ * @LastEditTime: 2021-08-11 16:01:35
  * @Description: 
  * @FilePath: /myindex/src/components/window/bluescen.vue
 -->
@@ -9,9 +9,9 @@
     <div id="dot"  v-if="stat.screen == 'blue'">
         !
         <div id="dottext">
-            R
+            Royal
             <span>
-                o
+                Knight
             </span>
         </div>
     </div>

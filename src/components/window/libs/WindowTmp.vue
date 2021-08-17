@@ -1,13 +1,13 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 10:23:46
+ * @LastEditTime: 2021-08-17 14:06:30
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
 <template class='win'>
     <div class="outer" :style="customerStyle" @mousedown="onFocus" :class="{ topwin: iftop }">
         <div class="uper" @contextmenu.prevent="uperRightClick">
-            <div class="title">{{ title }}</div>
+            <div class="title">{{ ctx.title }}</div>
             <div @click="hideWindow()" class="winbutton hide_button">_</div>
             <div @click="closeWindow()" class="winbutton close_button">✕</div>
         </div>
@@ -17,6 +17,7 @@
             :class="{ resizeing: resizemode != 'null' }"
             @mousedown.stop="predown"
         >
+        <component :is="componentValue" :ctx='props.ctx'></component>
             <!-- <div ></div> -->
         </div>
         <div class="right_border" @mousedown.stop="dragStart($event, 'r')"></div>
@@ -25,8 +26,9 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { reactive, ref } from "@vue/reactivity";
+import { markRaw, reactive, ref, shallowRef, toRaw } from "@vue/reactivity";
 import type { Ref } from "@vue/reactivity"
+
 import { computed, onMounted } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core"
 import { createApp } from "@vue/runtime-dom";
@@ -34,6 +36,7 @@ import { createApp } from "@vue/runtime-dom";
 import { WindowIPC } from "./WindowIPC"
 import type { PageItem } from "./WindowIPC"
 import { MenuIPC } from "../libs/MenuIPC"
+import type { ctxInter } from "./DragWindow";
 
 interface appint {
     value: {
@@ -42,50 +45,39 @@ interface appint {
     content: Object
     zindex: Ref<number>
     IPC: PageItem,
-    props: any,
+    props: Object,
     use: Array<any>
 }
 let props = defineProps({
-    title: {
-        type: String,
-        default: 'w1'
-    },
-    width: {
-        type: Number,
-        default: 300
-    },
-    height: {
-        type: Number,
-        default: 300
-    },
-    app: {
-        type: Object as PropType<appint>,
+
+    ctx: {
+        type: Object as PropType<PageItem>,
         default: {
-            value: {
+            app: {
                 unmount: () => {
                 }
-            },
-            content: {},
-            zindex: ref(0)
+            },//创建的app
+            content: {},//组件vue
+
         }
     }
 })
 
 function closeWindow(): void {
-    WindowIPC.getInstance().destoryWindow(props.app.IPC.id)
+    WindowIPC.getInstance().destoryWindow(props.ctx.id)
     // props.app.value.unmount()
 }
 function hideWindow() {
-    WindowIPC.getInstance().hideWindow(props.app.IPC.id)
+    WindowIPC.getInstance().hideWindow(props.ctx.id)
 }
 function predown() {
-    WindowIPC.getInstance().upSetWindowIndex(props.app.IPC.id)
+    WindowIPC.getInstance().upSetWindowIndex(props.ctx.id)
 }
 function uperRightClick(e: MouseEvent) {
     MenuIPC.getInstance().callMenu(e.pageX, e.pageY,
         [
-            { name: '关闭', func: () => { WindowIPC.getInstance().destoryWindow(props.app.IPC.id) } },
-            { name: '最小化', func: () => { WindowIPC.getInstance().hideWindow(props.app.IPC.id) } }
+            { name: '关闭', func: () => { WindowIPC.getInstance().destoryWindow(props.ctx.id) } },
+            { name: '最小化', func: () => { WindowIPC.getInstance().hideWindow(props.ctx.id) } }
 
         ]
     )
@@ -96,50 +88,53 @@ let winmount = ref(null)
 let customerStyle = ref<any>({})
 
 function onFocus() {
-    WindowIPC.getInstance().upSetWindowIndex(props.app.IPC.id)
+    WindowIPC.getInstance().upSetWindowIndex(props.ctx.id)
 }
 
-let iftop = computed(() => props.app.IPC.iftop)
+let componentValue:any =shallowRef(null)
 
-let winWidth = ref(props.width)
-let winHeight = ref(props.height)
+let iftop = computed(() => props.ctx.iftop)
+
+let winWidth = ref(props.ctx.width)
+let winHeight = ref(props.ctx.height)
 onMounted(() => {
 
     customerStyle.value = {
         width: computed(() => winWidth.value + 'px'),
         height: computed(() => winHeight.value + 'px'),
         zIndex: computed(() => {
-            return props.app.IPC.zindex
+            return props.ctx.zindex
         }),
         visibility: computed(() => {
 
-            if (props.app.IPC.ifDestory) {
+            if (props.ctx.ifDestory) {
                 // WindowIPC.getInstance().unRegisterWindow(props.app.IPC.id)
-                props.app.value.unmount()
+                // props.ctx.appPointer?.unmount()
             }
 
-            if (props.app.IPC.ifShow) {
+            if (props.ctx.ifShow) {
                 return "visible"
             } else {
                 return "hidden"
             }
         }),
     }
-    
-    if(props.app.props){
-        props.app.props.IPC=props.app.IPC
-    }else{
-        props.app.props={}
-        props.app.props.IPC=props.app.IPC
-    }
-    let montapp = createApp(props.app.content, props.app.props)
-    if (props.app.use) {
-        for (let i = 0; i < props.app.use.length; i++) {
-            montapp.use(props.app.use[i])
-        }
-    }
+    //IPC下移一层？不能这样
+    // if(props.app.props){
+    //     props.app.props.IPC=props.app.IPC
+    // }else{
+    //     props.app.props={}
+    //     props.app.props.IPC=props.app.IPC
+    // }
+    componentValue.value=toRaw(props.ctx).content;//
+    // let montapp = createApp(props.app.content, props.app.props)
+    // if (props.app.use) {
+        // for (let i = 0; i < props.app.use.length; i++) {
+            // montapp.use(props.app.use[i])
+        // }
+    // }
 
-    montapp.mount(<Element><any>winmount.value)
+    // montapp.mount(<Element><any>winmount.value)
 })
 let resizemode = ref('null')
 let mosStartX = ref(0);

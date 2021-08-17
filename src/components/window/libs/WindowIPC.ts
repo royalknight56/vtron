@@ -1,10 +1,13 @@
 import { reactive, UnwrapNestedRefs } from "@vue/reactivity";
+import { DefineComponent,App, VueElement,ComponentPublicInstance } from "vue";
+import { CreateAppFunction } from '@vue/runtime-core';
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 16:57:38
+ * @LastEditTime: 2021-08-17 14:37:03
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
+
 
 interface PageItem {
     id: string,
@@ -14,8 +17,16 @@ interface PageItem {
     ifShow: boolean,
     iftop: boolean,
     ifDestory: boolean,
-    ifMax:boolean
+    ifMax:boolean,
+    width:number,
+    height:number,
+    content:DefineComponent,
+    props:any,
+
+    appPointer: App|null
+    
 }
+
 interface pageMapInter {
     [index: string]: PageItem
 }
@@ -47,7 +58,7 @@ class WindowIPC {
     getWinid():string {
         return "dragwinelementhash89103"+this.getWinnum()
     }
-    registerWindow(id: string, title: string):PageItem {
+    registerWindow(id: string, title: string,width:number,height:number,content:DefineComponent,props:any):PageItem {
         if (this.pageMap[id]) {
             return this.pageMap[id]
         } else {
@@ -59,13 +70,21 @@ class WindowIPC {
                 ifShow: true,
                 iftop: false,
                 ifDestory: false,
-                ifMax:false
+                ifMax:false,
+                width,
+                height,
+                content,
+                props:props,
+                appPointer:null
             });
 
             this.pageIndex.push(id)
             this.winnum++;
             return this.pageMap[id]
         }
+    }
+    mountWindow(id:string,pointer:any){
+        this.pageMap[id].appPointer=pointer
     }
     private unRegisterWindow(id: string) {
         delete this.pageMap[id]
@@ -96,7 +115,10 @@ class WindowIPC {
     destoryWindow(id: string) {
 
         this.pageMap[id].ifDestory = true
+        this.pageMap[id].appPointer?.unmount()
         this.unRegisterWindow(id);
+        // this.pageMap[id].content?.unmounted?.()
+        
         let self = document.getElementById(id);
         if (self) {
             // 拿到父节点:

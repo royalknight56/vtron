@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 20:59:42
+ * @LastEditTime: 2021-08-17 14:36:33
  * @Description: 
  * @FilePath: /myindex/src/apps/askDialog.vue
 -->
@@ -16,15 +16,15 @@ import type { PageItem } from "../components/window/libs/WindowIPC"
 
 
 let props = defineProps({
-  IPC:{
+  ctx:{
     type:Object as PropType<PageItem>
   }
 })
 
 function close(str:string) {
   WindowIPC.getInstance().emit('testEvent',str)
-  if(props.IPC?.id){
-    WindowIPC.getInstance().destoryWindow(props.IPC?.id)
+  if(props.ctx?.id){
+    WindowIPC.getInstance().destoryWindow(props.ctx?.id)
   }
 }
 

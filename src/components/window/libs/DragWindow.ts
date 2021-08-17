@@ -1,19 +1,32 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 16:09:19
+ * @LastEditTime: 2021-08-17 14:37:28
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
-import { createApp, reactive, ref } from "@vue/runtime-dom";
+import { createApp, reactive, ref ,App} from "@vue/runtime-dom";
 import { DragElement } from "./DragElement";
 import WindowTmpVue from "./WindowTmp.vue";
 
-import {WindowIPC} from "./WindowIPC"
+
+import {PageItem, WindowIPC} from "./WindowIPC"
+import type { DefineComponent } from "@vue/runtime-core";
+import { ComponentPublicInstance } from "vue";
 
 
+interface ctxInter{
+    // app:App<Element>
+    // content:DefineComponent,
+    IPC:PageItem,
+    props?:any
+}
+interface ctxPar{
+    content:any,
+    // use?: Array<any>,
+    props?:any
+}
 class DragWindow extends DragElement{
-    zindex:number;
-    constructor(x:number,y:number,title:string,width:number,height:number,app:any){
+    constructor(x:number,y:number,title:string,width:number,height:number,ctxpar:ctxPar){
         
         
         let div = document.createElement('div')
@@ -22,27 +35,20 @@ class DragWindow extends DragElement{
         let id= WindowIPC.getInstance().getWinid();//获得一个id
         div.id=id
         document.getElementById('winid')?.appendChild(div);
-        // document.body.appendChild(div);
+        document.body.appendChild(div);
 
-
-        let pageInfo = WindowIPC.getInstance().registerWindow(id,title);//在IPC中注册
+        let pageInfo = WindowIPC.getInstance().registerWindow(id,title,width,height,ctxpar.content,ctxpar.props);//在IPC中注册
         
-        app.zindex=pageInfo.zindex
 
-        app.value = createApp(WindowTmpVue,{title:title,width,height,app:app})
-        
-        app.IPC=pageInfo
-        
-        app.value.mount("#"+id)
-
+        pageInfo.appPointer=createApp(WindowTmpVue,{ctx:pageInfo})
+        pageInfo.appPointer.mount("#"+id)
+        WindowIPC.getInstance().mountWindow(id,pageInfo.appPointer)
         super(x,y,div)
-
-        this.zindex=WindowIPC.getInstance().winnum;
-
         WindowIPC.getInstance().upSetWindowIndex(id)
 
     }
 }
 export{
-    DragWindow
+    DragWindow,
+    ctxInter
 }

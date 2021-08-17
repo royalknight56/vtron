@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 19:16:43
+ * @LastEditTime: 2021-08-17 12:23:29
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -10,6 +10,7 @@
     <MenuListVue></MenuListVue>
     <DesktopVue></DesktopVue>
     <BluescenVue></BluescenVue>
+    <!-- <WindowsGroupVue></WindowsGroupVue> -->
   </div>
 </template>
   
@@ -22,7 +23,9 @@ import MenuListVue from './window/MenuList.vue';
 import DesktopVue from './window/Desktop.vue';
 
 import BluescenVue from './window/bluescen.vue';
+
 import { computerCTC } from './window/libs/computerCTC';
+import WindowsGroupVue from './window/WindowsGroup.vue';
 
 
 onMounted(() => {

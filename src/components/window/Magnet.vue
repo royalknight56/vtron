@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 19:17:13
+ * @LastEditTime: 2021-08-16 10:32:29
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
 -->
@@ -66,8 +66,8 @@
     </div>
 </template>
 <script lang="ts" setup>
-import {appList} from "./appconfig";
-import type {appInfo} from "./appconfig";
+import {appList} from "../appconfig";
+import type {appInfo} from "../appconfig";
 import { computerCTC } from "./libs/computerCTC";
 import { MenuIPC } from "./libs/MenuIPC";
 import { DragWindow } from "./libs/DragWindow";

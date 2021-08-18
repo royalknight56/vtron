@@ -1,16 +1,29 @@
 {
-  "name": "pkg",
+  "name": "win10-vue3",
   "version": "0.0.0",
+
+  "files": ["distlib"],
+  "main": "./distlib/my-lib.umd.js",
+  "module": "./distlib/my-lib.es.js",
+  "exports": {
+    ".": {
+      "import": "./distlib/my-lib.es.js",
+      "require": "./distlib/my-lib.umd.js"
+    }
+  },
+
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "build-lib": "vite build --config vitelib.config.ts"
   },
   "dependencies": {
     "element-plus": "^1.0.2-beta.70",
     "vue": "^3.0.5"
   },
   "devDependencies": {
+    "@types/node": "^16.6.1",
     "@vitejs/plugin-vue": "^1.3.0",
     "@vue/compiler-sfc": "^3.0.5",
     "typescript": "^4.3.2",

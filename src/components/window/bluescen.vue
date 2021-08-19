@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-18 14:54:01
+ * @LastEditTime: 2021-08-19 15:34:29
  * @Description: 
  * @FilePath: /myindex/src/components/window/bluescen.vue
 -->
@@ -15,14 +15,14 @@
             </span>
         </div>
     </div>
-    <!-- <div id="logoW" v-if="stat.screen == 'blue'||stat.screen == 'common'">
+    <div id="logoW" v-if="stat.screen == 'blue'||stat.screen == 'common'">
         <div id="logo">
             <div class="win" id="win1"></div>
             <div class="win" id="win2"></div>
             <div class="win" id="win3"></div>
             <div class="win" id="win4"></div>
         </div>
-    </div> -->
+    </div>
     <div id="text"></div>
     <div id="wait" v-if="stat.screen == 'blue'">
         <div class="waitd" id="wait1"></div>

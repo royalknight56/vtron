@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-19 15:26:48
+ * @LastEditTime: 2021-08-19 15:29:01
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
  */
@@ -9,10 +9,6 @@ import { App } from "vue";
 import { appList } from "./components/appconfig";
 import Win from "./components/win.vue"
 
-// import { Plugin } from 'vue';
-
-
-// import { WindowIPC } from "./components/window/libs/WindowIPC";
 let plug = {
     version:'0.1.0',
     install:function(app:App<any>, opt: any):void {

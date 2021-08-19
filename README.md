@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-19 16:23:37
+ * @LastEditTime: 2021-08-19 16:25:28
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -28,7 +28,7 @@ Vue3 仿Win10 UI 框架
 
 1. 安装vue3-win10
 
-npm install vue3-win10
+> npm install vue3-win10
 
 2. 在vue中use插件
 

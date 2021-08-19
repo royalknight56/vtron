@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 10:55:20
+ * @LastEditTime: 2021-08-18 16:55:00
  * @Description: 
- * @FilePath: /myindex/src/components/window/apps/Test1.vue
+ * @FilePath: /myindex/src/apps/Test1.vue
 -->
 <template>
     <div class="uper">
@@ -18,16 +18,16 @@
     <div class="desk_outer">
         <div class="desk_item" v-for="item in currentList" @dblclick="openFolder(item)">
             <div class="item_img">
-                <img width="50" src="/newFolder.ico" />
+                <img width="50" :src="folderimg" />
             </div>
             <div class="item_name">{{ item.name }}</div>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
-import { reactive } from "@vue/reactivity";
+import { reactive } from "vue";
 import type { UnwrapNestedRefs } from "@vue/reactivity";
-
+import folderimg from "../assets/newFolder.ico"
 interface Folder {
     name: string,
     children: Array<Folder>,

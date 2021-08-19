@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-05 19:18:04
+ * @LastEditTime: 2021-08-18 16:54:21
  * @Description: 
- * @FilePath: /myindex/src/components/window/apps/app_vscode.vue
+ * @FilePath: /myindex/src/apps/app_vscode.vue
 --><template>
     <div class="outer">
 
@@ -10,7 +10,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "@vue/reactivity";
+import { ref } from "vue";
 let urlinput = ref('')
 let urlsrc = ref('')
 function urlkey(e:KeyboardEvent) {

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 19:04:11
+ * @LastEditTime: 2021-08-18 16:54:15
  * @Description: 
  * @FilePath: /myindex/src/apps/app_console.vue
 -->
@@ -24,8 +24,8 @@
         </div>
     </div>
 </template>
-<script lang="ts" setup>import { reactive, ref } from "@vue/reactivity";
-import { nextTick, onMounted } from "@vue/runtime-core";
+<script lang="ts" setup>import { reactive, ref } from "vue";
+import { nextTick, onMounted } from "vue";
 import {consoleIPC} from "../components/window/libs/consoleIPC"
 //Hugesoft [version 0.00.10000.100\n(c) 2021 Hugesoft .Inc All rights reserved\n\n
 let inputvalue = ref('')

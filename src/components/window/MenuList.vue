@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-04 19:20:16
+ * @LastEditTime: 2021-08-18 16:55:28
  * @Description: 
  * @FilePath: /myindex/src/components/window/MenuList.vue
 -->
@@ -10,7 +10,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, reactive, ref } from "@vue/runtime-core";
+import { computed, reactive, ref } from "vue";
 import { MenuIPC } from "./libs/MenuIPC";
 import type {menuItem}from "./libs/MenuIPC";
 

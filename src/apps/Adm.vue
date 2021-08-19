@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 17:13:31
+ * @LastEditTime: 2021-08-18 16:53:05
  * @Description: 
  * @FilePath: /myindex/src/apps/Adm.vue
 -->
@@ -16,7 +16,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "@vue/reactivity";
+import { ref } from "vue";
 import { DragWindow } from "../components/window/libs/DragWindow";
 import askDialogVue from "./askDialog.vue";
 // import ElementPlus from 'element-plus';

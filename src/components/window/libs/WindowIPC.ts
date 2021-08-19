@@ -1,9 +1,10 @@
-import { reactive, UnwrapNestedRefs } from "@vue/reactivity";
+import { reactive } from "vue";
 import { DefineComponent,App } from "vue";
+import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 14:52:54
+ * @LastEditTime: 2021-08-18 16:57:47
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */

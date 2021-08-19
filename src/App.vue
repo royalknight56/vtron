@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-11 11:24:10
+ * @LastEditTime: 2021-08-18 17:51:28
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -11,8 +11,24 @@
 </template>
 
 <script setup lang="ts">
+import { appList } from "./components/appconfig";
 import WinVue from "./components/win.vue";
 
+import computer from "./assets/computer.ico"
+import Test2Vue from "./apps/Test2.vue";
+
+
+
+setTimeout(()=>{
+  appList.push({
+        name: '我的电脑',
+        apptemp: 'Test1',
+        icon:computer,
+        width:400,
+        height:400,
+        tmp:Test2Vue
+    })
+},5000)
 </script>
 <style scoped>
 .outer{

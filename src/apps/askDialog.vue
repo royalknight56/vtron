@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 14:36:33
+ * @LastEditTime: 2021-08-18 16:54:26
  * @Description: 
  * @FilePath: /myindex/src/apps/askDialog.vue
 -->
@@ -10,7 +10,7 @@
   <button @click="close('取消')">取消</button>
 </template>
 <script lang="ts" setup>
-import type { PropType } from "@vue/runtime-core";
+import type { PropType } from "vue";
 import { WindowIPC } from "../components/window/libs/WindowIPC";
 import type { PageItem } from "../components/window/libs/WindowIPC"
 

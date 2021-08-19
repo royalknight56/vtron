@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-06 10:51:51
+ * @LastEditTime: 2021-08-18 17:00:42
  * @Description: 
- * @FilePath: /myindex/src/components/window/apps/Test3.vue
+ * @FilePath: /myindex/src/apps/Test3.vue
 -->
 <template>
     <div class="outer">
@@ -15,7 +15,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "@vue/reactivity";
+import { ref } from "vue";
 let urlinput = ref('')
 let urlsrc = ref('')
 function urlkey(e:KeyboardEvent) {
@@ -26,8 +26,7 @@ function urlkey(e:KeyboardEvent) {
 function changeUrl() {
     urlsrc.value=urlinput.value
 }
-window.open=<any>function(e:any) {
-    console.log(e)
+window.open=<any>function(e:any) { 
 }
 </script>
 <style>

@@ -1,19 +1,19 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 16:47:06
+ * @LastEditTime: 2021-08-18 19:13:13
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
-<template class='win'>
-    <div class="outer" :style="customerStyle" @mousedown="onFocus" :class="{ topwin: iftop }">
-        <div class="uper" @contextmenu.prevent="uperRightClick">
-            <div class="title">{{ ctx.title }}</div>
+<template>
+    <div class="wintmp_outer" :style="customerStyle" @mousedown="onFocus" :class="{ topwin: iftop }">
+        <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
+            <div class="wintmp_title">{{ ctx.title }}</div>
             <div @click="hideWindow()" class="winbutton hide_button">_</div>
             <div @click="closeWindow()" class="winbutton close_button">✕</div>
         </div>
         <div
             ref="winmount"
-            class="main"
+            class="wintmp_main"
             :class="{ resizeing: resizemode != 'null' }"
             @mousedown.stop="predown"
         >
@@ -26,15 +26,16 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { markRaw, reactive, ref, shallowRef, toRaw } from "@vue/reactivity";
-
-import { computed, onMounted } from "@vue/runtime-core";
-import type { PropType } from "@vue/runtime-core"
+import { markRaw, reactive, ref, shallowRef, toRaw } from "vue";
+ 
+import { onMounted,computed } from "vue";
+import type { PropType } from "vue"
 
 
 import { WindowIPC } from "./WindowIPC"
 import type { PageItem } from "./WindowIPC"
 import { MenuIPC } from "../libs/MenuIPC"
+
 
 let props = defineProps({
 
@@ -84,6 +85,7 @@ let iftop = computed(() => props.ctx.iftop)
 
 let winWidth = ref(props.ctx.width)
 let winHeight = ref(props.ctx.height)
+
 onMounted(() => {
 
     customerStyle.value = {
@@ -109,6 +111,23 @@ onMounted(() => {
     // }
     componentValue.value=toRaw(props.ctx).content;
 })
+setTimeout(()=>{
+    customerStyle.value = {
+        width: computed(() => winWidth.value + 'px'),
+        height: computed(() => winHeight.value + 'px'),
+        zIndex: computed(() => {
+            return props.ctx.zindex
+        }),
+        visibility: computed(() => {
+            if (props.ctx.ifShow) {
+                return "visible"
+            } else {
+                return "hidden"
+            }
+        }),
+    }
+    componentValue.value=toRaw(props.ctx).content;
+},1000)
 let resizemode = ref('null')
 let mosStartX = ref(0);
 let mosStartY = ref(0);
@@ -164,7 +183,7 @@ function dragStart(e: MouseEvent, dire: string) {
 }
 </style>
 <style scoped>
-.outer {
+.wintmp_outer {
     position: absolute;
     padding: 0;
     margin: 0;
@@ -194,10 +213,8 @@ function dragStart(e: MouseEvent, dire: string) {
     box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
         0 7px 19px rgb(0 0 0 / 90%);
 }
-.topwin .uper {
-    /* background-color: rgba(192, 192, 192, 0.795); */
-}
-.uper {
+
+.wintmp_uper {
     position: relative;
     cursor: default;
     user-select: none;
@@ -209,7 +226,7 @@ function dragStart(e: MouseEvent, dire: string) {
     /* background-color: rgba(255, 255, 255, 0.774); */
     color: rgb(51, 51, 51);
 }
-.title {
+.wintmp_title {
     padding: 0 10px;
     color: black;
     font-family: "Segoe UI", Tahoma, sans-serif;
@@ -218,7 +235,7 @@ function dragStart(e: MouseEvent, dire: string) {
     display: inline;
     padding: 20px;
 }
-.main {
+.wintmp_main {
     position: relative;
     width: 100%;
     height: 100%;

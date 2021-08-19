@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-10 20:30:40
+ * @LastEditTime: 2021-08-19 14:07:59
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -18,7 +18,12 @@
 
 ## 开发流程
 
-推荐clone本仓库，在本仓库基础上修改，模版在/template目录下
+<!-- 推荐clone本仓库，在本仓库基础上修改，模版在/template目录下 -->
+
+1. 安装vue-win10
+
+npm install vue-win10
+
 
 1. 引入winVue租组件（clone可以跳过此步骤）
  

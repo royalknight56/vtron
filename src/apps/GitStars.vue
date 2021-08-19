@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 14:07:46
+ * @LastEditTime: 2021-08-18 16:54:33
  * @Description: 
  * @FilePath: /myindex/src/apps/GitStars.vue
 -->
@@ -11,7 +11,7 @@
 
 import type { PageItem } from "../components/window/libs/WindowIPC"
 import { WindowIPC } from "../components/window/libs/WindowIPC"
-import type { PropType } from "@vue/runtime-core"
+import type { PropType } from "vue"
 
 let props = defineProps({
     ctx: {

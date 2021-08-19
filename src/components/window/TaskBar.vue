@@ -1,13 +1,13 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 15:13:35
+ * @LastEditTime: 2021-08-18 16:55:35
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
 -->
 <template>
     <div class="bar">
         <div class="winitem_first" @click.prevent.stop="barFirskClick">
-            <img draggable="false" width="20" src="/win.png" />
+            <img draggable="false" width="20" :src="winimg" />
         </div>
         <div
             class="winitem"
@@ -21,13 +21,13 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "@vue/runtime-core";
+import { ref } from "vue";
 import type { PageItem } from "./libs/WindowIPC"
 import { WindowIPC } from "./libs/WindowIPC"
 import { MenuIPC } from "./libs/MenuIPC"
 import { computerCTC } from "./libs/computerCTC";
 import MagnetVue from "./Magnet.vue";
-
+import winimg from "../../assets/win.png"
 
 let winlist = WindowIPC.getInstance().pageMap
 

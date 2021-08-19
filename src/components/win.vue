@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 14:48:35
+ * @LastEditTime: 2021-08-18 17:40:29
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -16,7 +16,7 @@
   
   <script lang="ts" setup>
 
-import { onMounted } from '@vue/runtime-core';
+import { onMounted } from 'vue';
 
 import TaskBarVue from './window/TaskBar.vue';
 import MenuListVue from './window/MenuList.vue';
@@ -26,8 +26,6 @@ import BluescenVue from './window/bluescen.vue';
 
 import { computerCTC } from './window/libs/computerCTC';
 // import WindowsGroupVue from './window/WindowsGroup.vue';
-
-
 onMounted(() => {
   computerCTC.getInstance().openPower()
 })

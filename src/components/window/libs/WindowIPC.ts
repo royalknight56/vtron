@@ -4,11 +4,10 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-18 16:57:47
+ * @LastEditTime: 2021-08-19 16:01:40
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
-
 
 interface PageItem {
     id: string,
@@ -23,9 +22,7 @@ interface PageItem {
     height:number,
     content:DefineComponent<{}, {}, any>,
     props:any,
-
     appPointer: App|null
-    
 }
 
 interface pageMapInter {

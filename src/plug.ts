@@ -1,12 +1,12 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-19 15:29:01
+ * @LastEditTime: 2021-08-19 16:09:30
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
  */
 
 import { App } from "vue";
-import { appList } from "./components/appconfig";
+import { appList,appInfo } from "./components/appconfig";
 import Win from "./components/win.vue"
 
 let plug = {
@@ -18,7 +18,7 @@ let plug = {
 }
 export default plug
 
-function AddToDesktop(app:any) {
+function AddToDesktop(app:appInfo) {
     appList.push(app)
 }
 function ClearDesktop() {

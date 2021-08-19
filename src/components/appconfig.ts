@@ -1,17 +1,17 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-19 15:41:38
+ * @LastEditTime: 2021-08-19 16:13:34
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
-import { DefineComponent, shallowReactive } from "vue";
+import { defineComponent, shallowReactive } from "vue";
 interface appInfo{
     name: string,
     apptemp: string,
     icon:string,
     width:number,
     height:number,
-    tmp:DefineComponent<{}, {}, any>
+    tmp:ReturnType<typeof defineComponent>
 }
 
 import { UnwrapNestedRefs } from "@vue/reactivity";

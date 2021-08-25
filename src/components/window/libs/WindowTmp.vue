@@ -1,13 +1,17 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 11:14:45
+ * @LastEditTime: 2021-08-25 15:28:56
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
 <template>
     <div class="wintmp_outer dragwin" :style="customerStyle" @mousedown="onFocus" :class="{ topwin: iftop ,maxwin:ifmax}">
         <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
+            <div class="wintmp_left">
+                <div class="wintmp_logo"><img width="24" height="24" :src="ctx.icon"></div>
             <div class="wintmp_title">{{ ctx.title }}</div>
+            </div>
+            
             <div class="winbutton_group">
                 <div @click="hideWindow()" class="winbutton hide_button"><svg t="1629858033723" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3845" width="12" height="12"><path d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z" p-id="3846"></path></svg></div>
             <div @click="maxWindow()" class="winbutton max_button">
@@ -251,6 +255,12 @@ function dragStart(e: MouseEvent, dire: string) {
     /* background-color: rgba(255, 255, 255, 0.774); */
     color: rgb(51, 51, 51);
 }
+.wintmp_left{
+    display: flex;
+    text-align: center;
+    /* justify-content: center; */
+    align-items: center;
+}
 .wintmp_title {
     padding: 0 10px;
     color: black;
@@ -258,7 +268,11 @@ function dragStart(e: MouseEvent, dire: string) {
     font-weight: 400;
     font-size: 12px;
     display: inline;
-    padding: 20px;
+    padding:0 10px;
+}
+.wintmp_logo{
+    height: 24px;
+    width: 30px;
 }
 .wintmp_main {
     position: relative;

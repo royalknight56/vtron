@@ -4,7 +4,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 10:24:55
+ * @LastEditTime: 2021-08-25 15:19:18
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
@@ -20,6 +20,7 @@ interface PageItem {
     ifMax:boolean,
     width:number,
     height:number,
+    icon:string,
     content:DefineComponent<{}, {}, any>,
     props:any,
     appPointer: App|null
@@ -56,7 +57,12 @@ class WindowIPC {
     getWinid():string {
         return "dragwinelementhash89103"+this.getWinnum()
     }
-    registerWindow(id: string, title: string,width:number,height:number,content:DefineComponent<{}, {}, any>,props:any):PageItem {
+    registerWindow(id: string, 
+
+        title: string,icon:string,width:number,height:number,
+
+        content:DefineComponent<{}, {}, any>,
+        props:any):PageItem {
         if (this.pageMap[id]) {
             return this.pageMap[id]
         } else {
@@ -71,6 +77,7 @@ class WindowIPC {
                 ifMax:false,
                 width,
                 height,
+                icon:icon,
                 content,
                 props:props,
                 appPointer:null

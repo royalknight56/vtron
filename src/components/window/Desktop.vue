@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-18 19:24:27
+ * @LastEditTime: 2021-08-25 15:21:28
  * @Description: 
  * @FilePath: /myindex/src/components/window/Desktop.vue
 -->
@@ -24,7 +24,7 @@ import { defineAsyncComponent, DefineComponent } from "vue";
 let deskList: Array<appInfo> = appList;
 function openApp(item: appInfo) {
     const modal = defineAsyncComponent(()=>import('../../apps/' + item.apptemp + '.vue'))
-    new DragWindow(100, 100, item.name, item.width, item.height, {content:item.tmp})
+    new DragWindow(100, 100, item.name,item.icon,item.width, item.height, {content:item.tmp})
     // new DragWindow(100, 100, item.name, item.width, item.height, {content:modal})
 
 }

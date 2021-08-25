@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-18 16:55:35
+ * @LastEditTime: 2021-08-25 15:31:01
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
 -->
@@ -16,7 +16,7 @@
             :key="item.id"
             @click="barClick(item)"
             @contextmenu.prevent="rightClick($event, item)"
-        >{{ item.title }}</div>
+        ><img width="14" height="14" :src="item.icon"> {{ item.title }}</div>
         <MagnetVue v-if="ifMagnetShow"></MagnetVue>
     </div>
 </template>
@@ -94,6 +94,7 @@ function rightClick(e: MouseEvent, item: PageItem) {
     padding: 0 10px;
     height: 30px;
     line-height: 30px;
+    text-align: center;
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0);
     border: 1px solid rgba(0, 0, 0, 0);
@@ -106,6 +107,11 @@ function rightClick(e: MouseEvent, item: PageItem) {
     text-overflow: ellipsis;
     overflow: hidden;
     transition: all 0.1s;
+    display: flex;
+    align-items: center;
+}
+.winitem img{
+    padding: 0px 8px 0px 0px;
 }
 .winitem:hover {
     /* filter: brightness(130%); */

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-19 15:43:04
+ * @LastEditTime: 2021-08-25 10:15:57
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -14,8 +14,18 @@
 import { appList } from "./components/appconfig";
 import WinVue from "./components/win.vue";
 
+import brow from "./assets/浏览器.png"
+import Test3 from "./components/apps/Test3.vue"
 // import computer from "./assets/computer.ico"
 
+appList.push({
+  name: '浏览器',
+  apptemp: 'Test3',
+  icon: brow,
+  width: 600,
+  height: 500,
+  tmp: Test3
+});
 
 </script>
 <style scoped>

@@ -1,15 +1,23 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-18 19:13:13
+ * @LastEditTime: 2021-08-25 11:14:45
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
 <template>
-    <div class="wintmp_outer" :style="customerStyle" @mousedown="onFocus" :class="{ topwin: iftop }">
+    <div class="wintmp_outer dragwin" :style="customerStyle" @mousedown="onFocus" :class="{ topwin: iftop ,maxwin:ifmax}">
         <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
             <div class="wintmp_title">{{ ctx.title }}</div>
-            <div @click="hideWindow()" class="winbutton hide_button">_</div>
-            <div @click="closeWindow()" class="winbutton close_button">✕</div>
+            <div class="winbutton_group">
+                <div @click="hideWindow()" class="winbutton hide_button"><svg t="1629858033723" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3845" width="12" height="12"><path d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z" p-id="3846"></path></svg></div>
+            <div @click="maxWindow()" class="winbutton max_button">
+                <svg v-if="ifmax" t="1629857965098" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3294" width="12" height="12"><path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" p-id="3295"></path></svg>
+                <svg v-else t="1629857441097" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3141" width="12" height="12"><path d="M926.45937303 97.54062697v828.2973677H97.54062697V97.54062697h828.91874606m4.97102697-77.6722963h-838.8608c-39.7682157 0-72.07989097 32.31167525-72.07989097 72.07989096v839.48217837c0 39.7682157 32.31167525 72.07989097 72.07989097 72.07989097h839.48217837c39.7682157 0 72.07989097-32.31167525 72.07989096-72.07989097v-838.8608c0-40.38959408-32.31167525-72.70126933-72.70126933-72.70126933 0.62137837 0 0 0 0 0z" p-id="3142"></path></svg>
+            
+            </div><!-- <svg t="1629857965098" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3294" width="200" height="200"><path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" p-id="3295"></path></svg> -->
+            <div @click="closeWindow()" class="winbutton close_button"><svg t="1629858066563" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4652" width="12" height="12"><path d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z" fill="#363F4D" p-id="4653"></path></svg></div>
+            </div>
+            
         </div>
         <div
             ref="winmount"
@@ -58,6 +66,9 @@ function closeWindow(): void {
 function hideWindow() {
     WindowIPC.getInstance().hideWindow(props.ctx.id)
 }
+function maxWindow() {
+    WindowIPC.getInstance().maxWindow(props.ctx.id)
+}
 function predown() {
     WindowIPC.getInstance().upSetWindowIndex(props.ctx.id)
 }
@@ -75,13 +86,18 @@ let winmount = ref(null)
 
 let customerStyle = ref<any>({})
 
-function onFocus() {
+function onFocus(e:MouseEvent) {
     WindowIPC.getInstance().upSetWindowIndex(props.ctx.id)
+    if(ifmax.value){
+        e.preventDefault()
+        e.stopPropagation()
+    }
 }
 
 let componentValue:any =shallowRef(null)
 
 let iftop = computed(() => props.ctx.iftop)
+let ifmax = computed(() => props.ctx.ifMax)
 
 let winWidth = ref(props.ctx.width)
 let winHeight = ref(props.ctx.height)
@@ -180,6 +196,8 @@ function dragStart(e: MouseEvent, dire: string) {
 <style>
 .dragwin {
     position: absolute;
+    width: 100%;
+    height: 100%;
 }
 </style>
 <style scoped>
@@ -213,6 +231,13 @@ function dragStart(e: MouseEvent, dire: string) {
     box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
         0 7px 19px rgb(0 0 0 / 90%);
 }
+.maxwin{
+    position: absolute;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: calc(100% - 30px)!important;
+}
 
 .wintmp_uper {
     position: relative;
@@ -242,6 +267,12 @@ function dragStart(e: MouseEvent, dire: string) {
     background-color: rgb(255, 255, 255);
     overflow: hidden;
 }
+.winbutton_group{
+    display: flex;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
 .winbutton {
     cursor: pointer;
     height: 30px;
@@ -262,20 +293,22 @@ function dragStart(e: MouseEvent, dire: string) {
     color: white;
 }
 .close_button {
-    position: absolute;
+    /* position: absolute;
     right: 0;
-    top: 0;
+    top: 0; */
 }
 .close_button:hover {
     background-color: red;
 }
 .hide_button {
-    position: absolute;
+    /* position: absolute;
     right: 35px;
-    top: 0;
+    top: 0; */
     text-align: center;
 }
+.max_button{
 
+}
 .right_border {
     cursor: ew-resize;
     position: absolute;

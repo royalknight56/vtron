@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-19 16:13:34
+ * @LastEditTime: 2021-08-23 09:44:01
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
@@ -91,5 +91,7 @@ let appList:UnwrapNestedRefs<Array<appInfo>> = shallowReactive([
     //     tmp:GitStars
     // },
 ])
-
+let appconfig ={
+    
+}
 export {appList,appInfo}

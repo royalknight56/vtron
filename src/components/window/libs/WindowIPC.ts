@@ -4,7 +4,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-19 16:01:40
+ * @LastEditTime: 2021-08-25 10:24:55
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
@@ -127,7 +127,7 @@ class WindowIPC {
 
     }
     maxWindow(id: string) {
-
+        this.pageMap[id].ifMax =!this.pageMap[id].ifMax
     }
     on(ev:string,func:Function){
         this.eventMap[ev]=func

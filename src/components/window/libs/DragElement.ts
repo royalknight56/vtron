@@ -46,7 +46,7 @@ class DragObj implements DragObjInter {
 class DragElement extends DragObj {
     e: HTMLElement;
     ifDraging: boolean;
-    constructor(x: number, y: number, element: HTMLElement) {
+    constructor(x: number, y: number, element: any) {
         super(x, y);
         this.e = element;
         this.ifDraging = false;

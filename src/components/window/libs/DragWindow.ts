@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-19 10:25:45
+ * @LastEditTime: 2021-08-25 10:57:04
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
@@ -30,7 +30,7 @@ class DragWindow extends DragElement{
         
         
         let div = document.createElement('div')
-        div.className='dragwin'
+        // div.className='dragwin'
 
         let id= WindowIPC.getInstance().getWinid();//获得一个id
         div.id=id
@@ -62,7 +62,9 @@ class DragWindow extends DragElement{
         // let res = pageInfo.appPointer.mount("#"+id)
         let res = pageInfo.appPointer.mount(div)
         WindowIPC.getInstance().mountWindow(id,pageInfo.appPointer)
-        super(x,y,div)
+
+        super(x,y,div.firstChild)
+        
         WindowIPC.getInstance().upSetWindowIndex(id)
 
     }

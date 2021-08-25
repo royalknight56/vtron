@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 15:28:56
+ * @LastEditTime: 2021-08-25 16:03:56
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -160,8 +160,8 @@ document.addEventListener('mousemove', (e) => {
     } else {
         return
     }
-    if (winWidth.value < 100) {
-        winWidth.value = 100
+    if (winWidth.value < 170) {
+        winWidth.value = 170
         resizemode.value = 'null'
         return
     }
@@ -244,6 +244,7 @@ function dragStart(e: MouseEvent, dire: string) {
 }
 
 .wintmp_uper {
+    flex-shrink: 0;
     position: relative;
     cursor: default;
     user-select: none;
@@ -254,6 +255,7 @@ function dragStart(e: MouseEvent, dire: string) {
     font-weight: 100;
     /* background-color: rgba(255, 255, 255, 0.774); */
     color: rgb(51, 51, 51);
+    overflow: hidden;
 }
 .wintmp_left{
     display: flex;

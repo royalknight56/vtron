@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 10:15:57
+ * @LastEditTime: 2021-08-25 15:05:03
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { appList } from "./components/appconfig";
+import { appList, appconfig,plug_option } from "./components/appconfig";
 import WinVue from "./components/win.vue";
 
 import brow from "./assets/浏览器.png"
@@ -27,9 +27,16 @@ appList.push({
   tmp: Test3
 });
 
+let opt:plug_option = {
+  if_logo_show: false,
+  start_time:0
+}
+Object.assign(appconfig, opt)
+
+
 </script>
 <style scoped>
-.outer{
+.outer {
   position: relative;
   width: 100vw;
   height: 100vh;
@@ -44,11 +51,10 @@ appList.push({
   /* color: #2c3e50; */
   /* margin-top: 60px; */
 }
-body{
+body {
   padding: 0;
   margin: 0;
   overflow: hidden;
-
 }
 /* .dragobj {
   cursor: all-scroll;

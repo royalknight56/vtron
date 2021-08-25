@@ -1,10 +1,11 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-09 16:46:53
+ * @LastEditTime: 2021-08-25 15:04:07
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/computerCTC.ts
  */
 import { reactive } from "vue";
+import { appList,appconfig,appInfo,plug_option } from "../../appconfig";
 
 interface statsCtrl{
     screen:"common"|"blue"|"close",
@@ -31,13 +32,18 @@ class computerCTC {
         },1000)
     }
     openPower(){
-        this.stats.screen='close'
+        if(appconfig.start_time==0){
+            this.stats.screen='common'
+        }else{
+            this.stats.screen='close'
+        }
+
         setTimeout(()=>{
             this.stats.screen='blue'
-        },100)
+        },appconfig.start_time/2)
         setTimeout(()=>{
             this.stats.screen='common'
-        },2000)
+        },appconfig.start_time)
     }
     restartPower(){
         // this.stats.screen='blue'

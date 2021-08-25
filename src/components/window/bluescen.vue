@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-19 15:34:29
+ * @LastEditTime: 2021-08-25 14:46:17
  * @Description: 
  * @FilePath: /myindex/src/components/window/bluescen.vue
 -->
@@ -15,7 +15,7 @@
             </span>
         </div>
     </div>
-    <div id="logoW" v-if="stat.screen == 'blue'||stat.screen == 'common'">
+    <div id="logoW" v-if="appconfig.if_logo_show&&(stat.screen == 'blue'||stat.screen == 'common')">
         <div id="logo">
             <div class="win" id="win1"></div>
             <div class="win" id="win2"></div>
@@ -35,6 +35,7 @@
     
 </template>
 <script lang="ts" setup>
+import { appconfig } from "../appconfig";
 import { computerCTC } from "./libs/computerCTC";
 
 

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 15:21:28
+ * @LastEditTime: 2021-08-26 09:17:27
  * @Description: 
  * @FilePath: /myindex/src/components/window/Desktop.vue
 -->
@@ -31,7 +31,7 @@ function openApp(item: appInfo) {
 </script>
 <style scoped>
 .desk_outer {
-    height: 100%;
+    height: calc(100% - 30px);
     width: 10vw;
     display: flex;
     flex-direction: column;

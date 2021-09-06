@@ -1,17 +1,16 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 16:03:56
+ * @LastEditTime: 2021-09-06 16:35:09
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
 <template>
-    <div class="wintmp_outer dragwin" :style="customerStyle" @mousedown="onFocus" :class="{ topwin: iftop ,maxwin:ifmax}">
+    <div class="wintmp_outer dragwin" :style="customerStyle" @dblclick="maxWindow()"  @mousedown="onFocus" :class="{ topwin: iftop ,maxwin:ifmax}">
         <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
             <div class="wintmp_left">
                 <div class="wintmp_logo"><img width="24" height="24" :src="ctx.icon"></div>
             <div class="wintmp_title">{{ ctx.title }}</div>
             </div>
-            
             <div class="winbutton_group">
                 <div @click="hideWindow()" class="winbutton hide_button"><svg t="1629858033723" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3845" width="12" height="12"><path d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z" p-id="3846"></path></svg></div>
             <div @click="maxWindow()" class="winbutton max_button">
@@ -241,6 +240,7 @@ function dragStart(e: MouseEvent, dire: string) {
     top: 0 !important;
     width: 100% !important;
     height: calc(100% - 30px)!important;
+    transition:width 0.1s ease-in-out,height 0.1s ease-in-out;
 }
 
 .wintmp_uper {

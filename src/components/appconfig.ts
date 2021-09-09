@@ -1,13 +1,12 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 15:04:02
+ * @LastEditTime: 2021-09-09 10:33:52
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
 import { defineComponent, shallowReactive } from "vue";
 interface appInfo{
     name: string,
-    apptemp: string,
     icon:string,
     width:number,
     height:number,

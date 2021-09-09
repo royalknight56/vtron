@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 15:05:03
+ * @LastEditTime: 2021-09-09 10:34:19
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -20,7 +20,6 @@ import Test3 from "./components/apps/Test3.vue"
 
 appList.push({
   name: '浏览器',
-  apptemp: 'Test3',
   icon: brow,
   width: 600,
   height: 500,

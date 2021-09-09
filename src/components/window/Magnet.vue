@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-26 09:48:38
+ * @LastEditTime: 2021-09-09 10:33:43
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
 -->
@@ -84,9 +84,7 @@ function closeClice(e: MouseEvent) {
 let mangList = appList
 
 function manclick(item:appInfo) {
-    // import('../../apps/'+item.apptemp+'.vue').then((mod)=>{
     let win = new DragWindow(100, 100, item.name,item.icon, item.width, item.height,{content:item.tmp})
-    // })
 }
 </script>
 <style scoped>

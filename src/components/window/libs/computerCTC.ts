@@ -1,11 +1,11 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 15:04:07
+ * @LastEditTime: 2021-09-14 16:40:16
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/computerCTC.ts
  */
 import { reactive } from "vue";
-import { appList,appconfig,appInfo,plug_option } from "../../appconfig";
+import {appconfig } from "../../appconfig";
 
 interface statsCtrl{
     screen:"common"|"blue"|"close",

@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-09 10:33:52
+ * @LastEditTime: 2021-09-14 16:41:06
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
@@ -10,7 +10,8 @@ interface appInfo{
     icon:string,
     width:number,
     height:number,
-    tmp:ReturnType<typeof defineComponent>
+    tmp:ReturnType<typeof defineComponent>,
+    use?:Array<any>
 }
 
 import { UnwrapNestedRefs } from "@vue/reactivity";

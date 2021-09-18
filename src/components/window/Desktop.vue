@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-14 16:41:44
+ * @LastEditTime: 2021-09-18 11:07:00
  * @Description: 
  * @FilePath: /myindex/src/components/window/Desktop.vue
 -->
@@ -22,7 +22,8 @@ import type { appInfo } from "../appconfig";
 
 let deskList: Array<appInfo> = appList;
 function openApp(item: appInfo) {
-    new DragWindow(100, 100, item.name,item.icon,item.width, item.height, {content:item.tmp},item.use)
+    item.window.show();
+    // new DragWindow(100, 100, item.name,item.icon,item.width, item.height, {content:item.tmp},item.use)
 }
 </script>
 <style scoped>

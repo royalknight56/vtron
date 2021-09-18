@@ -4,7 +4,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 15:19:18
+ * @LastEditTime: 2021-09-18 16:47:38
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
@@ -91,9 +91,12 @@ class WindowIPC {
     mountWindow(id:string,pointer:any){
         this.pageMap[id].appPointer=pointer
     }
-    private unRegisterWindow(id: string) {
+    private unRegisterWindow(id: string) {//删除在pageMap中的存储
+        console.log(this.pageMap)
         delete this.pageMap[id]
+        // console.log(this.pageMap)
         let ind = this.pageIndex.indexOf(id)
+        // console.log(this.pageIndex)
         this.pageIndex.splice(ind, 1)
     }
 
@@ -131,10 +134,12 @@ class WindowIPC {
             // 删除:
             parent?.removeChild(self);
         }
-
     }
     maxWindow(id: string) {
-        this.pageMap[id].ifMax =!this.pageMap[id].ifMax
+        if(this.pageMap[id]){
+            this.pageMap[id].ifMax =!this.pageMap[id]?.ifMax
+        }
+        
     }
     on(ev:string,func:Function){
         this.eventMap[ev]=func

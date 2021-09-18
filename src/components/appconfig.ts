@@ -1,21 +1,19 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-14 16:41:06
+ * @LastEditTime: 2021-09-18 10:37:33
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
 import { defineComponent, shallowReactive } from "vue";
+
+
+import { UnwrapNestedRefs } from "@vue/reactivity";
+import { DragWindow } from "./window/libs/DragWindow";
 interface appInfo{
     name: string,
     icon:string,
-    width:number,
-    height:number,
-    tmp:ReturnType<typeof defineComponent>,
-    use?:Array<any>
+    window:DragWindow,
 }
-
-import { UnwrapNestedRefs } from "@vue/reactivity";
-
 
 let appList:UnwrapNestedRefs<Array<appInfo>> = shallowReactive([
 

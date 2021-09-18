@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-15 15:55:18
+ * @LastEditTime: 2021-09-18 15:08:04
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -200,23 +200,23 @@ onMounted(() => {
     // }
     componentValue.value = toRaw(props.ctx).content;
 })
-setTimeout(() => {
-    customerStyle.value = {
-        width: computed(() => winWidth.value + 'px'),
-        height: computed(() => winHeight.value + 'px'),
-        zIndex: computed(() => {
-            return props.ctx.zindex
-        }),
-        visibility: computed(() => {
-            if (props.ctx.ifShow) {
-                return "visible"
-            } else {
-                return "hidden"
-            }
-        }),
-    }
-    componentValue.value = toRaw(props.ctx).content;
-}, 1000)
+// setTimeout(() => {
+//     customerStyle.value = {
+//         width: computed(() => winWidth.value + 'px'),
+//         height: computed(() => winHeight.value + 'px'),
+//         zIndex: computed(() => {
+//             return props.ctx.zindex
+//         }),
+//         visibility: computed(() => {
+//             if (props.ctx.ifShow) {
+//                 return "visible"
+//             } else {
+//                 return "hidden"
+//             }
+//         }),
+//     }
+//     componentValue.value = toRaw(props.ctx).content;
+// }, 1000)
 let resizemode = ref('null')
 let mosStartX = ref(0);
 let mosStartY = ref(0);

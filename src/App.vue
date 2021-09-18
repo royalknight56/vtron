@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-09 10:34:19
+ * @LastEditTime: 2021-09-18 11:24:10
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -11,24 +11,27 @@
 </template>
 
 <script setup lang="ts">
-import { appList, appconfig,plug_option } from "./components/appconfig";
+import { appList, appconfig, plug_option } from "./components/appconfig";
 import WinVue from "./components/win.vue";
 
 import brow from "./assets/浏览器.png"
 import Test3 from "./components/apps/Test3.vue"
+import { DragWindow } from "./components/window/libs/DragWindow";
+import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
+onMounted(() => {
+  appList.push({
+    name: '浏览器',
+    icon: brow,
+    window: new DragWindow(0, 0, '窗口通信', brow, 600, 500, { content: Test3 })
+  });
+})
 
-appList.push({
-  name: '浏览器',
-  icon: brow,
-  width: 600,
-  height: 500,
-  tmp: Test3
-});
+// new DragWindow(0, 0, '窗口通信',beatico, 300, 400, { content: AdmVue},[ElementPlus])
 
-let opt:plug_option = {
+let opt: plug_option = {
   if_logo_show: false,
-  start_time:0
+  start_time: 0
 }
 Object.assign(appconfig, opt)
 

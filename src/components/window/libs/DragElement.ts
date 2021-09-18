@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-04 10:21:50
+ * @LastEditTime: 2021-09-18 16:31:30
  * @Description: 实现可移动Object
  * @FilePath: /myindex/src/components/window/libs/DragElement.ts
  */
@@ -44,35 +44,64 @@ class DragObj implements DragObjInter {
 }
 
 class DragElement extends DragObj {
-    e: HTMLElement;
     ifDraging: boolean;
-    constructor(x: number, y: number, element: any) {
+    el:any
+    constructor(x: number, y: number) {
         super(x, y);
-        this.e = element;
         this.ifDraging = false;
-        this.e.style.left = this.posX + 'px';
-        this.e.style.top = this.posY + 'px'
-        this.e.addEventListener('mousedown', (ev) => {
-            this.startMove(ev.pageX, ev.pageY);
+        // this.e = element;
+        // this.ifDraging = false;
+        // this.e.style.left = this.posX + 'px';
+        // this.e.style.top = this.posY + 'px'
+        // this.e.addEventListener('mousedown', (ev) => {
+        //     this.startMove(ev.pageX, ev.pageY);
 
+        //     this.ifDraging = true;
+        // })
+        // document.body.addEventListener('mouseup', (ev) => {
+        //     this.ifDraging = false;
+        // })
+        // document.body.addEventListener('mousemove', (ev) => {
+            
+        //     if (this.ifDraging&&ev.buttons==1) {
+
+        //         this.onMoving(ev.pageX, ev.pageY);
+        //         this.e.style.left = this.posX + 'px';
+        //         this.e.style.top = this.posY + 'px'
+        //     }else if(this.ifDraging&&ev.buttons==0){
+        //         this.ifDraging=false
+
+        //     }
+        // })
+    }
+    mountDomEvent(element: any){
+        this.el=element;
+        this.ifDraging = false;
+        element.style.left = this.posX + 'px';
+        element.style.top = this.posY + 'px'
+        element.addEventListener('mousedown', (ev:any)=>{
+            this.startMove(ev.pageX, ev.pageY);
             this.ifDraging = true;
         })
         document.body.addEventListener('mouseup', (ev) => {
             this.ifDraging = false;
+            
         })
         document.body.addEventListener('mousemove', (ev) => {
             
             if (this.ifDraging&&ev.buttons==1) {
-
+                
                 this.onMoving(ev.pageX, ev.pageY);
-                this.e.style.left = this.posX + 'px';
-                this.e.style.top = this.posY + 'px'
+                
+                element.style.left = this.posX + 'px';
+                element.style.top = this.posY + 'px'
             }else if(this.ifDraging&&ev.buttons==0){
                 this.ifDraging=false
 
             }
         })
     }
+
 }
 
 export {

@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 16:39:16
+ * @LastEditTime: 2021-09-18 17:04:30
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
@@ -10,7 +10,7 @@ import WindowTmpVue from "./WindowTmp.vue";
 
 
 import { PageItem, WindowIPC } from "./WindowIPC"
-import type { DefineComponent } from "vue";
+import type { DefineComponent,App } from "vue";
 
 
 
@@ -40,6 +40,7 @@ class DragWindow extends DragElement {
     use?: any
     id: string
     ifcreated: boolean
+    appPointer:App|null
     constructor(x: number, y: number, title: string, icon: string, width: number, height: number, ctxpar: ctxPar, use?: any) {
 
         super(x, y)
@@ -56,7 +57,9 @@ class DragWindow extends DragElement {
         this.use = use
         this.id = 'NULL'
         this.ifcreated = false;
+        this.appPointer=null;
         // this.show()
+
     }
     onWindowDraging(event: Function) {
         this.evMap.onDraging = event;
@@ -77,15 +80,15 @@ class DragWindow extends DragElement {
     }
     readyRegister(title: string, icon: string = '', width: number, height: number, ctxpar: ctxPar, use?: any) {
         this.pageInfo = WindowIPC.getInstance().registerWindow(this.id, title, icon, width, height, ctxpar.content, ctxpar.props);//在IPC中注册，传递pageInfo
-        this.pageInfo.appPointer = createApp(WindowTmpVue, { ctx: this.pageInfo })
+        this.appPointer = createApp(WindowTmpVue, { ctx: this.pageInfo })
         if (use) {
 
             for (let i = 0; i < use.length; i++) {
-                this.pageInfo.appPointer.use(use[i])
+                this.appPointer.use(use[i])
             }
         }
 
-        this.pageInfo.appPointer.config.warnHandler = function (msg, vm, trace) {//未接受props警告静默
+        this.appPointer.config.warnHandler = function (msg, vm, trace) {//未接受props警告静默
             // `trace` 是组件的继承关系追踪
             if (msg == 'Extraneous non-props attributes (ctx) were passed to component but could not be automatically inherited because component renders fragment or text root nodes.') {
 
@@ -103,12 +106,17 @@ class DragWindow extends DragElement {
             // }
             this.readyDom();
             this.readyRegister(this.title, this.icon, this.width, this.height, this.ctxpar, this.use);
-            if (this.pageInfo?.appPointer) {
+            if (this.appPointer) {
 
-                this.pageInfo.appPointer.mount(this.el);
+                this.appPointer.mount(this.el);
 
+                // this.pageMap[id].windowEventMap['destroy']
+                WindowIPC.getInstance().mountWindowEventMap(this.id,'destroy',()=>{
+                    this.appPointer?.unmount()
+                })
+                // WindowIPC.getInstance().mountWindow(this.id, this.appPointer)
             }
-            WindowIPC.getInstance().mountWindow(this.id, this.pageInfo?.appPointer)
+            
             if (this.el) {
                 this.mountDomEvent(this.el.firstChild)
             }

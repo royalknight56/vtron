@@ -4,7 +4,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 16:47:38
+ * @LastEditTime: 2021-09-18 17:01:21
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
@@ -23,7 +23,10 @@ interface PageItem {
     icon:string,
     content:DefineComponent<{}, {}, any>,
     props:any,
-    appPointer: App|null
+    windowEventMap:{
+        [index: string]:Function
+    },
+    // appPointer: App|null
 }
 
 interface pageMapInter {
@@ -80,7 +83,8 @@ class WindowIPC {
                 icon:icon,
                 content,
                 props:props,
-                appPointer:null
+                appPointer:null,
+                windowEventMap:{}
             });
 
             this.pageIndex.push(id)
@@ -88,8 +92,11 @@ class WindowIPC {
             return this.pageMap[id]
         }
     }
-    mountWindow(id:string,pointer:any){
-        this.pageMap[id].appPointer=pointer
+    mountWindowEventMap(id:string,name:string,func:Function){
+        this.pageMap[id].windowEventMap[name] = func
+    }
+    mountWindow(id:string,func:Function){
+        this.pageMap[id].windowEventMap['mount'] = func
     }
     private unRegisterWindow(id: string) {//删除在pageMap中的存储
         console.log(this.pageMap)
@@ -123,7 +130,8 @@ class WindowIPC {
     destoryWindow(id: string) {
 
         this.pageMap[id].ifDestory = true
-        this.pageMap[id].appPointer?.unmount()
+        this.pageMap[id].windowEventMap['destroy']()
+        // this.pageMap[id].appPointer?.unmount()
         this.unRegisterWindow(id);
         // this.pageMap[id].content?.unmounted?.()
         

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 15:08:04
+ * @LastEditTime: 2021-09-18 17:24:03
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -98,7 +98,7 @@
             :class="{ resizeing: resizemode != 'null' }"
             @mousedown.stop="predown"
         >
-            <component :is="componentValue" :ctx="props.ctx"></component>
+            <component :is="componentValue" :id='props.ctx.id'></component>
             <!-- <div ></div> -->
         </div>
         <div class="right_border" @mousedown.stop="dragStart($event, 'r')"></div>
@@ -191,32 +191,9 @@ onMounted(() => {
             }
         }),
     }
-    //IPC下移一层？不能这样
-    // if(props.app.props){
-    //     props.app.props.IPC=props.app.IPC
-    // }else{
-    //     props.app.props={}
-    //     props.app.props.IPC=props.app.IPC
-    // }
     componentValue.value = toRaw(props.ctx).content;
 })
-// setTimeout(() => {
-//     customerStyle.value = {
-//         width: computed(() => winWidth.value + 'px'),
-//         height: computed(() => winHeight.value + 'px'),
-//         zIndex: computed(() => {
-//             return props.ctx.zindex
-//         }),
-//         visibility: computed(() => {
-//             if (props.ctx.ifShow) {
-//                 return "visible"
-//             } else {
-//                 return "hidden"
-//             }
-//         }),
-//     }
-//     componentValue.value = toRaw(props.ctx).content;
-// }, 1000)
+
 let resizemode = ref('null')
 let mosStartX = ref(0);
 let mosStartY = ref(0);
@@ -232,23 +209,35 @@ document.addEventListener('mousemove', (e) => {
     }
     if (resizemode.value == 'r') {
         winWidth.value = winStartX.value + e.pageX - mosStartX.value
-        if(winWidth.value<170){
-            winWidth.value=170
+        if (winWidth.value < 170) {
+            winWidth.value = 170
+        } else {
+            props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
         }
     } else if (resizemode.value == 'b') {
         winHeight.value = winStartY.value + e.pageY - mosStartY.value
-        if(winHeight.value<100){
-            winHeight.value=100
+        if (winHeight.value < 100) {
+            winHeight.value = 100
+        } else {
+            props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
         }
     } else if (resizemode.value == 'rb') {
         winWidth.value = winStartX.value + e.pageX - mosStartX.value
         winHeight.value = winStartY.value + e.pageY - mosStartY.value
-        if(winWidth.value<170){
-            winWidth.value=170
+        if (winWidth.value < 170) {
+            winWidth.value = 170
+            if (winHeight.value < 100) {
+                winHeight.value = 100
+            } else {
+                props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
+            }
+        } else {
+            if (winHeight.value < 100) {
+                winHeight.value = 100
+            }
+            props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
         }
-        if(winHeight.value<100){
-            winHeight.value=100
-        }
+
     } else {
         return
     }

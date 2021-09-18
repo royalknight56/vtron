@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-18 17:00:42
+ * @LastEditTime: 2021-09-18 17:26:37
  * @Description: 
- * @FilePath: /myindex/src/apps/Test3.vue
+ * @FilePath: /myindex/src/components/apps/TestLoadafter.vue
 -->
 <template>
     <div class="outer">
@@ -16,6 +16,14 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
+import { WindowIPC } from "../window/libs/WindowIPC";
+let props = defineProps({
+    id: {
+        type:String,
+        default:''
+    }
+})
+WindowIPC.getInstance().mountWindowEventMap(props.id,'resize',()=>{ console.log('resize')})
 let urlinput = ref('')
 let urlsrc = ref('')
 function urlkey(e:KeyboardEvent) {

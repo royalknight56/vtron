@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 16:04:44
+ * @LastEditTime: 2021-09-18 17:16:58
  * @Description: 
  * @FilePath: /myindex/src/components/apps/Test3.vue
 -->
@@ -38,6 +38,7 @@ setInterval(()=>{
     after.show()
 })
 after.show()
+after.onWindowResizing((x,y)=>{ console.log(x,y) })
 </script>
 <style>
 iframe {

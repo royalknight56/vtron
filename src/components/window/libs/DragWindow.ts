@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 17:04:30
+ * @LastEditTime: 2021-09-18 17:19:41
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
@@ -28,7 +28,7 @@ interface ctxPar {
 class DragWindow extends DragElement {
     evMap: {
         onDraging?: Function
-        onResizing?: Function
+        onResizing?: (x: number, y: number)=>void
     }
     pageInfo: PageItem | null
     el: HTMLDivElement | null
@@ -64,7 +64,7 @@ class DragWindow extends DragElement {
     onWindowDraging(event: Function) {
         this.evMap.onDraging = event;
     }
-    onWindowResizing(event: Function) {
+    onWindowResizing(event: (x: number, y: number)=>void) {
         this.evMap.onResizing = event;
     }
     readyDom() {
@@ -80,7 +80,7 @@ class DragWindow extends DragElement {
     }
     readyRegister(title: string, icon: string = '', width: number, height: number, ctxpar: ctxPar, use?: any) {
         this.pageInfo = WindowIPC.getInstance().registerWindow(this.id, title, icon, width, height, ctxpar.content, ctxpar.props);//在IPC中注册，传递pageInfo
-        this.appPointer = createApp(WindowTmpVue, { ctx: this.pageInfo })
+        this.appPointer = createApp(WindowTmpVue, { ctx: this.pageInfo })//模版中可以接受到pageInfo
         if (use) {
 
             for (let i = 0; i < use.length; i++) {
@@ -113,6 +113,9 @@ class DragWindow extends DragElement {
                 // this.pageMap[id].windowEventMap['destroy']
                 WindowIPC.getInstance().mountWindowEventMap(this.id,'destroy',()=>{
                     this.appPointer?.unmount()
+                })
+                WindowIPC.getInstance().mountWindowEventMap(this.id,'resize',(x:number,y:number)=>{
+                    this.evMap.onResizing?.(x,y)
                 })
                 // WindowIPC.getInstance().mountWindow(this.id, this.appPointer)
             }

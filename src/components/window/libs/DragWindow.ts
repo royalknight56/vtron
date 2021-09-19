@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 17:19:41
+ * @LastEditTime: 2021-09-19 22:45:30
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  */
@@ -9,7 +9,7 @@ import { DragElement } from "./DragElement";
 import WindowTmpVue from "./WindowTmp.vue";
 
 
-import { PageItem, WindowIPC } from "./WindowIPC"
+import { PageItem, WindowIPC ,windowEventsName} from "./WindowIPC"
 import type { DefineComponent,App } from "vue";
 
 
@@ -61,12 +61,7 @@ class DragWindow extends DragElement {
         // this.show()
 
     }
-    onWindowDraging(event: Function) {
-        this.evMap.onDraging = event;
-    }
-    onWindowResizing(event: (x: number, y: number)=>void) {
-        this.evMap.onResizing = event;
-    }
+    
     readyDom() {
         let div = document.createElement('div')
 
@@ -111,13 +106,10 @@ class DragWindow extends DragElement {
                 this.appPointer.mount(this.el);
 
                 // this.pageMap[id].windowEventMap['destroy']
-                WindowIPC.getInstance().mountWindowEventMap(this.id,'destroy',()=>{
+                WindowIPC.getInstance().addWindowEventListener(this.id,'beforeDestory',()=>{
                     this.appPointer?.unmount()
                 })
-                WindowIPC.getInstance().mountWindowEventMap(this.id,'resize',(x:number,y:number)=>{
-                    this.evMap.onResizing?.(x,y)
-                })
-                // WindowIPC.getInstance().mountWindow(this.id, this.appPointer)
+                
             }
             
             if (this.el) {
@@ -127,8 +119,13 @@ class DragWindow extends DragElement {
             WindowIPC.getInstance().upSetWindowIndex(this.id)
             this.ifcreated=true;
         }
-        
-
+    }
+    onWindowResizing(event: (x: number, y: number)=>void) {
+        // this.evMap.onResizing = event;
+        WindowIPC.getInstance().addWindowEventListener(this.id,'onResize',event)
+    }
+    onWindowEvent(name:windowEventsName,event: Function) {
+        WindowIPC.getInstance().addWindowEventListener(this.id,name,event)
     }
 }
 export {

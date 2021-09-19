@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 17:26:37
+ * @LastEditTime: 2021-09-19 22:39:56
  * @Description: 
  * @FilePath: /myindex/src/components/apps/TestLoadafter.vue
 -->
@@ -23,7 +23,7 @@ let props = defineProps({
         default:''
     }
 })
-WindowIPC.getInstance().mountWindowEventMap(props.id,'resize',()=>{ console.log('resize')})
+WindowIPC.getInstance().addWindowEventListener(props.id,'onResize',()=>{ console.log('resize')})
 let urlinput = ref('')
 let urlsrc = ref('')
 function urlkey(e:KeyboardEvent) {

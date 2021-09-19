@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 17:24:03
+ * @LastEditTime: 2021-09-19 21:57:49
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -367,7 +367,7 @@ function dragStart(e: MouseEvent, dire: string) {
     transition: 0.1s;
 }
 .winbutton:hover {
-    background-color: rgba(149, 182, 243, 0.356);
+    background-color: rgb(200, 217, 245);
     color: white;
 }
 .close_button {

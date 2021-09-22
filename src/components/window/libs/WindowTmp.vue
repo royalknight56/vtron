@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-19 21:57:49
+ * @LastEditTime: 2021-09-22 10:00:03
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -8,11 +8,11 @@
     <div
         class="wintmp_outer dragwin"
         :style="customerStyle"
-        @dblclick="maxWindow()"
+        
         @mousedown="onFocus"
         :class="{ topwin: iftop, maxwin: ifmax }"
     >
-        <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
+        <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
             <div class="wintmp_left">
                 <div class="wintmp_logo">
                     <img width="24" height="24" :src="ctx.icon" />

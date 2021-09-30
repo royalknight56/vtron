@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 11:24:10
+ * @LastEditTime: 2021-09-30 14:35:45
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -16,6 +16,7 @@ import WinVue from "./components/win.vue";
 
 import brow from "./assets/浏览器.png"
 import Test3 from "./components/apps/Test3.vue"
+import Mycom from "./components/apps/MyComputer.vue"
 import { DragWindow } from "./components/window/libs/DragWindow";
 import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
@@ -24,6 +25,11 @@ onMounted(() => {
     name: '浏览器',
     icon: brow,
     window: new DragWindow(0, 0, '窗口通信', brow, 600, 500, { content: Test3 })
+  });
+  appList.push({
+    name: '我的电脑',
+    icon: brow,
+    window: new DragWindow(0, 0, '窗口通信', brow, 600, 500, { content: Mycom })
   });
 })
 

@@ -1,13 +1,13 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 15:31:01
+ * @LastEditTime: 2021-11-01 10:46:33
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
 -->
 <template>
     <div class="bar">
         <div class="winitem_first" @click.prevent.stop="barFirskClick">
-            <img draggable="false" width="20" :src="winimg" />
+            <img draggable="false" width="20" :src="winlogo" />
         </div>
         <div
             class="winitem"
@@ -27,7 +27,17 @@ import { WindowIPC } from "./libs/WindowIPC"
 import { MenuIPC } from "./libs/MenuIPC"
 import { computerCTC } from "./libs/computerCTC";
 import MagnetVue from "./Magnet.vue";
-import winimg from "../../assets/win.png"
+import winimg from "../../assets/winb.png"
+import { appconfig } from "../appconfig";
+
+//设置winlogo
+let winlogo = ref(winimg);
+if(appconfig.start_menu_logo=="default"){
+    winlogo.value = winimg;
+}else{
+    winlogo.value = appconfig.start_menu_logo;
+}
+
 
 let winlist = WindowIPC.getInstance().pageMap
 
@@ -133,7 +143,7 @@ function rightClick(e: MouseEvent, item: PageItem) {
     transition: all 0.2s;
 }
 .winitem_first img {
-    filter: invert(100%);
+    /* filter: invert(100%); */
 }
 .winitem_first:hover {
     background-color: rgb(87, 147, 182);

@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-01 10:47:51
+ * @LastEditTime: 2021-11-01 10:46:43
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */

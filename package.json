@@ -1,6 +1,6 @@
 {
   "name": "vue3-win10",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "files": [
     "distlib"
   ],
@@ -10,7 +10,7 @@
   "types": "distlib/plug.d.ts",
   "style":"distlib/style.css",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
     "build-lib-tsc": "vue-tsc --noEmit && vite build --config vitelib.config.ts",

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-22 10:00:03
+ * @LastEditTime: 2021-11-19 18:55:12
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -8,7 +8,7 @@
     <div
         class="wintmp_outer dragwin"
         :style="customerStyle"
-        
+        @touchstart.passive="onFocus"
         @mousedown="onFocus"
         :class="{ topwin: iftop, maxwin: ifmax }"
     >
@@ -97,13 +97,14 @@
             class="wintmp_main"
             :class="{ resizeing: resizemode != 'null' }"
             @mousedown.stop="predown"
+            @touchstart.stop="predown"
         >
             <component :is="componentValue" :id='props.ctx.id'></component>
             <!-- <div ></div> -->
         </div>
-        <div class="right_border" @mousedown.stop="dragStart($event, 'r')"></div>
-        <div class="bottom_border" @mousedown.stop="dragStart($event, 'b')"></div>
-        <div class="right_bottom_border" @mousedown.stop="dragStart($event, 'rb')"></div>
+        <div class="right_border" @mousedown.stop="dragStart($event, 'r')" @touchstart.stop="dragStart($event, 'r')"></div>
+        <div class="bottom_border" @mousedown.stop="dragStart($event, 'b')" @touchstart.stop="dragStart($event, 'b')"></div>
+        <div class="right_bottom_border" @mousedown.stop="dragStart($event, 'rb')" @touchstart.stop="dragStart($event, 'rb')"></div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -140,6 +141,7 @@ function hideWindow() {
     WindowIPC.getInstance().hideWindow(props.ctx.id)
 }
 function maxWindow() {
+    console.log("maxWindow")
     WindowIPC.getInstance().maxWindow(props.ctx.id)
 }
 function predown() {
@@ -159,11 +161,17 @@ let winmount = ref(null)
 
 let customerStyle = ref<any>({})
 
-function onFocus(e: MouseEvent) {
+function onFocus(e: MouseEvent|TouchEvent): void {
+    console.log("focus")
     WindowIPC.getInstance().upSetWindowIndex(props.ctx.id)
     if (ifmax.value) {
-        e.preventDefault()
-        e.stopPropagation()
+        
+        if(e instanceof MouseEvent) {
+            e.preventDefault()
+            e.stopPropagation()
+        }else{
+            e.stopPropagation()
+        }
     }
 }
 
@@ -201,29 +209,42 @@ let mosStartY = ref(0);
 let winStartX = ref(0);
 let winStartY = ref(0);
 
-document.addEventListener('mousemove', (e) => {
-    if (e.buttons == 1) {
+function moveListener(e: MouseEvent|TouchEvent){
+    
+    if (e instanceof MouseEvent) {
+        if(e.buttons == 1) {
 
-    } else {
-        return
+        } else {
+            return
+        }
     }
+    let pageX = 0;
+    let pageY = 0;
+    if (e instanceof MouseEvent) {
+        pageX = e.pageX;
+        pageY = e.pageY;
+    }else{
+        pageX = e.touches[0].pageX;
+        pageY = e.touches[0].pageY;
+    }
+    
     if (resizemode.value == 'r') {
-        winWidth.value = winStartX.value + e.pageX - mosStartX.value
+        winWidth.value = winStartX.value + pageX - mosStartX.value
         if (winWidth.value < 170) {
             winWidth.value = 170
         } else {
             props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
         }
     } else if (resizemode.value == 'b') {
-        winHeight.value = winStartY.value + e.pageY - mosStartY.value
+        winHeight.value = winStartY.value + pageY - mosStartY.value
         if (winHeight.value < 100) {
             winHeight.value = 100
         } else {
             props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
         }
     } else if (resizemode.value == 'rb') {
-        winWidth.value = winStartX.value + e.pageX - mosStartX.value
-        winHeight.value = winStartY.value + e.pageY - mosStartY.value
+        winWidth.value = winStartX.value + pageX - mosStartX.value
+        winHeight.value = winStartY.value + pageY - mosStartY.value
         if (winWidth.value < 170) {
             winWidth.value = 170
             if (winHeight.value < 100) {
@@ -243,15 +264,24 @@ document.addEventListener('mousemove', (e) => {
     }
     // e.preventDefault()
     // e.stopPropagation()
-})
+}
+document.addEventListener("touchmove", moveListener)
+document.addEventListener('mousemove', moveListener)
 document.addEventListener("mouseup", () => {
     resizemode.value = 'null'
 })
-function dragStart(e: MouseEvent, dire: string) {
+document.addEventListener("touchend", () => {
+    resizemode.value = 'null'
+})
+function dragStart(e: MouseEvent|TouchEvent, dire: string) {
     resizemode.value = dire
-    mosStartX.value = e.pageX
-    mosStartY.value = e.pageY
-
+    if(e instanceof MouseEvent){
+        mosStartX.value = e.pageX
+        mosStartY.value = e.pageY
+    }else{
+        mosStartX.value = e.touches[0].pageX
+        mosStartY.value = e.touches[0].pageY
+    }
     winStartX.value = winWidth.value
     winStartY.value = winHeight.value
 

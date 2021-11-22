@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-09 10:12:16
+ * @LastEditTime: 2021-11-22 17:33:11
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -13,7 +13,7 @@ Vue3 仿Win10 UI 框架
 
 </div>
 
-<a href="http://v3w10.myim.online" target="_blank">Document</a>|<a href="http://v3w10.myim.online" target="_blank">Official</a>|<a href="http://myim.online" target="_blank">Demo</a>
+<a href="https://github.com/royalknight56/vue3-windows10/blob/master/README_en.md" target="_blank">English</a>|<a href="https://github.com/royalknight56/vue3-windows10" target="_blank">中文</a>
 
 <a href="http://v3w10.myim.online" target="_blank">文档</a>|<a href="http://v3w10.myim.online" target="_blank">官网</a>|<a href="http://myim.online" target="_blank">样例</a>
 

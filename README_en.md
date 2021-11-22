@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-18 17:11:12
+ * @LastEditTime: 2021-11-22 17:33:00
  * @Description: 翻译下面的文档
 -->
 <h1 align="center">vue3-win10</h1>
@@ -11,9 +11,9 @@
 Vue3 imitation win10 UI framework
 </div>
 
-<a href="http://v3w10.myim.online" target="_blank">Document</a>|<a href="http://v3w10.myim.online" target="_blank">Official</a>|<a href="http://myim.online" target="_blank">Demo</a>
+<a href="https://github.com/royalknight56/vue3-windows10/blob/master/README_en.md" target="_blank">English</a>|<a href="https://github.com/royalknight56/vue3-windows10" target="_blank">中文</a>
 
-<a href="http://v3w10.myim.online" target="_blank">文档</a>|<a href="http://v3w10.myim.online" target="_blank">官网</a>|<a href="http://myim.online" target="_blank">样例</a>
+<a href="http://v3w10.myim.online" target="_blank">Document</a>|<a href="http://v3w10.myim.online" target="_blank">Official</a>|<a href="http://myim.online" target="_blank">Demo</a>
 
 <span style="color:#999;text-align:center">recommend Vue 3 + Typescript + Vite + Using `<script setup>`
 </span>
@@ -38,7 +38,7 @@ This framework can turn your page into a win10 system on a web page like the win
 ```js
 import win10 from 'vue3-win10';
 ```
-引入样式文件"vue3-win10/distlib/style.css"
+import css file "vue3-win10/distlib/style.css"
 
 ```js
 import "vue3-win10/distlib/style.css"
@@ -56,24 +56,25 @@ createApp(App).use(win10).mount('#app')
 ```
 
 
-3. 在页面中引入Win10租组件
+3. Import Win10 component in vue file
  
 ```html
 <Win10></Win10>
 ```
 
-此步骤之后，run dev已经可以看到win10启动了
+After this step,we can see that win10 starts
 
-4. 控制屏幕🖥大小
 
-在组件外围包裹一个outer
+4. Control screen size
+
+Wrap an outer around the component
 
 ```html
   <div class="outer">
     <Win10></Win10>
   </div>
 ```
-定义outer样式
+Define .outer style
   
 ```html
 <style scoped>
@@ -83,7 +84,7 @@ createApp(App).use(win10).mount('#app')
 }
 </style>
 ```
-这样就是占据全部页面显示
+This is the full page display
 
 
-4. 在apps文件夹下新建vue文件，主要在此文件夹中编写窗口内容（非必须）
+4. Create a new Vue file in the ./apps folder. It is mainly used to write window content in this folder (not required)

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-19 18:55:12
+ * @LastEditTime: 2021-11-22 17:07:33
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -210,7 +210,7 @@ let winStartX = ref(0);
 let winStartY = ref(0);
 
 function moveListener(e: MouseEvent|TouchEvent){
-    
+    // e.preventDefault()
     if (e instanceof MouseEvent) {
         if(e.buttons == 1) {
 
@@ -262,7 +262,7 @@ function moveListener(e: MouseEvent|TouchEvent){
     } else {
         return
     }
-    // e.preventDefault()
+    
     // e.stopPropagation()
 }
 document.addEventListener("touchmove", moveListener)
@@ -274,6 +274,7 @@ document.addEventListener("touchend", () => {
     resizemode.value = 'null'
 })
 function dragStart(e: MouseEvent|TouchEvent, dire: string) {
+    
     resizemode.value = dire
     if(e instanceof MouseEvent){
         mosStartX.value = e.pageX
@@ -284,7 +285,7 @@ function dragStart(e: MouseEvent|TouchEvent, dire: string) {
     }
     winStartX.value = winWidth.value
     winStartY.value = winHeight.value
-
+    
 }
 
 </script>

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-01 10:46:33
+ * @LastEditTime: 2021-11-29 17:10:05
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
 -->
@@ -58,13 +58,6 @@ function barFirskClick(e: MouseEvent) {
     }, {
         once: true
     })
-    // MenuIPC.getInstance().callMenu(0, e.pageY,
-    //     [
-    //         { name: '关机', func: () => { console.log("关机"); computerCTC.getInstance().closePower() } },
-    //         { name: '重启', func: () => { console.log("重启"); computerCTC.getInstance().restartPower() } }
-
-    //     ]
-    // )
 }
 function rightClick(e: MouseEvent, item: PageItem) {
     if (item.ifShow) {

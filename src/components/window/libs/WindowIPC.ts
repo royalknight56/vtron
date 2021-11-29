@@ -4,7 +4,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 17:41:47
+ * @LastEditTime: 2021-11-29 17:12:56
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
@@ -100,9 +100,7 @@ class WindowIPC {
     }
     private unRegisterWindow(id: string) {//删除在pageMap中的存储
         delete this.pageMap[id]
-        // console.log(this.pageMap)
         let ind = this.pageIndex.indexOf(id)
-        // console.log(this.pageIndex)
         this.pageIndex.splice(ind, 1)
     }
 

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-22 17:07:33
+ * @LastEditTime: 2021-11-29 17:09:09
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -141,7 +141,6 @@ function hideWindow() {
     WindowIPC.getInstance().hideWindow(props.ctx.id)
 }
 function maxWindow() {
-    console.log("maxWindow")
     WindowIPC.getInstance().maxWindow(props.ctx.id)
 }
 function predown() {
@@ -162,7 +161,6 @@ let winmount = ref(null)
 let customerStyle = ref<any>({})
 
 function onFocus(e: MouseEvent|TouchEvent): void {
-    console.log("focus")
     WindowIPC.getInstance().upSetWindowIndex(props.ctx.id)
     if (ifmax.value) {
         

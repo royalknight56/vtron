@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-01 11:05:43
+ * @LastEditTime: 2021-11-24 11:10:44
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
 -->
@@ -95,8 +95,19 @@ function manclick(item: appInfo) {
     z-index: -1;
     animation: manshow 0.2s;
     /* background-color: black; */
-    backdrop-filter: saturate(180%) blur(20px) brightness(40%);
+    backdrop-filter: saturate(180%) blur(20px) brightness(60%);
+    background-color: rgba(0, 0, 0, 0.322);
 }
+/* @supports (background: -moz-element(#bg)) {
+    .g-glossy-firefox {
+        display: block;
+        position: fixed;
+        width: 600px;
+        height: 300px;
+        background: -moz-element(#bg) no-repeat;
+        filter: blur(10px);
+    }
+} */
 @keyframes manshow {
     0% {
         transform: translateY(10%);

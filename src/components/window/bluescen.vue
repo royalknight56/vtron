@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-29 16:55:53
+ * @LastEditTime: 2021-11-29 17:02:01
  * @Description: 
  * @FilePath: /myindex/src/components/window/bluescen.vue
 -->
@@ -60,12 +60,14 @@ let stat = computerCTC.getInstance().stats;
     left: 0;
     height: 100%;
     width: 100%;
-
+    user-select: none;
 }
 .backimg img{
     width: 100%;
     height: 100%;
     object-fit: cover;
+    user-select: none;
+    draggable: false;
 }
 .blueclass{
     z-index: 10001;

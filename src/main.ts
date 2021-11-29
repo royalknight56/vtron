@@ -1,14 +1,11 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-18 11:05:09
+ * @LastEditTime: 2021-11-29 16:44:53
  * @Description: 
  * @FilePath: /myindex/src/main.ts
  */
 import { createApp } from 'vue'
 import App from './App.vue'
-
-// import ElementPlus from 'element-plus';
-// import 'element-plus/lib/theme-chalk/index.css';
 
 const app = createApp(App)
 app.mount('#app')

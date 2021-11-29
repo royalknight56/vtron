@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-24 11:10:44
+ * @LastEditTime: 2021-11-29 16:59:46
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
 -->
@@ -26,7 +26,7 @@
                 </svg>
                 <div class="item_text">关机</div>
             </div>
-            <div class="left_list_item">
+            <!-- <div class="left_list_item">
                 <svg
                     t="1628248134723"
                     class="icon"
@@ -44,7 +44,7 @@
                     />
                 </svg>
                 <div class="item_text">设置</div>
-            </div>
+            </div> -->
         </div>
         <div class="m_right">
             <div class="right_item" v-for="item in mangList" @click="manclick(item)">

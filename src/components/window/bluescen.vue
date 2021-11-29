@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-25 14:46:17
+ * @LastEditTime: 2021-11-29 16:55:53
  * @Description: 
  * @FilePath: /myindex/src/components/window/bluescen.vue
 -->
@@ -22,6 +22,9 @@
             <div class="win" id="win3"></div>
             <div class="win" id="win4"></div>
         </div>
+    </div>
+    <div v-if="appconfig.backimg!='default'&&(stat.screen == 'common')" class="backimg">
+        <img :src="appconfig.backimg" alt="">
     </div>
     <div id="text"></div>
     <div id="wait" v-if="stat.screen == 'blue'">
@@ -50,6 +53,19 @@ let stat = computerCTC.getInstance().stats;
     height: 100%;
     z-index: -50;
     background-color: rgb(0, 119, 210);
+}
+.backimg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+}
+.backimg img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .blueclass{
     z-index: 10001;

@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-01 10:46:43
+ * @LastEditTime: 2021-11-29 16:35:30
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
@@ -31,6 +31,7 @@ interface plug_option_finnal{
     start_time:number,
     if_logo_show:boolean,
     start_menu_logo:string,
+    backimg:string,
 }
 type plug_option=to_opt_map<plug_option_finnal>
 
@@ -38,6 +39,7 @@ let appconfig:plug_option_finnal={
     start_time:2000,
     if_logo_show:true,
     start_menu_logo:'default',
+    backimg:'default',
     // start_menu_logo:testicon
     
 }

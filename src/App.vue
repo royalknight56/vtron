@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-30 14:35:45
+ * @LastEditTime: 2021-11-29 16:57:39
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -15,12 +15,14 @@ import { appList, appconfig, plug_option } from "./components/appconfig";
 import WinVue from "./components/win.vue";
 
 import brow from "./assets/浏览器.png"
+import backimg from "./assets/back.jpg"
 import Test3 from "./components/apps/Test3.vue"
 import Mycom from "./components/apps/MyComputer.vue"
 import { DragWindow } from "./components/window/libs/DragWindow";
 import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {
+  appList.splice(0,100000)
   appList.push({
     name: '浏览器',
     icon: brow,
@@ -36,8 +38,10 @@ onMounted(() => {
 // new DragWindow(0, 0, '窗口通信',beatico, 300, 400, { content: AdmVue},[ElementPlus])
 
 let opt: plug_option = {
-  if_logo_show: false,
-  start_time: 0
+  if_logo_show: true,
+  start_time: 0,
+  backimg:backimg,
+  start_menu_logo: brow,
 }
 Object.assign(appconfig, opt)
 

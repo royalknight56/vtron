@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-06 14:46:04
+ * @LastEditTime: 2021-12-06 14:52:41
  * @Description: 
  */
 let date = new Date();
@@ -11,7 +11,7 @@ console.log(dateStr);
 
 //运行shell命令
 const exec = require('child_process').exec;
-let command = `git add . && git commit -m "auto_tag" && git tag ${dateStr} && git push origin master`
+let command = `git add . && git commit -m "auto_tag" && git tag ${dateStr} && git push`
 // let command = `git`
 
 exec(command

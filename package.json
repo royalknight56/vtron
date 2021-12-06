@@ -14,8 +14,8 @@
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
     "build-lib-tsc": "vue-tsc --noEmit && vite build --config vitelib.config.ts",
-    "build-lib": "vite build --config vitelib.config.ts"
-
+    "build-lib": "vite build --config vitelib.config.ts",
+    "tag":"node script/auto_tag.js"
   },
   "dependencies": {
     "element-plus": "^1.1.0-beta.20",

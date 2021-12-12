@@ -9,7 +9,9 @@
         <div class="winitem_first" @click.prevent.stop="barFirskClick">
             <img draggable="false" width="20" :src="winlogo" />
         </div>
-        <div class="bar_search"></div>
+        <div class="bar_search">
+            在这里输入你要搜索的内容
+        </div>
         <div
             class="baritem"
             :class="{ showwin: item.ifShow, topwin: item.iftop && item.ifShow }"
@@ -153,8 +155,8 @@ function closeButtonClicked(item: PageItem){
     background-color: rgba(255, 255, 255, 0.164);
 }
 .baritem_hover{
-    /* display: none; */
-    display: block;
+    display: none;
+    /* display: block; */
 
     position: absolute;
     bottom:25px;
@@ -243,7 +245,8 @@ function closeButtonClicked(item: PageItem){
     box-shadow: 1px 2px 10px 2px rgb(87, 147, 182);
 }
 .bar_search {
-    width: 120px;
+    display: none;
+    width: 210px;
     height: 100%;
     margin-right: 30px;
     background-color: aliceblue;

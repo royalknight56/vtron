@@ -98,7 +98,6 @@ function rightClick(e: MouseEvent, item: PageItem) {
 function closeButtonClicked(item: PageItem){
     WindowIPC.getInstance().destoryWindow(item.id)
 }
-
 // //定期更换截图
 // setInterval(() => {
 //     for(let key in winlist){

@@ -6,19 +6,19 @@
   ],
   "main": "distlib/plug.js",
   "module": "distlib/plug.js",
-
   "types": "distlib/plug.d.ts",
-  "style":"distlib/style.css",
+  "style": "distlib/style.css",
   "scripts": {
     "dev": "vite --host",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
     "build-lib-tsc": "vue-tsc --noEmit && vite build --config vitelib.config.ts",
     "build-lib": "vite build --config vitelib.config.ts",
-    "tag":"node script/auto_tag.js"
+    "tag": "node script/auto_tag.js"
   },
   "dependencies": {
     "element-plus": "^1.1.0-beta.20",
+    "html2canvas": "^1.3.3",
     "vue": "^3.2.16"
   },
   "devDependencies": {

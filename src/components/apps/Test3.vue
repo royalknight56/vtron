@@ -34,9 +34,9 @@ window.open=<any>function(e:any) {
 }
 
 let after = new DragWindow(100, 100, "test",icon, 100, 100, {content:TestLoadafterVue})
-setInterval(()=>{
-    after.show()
-})
+// setInterval(()=>{
+//     after.show()
+// })
 after.show()
 after.onWindowResizing((x,y)=>{ console.log(x,y) })
 </script>

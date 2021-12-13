@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-29 17:09:09
+ * @LastEditTime: 2021-12-09 20:21:45
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -97,14 +97,14 @@
             class="wintmp_main"
             :class="{ resizeing: resizemode != 'null' }"
             @mousedown.stop="predown"
-            @touchstart.stop="predown"
+            @touchstart.stop.passive="predown"
         >
             <component :is="componentValue" :id='props.ctx.id'></component>
             <!-- <div ></div> -->
         </div>
-        <div class="right_border" @mousedown.stop="dragStart($event, 'r')" @touchstart.stop="dragStart($event, 'r')"></div>
-        <div class="bottom_border" @mousedown.stop="dragStart($event, 'b')" @touchstart.stop="dragStart($event, 'b')"></div>
-        <div class="right_bottom_border" @mousedown.stop="dragStart($event, 'rb')" @touchstart.stop="dragStart($event, 'rb')"></div>
+        <div class="right_border" @mousedown.stop="dragStart($event, 'r')" @touchstart.stop.passive="dragStart($event, 'r')"></div>
+        <div class="bottom_border" @mousedown.stop="dragStart($event, 'b')" @touchstart.stop.passive="dragStart($event, 'b')"></div>
+        <div class="right_bottom_border" @mousedown.stop="dragStart($event, 'rb')" @touchstart.stop.passive="dragStart($event, 'rb')"></div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -168,7 +168,7 @@ function onFocus(e: MouseEvent|TouchEvent): void {
             e.preventDefault()
             e.stopPropagation()
         }else{
-            e.stopPropagation()
+            // e.stopPropagation()
         }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-22 17:08:18
+ * @LastEditTime: 2021-12-09 20:24:27
  * @Description: 实现可移动Object
  * @FilePath: /myindex/src/components/window/libs/DragElement.ts
  */
@@ -87,7 +87,10 @@ class DragElement extends DragObj {
             this.startMove(ev.touches[0].pageX, ev.touches[0].pageY);
             this.ifDraging = true;
             // ev.preventDefault();
-        })
+
+        }, {
+            passive: true
+          })
         document.body.addEventListener('mouseup', (ev) => {
             this.ifDraging = false;
         })

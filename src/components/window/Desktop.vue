@@ -6,7 +6,7 @@
 -->
 <template>
     <div class="desk_outer">
-        <div class="desk_item" v-for="item in deskList" @dblclick="openApp(item)">
+        <div class="desk_item" v-for="item in deskList" @dblclick="openApp(item)" @contextmenu.prevent="rightClick(item,$event)">
             <div class="item_img">
                 <img width="60" :src="item.icon" />
             </div>
@@ -19,11 +19,30 @@
 import { DragWindow } from "./libs/DragWindow";
 import { appList } from "../appconfig";
 import type { appInfo } from "../appconfig";
+import { MenuIPC } from "./libs/MenuIPC";
+import { WindowIPC } from "./libs/WindowIPC";
+import { openInfo } from "./system/openInfo";
+
+
 
 let deskList: Array<appInfo> = appList;
 function openApp(item: appInfo) {
     item.window.show();
     // new DragWindow(100, 100, item.name,item.icon,item.width, item.height, {content:item.tmp},item.use)
+}
+
+function rightClick(item:appInfo,e: MouseEvent) {
+    MenuIPC.getInstance().callMenu(e.pageX, e.pageY,
+        [
+            { name: '打开(O)', func: () => { item.window.show(); } },
+            { name: '属性(R)', func: () => { 
+                openInfo({
+                    item,
+                })
+             } },
+        ]
+    )
+
 }
 </script>
 <style scoped>

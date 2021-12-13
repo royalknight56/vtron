@@ -53,6 +53,9 @@ class WindowIPC {
         }
         return this.instance
     }
+    getWindow(id: string):PageItem {
+        return this.pageMap[id]
+    }
 
     getWinnum() {
         return this.winnum
@@ -103,6 +106,7 @@ class WindowIPC {
         let ind = this.pageIndex.indexOf(id)
         this.pageIndex.splice(ind, 1)
     }
+    
 
     upSetWindowIndex(id: string):number {
         for (let key in this.pageMap) {

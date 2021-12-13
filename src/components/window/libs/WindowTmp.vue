@@ -22,12 +22,10 @@
             <div class="winbutton_group">
                 <div @click="hideWindow()" class="winbutton hide_button">
                     <svg
-                        t="1629858033723"
                         class="icon"
                         viewBox="0 0 1024 1024"
                         version="1.1"
                         xmlns="http://www.w3.org/2000/svg"
-                        p-id="3845"
                         width="12"
                         height="12"
                     >
@@ -40,12 +38,10 @@
                 <div @click="maxWindow()" class="winbutton max_button">
                     <svg
                         v-if="ifmax"
-                        t="1629857965098"
                         class="icon"
                         viewBox="0 0 1024 1024"
                         version="1.1"
                         xmlns="http://www.w3.org/2000/svg"
-                        p-id="3294"
                         width="12"
                         height="12"
                     >
@@ -56,12 +52,10 @@
                     </svg>
                     <svg
                         v-else
-                        t="1629857441097"
                         class="icon"
                         viewBox="0 0 1024 1024"
                         version="1.1"
                         xmlns="http://www.w3.org/2000/svg"
-                        p-id="3141"
                         width="12"
                         height="12"
                     >
@@ -118,6 +112,9 @@ import { WindowIPC } from "./WindowIPC"
 import type { PageItem } from "./WindowIPC"
 import { MenuIPC } from "../libs/MenuIPC"
 
+import html2canvas from 'html2canvas';
+import { on } from "events";
+import { onUnmounted } from "vue";
 
 let props = defineProps({
 
@@ -161,6 +158,7 @@ let winmount = ref(null)
 let customerStyle = ref<any>({})
 
 function onFocus(e: MouseEvent|TouchEvent): void {
+    // console.log('focus')
     WindowIPC.getInstance().upSetWindowIndex(props.ctx.id)
     if (ifmax.value) {
         
@@ -285,6 +283,30 @@ function dragStart(e: MouseEvent|TouchEvent, dire: string) {
     winStartY.value = winHeight.value
     
 }
+
+// /// 这段逻辑 是定期截图的
+// let coolTime = 5;
+// let timer = setInterval(screenShorts, coolTime * 1000)
+
+// function screenShorts() {
+//     let el = document.getElementById(`${props.ctx.id}`)?.children[0].children[1];
+//     // console.log(`${props.ctx.id}`)
+//     // console.log(el)
+//     if(el&&WindowIPC.getInstance().getWindow(props.ctx.id).ifShow){
+//         html2canvas(<HTMLElement>el,{
+//             allowTaint: true,
+//         }).then(canvas => {
+//             // console.log(canvas)
+//             WindowIPC.getInstance().submitScreenShoot(props.ctx.id,canvas)
+            
+//         });
+//     }
+// }
+// onUnmounted(() => {
+//     clearInterval(timer)
+// })
+
+
 
 </script>
 <style>

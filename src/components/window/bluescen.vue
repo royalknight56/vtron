@@ -24,7 +24,7 @@
         </div>
     </div>
     <div v-if="appconfig.backimg!='default'&&(stat.screen == 'common')" class="backimg">
-        <img :src="appconfig.backimg" alt="">
+        <img draggable="false" :src="appconfig.backimg" alt="">
     </div>
     <div id="text"></div>
     <div id="wait" v-if="stat.screen == 'blue'">
@@ -53,6 +53,7 @@ let stat = computerCTC.getInstance().stats;
     height: 100%;
     z-index: -50;
     background-color: rgb(0, 119, 210);
+    user-select: none;
 }
 .backimg{
     position: absolute;

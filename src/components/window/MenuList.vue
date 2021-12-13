@@ -37,6 +37,7 @@ function callFunc(item:menuItem) {
     background-color: rgb(230, 230, 230);
     color: rgb(41, 41, 41);
     border: 0.5px solid rgba(0, 0, 0, 0.418);
+    
     z-index: 102;
 }
 .defOver {
@@ -44,8 +45,10 @@ function callFunc(item:menuItem) {
 }
 .menulist{
     cursor: pointer;
-    width: 100px;
-    padding: 4px;
+    width: 80px;
+    
+    /* padding: 4px; */
+    padding: 4px 30px;
     font-size: 12px;
 }
 .menulist:hover{

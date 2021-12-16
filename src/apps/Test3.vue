@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 17:16:58
+ * @LastEditTime: 2021-12-16 10:58:05
  * @Description: 
  * @FilePath: /myindex/src/components/apps/Test3.vue
 -->
@@ -16,8 +16,8 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import { DragWindow } from "../window/libs/DragWindow";
-import icon from "../../assets/浏览器.png"
+import { DragWindow } from "../packages/window/libs/DragWindow";
+import icon from "../assets/浏览器.png"
 import TestLoadafterVue from "./TestLoadafter.vue";
 
 let urlinput = ref('')

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 16:50:18
+ * @LastEditTime: 2021-12-16 11:08:40
  * @Description: 
  * @FilePath: /myindex/src/components/window/WindowsGroup.vue
 -->
@@ -17,8 +17,8 @@
         </div>
 </template>
 <script setup lang="ts">
-import WindowTmpVue from "./libs/WindowTmp.vue";
-import { WindowIPC } from "./libs/WindowIPC"
+import WindowTmpVue from "../libs/WindowTmp.vue";
+import { WindowIPC } from "../libs/WindowIPC"
 
 // {title:title,width,height,ctx:ctx}
 

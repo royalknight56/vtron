@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 17:26:37
+ * @LastEditTime: 2021-12-16 10:58:08
  * @Description: 
  * @FilePath: /myindex/src/components/apps/TestLoadafter.vue
 -->
@@ -16,7 +16,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import { WindowIPC } from "../window/libs/WindowIPC";
+import { WindowIPC } from "../packages/window/libs/WindowIPC";
 let props = defineProps({
     id: {
         type:String,

@@ -1,15 +1,15 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-18 17:40:29
+ * @LastEditTime: 2021-12-16 11:07:21
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
 <template>
   <div class="win_outer" id="winid">
-    <TaskBarVue></TaskBarVue>
-    <MenuListVue></MenuListVue>
-    <DesktopVue></DesktopVue>
-    <BluescenVue></BluescenVue>
+    <TaskBar></TaskBar>
+    <ContextMenu></ContextMenu>
+    <Desktop></Desktop>
+    <Bluescen></Bluescen>
     <!-- <WindowsGroupVue></WindowsGroupVue> -->
   </div>
 </template>
@@ -18,13 +18,13 @@
 
 import { onMounted } from 'vue';
 
-import TaskBarVue from './window/TaskBar.vue';
-import MenuListVue from './window/MenuList.vue';
-import DesktopVue from './window/Desktop.vue';
+import TaskBar from './window/structure/TaskBar.vue';
+import ContextMenu from './window/structure/ContextMenu.vue';
+import Desktop from './window/structure/Desktop.vue';
 
-import BluescenVue from './window/bluescen.vue';
+import Bluescen from './window/structure/Bluescen.vue';
 
-import { computerCTC } from './window/libs/computerCTC';
+import { computerCTC } from './window/libs/systemStates';
 // import WindowsGroupVue from './window/WindowsGroup.vue';
 onMounted(() => {
   computerCTC.getInstance().openPower()

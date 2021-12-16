@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-18 11:07:00
+ * @LastEditTime: 2021-12-16 11:16:19
  * @Description: 
  * @FilePath: /myindex/src/components/window/Desktop.vue
 -->
@@ -16,12 +16,12 @@
 </template>
 
 <script lang="ts" setup>
-import { DragWindow } from "./libs/DragWindow";
-import { appList } from "../appconfig";
-import type { appInfo } from "../appconfig";
-import { MenuIPC } from "./libs/MenuIPC";
-import { WindowIPC } from "./libs/WindowIPC";
-import { openInfo } from "./system/openInfo";
+import { DragWindow } from "../libs/DragWindow";
+import { appList } from "../../appconfig";
+import type { appInfo } from "../../appconfig";
+import { MenuIPC } from "../libs/MenuCtrl";
+import { WindowIPC } from "../libs/WindowIPC";
+import { openInfo } from "../system/openInfo";
 
 
 

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-29 17:10:05
+ * @LastEditTime: 2021-12-16 11:16:21
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
 -->
@@ -39,13 +39,13 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import type { PageItem } from "./libs/WindowIPC"
-import { WindowIPC } from "./libs/WindowIPC"
-import { MenuIPC } from "./libs/MenuIPC"
-import { computerCTC } from "./libs/computerCTC";
+import type { PageItem } from "../libs/WindowIPC"
+import { WindowIPC } from "../libs/WindowIPC"
+import { MenuIPC } from "../libs/MenuCtrl"
+import { computerCTC } from "../libs/systemStates";
 import MagnetVue from "./Magnet.vue";
-import winimg from "../../assets/winb.png"
-import { appconfig } from "../appconfig";
+import winimg from "../../../assets/winb.png"
+import { appconfig } from "../../appconfig";
 
 //设置winlogo
 let winlogo = ref(winimg);

@@ -1,13 +1,13 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-10-29 09:56:15
+ * @LastEditTime: 2021-12-16 11:16:45
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
  */
 
 import { App } from "vue";
-import { appList,appconfig,appInfo,plug_option } from "./components/appconfig";
-import Win from "./components/win.vue"
+import { appList,appconfig,appInfo,plug_option } from "./packages/appconfig";
+import Win from "./packages/Win.vue"
 
 
 let plug = {
@@ -28,11 +28,11 @@ function ClearDesktop() {
 }
 
 
-export { DragWindow } from "./components/window/libs/DragWindow";
-export { WindowIPC ,PageItem } from "./components/window/libs/WindowIPC";
-export { consoleIPC } from "./components/window/libs/consoleIPC";
-export { computerCTC } from "./components/window/libs/computerCTC";
-export { MenuIPC } from "./components/window/libs/MenuIPC";
+export { DragWindow } from "./packages/window/libs/DragWindow";
+export { WindowIPC ,PageItem } from "./packages/window/libs/WindowIPC";
+// export { consoleIPC } from "./packages/window/libs/consoleIPC";
+export { computerCTC } from "./packages/window/libs/systemStates";
+export { MenuIPC } from "./packages/window/libs/MenuCtrl";
 
 
 export {

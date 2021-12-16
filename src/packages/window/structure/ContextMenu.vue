@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-18 16:55:28
+ * @LastEditTime: 2021-12-16 11:16:47
  * @Description: 
  * @FilePath: /myindex/src/components/window/MenuList.vue
 -->
@@ -11,8 +11,8 @@
 </template>
 <script lang="ts" setup>
 import { computed, reactive, ref } from "vue";
-import { MenuIPC } from "./libs/MenuIPC";
-import type {menuItem}from "./libs/MenuIPC";
+import { MenuIPC } from "../libs/MenuCtrl";
+import type {menuItem}from "../libs/MenuCtrl";
 
 let IPC = MenuIPC.getInstance()
 

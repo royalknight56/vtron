@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-29 17:02:01
+ * @LastEditTime: 2021-12-16 11:06:59
  * @Description: 
  * @FilePath: /myindex/src/components/window/bluescen.vue
 -->
@@ -38,8 +38,8 @@
     
 </template>
 <script lang="ts" setup>
-import { appconfig } from "../appconfig";
-import { computerCTC } from "./libs/computerCTC";
+import { appconfig } from "../../appconfig";
+import { computerCTC } from "../libs/systemStates";
 
 
 let stat = computerCTC.getInstance().stats;

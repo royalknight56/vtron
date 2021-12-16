@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-29 16:59:46
+ * @LastEditTime: 2021-12-16 11:16:39
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
 -->
@@ -64,11 +64,11 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { appList } from "../appconfig";
-import type { appInfo } from "../appconfig";
-import { computerCTC } from "./libs/computerCTC";
-import { MenuIPC } from "./libs/MenuIPC";
-import { DragWindow } from "./libs/DragWindow";
+import { appList } from "../../appconfig";
+import type { appInfo } from "../../appconfig";
+import { computerCTC } from "../libs/systemStates";
+import { MenuIPC } from "../libs/MenuCtrl";
+import { DragWindow } from "../libs/DragWindow";
 
 function closeClice(e: MouseEvent) {
     MenuIPC.getInstance().callMenu(e.pageX, e.pageY,

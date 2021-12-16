@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-09 20:21:45
+ * @LastEditTime: 2021-12-16 11:16:15
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -110,9 +110,9 @@ import type { PropType } from "vue"
 
 import { WindowIPC } from "./WindowIPC"
 import type { PageItem } from "./WindowIPC"
-import { MenuIPC } from "../libs/MenuIPC"
+import { MenuIPC } from "./MenuCtrl"
 
-import html2canvas from 'html2canvas';
+// import html2canvas from 'html2canvas';
 import { on } from "events";
 import { onUnmounted } from "vue";
 

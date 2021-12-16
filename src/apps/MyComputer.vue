@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-30 14:36:28
+ * @LastEditTime: 2021-12-16 10:54:40
  * @Description: 
  * @FilePath: /myindex/src/components/apps/MyComputer.vue
 -->
@@ -32,7 +32,7 @@
 <script lang="ts" setup>
 import { reactive } from "vue";
 import type { UnwrapNestedRefs } from "@vue/reactivity";
-import folderimg from "../../assets/newFolder.ico"
+import folderimg from "../assets/newFolder.ico"
 interface Folder {
     name: string,
     children: Array<Folder>,

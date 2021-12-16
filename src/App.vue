@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-29 16:57:39
+ * @LastEditTime: 2021-12-16 10:59:00
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -11,14 +11,14 @@
 </template>
 
 <script setup lang="ts">
-import { appList, appconfig, plug_option } from "./components/appconfig";
-import WinVue from "./components/win.vue";
+import { appList, appconfig, plug_option } from "./packages/appconfig";
+import WinVue from "./packages/Win.vue";
 
 import brow from "./assets/浏览器.png"
 import backimg from "./assets/back.jpg"
-import Test3 from "./components/apps/Test3.vue"
-import Mycom from "./components/apps/MyComputer.vue"
-import { DragWindow } from "./components/window/libs/DragWindow";
+import Test3 from "./apps/Test3.vue"
+import Mycom from "./apps/MyComputer.vue"
+import { DragWindow } from "./packages/window/libs/DragWindow";
 import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {

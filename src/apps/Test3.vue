@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 10:58:05
+ * @LastEditTime: 2021-12-16 19:27:42
  * @Description: 
  * @FilePath: /myindex/src/components/apps/Test3.vue
 -->
@@ -15,8 +15,10 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
-import { DragWindow } from "../packages/window/libs/DragWindow";
+import { ref,useAttrs,getCurrentInstance } from "vue";
+// import { DragWindow } from "../packages/window/libs/DragWindow";
+import { DragWindow } from "../plug";
+
 import icon from "../assets/浏览器.png"
 import TestLoadafterVue from "./TestLoadafter.vue";
 
@@ -27,13 +29,17 @@ function urlkey(e:KeyboardEvent) {
         changeUrl()
     }
 }
+
+
 function changeUrl() {
     urlsrc.value=urlinput.value
 }
 window.open=<any>function(e:any) { 
 }
-
-let after = new DragWindow(100, 100, "test",icon, 100, 100, {content:TestLoadafterVue})
+let after = new DragWindow({
+    title:'test',
+    icon,
+    content:TestLoadafterVue})
 // setInterval(()=>{
 //     after.show()
 // })

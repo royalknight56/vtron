@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 11:16:45
+ * @LastEditTime: 2021-12-16 19:11:40
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
  */
@@ -29,7 +29,10 @@ function ClearDesktop() {
 
 
 export { DragWindow } from "./packages/window/libs/DragWindow";
-export { WindowIPC ,PageItem } from "./packages/window/libs/WindowIPC";
+export { WindowIPC } from "./packages/window/libs/WindowIPC";
+export type { WindowInfo } from "./packages/window/libs/WindowIPC";
+
+
 // export { consoleIPC } from "./packages/window/libs/consoleIPC";
 export { computerCTC } from "./packages/window/libs/systemStates";
 export { MenuIPC } from "./packages/window/libs/MenuCtrl";

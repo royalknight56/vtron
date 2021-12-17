@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 10:59:00
+ * @LastEditTime: 2021-12-16 19:28:45
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -22,16 +22,33 @@ import { DragWindow } from "./packages/window/libs/DragWindow";
 import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {
-  appList.splice(0,100000)
+  appList.splice(0, 100000)
   appList.push({
     name: '浏览器',
     icon: brow,
-    window: new DragWindow(0, 0, '窗口通信', brow, 600, 500, { content: Test3 })
+    // 0, 0, '窗口通信', brow, 600, 500, 
+    window: new DragWindow({
+      title: '浏览器',
+      icon: brow,
+      width: 600,
+      height: 500,
+      x: 0,
+      y: 0,
+      content: Test3
+    })
   });
   appList.push({
     name: '我的电脑',
     icon: brow,
-    window: new DragWindow(0, 0, '窗口通信', brow, 600, 500, { content: Mycom })
+    // 0, 0, '窗口通信', brow, 600, 500,
+    window: new DragWindow(
+      {
+        title: '浏览器',
+        icon: brow,
+        width: 600,
+        height: 500,
+        content: Mycom
+      })
   });
 })
 
@@ -40,7 +57,7 @@ onMounted(() => {
 let opt: plug_option = {
   if_logo_show: true,
   start_time: 0,
-  backimg:backimg,
+  backimg: backimg,
   start_menu_logo: brow,
 }
 Object.assign(appconfig, opt)

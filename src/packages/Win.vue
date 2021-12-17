@@ -1,16 +1,17 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 11:07:21
+ * @LastEditTime: 2021-12-16 19:51:13
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
 <template>
   <div class="win_outer" id="winid">
+    
     <TaskBar></TaskBar>
     <ContextMenu></ContextMenu>
     <Desktop></Desktop>
     <Bluescen></Bluescen>
-    <!-- <WindowsGroupVue></WindowsGroupVue> -->
+    <WindowsGroup></WindowsGroup>
   </div>
 </template>
   
@@ -23,9 +24,10 @@ import ContextMenu from './window/structure/ContextMenu.vue';
 import Desktop from './window/structure/Desktop.vue';
 
 import Bluescen from './window/structure/Bluescen.vue';
+import WindowsGroup from './window/structure/WindowsGroup.vue';
 
 import { computerCTC } from './window/libs/systemStates';
-// import WindowsGroupVue from './window/WindowsGroup.vue';
+
 onMounted(() => {
   computerCTC.getInstance().openPower()
 })

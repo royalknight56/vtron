@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 10:58:08
+ * @LastEditTime: 2021-12-16 19:24:01
  * @Description: 
  * @FilePath: /myindex/src/components/apps/TestLoadafter.vue
 -->
@@ -15,15 +15,17 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
+import { inject, ref } from "vue";
 import { WindowIPC } from "../packages/window/libs/WindowIPC";
-let props = defineProps({
-    id: {
-        type:String,
-        default:''
-    }
-})
-WindowIPC.getInstance().mountWindowEventMap(props.id,'resize',()=>{ console.log('resize')})
+// let props = defineProps({
+//     windowId: {
+//         type:String,
+//         default:''
+//     }
+// })
+let winId = <string>inject('windowId')
+WindowIPC.getInstance().mountWindowEventMap(winId,'resize',()=>{ console.log('resize')})
+
 let urlinput = ref('')
 let urlsrc = ref('')
 function urlkey(e:KeyboardEvent) {

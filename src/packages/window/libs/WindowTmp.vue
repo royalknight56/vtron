@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 11:16:15
+ * @LastEditTime: 2021-12-16 20:09:50
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
 -->
@@ -93,7 +93,7 @@
             @mousedown.stop="predown"
             @touchstart.stop.passive="predown"
         >
-            <component :is="componentValue" :id='props.ctx.id'></component>
+            <component :is="componentValue" ></component>
             <!-- <div ></div> -->
         </div>
         <div class="right_border" @mousedown.stop="dragStart($event, 'r')" @touchstart.stop.passive="dragStart($event, 'r')"></div>
@@ -102,15 +102,18 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { markRaw, reactive, ref, shallowRef, toRaw } from "vue";
+import { markRaw, provide, reactive, ref, shallowRef, toRaw } from "vue";
 
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue"
 
 
 import { WindowIPC } from "./WindowIPC"
-import type { PageItem } from "./WindowIPC"
+import type { WindowInfo } from "./WindowIPC"
 import { MenuIPC } from "./MenuCtrl"
+
+// import { DragElement } from "./DragElement";
+
 
 // import html2canvas from 'html2canvas';
 import { on } from "events";
@@ -119,7 +122,7 @@ import { onUnmounted } from "vue";
 let props = defineProps({
 
     ctx: {
-        type: Object as PropType<PageItem>,
+        type: Object as PropType<WindowInfo>,
         default: {
             app: {
                 unmount: () => {
@@ -130,7 +133,7 @@ let props = defineProps({
         }
     }
 })
-
+console.log(props)
 function closeWindow(): void {
     WindowIPC.getInstance().destoryWindow(props.ctx.id)
 }
@@ -196,6 +199,7 @@ onMounted(() => {
         }),
     }
     componentValue.value = toRaw(props.ctx).content;
+    provide('windowId', props.ctx.id)
 })
 
 let resizemode = ref('null')

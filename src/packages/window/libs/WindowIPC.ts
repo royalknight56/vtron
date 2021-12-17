@@ -4,12 +4,12 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-11-29 17:12:56
+ * @LastEditTime: 2021-12-16 20:12:58
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
  */
 
-interface PageItem {
+interface WindowInfo {
     id: string,
     wid: number,
     title: string,
@@ -29,8 +29,8 @@ interface PageItem {
     // appPointer: App|null
 }
 
-interface pageMapInter {
-    [index: string]: PageItem
+interface windowInfoMapInter {
+    [index: string]: WindowInfo
 }
 interface eventMapInter {
     [index: string]: Function
@@ -38,13 +38,13 @@ interface eventMapInter {
 class WindowIPC {
     private static instance: WindowIPC;
     winnum: number;
-    pageMap: UnwrapNestedRefs<pageMapInter>;
-    pageIndex: string[];
+    windowInfoMap: UnwrapNestedRefs<windowInfoMapInter>;
+    zIndexIdArray: string[];
     eventMap:eventMapInter;
     private constructor() {
         this.winnum = 0;
-        this.pageMap = reactive({});
-        this.pageIndex = [];
+        this.windowInfoMap = reactive({});
+        this.zIndexIdArray = [];
         this.eventMap={}
     }
     static getInstance() {
@@ -53,8 +53,8 @@ class WindowIPC {
         }
         return this.instance
     }
-    getWindow(id: string):PageItem {
-        return this.pageMap[id]
+    getWindow(id: string):WindowInfo {
+        return this.windowInfoMap[id]
     }
 
     getWinnum() {
@@ -68,11 +68,11 @@ class WindowIPC {
         title: string,icon:string,width:number,height:number,
 
         content:DefineComponent<{}, {}, any>,
-        props:any):PageItem {
-        if (this.pageMap[id]) {
-            return this.pageMap[id]
+        props:any):WindowInfo {
+        if (this.windowInfoMap[id]) {
+            return this.windowInfoMap[id]
         } else {
-            this.pageMap[id] = reactive({
+            this.windowInfoMap[id] = reactive({
                 id,
                 wid: this.winnum,
                 title,
@@ -90,51 +90,51 @@ class WindowIPC {
                 windowEventMap:{}
             });
 
-            this.pageIndex.push(id)
+            this.zIndexIdArray.push(id)
             this.winnum++;
-            return this.pageMap[id]
+            return this.windowInfoMap[id]
         }
     }
     mountWindowEventMap(id:string,name:string,func:Function){
-        this.pageMap[id].windowEventMap[name] = func
+        this.windowInfoMap[id].windowEventMap[name] = func
     }
     mountWindow(id:string,func:Function){
-        this.pageMap[id].windowEventMap['mount'] = func
+        this.windowInfoMap[id].windowEventMap['mount'] = func
     }
-    private unRegisterWindow(id: string) {//删除在pageMap中的存储
-        delete this.pageMap[id]
-        let ind = this.pageIndex.indexOf(id)
-        this.pageIndex.splice(ind, 1)
+    private unRegisterWindow(id: string) {//删除在windowInfoMap中的存储
+        delete this.windowInfoMap[id]
+        let ind = this.zIndexIdArray.indexOf(id)
+        this.zIndexIdArray.splice(ind, 1)
     }
     
 
     upSetWindowIndex(id: string):number {
-        for (let key in this.pageMap) {
-            this.pageMap[key].iftop = false
+        for (let key in this.windowInfoMap) {
+            this.windowInfoMap[key].iftop = false
         }
-        this.pageMap[id].iftop = true
+        this.windowInfoMap[id].iftop = true
 
-        let ind = this.pageIndex.indexOf(id);
-        this.pageIndex.splice(ind, 1);
-        this.pageIndex.push(id);
-        for (let i = 0; i < this.pageIndex.length; i++) {
-            this.pageMap[this.pageIndex[i]].zindex = i
+        let ind = this.zIndexIdArray.indexOf(id);
+        this.zIndexIdArray.splice(ind, 1);
+        this.zIndexIdArray.push(id);
+        for (let i = 0; i < this.zIndexIdArray.length; i++) {
+            this.windowInfoMap[this.zIndexIdArray[i]].zindex = i
         }
-        return this.pageIndex.length
+        return this.zIndexIdArray.length
     }
     hideWindow(id: string) {
-        this.pageMap[id].ifShow = false
+        this.windowInfoMap[id].ifShow = false
     }
     showWindow(id: string) {
-        this.pageMap[id].ifShow = true
+        this.windowInfoMap[id].ifShow = true
     }
     destoryWindow(id: string) {
 
-        this.pageMap[id].ifDestory = true
-        this.pageMap[id].windowEventMap['destroy']()
-        // this.pageMap[id].appPointer?.unmount()
+        this.windowInfoMap[id].ifDestory = true
+        this.windowInfoMap[id].windowEventMap['destroy']?.()
+        // this.windowInfoMap[id].appPointer?.unmount()
         this.unRegisterWindow(id);
-        // this.pageMap[id].content?.unmounted?.()
+        // this.windowInfoMap[id].content?.unmounted?.()
         
         let self = document.getElementById(id);
         if (self) {
@@ -145,8 +145,8 @@ class WindowIPC {
         }
     }
     maxWindow(id: string) {
-        if(this.pageMap[id]){
-            this.pageMap[id].ifMax =!this.pageMap[id]?.ifMax
+        if(this.windowInfoMap[id]){
+            this.windowInfoMap[id].ifMax =!this.windowInfoMap[id]?.ifMax
         }
         
     }
@@ -160,5 +160,5 @@ class WindowIPC {
 }
 export {
     WindowIPC,
-    PageItem
+    WindowInfo
 }

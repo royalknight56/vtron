@@ -7,8 +7,8 @@
         </div>
         <div class="outer_main">
             <div class="main_uper">
-                <img draggable="false" class="app_icon" :src="pageInfo.props.icon" />
-                <div class="app_name">{{ pageInfo.props.name }}</div>
+                <img draggable="false" class="app_icon" :src="windowInfo.props.icon" />
+                <div class="app_name">{{ windowInfo.props.name }}</div>
             </div>
             <div class="main_card">
                 <table class="app_info">
@@ -18,7 +18,7 @@
                     </tr>
                     <tr>
                         <td>描述:</td>
-                        <td>{{ pageInfo.props.name }}</td>
+                        <td>{{ windowInfo.props.name }}</td>
                     </tr>
                 </table>
             </div>
@@ -53,7 +53,7 @@ let props = defineProps({
         type: String
     }
 })
-let pageInfo = WindowIPC.getInstance().getWindow(props.id || '')
+let windowInfo = WindowIPC.getInstance().getWindow(props.id || '')
 function closeWindow(){
     WindowIPC.getInstance().destoryWindow(props.id || '')
 }

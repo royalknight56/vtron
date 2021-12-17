@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 11:08:40
+ * @LastEditTime: 2021-12-16 19:56:29
  * @Description: 
  * @FilePath: /myindex/src/components/window/WindowsGroup.vue
 -->
@@ -9,10 +9,9 @@
         class="winitem"
         v-for="item in winlist"
         :key="item.id"
-        :ref="'ref'+item.id"
         >
         <teleport to="body">
-            <!-- <WindowTmpVue :ref="(el)=>{}" v-bind="{ctx:{IPC:item}}"></WindowTmpVue> -->
+            <WindowTmpVue :id='item.id' :ref="'ref'+item.id" :ctx="item"></WindowTmpVue>
         </teleport>
         </div>
 </template>
@@ -22,6 +21,6 @@ import { WindowIPC } from "../libs/WindowIPC"
 
 // {title:title,width,height,ctx:ctx}
 
-let winlist = WindowIPC.getInstance().pageMap
+let winlist = WindowIPC.getInstance().windowInfoMap
 
 </script>

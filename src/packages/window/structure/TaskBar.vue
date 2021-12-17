@@ -39,7 +39,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import type { PageItem } from "../libs/WindowIPC"
+import type { WindowInfo } from "../libs/WindowIPC"
 import { WindowIPC } from "../libs/WindowIPC"
 import { MenuIPC } from "../libs/MenuCtrl"
 import { computerCTC } from "../libs/systemStates";
@@ -56,9 +56,9 @@ if (appconfig.start_menu_logo == "default") {
 }
 
 
-let winlist = WindowIPC.getInstance().pageMap
+let winlist = WindowIPC.getInstance().windowInfoMap
 
-function barClick(item: PageItem) {
+function barClick(item: WindowInfo) {
     if (item.ifShow) {
         WindowIPC.getInstance().upSetWindowIndex(item.id)
     } else {
@@ -76,7 +76,7 @@ function barFirskClick(e: MouseEvent) {
         once: true
     })
 }
-function rightClick(e: MouseEvent, item: PageItem) {
+function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {
         MenuIPC.getInstance().callMenu(e.pageX, e.pageY,
             [
@@ -95,7 +95,7 @@ function rightClick(e: MouseEvent, item: PageItem) {
 
 }
 
-function closeButtonClicked(item: PageItem){
+function closeButtonClicked(item: WindowInfo){
     WindowIPC.getInstance().destoryWindow(item.id)
 }
 // //定期更换截图

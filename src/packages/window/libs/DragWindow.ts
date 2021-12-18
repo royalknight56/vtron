@@ -75,7 +75,7 @@ class DragWindow extends DragElement {
     }
     show() {
         this.readyRegister(this.title, this.icon, this.width, this.height, this.option, this.use);
-        setTimeout(() => {
+        nextTick(() => {
             if (!this.windowInfo?.ifDestory) {
 
                 this.readyDom();

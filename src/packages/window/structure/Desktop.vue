@@ -8,7 +8,7 @@
     <div class="desk_outer">
         <div class="desk_item" v-for="item in deskList" @dblclick="openApp(item)" @contextmenu.prevent="rightClick(item,$event)">
             <div class="item_img">
-                <img width="60" :src="item.icon" />
+                <img draggable="false" width="60" :src="item.icon" />
             </div>
             <div class="item_name">{{ item.name }}</div>
         </div>
@@ -28,7 +28,6 @@ import { openInfo } from "../system/openInfo";
 let deskList: Array<appInfo> = appList;
 function openApp(item: appInfo) {
     item.window.show();
-    // new DragWindow(100, 100, item.name,item.icon,item.width, item.height, {content:item.tmp},item.use)
 }
 
 function rightClick(item:appInfo,e: MouseEvent) {
@@ -53,6 +52,7 @@ function rightClick(item:appInfo,e: MouseEvent) {
     flex-direction: column;
     align-items: flex-start;
     flex-wrap: wrap;
+    user-select: none;
 }
 
 .desk_item {
@@ -72,9 +72,7 @@ function rightClick(item:appInfo,e: MouseEvent) {
 
     background-color: rgba(255, 255, 255, 0.281);
 }
-.desk_item:hover .item_name {
-    /* color: rgb(141, 141, 141); */
-}
+
 .item_img {
     width: 80px;
     height: 68px;

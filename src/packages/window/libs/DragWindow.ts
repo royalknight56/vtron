@@ -9,7 +9,7 @@ import { DragElement } from "./DragElement";
 import WindowTmpVue from "./WindowTmp.vue";
 
 
-import { WindowInfo, WindowIPC } from "./WindowIPC"
+import { WindowInfo, DWM } from "./DWM"
 import type { DefineComponent, App } from "vue";
 
 interface option {
@@ -38,7 +38,7 @@ class DragWindow extends DragElement {
     id: string
     ifcreated: boolean
     appPointer: App | null
-    constructor(option: option, use?: any) {
+    constructor(option: option) {
 
         super(option.x || 0, option.y || 0)
         this.windowInfo = null;
@@ -51,7 +51,6 @@ class DragWindow extends DragElement {
         this.width = option.width || 400;
         this.height = option.height || 400;
         this.option = option
-        this.use = use
         this.id = 'NULL'
         this.ifcreated = false;
         this.appPointer = null;
@@ -65,57 +64,27 @@ class DragWindow extends DragElement {
         this.evMap.onResizing = event;
     }
     readyDom() {
-        // let div = document.createElement('div')
-
-        // let id = WindowIPC.getInstance().getWinid();//获得一个id
-        // div.id = id
-        // this.id = id
-
-        console.log(this.id)
         this.el = <HTMLDivElement>document.getElementById(this.id);
-        return
+        return this.el;
     }
     readyRegister(title: string, icon: string = '', width: number, height: number, option: option, use?: any) {
-        let id = WindowIPC.getInstance().getWinid();//获得一个id
+        let id = DWM.getInstance().getWinid();//获得一个id
         this.id = id
+        this.windowInfo = DWM.getInstance().registerWindow(this.id, title, icon, width, height, option.content, option.props);//在IPC中注册，传递windowInfo
 
-        this.windowInfo = WindowIPC.getInstance().registerWindow(this.id, title, icon, width, height, option.content, option.props);//在IPC中注册，传递windowInfo
-        // this.appPointer = createApp(WindowTmpVue, { ctx: this.windowInfo })//模版中可以接受到windowInfo
-
-        if (use) {
-
-            for (let i = 0; i < use.length; i++) {
-                // this.appPointer.use(use[i])
-            }
-        }
     }
     show() {
         this.readyRegister(this.title, this.icon, this.width, this.height, this.option, this.use);
         setTimeout(() => {
-            console.log(!this.ifcreated ,this.windowInfo?.ifDestory)
             if (!this.windowInfo?.ifDestory) {
 
-
-                
                 this.readyDom();
-                console.log(this.el)
-                if (this.appPointer) {
-
-                    // this.appPointer.mount(this.el);
-
-                    WindowIPC.getInstance().mountWindowEventMap(this.id, 'destroy', () => {
-                        // this.appPointer?.unmount()
-                    })
-                    WindowIPC.getInstance().mountWindowEventMap(this.id, 'resize', (x: number, y: number) => {
-                        this.evMap.onResizing?.(x, y)
-                    })
-                }
 
                 if (this.el) {
                     this.mountDomEvent(this.el)
                 }
 
-                WindowIPC.getInstance().upSetWindowIndex(this.id)
+                DWM.getInstance().upSetWindowIndex(this.id)
                 this.ifcreated = true;
             }
         })

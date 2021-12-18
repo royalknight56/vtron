@@ -16,15 +16,10 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref } from "vue";
-import { WindowIPC } from "../packages/window/libs/WindowIPC";
-// let props = defineProps({
-//     windowId: {
-//         type:String,
-//         default:''
-//     }
-// })
+import { DWM } from "../packages/window/libs/DWM";
+
 let winId = <string>inject('windowId')
-WindowIPC.getInstance().mountWindowEventMap(winId,'resize',()=>{ console.log('resize')})
+DWM.getInstance().addEventListener(winId,'resize',()=>{ console.log('resize')})
 
 let urlinput = ref('')
 let urlsrc = ref('')

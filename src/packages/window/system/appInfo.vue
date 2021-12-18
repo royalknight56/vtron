@@ -45,17 +45,15 @@
         </div>
     </div>
 </template>
-<script lang="ts" setup>import { WindowIPC } from '../libs/WindowIPC';
+<script lang="ts" setup>
+import { inject } from 'vue';
+import { DWM } from '../libs/DWM';
 
+let id =<string>inject('windowId')
 
-let props = defineProps({
-    id: {
-        type: String
-    }
-})
-let windowInfo = WindowIPC.getInstance().getWindow(props.id || '')
+let windowInfo = DWM.getInstance().getWindow(id )
 function closeWindow(){
-    WindowIPC.getInstance().destoryWindow(props.id || '')
+    DWM.getInstance().destoryWindow(id )
 }
 </script>
 <style>

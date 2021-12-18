@@ -4,9 +4,9 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 20:12:58
+ * @LastEditTime: 2021-12-18 20:42:26
  * @Description: 
- * @FilePath: /myindex/src/components/window/libs/WindowIPC.ts
+ * @FilePath: /myindex/src/components/window/libs/DWM.ts
  */
 
 interface WindowInfo {
@@ -35,8 +35,8 @@ interface windowInfoMapInter {
 interface eventMapInter {
     [index: string]: Function
 }
-class WindowIPC {
-    private static instance: WindowIPC;
+class DWM {
+    private static instance: DWM;
     winnum: number;
     windowInfoMap: UnwrapNestedRefs<windowInfoMapInter>;
     zIndexIdArray: string[];
@@ -49,10 +49,12 @@ class WindowIPC {
     }
     static getInstance() {
         if (this.instance == undefined) {
-            this.instance = new WindowIPC()
+            this.instance = new DWM()
         }
         return this.instance
     }
+    
+    
     getWindow(id: string):WindowInfo {
         return this.windowInfoMap[id]
     }
@@ -95,7 +97,7 @@ class WindowIPC {
             return this.windowInfoMap[id]
         }
     }
-    mountWindowEventMap(id:string,name:string,func:Function){
+    addEventListener(id:string,name:string,func:Function){
         this.windowInfoMap[id].windowEventMap[name] = func
     }
     mountWindow(id:string,func:Function){
@@ -136,13 +138,13 @@ class WindowIPC {
         this.unRegisterWindow(id);
         // this.windowInfoMap[id].content?.unmounted?.()
         
-        let self = document.getElementById(id);
-        if (self) {
-            // 拿到父节点:
-            let parent = self.parentElement;
-            // 删除:
-            parent?.removeChild(self);
-        }
+        // let self = document.getElementById(id);
+        // if (self) {
+        //     // 拿到父节点:
+        //     let parent = self.parentElement;
+        //     // 删除:
+        //     parent?.removeChild(self);
+        // }
     }
     maxWindow(id: string) {
         if(this.windowInfoMap[id]){
@@ -159,6 +161,6 @@ class WindowIPC {
 
 }
 export {
-    WindowIPC,
+    DWM,
     WindowInfo
 }

@@ -2,7 +2,7 @@
  * @Author: zhangweiyuan-Royal
  * @LastEditTime: 2021-09-14 16:40:16
  * @Description: 
- * @FilePath: /myindex/src/components/window/libs/computerCTC.ts
+ * @FilePath: /myindex/src/components/window/libs/SystemStatus.ts
  */
 import { reactive } from "vue";
 import {appconfig } from "../../appconfig";
@@ -11,8 +11,8 @@ interface statsCtrl{
     screen:"common"|"blue"|"close",
 }
 
-class computerCTC {
-    private static instance: computerCTC;
+class SystemStatus {
+    private static instance: SystemStatus;
     stats: statsCtrl;
     private constructor() {
         this.stats = reactive({
@@ -21,7 +21,7 @@ class computerCTC {
     }
     static getInstance() {
         if (this.instance == undefined) {
-            this.instance = new computerCTC()
+            this.instance = new SystemStatus()
         }
         return this.instance
     }
@@ -61,5 +61,5 @@ class computerCTC {
     }
 }
 export {
-    computerCTC
+    SystemStatus
 }

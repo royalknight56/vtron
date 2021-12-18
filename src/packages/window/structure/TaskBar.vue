@@ -39,10 +39,10 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import type { WindowInfo } from "../libs/WindowIPC"
-import { WindowIPC } from "../libs/WindowIPC"
-import { MenuIPC } from "../libs/MenuCtrl"
-import { computerCTC } from "../libs/systemStates";
+import type { WindowInfo } from "../libs/DWM"
+import { DWM } from "../libs/DWM"
+import { MenuCtrl } from "../libs/MenuCtrl"
+import { SystemStatus } from "../libs/SystemStatus";
 import MagnetVue from "./Magnet.vue";
 import winimg from "../../../assets/winb.png"
 import { appconfig } from "../../appconfig";
@@ -56,14 +56,14 @@ if (appconfig.start_menu_logo == "default") {
 }
 
 
-let winlist = WindowIPC.getInstance().windowInfoMap
+let winlist = DWM.getInstance().windowInfoMap
 
 function barClick(item: WindowInfo) {
     if (item.ifShow) {
-        WindowIPC.getInstance().upSetWindowIndex(item.id)
+        DWM.getInstance().upSetWindowIndex(item.id)
     } else {
-        WindowIPC.getInstance().showWindow(item.id)
-        WindowIPC.getInstance().upSetWindowIndex(item.id)
+        DWM.getInstance().showWindow(item.id)
+        DWM.getInstance().upSetWindowIndex(item.id)
     }
 }
 
@@ -78,17 +78,17 @@ function barFirskClick(e: MouseEvent) {
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {
-        MenuIPC.getInstance().callMenu(e.pageX, e.pageY,
+        MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
             [
-                { name: '关闭', func: () => { WindowIPC.getInstance().destoryWindow(item.id) } },
-                { name: '最小化', func: () => { WindowIPC.getInstance().hideWindow(item.id) } }
+                { name: '关闭', func: () => { DWM.getInstance().destoryWindow(item.id) } },
+                { name: '最小化', func: () => { DWM.getInstance().hideWindow(item.id) } }
             ]
         )
     } else {
-        MenuIPC.getInstance().callMenu(e.pageX, e.pageY,
+        MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
             [
-                { name: '关闭', func: () => { WindowIPC.getInstance().destoryWindow(item.id) } },
-                { name: '显示', func: () => { WindowIPC.getInstance().showWindow(item.id) } }
+                { name: '关闭', func: () => { DWM.getInstance().destoryWindow(item.id) } },
+                { name: '显示', func: () => { DWM.getInstance().showWindow(item.id) } }
             ]
         )
     }
@@ -96,7 +96,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo){
-    WindowIPC.getInstance().destoryWindow(item.id)
+    DWM.getInstance().destoryWindow(item.id)
 }
 // //定期更换截图
 // setInterval(() => {

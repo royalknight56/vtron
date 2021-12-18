@@ -11,21 +11,21 @@
 </template>
 <script lang="ts" setup>
 import { computed, reactive, ref } from "vue";
-import { MenuIPC } from "../libs/MenuCtrl";
+import { MenuCtrl } from "../libs/MenuCtrl";
 import type {menuItem}from "../libs/MenuCtrl";
 
-let IPC = MenuIPC.getInstance()
+let IPC = MenuCtrl.getInstance()
 
 let IPClist = computed(() => {
-    return MenuIPC.getInstance().menuList
+    return MenuCtrl.getInstance().menuList
 })
 
 let cusStyle = ref<any>({
 })
-cusStyle.value.left = computed(() => MenuIPC.getInstance().x.value + 'px')
-cusStyle.value.top = computed(() => MenuIPC.getInstance().y.value + 'px')
+cusStyle.value.left = computed(() => MenuCtrl.getInstance().x.value + 'px')
+cusStyle.value.top = computed(() => MenuCtrl.getInstance().y.value + 'px')
 
-cusStyle.value.visibility = computed(() => MenuIPC.getInstance().ifShow.value?"visible":"hidden" )
+cusStyle.value.visibility = computed(() => MenuCtrl.getInstance().ifShow.value?"visible":"hidden" )
 
 function callFunc(item:menuItem) {
     item.func()

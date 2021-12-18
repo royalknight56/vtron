@@ -66,15 +66,16 @@
 <script lang="ts" setup>
 import { appList } from "../../appconfig";
 import type { appInfo } from "../../appconfig";
-import { computerCTC } from "../libs/systemStates";
-import { MenuIPC } from "../libs/MenuCtrl";
+import { SystemStatus } from "../libs/SystemStatus";
+
+import { MenuCtrl } from "../libs/MenuCtrl";
 import { DragWindow } from "../libs/DragWindow";
 
 function closeClice(e: MouseEvent) {
-    MenuIPC.getInstance().callMenu(e.pageX, e.pageY,
+    MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
         [
-            { name: '关机', func: () => { console.log("关机"); computerCTC.getInstance().closePower() } },
-            { name: '重启', func: () => { console.log("重启"); computerCTC.getInstance().restartPower() } }
+            { name: '关机', func: () => { console.log("关机"); SystemStatus.getInstance().closePower() } },
+            { name: '重启', func: () => { console.log("重启"); SystemStatus.getInstance().restartPower() } }
 
         ]
     )

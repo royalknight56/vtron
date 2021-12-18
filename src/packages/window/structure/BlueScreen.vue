@@ -2,7 +2,7 @@
  * @Author: zhangweiyuan-Royal
  * @LastEditTime: 2021-12-16 11:06:59
  * @Description: 
- * @FilePath: /myindex/src/components/window/bluescen.vue
+ * @FilePath: /myindex/src/components/window/BlueScreen.vue
 -->
 <template>
 <div class="outer" :class="{blueclass:stat.screen=='blue',blackclass:stat.screen=='close'}">
@@ -39,10 +39,10 @@
 </template>
 <script lang="ts" setup>
 import { appconfig } from "../../appconfig";
-import { computerCTC } from "../libs/systemStates";
+import { SystemStatus } from "../libs/SystemStatus";
 
 
-let stat = computerCTC.getInstance().stats;
+let stat = SystemStatus.getInstance().stats;
 </script>
 <style scoped>
 .outer{

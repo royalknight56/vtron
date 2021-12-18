@@ -29,13 +29,13 @@ function ClearDesktop() {
 
 
 export { DragWindow } from "./packages/window/libs/DragWindow";
-export { WindowIPC } from "./packages/window/libs/WindowIPC";
-export type { WindowInfo } from "./packages/window/libs/WindowIPC";
+export { DWM } from "./packages/window/libs/DWM";
+export type { WindowInfo } from "./packages/window/libs/DWM";
 
 
 // export { consoleIPC } from "./packages/window/libs/consoleIPC";
-export { computerCTC } from "./packages/window/libs/systemStates";
-export { MenuIPC } from "./packages/window/libs/MenuCtrl";
+export { SystemStatus } from "./packages/window/libs/SystemStatus";
+export { MenuCtrl } from "./packages/window/libs/MenuCtrl";
 
 
 export {

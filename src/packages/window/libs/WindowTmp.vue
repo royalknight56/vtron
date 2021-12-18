@@ -108,9 +108,9 @@ import { onMounted, computed } from "vue";
 import type { PropType } from "vue"
 
 
-import { WindowIPC } from "./WindowIPC"
-import type { WindowInfo } from "./WindowIPC"
-import { MenuIPC } from "./MenuCtrl"
+import { DWM } from "./DWM"
+import type { WindowInfo } from "./DWM"
+import { MenuCtrl } from "./MenuCtrl"
 
 // import { DragElement } from "./DragElement";
 
@@ -133,24 +133,24 @@ let props = defineProps({
         }
     }
 })
-console.log(props)
+// console.log(props)
 function closeWindow(): void {
-    WindowIPC.getInstance().destoryWindow(props.ctx.id)
+    DWM.getInstance().destoryWindow(props.ctx.id)
 }
 function hideWindow() {
-    WindowIPC.getInstance().hideWindow(props.ctx.id)
+    DWM.getInstance().hideWindow(props.ctx.id)
 }
 function maxWindow() {
-    WindowIPC.getInstance().maxWindow(props.ctx.id)
+    DWM.getInstance().maxWindow(props.ctx.id)
 }
 function predown() {
-    WindowIPC.getInstance().upSetWindowIndex(props.ctx.id)
+    DWM.getInstance().upSetWindowIndex(props.ctx.id)
 }
 function uperRightClick(e: MouseEvent) {
-    MenuIPC.getInstance().callMenu(e.pageX, e.pageY,
+    MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
         [
-            { name: '关闭', func: () => { WindowIPC.getInstance().destoryWindow(props.ctx.id) } },
-            { name: '最小化', func: () => { WindowIPC.getInstance().hideWindow(props.ctx.id) } }
+            { name: '关闭', func: () => { DWM.getInstance().destoryWindow(props.ctx.id) } },
+            { name: '最小化', func: () => { DWM.getInstance().hideWindow(props.ctx.id) } }
 
         ]
     )
@@ -162,7 +162,7 @@ let customerStyle = ref<any>({})
 
 function onFocus(e: MouseEvent|TouchEvent): void {
     // console.log('focus')
-    WindowIPC.getInstance().upSetWindowIndex(props.ctx.id)
+    DWM.getInstance().upSetWindowIndex(props.ctx.id)
     if (ifmax.value) {
         
         if(e instanceof MouseEvent) {
@@ -296,12 +296,12 @@ function dragStart(e: MouseEvent|TouchEvent, dire: string) {
 //     let el = document.getElementById(`${props.ctx.id}`)?.children[0].children[1];
 //     // console.log(`${props.ctx.id}`)
 //     // console.log(el)
-//     if(el&&WindowIPC.getInstance().getWindow(props.ctx.id).ifShow){
+//     if(el&&DWM.getInstance().getWindow(props.ctx.id).ifShow){
 //         html2canvas(<HTMLElement>el,{
 //             allowTaint: true,
 //         }).then(canvas => {
 //             // console.log(canvas)
-//             WindowIPC.getInstance().submitScreenShoot(props.ctx.id,canvas)
+//             DWM.getInstance().submitScreenShoot(props.ctx.id,canvas)
             
 //         });
 //     }

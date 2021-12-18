@@ -17,10 +17,10 @@
 </template>
 <script setup lang="ts">
 import WindowTmpVue from "../libs/WindowTmp.vue";
-import { WindowIPC } from "../libs/WindowIPC"
+import { DWM } from "../libs/DWM"
 
 // {title:title,width,height,ctx:ctx}
 
-let winlist = WindowIPC.getInstance().windowInfoMap
+let winlist = DWM.getInstance().windowInfoMap
 
 </script>

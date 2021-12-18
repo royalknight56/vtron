@@ -10,7 +10,7 @@
     <TaskBar></TaskBar>
     <ContextMenu></ContextMenu>
     <Desktop></Desktop>
-    <Bluescen></Bluescen>
+    <BlueScreen></BlueScreen>
     <WindowsGroup></WindowsGroup>
   </div>
 </template>
@@ -23,13 +23,13 @@ import TaskBar from './window/structure/TaskBar.vue';
 import ContextMenu from './window/structure/ContextMenu.vue';
 import Desktop from './window/structure/Desktop.vue';
 
-import Bluescen from './window/structure/Bluescen.vue';
+import BlueScreen from './window/structure/BlueScreen.vue';
 import WindowsGroup from './window/structure/WindowsGroup.vue';
 
-import { computerCTC } from './window/libs/systemStates';
+import { SystemStatus } from './window/libs/SystemStatus';
 
 onMounted(() => {
-  computerCTC.getInstance().openPower()
+  SystemStatus.getInstance().openPower()
 })
 
 </script>

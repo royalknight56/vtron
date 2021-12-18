@@ -19,8 +19,8 @@
 import { DragWindow } from "../libs/DragWindow";
 import { appList } from "../../appconfig";
 import type { appInfo } from "../../appconfig";
-import { MenuIPC } from "../libs/MenuCtrl";
-import { WindowIPC } from "../libs/WindowIPC";
+import { MenuCtrl } from "../libs/MenuCtrl";
+import { DWM } from "../libs/DWM";
 import { openInfo } from "../system/openInfo";
 
 
@@ -32,7 +32,7 @@ function openApp(item: appInfo) {
 }
 
 function rightClick(item:appInfo,e: MouseEvent) {
-    MenuIPC.getInstance().callMenu(e.pageX, e.pageY,
+    MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
         [
             { name: '打开(O)', func: () => { item.window.show(); } },
             { name: '属性(R)', func: () => { 

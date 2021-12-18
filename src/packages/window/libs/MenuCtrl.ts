@@ -6,14 +6,14 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
  * @Author: zhangweiyuan-Royal
  * @LastEditTime: 2021-08-18 16:57:28
  * @Description: 右键菜单控制
- * @FilePath: /myindex/src/components/window/libs/MenuIPC.ts
+ * @FilePath: /myindex/src/components/window/libs/MenuCtrl.ts
  */
 interface menuItem{
     name:string,
     func:Function
 }
-class MenuIPC {
-    private static instance:MenuIPC;
+class MenuCtrl {
+    private static instance:MenuCtrl;
 
     x:Ref<number>;
     y:Ref<number>;
@@ -29,7 +29,7 @@ class MenuIPC {
     }
     static getInstance(){
         if(this.instance==undefined){
-            this.instance=new MenuIPC()
+            this.instance=new MenuCtrl()
         }
         return this.instance
     }
@@ -53,6 +53,6 @@ class MenuIPC {
 }
 
 export {
-    MenuIPC,
+    MenuCtrl,
     menuItem
 }

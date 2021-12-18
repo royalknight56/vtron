@@ -3,6 +3,7 @@
  * @LastEditTime: 2021-12-16 11:06:59
  * @Description: 
  * @FilePath: /myindex/src/components/window/BlueScreen.vue
+  Need CodeReview 
 -->
 <template>
 <div class="outer" :class="{blueclass:stat.screen=='blue',blackclass:stat.screen=='close'}">

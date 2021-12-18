@@ -3,6 +3,7 @@
  * @LastEditTime: 2021-12-16 11:16:39
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
+  Need CodeReview 
 -->
 <template>
     <div class="magnet" @click.stop>

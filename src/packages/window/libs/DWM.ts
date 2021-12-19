@@ -1,6 +1,7 @@
 import { reactive } from "vue";
 import { DefineComponent,App } from "vue";
 import { UnwrapNestedRefs } from "@vue/reactivity";
+import { option } from "./DragWindow";
 
 /*
  * @Author: zhangweiyuan-Royal
@@ -10,24 +11,40 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
  * Need CodeReview 
  */
 
+// interface option {
+//     content: ReturnType<typeof defineComponent>,
+//     props?: any,
+//     x?: number,
+//     y?: number,
+//     width?: number,
+//     height?: number,
+//     title?: string,
+//     icon?: string,
+// }
+
 interface WindowInfo {
+    //内建属性
     id: string,
     wid: number,
-    title: string,
     zindex: number,
     ifShow: boolean,
     iftop: boolean,
     ifDestory: boolean,
-    ifMax:boolean,
+    isMaximize:boolean,
+
+    //自定义属性
     width:number,
     height:number,
+    x:number,
+    y:number,
+    title: string,
     icon:string,
     content:DefineComponent<{}, {}, any>,
     props:any,
     windowEventMap:{
         [index: string]:Function
     },
-    // appPointer: App|null
+
 }
 
 interface windowInfoMapInter {
@@ -67,29 +84,29 @@ class DWM {
         return "dragwinelementhash89103"+this.getWinnum()
     }
     registerWindow(id: string, 
-
-        title: string,icon:string,width:number,height:number,
-
-        content:DefineComponent<{}, {}, any>,
-        props:any):WindowInfo {
+        option:option
+        ):WindowInfo {
         if (this.windowInfoMap[id]) {
             return this.windowInfoMap[id]
         } else {
             this.windowInfoMap[id] = reactive({
                 id,
                 wid: this.winnum,
-                title,
                 zindex: 0,
                 ifShow: true,
                 iftop: false,
                 ifDestory: false,
-                ifMax:false,
-                width,
-                height,
-                icon:icon,
-                content,
-                props:props,
-                appPointer:null,
+                isMaximize:false,
+
+                x:option.x || 0,
+                y:option.y || 0,
+                width:option.width || 400,
+                height:option.height || 400,
+                title:option.title || '未命名窗口',
+                icon:option.icon|| '',
+                content:option.content,
+                props:option.props,
+
                 windowEventMap:{}
             });
 
@@ -137,19 +154,11 @@ class DWM {
         this.windowInfoMap[id].windowEventMap['destroy']?.()
         // this.windowInfoMap[id].appPointer?.unmount()
         this.unRegisterWindow(id);
-        // this.windowInfoMap[id].content?.unmounted?.()
-        
-        // let self = document.getElementById(id);
-        // if (self) {
-        //     // 拿到父节点:
-        //     let parent = self.parentElement;
-        //     // 删除:
-        //     parent?.removeChild(self);
-        // }
+
     }
     maxWindow(id: string) {
         if(this.windowInfoMap[id]){
-            this.windowInfoMap[id].ifMax =!this.windowInfoMap[id]?.ifMax
+            this.windowInfoMap[id].isMaximize =!this.windowInfoMap[id]?.isMaximize
         }
         
     }

@@ -5,9 +5,9 @@
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
  */
-import { createApp, defineComponent, nextTick } from "vue";
-import { DragElement } from "./DragElement";
-import WindowTmpVue from "./WindowTmp.vue";
+import { defineComponent, nextTick } from "vue";
+// import { DragElement } from "./DragElement";
+// import WindowTmpVue from "./WindowTmp.vue";
 
 
 import { WindowInfo, DWM } from "./DWM"
@@ -23,13 +23,12 @@ interface option {
     title?: string,
     icon?: string,
 }
-class DragWindow extends DragElement {
+class DragWindow {
     evMap: {
         onDraging?: Function
         onResizing?: (x: number, y: number) => void
     }
     windowInfo: WindowInfo | null
-    el: HTMLDivElement | null
     title: string
     icon: string
     width: number
@@ -41,9 +40,8 @@ class DragWindow extends DragElement {
     appPointer: App | null
     constructor(option: option) {
 
-        super(option.x || 0, option.y || 0)
+        // super(option.x || 0, option.y || 0)
         this.windowInfo = null;
-        this.el = null;
 
         this.evMap = {};
 
@@ -64,34 +62,29 @@ class DragWindow extends DragElement {
     onWindowResizing(event: (x: number, y: number) => void) {
         this.evMap.onResizing = event;
     }
-    readyDom() {
-        this.el = <HTMLDivElement>document.getElementById(this.id);
-        return this.el;
-    }
-    readyRegister(title: string, icon: string = '', width: number, height: number, option: option, use?: any) {
+
+    readyRegister() {
         let id = DWM.getInstance().getWinid();//获得一个id
         this.id = id
-        this.windowInfo = DWM.getInstance().registerWindow(this.id, title, icon, width, height, option.content, option.props);//在IPC中注册，传递windowInfo
-
+    }
+    register(option: option) {
+        this.windowInfo = DWM.getInstance().registerWindow(this.id,option);//在IPC中注册，传递windowInfo
     }
     show() {
-        this.readyRegister(this.title, this.icon, this.width, this.height, this.option, this.use);
+        if (!this.ifcreated && !this.windowInfo?.ifDestory) {
+            this.readyRegister();
+        }
+        this.register( this.option);
+
         nextTick(() => {
-            if (!this.windowInfo?.ifDestory) {
-
-                this.readyDom();
-
-                if (this.el) {
-                    this.mountDomEvent(this.el)
-                }
-
-                DWM.getInstance().upSetWindowIndex(this.id)
-                this.ifcreated = true;
-            }
+            DWM.getInstance().upSetWindowIndex(this.id)
+            this.ifcreated = true;
         })
+
 
     }
 }
 export {
-    DragWindow
+    DragWindow,
+    option
 }

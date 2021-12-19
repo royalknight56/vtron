@@ -11,7 +11,8 @@
         :style="customerStyle"
         @touchstart.passive="onFocus"
         @mousedown="onFocus"
-        :class="{ topwin: iftop, maxwin: ifmax }"
+        :class="{ topwin: iftop, maxwin: isMaximize }"
+        ref='$win_outer'
     >
         <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
             <div class="wintmp_left">
@@ -22,67 +23,22 @@
             </div>
             <div class="winbutton_group">
                 <div @click="hideWindow()" class="winbutton hide_button">
-                    <svg
-                        class="icon"
-                        viewBox="0 0 1024 1024"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="12"
-                        height="12"
-                    >
-                        <path
-                            d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z"
-                            p-id="3846"
-                        />
+                    <svg class="icon" viewBox="0 0 1024 1024">
+                        <path d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z" />
                     </svg>
                 </div>
                 <div @click="maxWindow()" class="winbutton max_button">
-                    <svg
-                        v-if="ifmax"
-                        class="icon"
-                        viewBox="0 0 1024 1024"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="12"
-                        height="12"
-                    >
-                        <path
-                            d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z"
-                            p-id="3295"
-                        />
+                    <svg v-if="isMaximize" class="icon" viewBox="0 0 1024 1024">
+                        <path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" />
                     </svg>
-                    <svg
-                        v-else
-                        class="icon"
-                        viewBox="0 0 1024 1024"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="12"
-                        height="12"
-                    >
-                        <path
-                            d="M926.45937303 97.54062697v828.2973677H97.54062697V97.54062697h828.91874606m4.97102697-77.6722963h-838.8608c-39.7682157 0-72.07989097 32.31167525-72.07989097 72.07989096v839.48217837c0 39.7682157 32.31167525 72.07989097 72.07989097 72.07989097h839.48217837c39.7682157 0 72.07989097-32.31167525 72.07989096-72.07989097v-838.8608c0-40.38959408-32.31167525-72.70126933-72.70126933-72.70126933 0.62137837 0 0 0 0 0z"
-                            p-id="3142"
-                        />
+                    <svg v-else  class="icon" viewBox="0 0 1024 1024">
+                        <path d="M926.45937303 97.54062697v828.2973677H97.54062697V97.54062697h828.91874606m4.97102697-77.6722963h-838.8608c-39.7682157 0-72.07989097 32.31167525-72.07989097 72.07989096v839.48217837c0 39.7682157 32.31167525 72.07989097 72.07989097 72.07989097h839.48217837c39.7682157 0 72.07989097-32.31167525 72.07989096-72.07989097v-838.8608c0-40.38959408-32.31167525-72.70126933-72.70126933-72.70126933 0.62137837 0 0 0 0 0z" />
                     </svg>
                 </div>
                 <!-- <svg t="1629857965098" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3294" width="200" height="200"><path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" p-id="3295"></path></svg> -->
                 <div @click="closeWindow()" class="winbutton close_button">
-                    <svg
-                        t="1629858066563"
-                        class="icon"
-                        viewBox="0 0 1024 1024"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        p-id="4652"
-                        width="12"
-                        height="12"
-                    >
-                        <path
-                            d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z"
-                            fill="#363F4D"
-                            p-id="4653"
-                        />
+                    <svg class="icon" viewBox="0 0 1024 1024" >
+                        <path d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z" fill="#363F4D" />
                     </svg>
                 </div>
             </div>
@@ -97,9 +53,9 @@
             <component :is="componentValue" ></component>
             <!-- <div ></div> -->
         </div>
-        <div class="right_border" @mousedown.stop="dragStart($event, 'r')" @touchstart.stop.passive="dragStart($event, 'r')"></div>
-        <div class="bottom_border" @mousedown.stop="dragStart($event, 'b')" @touchstart.stop.passive="dragStart($event, 'b')"></div>
-        <div class="right_bottom_border" @mousedown.stop="dragStart($event, 'rb')" @touchstart.stop.passive="dragStart($event, 'rb')"></div>
+        <div class="right_border" @mousedown.stop="startScale($event, 'r')" @touchstart.stop.passive="startScale($event, 'r')"></div>
+        <div class="bottom_border" @mousedown.stop="startScale($event, 'b')" @touchstart.stop.passive="startScale($event, 'b')"></div>
+        <div class="right_bottom_border" @mousedown.stop="startScale($event, 'rb')" @touchstart.stop.passive="startScale($event, 'rb')"></div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -113,6 +69,7 @@ import { DWM } from "./DWM"
 import type { WindowInfo } from "./DWM"
 import { MenuCtrl } from "./MenuCtrl"
 
+import { DragElement } from "./DragElement";
 // import { DragElement } from "./DragElement";
 
 
@@ -164,7 +121,7 @@ let customerStyle = ref<any>({})
 function onFocus(e: MouseEvent|TouchEvent): void {
     // console.log('focus')
     DWM.getInstance().upSetWindowIndex(props.ctx.id)
-    if (ifmax.value) {
+    if (isMaximize.value) {
         
         if(e instanceof MouseEvent) {
             e.preventDefault()
@@ -178,11 +135,14 @@ function onFocus(e: MouseEvent|TouchEvent): void {
 let componentValue: any = shallowRef(null)
 
 let iftop = computed(() => props.ctx.iftop)
-let ifmax = computed(() => props.ctx.ifMax)
+let isMaximize = computed(() => props.ctx.isMaximize)
 
 let winWidth = ref(props.ctx.width)
 let winHeight = ref(props.ctx.height)
 
+/*
+计算样式
+*/
 onMounted(() => {
 
     customerStyle.value = {
@@ -202,13 +162,27 @@ onMounted(() => {
     componentValue.value = toRaw(props.ctx).content;
     provide('windowId', props.ctx.id)
 })
+/*
+挂载拖动事件
+*/
+let $win_outer=ref(null);
+let wininfo = DWM.getInstance().getWindow(props.ctx.id)
+onMounted(()=>{
+    let dragAble = new DragElement(wininfo.x,wininfo.y).mountDomEvent($win_outer.value)
+})
+
+
+
+/*
+挂载缩放事件
+*/
 
 let resizemode = ref('null')
-let mosStartX = ref(0);
-let mosStartY = ref(0);
+let mosStartX = 0;
+let mosStartY = 0;
 
-let winStartX = ref(0);
-let winStartY = ref(0);
+let winStartX = 0;
+let winStartY = 0;
 
 function moveListener(e: MouseEvent|TouchEvent){
     // e.preventDefault()
@@ -230,22 +204,22 @@ function moveListener(e: MouseEvent|TouchEvent){
     }
     
     if (resizemode.value == 'r') {
-        winWidth.value = winStartX.value + pageX - mosStartX.value
+        winWidth.value = winStartX + pageX - mosStartX
         if (winWidth.value < 170) {
             winWidth.value = 170
         } else {
             props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
         }
     } else if (resizemode.value == 'b') {
-        winHeight.value = winStartY.value + pageY - mosStartY.value
+        winHeight.value = winStartY + pageY - mosStartY
         if (winHeight.value < 100) {
             winHeight.value = 100
         } else {
             props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
         }
     } else if (resizemode.value == 'rb') {
-        winWidth.value = winStartX.value + pageX - mosStartX.value
-        winHeight.value = winStartY.value + pageY - mosStartY.value
+        winWidth.value = winStartX + pageX - mosStartX
+        winHeight.value = winStartY + pageY - mosStartY
         if (winWidth.value < 170) {
             winWidth.value = 170
             if (winHeight.value < 100) {
@@ -266,6 +240,7 @@ function moveListener(e: MouseEvent|TouchEvent){
     
     // e.stopPropagation()
 }
+
 document.addEventListener("touchmove", moveListener)
 document.addEventListener('mousemove', moveListener)
 document.addEventListener("mouseup", () => {
@@ -274,18 +249,21 @@ document.addEventListener("mouseup", () => {
 document.addEventListener("touchend", () => {
     resizemode.value = 'null'
 })
-function dragStart(e: MouseEvent|TouchEvent, dire: string) {
+document.addEventListener('drag', ()=>{
+    resizemode.value = 'null'
+})
+function startScale(e: MouseEvent|TouchEvent, dire: string) {
     
     resizemode.value = dire
     if(e instanceof MouseEvent){
-        mosStartX.value = e.pageX
-        mosStartY.value = e.pageY
+        mosStartX = e.pageX
+        mosStartY = e.pageY
     }else{
-        mosStartX.value = e.touches[0].pageX
-        mosStartY.value = e.touches[0].pageY
+        mosStartX = e.touches[0].pageX
+        mosStartY = e.touches[0].pageY
     }
-    winStartX.value = winWidth.value
-    winStartY.value = winHeight.value
+    winStartX = winWidth.value
+    winStartY = winHeight.value
     
 }
 
@@ -407,6 +385,10 @@ function dragStart(e: MouseEvent|TouchEvent, dire: string) {
     top: 0;
     right: 0;
 }
+.icon{
+    width: 12px;
+    height: 12px;
+}
 .winbutton {
     cursor: pointer;
     height: 30px;
@@ -447,16 +429,16 @@ function dragStart(e: MouseEvent|TouchEvent, dire: string) {
     position: absolute;
     right: -12px;
     background-color: rgba(0, 0, 0, 0);
-    width: 10px;
-    height: 100%;
+    width: 16px;
+    height: calc(100% - 4px);
 }
 .bottom_border {
     cursor: ns-resize;
     position: absolute;
     bottom: -12px;
     background-color: rgba(0, 0, 0, 0);
-    width: 100%;
-    height: 10px;
+    width: calc(100% - 4px);
+    height: 16px;
 }
 .right_bottom_border {
     cursor: nwse-resize;
@@ -464,8 +446,8 @@ function dragStart(e: MouseEvent|TouchEvent, dire: string) {
     right: -12px;
     bottom: -12px;
     background-color: rgba(0, 0, 0, 0);
-    width: 10px;
-    height: 10px;
+    width: 16px;
+    height: 16px;
 }
 .resizeing {
     user-select: none;

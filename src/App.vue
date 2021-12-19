@@ -22,6 +22,14 @@ import { DragWindow } from "./packages/window/libs/DragWindow";
 import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {
+  let testwin = new DragWindow(
+      {
+        title: '浏览器',
+        icon: brow,
+        width: 600,
+        height: 500,
+        content: Mycom
+      })
   appList.splice(0, 100000)
   appList.push({
     name: '浏览器',
@@ -50,6 +58,17 @@ onMounted(() => {
         content: Mycom
       })
   });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+  appList.push({ name: '我的电脑', icon: brow, window: testwin });
 })
 
 // new DragWindow(0, 0, '窗口通信',beatico, 300, 400, { content: AdmVue},[ElementPlus])
@@ -57,7 +76,7 @@ onMounted(() => {
 let opt: plug_option = {
   if_logo_show: true,
   start_time: 0,
-  backimg: backimg,
+  // backimg: backimg,
   start_menu_logo: brow,
 }
 Object.assign(appconfig, opt)

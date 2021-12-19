@@ -147,11 +147,18 @@ onMounted(() => {
         zIndex: computed(() => {
             return props.ctx.zindex
         }),
-        visibility: computed(() => {
+        // visibility: computed(() => {
+        //     if (props.ctx.ifShow) {
+        //         return "visible"
+        //     } else {
+        //         return "hidden"
+        //     }
+        // }),
+        display: computed(() => {
             if (props.ctx.ifShow) {
-                return "visible"
+                return ""
             } else {
-                return "hidden"
+                return "none"
             }
         }),
     }
@@ -206,7 +213,6 @@ function startScale(e: MouseEvent|TouchEvent, dire: string){
 
     display: flex;
     flex-direction: column;
-
     /**/
     border: #0078d7;
     border-width: 1px;

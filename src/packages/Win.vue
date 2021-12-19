@@ -5,7 +5,7 @@
  * @FilePath: /myindex/src/components/win.vue
 -->
 <template>
-  <div class="win_outer" id="winid">
+  <div @contextmenu.prevent class="win_outer" id="winid">
     
     <TaskBar></TaskBar>
     <ContextMenu></ContextMenu>

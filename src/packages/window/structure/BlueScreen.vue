@@ -6,7 +6,7 @@
   Need CodeReview 
 -->
 <template>
-<div class="outer" :class="{blueclass:stat.screen=='blue',blackclass:stat.screen=='close'}">
+<div class="outer" @contextmenu.prevent="backgroundRightClick" :class="{blueclass:stat.screen=='blue',blackclass:stat.screen=='close'}">
     <div id="dot"  v-if="stat.screen == 'blue'">
         !
         <div id="dottext">
@@ -16,7 +16,7 @@
             </span>
         </div>
     </div>
-    <div id="logoW" v-if="appconfig.if_logo_show&&(stat.screen == 'blue'||stat.screen == 'common')">
+    <div  id="logoW" v-if="appconfig.if_logo_show&&(stat.screen == 'blue'||stat.screen == 'common')">
         <div id="logo">
             <div class="win" id="win1"></div>
             <div class="win" id="win2"></div>
@@ -40,10 +40,19 @@
 </template>
 <script lang="ts" setup>
 import { appconfig } from "../../appconfig";
+import { MenuCtrl } from "../libs/MenuCtrl";
 import { SystemStatus } from "../libs/SystemStatus";
 
 
 let stat = SystemStatus.getInstance().stats;
+
+function backgroundRightClick(e: MouseEvent) {
+    MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
+        [
+            { name: '刷新', func: () => {  } },
+        ]
+    )
+}
 </script>
 <style scoped>
 .outer{
@@ -52,7 +61,7 @@ let stat = SystemStatus.getInstance().stats;
     top: 0;
     width: 100%;
     height: 100%;
-    z-index: -50;
+    /* z-index: -50; */
     background-color: rgb(0, 119, 210);
     user-select: none;
 }
@@ -69,7 +78,6 @@ let stat = SystemStatus.getInstance().stats;
     height: 100%;
     object-fit: cover;
     user-select: none;
-    draggable: false;
 }
 .blueclass{
     z-index: 10001;
@@ -128,7 +136,7 @@ body {
 }
 
 #logo:hover {
-    transform: rotateY(-10deg);
+    transform: rotateY(0deg);
 }
 
 #win1 {

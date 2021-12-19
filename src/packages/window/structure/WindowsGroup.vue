@@ -6,15 +6,11 @@
   Need CodeReview 
 -->
 <template>
-    <div
-        class="winitem"
-        v-for="item in winlist"
-        :key="item.id"
-        >
+    <div class="winitem" v-for="item in winlist" :key="item.id">
         <teleport to="body">
-            <WindowTmpVue :id='item.id' :ref="'ref'+item.id" :ctx="item"></WindowTmpVue>
+            <WindowTmpVue :id="item.id" :ref="'ref' + item.id" :ctx="item"></WindowTmpVue>
         </teleport>
-        </div>
+    </div>
 </template>
 <script setup lang="ts">
 import WindowTmpVue from "../libs/WindowTmp.vue";
@@ -25,3 +21,10 @@ import { DWM } from "../libs/DWM"
 let winlist = DWM.getInstance().windowInfoMap
 
 </script>
+<style scoped>
+.winitem {
+    position: relative;
+    z-index: 2;
+
+}
+</style>

@@ -48,12 +48,15 @@ function rightClick(item:appInfo,e: MouseEvent) {
 <style scoped>
 .desk_outer {
     height: calc(100% - 30px);
-    width: 10vw;
+    width: min-content;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    align-content: flex-start;
     flex-wrap: wrap;
     user-select: none;
+    z-index: 1;
+    position: relative;
 }
 
 .desk_item {

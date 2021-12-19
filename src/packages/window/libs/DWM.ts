@@ -138,7 +138,7 @@ class DWM {
         this.zIndexIdArray.splice(ind, 1);
         this.zIndexIdArray.push(id);
         for (let i = 0; i < this.zIndexIdArray.length; i++) {
-            this.windowInfoMap[this.zIndexIdArray[i]].zindex = i
+            this.windowInfoMap[this.zIndexIdArray[i]].zindex = i + 10
         }
         return this.zIndexIdArray.length
     }

@@ -11,7 +11,7 @@
             <button class="change button" @click="changeUrl">-</button>
         </div>
         
-        <iframe class="broifame" :src="urlsrc"></iframe>
+        <!-- <iframe class="broifame" :src="urlsrc"></iframe> -->
     </div>
 </template>
 <script lang="ts" setup>
@@ -40,10 +40,10 @@ let after = new DragWindow({
     title:'test',
     icon,
     content:TestLoadafterVue})
-// setInterval(()=>{
-//     after.show()
-// })
-after.show()
+setTimeout(()=>{
+    after.show()
+})
+// after.show()
 after.onWindowResizing((x,y)=>{ console.log(x,y) })
 </script>
 <style>

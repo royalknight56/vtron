@@ -64,18 +64,14 @@ import { markRaw, provide, reactive, ref, shallowRef, toRaw } from "vue";
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue"
 
-
 import { DWM } from "./DWM"
 import type { WindowInfo } from "./DWM"
 import { MenuCtrl } from "./MenuCtrl"
 
 import { DragElement } from "./DragElement";
-// import { DragElement } from "./DragElement";
-
+import { ScaleElement } from "./ScaleElement";
 
 // import html2canvas from 'html2canvas';
-import { on } from "events";
-import { onUnmounted } from "vue";
 
 let props = defineProps({
 
@@ -177,119 +173,13 @@ onMounted(()=>{
 挂载缩放事件
 */
 
+
 let resizemode = ref('null')
-let mosStartX = 0;
-let mosStartY = 0;
+let scaleAble = new ScaleElement(resizemode,winWidth,winHeight,props.ctx.windowEventMap['resize']);
 
-let winStartX = 0;
-let winStartY = 0;
-
-function moveListener(e: MouseEvent|TouchEvent){
-    // e.preventDefault()
-    if (e instanceof MouseEvent) {
-        if(e.buttons == 1) {
-
-        } else {
-            return
-        }
-    }
-    let pageX = 0;
-    let pageY = 0;
-    if (e instanceof MouseEvent) {
-        pageX = e.pageX;
-        pageY = e.pageY;
-    }else{
-        pageX = e.touches[0].pageX;
-        pageY = e.touches[0].pageY;
-    }
-    
-    if (resizemode.value == 'r') {
-        winWidth.value = winStartX + pageX - mosStartX
-        if (winWidth.value < 170) {
-            winWidth.value = 170
-        } else {
-            props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
-        }
-    } else if (resizemode.value == 'b') {
-        winHeight.value = winStartY + pageY - mosStartY
-        if (winHeight.value < 100) {
-            winHeight.value = 100
-        } else {
-            props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
-        }
-    } else if (resizemode.value == 'rb') {
-        winWidth.value = winStartX + pageX - mosStartX
-        winHeight.value = winStartY + pageY - mosStartY
-        if (winWidth.value < 170) {
-            winWidth.value = 170
-            if (winHeight.value < 100) {
-                winHeight.value = 100
-            } else {
-                props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
-            }
-        } else {
-            if (winHeight.value < 100) {
-                winHeight.value = 100
-            }
-            props.ctx.windowEventMap['resize']?.(winWidth.value,winHeight.value)
-        }
-
-    } else {
-        return
-    }
-    
-    // e.stopPropagation()
+function startScale(e: MouseEvent|TouchEvent, dire: string){
+    scaleAble?.startScale(e, dire)
 }
-
-document.addEventListener("touchmove", moveListener)
-document.addEventListener('mousemove', moveListener)
-document.addEventListener("mouseup", () => {
-    resizemode.value = 'null'
-})
-document.addEventListener("touchend", () => {
-    resizemode.value = 'null'
-})
-document.addEventListener('drag', ()=>{
-    resizemode.value = 'null'
-})
-function startScale(e: MouseEvent|TouchEvent, dire: string) {
-    
-    resizemode.value = dire
-    if(e instanceof MouseEvent){
-        mosStartX = e.pageX
-        mosStartY = e.pageY
-    }else{
-        mosStartX = e.touches[0].pageX
-        mosStartY = e.touches[0].pageY
-    }
-    winStartX = winWidth.value
-    winStartY = winHeight.value
-    
-}
-
-// /// 这段逻辑 是定期截图的
-// let coolTime = 5;
-// let timer = setInterval(screenShorts, coolTime * 1000)
-
-// function screenShorts() {
-//     let el = document.getElementById(`${props.ctx.id}`)?.children[0].children[1];
-//     // console.log(`${props.ctx.id}`)
-//     // console.log(el)
-//     if(el&&DWM.getInstance().getWindow(props.ctx.id).ifShow){
-//         html2canvas(<HTMLElement>el,{
-//             allowTaint: true,
-//         }).then(canvas => {
-//             // console.log(canvas)
-//             DWM.getInstance().submitScreenShoot(props.ctx.id,canvas)
-            
-//         });
-//     }
-// }
-// onUnmounted(() => {
-//     clearInterval(timer)
-// })
-
-
 
 </script>
 <style>

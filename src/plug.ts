@@ -32,8 +32,6 @@ export { DragWindow } from "./packages/window/libs/DragWindow";
 export { DWM } from "./packages/window/libs/DWM";
 export type { WindowInfo } from "./packages/window/libs/DWM";
 
-
-// export { consoleIPC } from "./packages/window/libs/consoleIPC";
 export { SystemStatus } from "./packages/window/libs/SystemStatus";
 export { MenuCtrl } from "./packages/window/libs/MenuCtrl";
 

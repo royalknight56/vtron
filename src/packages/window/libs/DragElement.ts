@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 20:03:14
+ * @LastEditTime: 2021-12-20 09:45:54
  * @Description: 实现可移动Object
  * @FilePath: /myindex/src/components/window/libs/DragElement.ts
  * Need CodeReview 
@@ -76,7 +76,6 @@ class DragElement extends DragObj {
         // })
     }
     mountDomEvent(element: any){
-        console.log(element)
         this.el=element;
         this.ifDraging = false;
         element.style.left = this.posX + 'px';

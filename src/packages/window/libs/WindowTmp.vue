@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 20:09:50
+ * @LastEditTime: 2021-12-20 09:46:07
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -87,7 +87,6 @@ let props = defineProps({
         }
     }
 })
-// console.log(props)
 function closeWindow(): void {
     DWM.getInstance().destoryWindow(props.ctx.id)
 }
@@ -115,7 +114,6 @@ let winmount = ref(null)
 let customerStyle = ref<any>({})
 
 function onFocus(e: MouseEvent|TouchEvent): void {
-    // console.log('focus')
     DWM.getInstance().upSetWindowIndex(props.ctx.id)
     if (isMaximize.value) {
         

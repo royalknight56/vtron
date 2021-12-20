@@ -26,7 +26,6 @@ class ScaleElement {
         
     }
     mount() {
-        console.log(this.resizemode)
         document.addEventListener("touchmove", this.moveListener.bind(this))
         document.addEventListener('mousemove', this.moveListener.bind(this))
         document.addEventListener("mouseup", () => {

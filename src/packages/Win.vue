@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 19:51:13
+ * @LastEditTime: 2021-12-27 17:31:26
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -12,6 +12,7 @@
     <Desktop></Desktop>
     <BlueScreen></BlueScreen>
     <WindowsGroup></WindowsGroup>
+    <LockScreenVue></LockScreenVue>
   </div>
 </template>
   
@@ -25,8 +26,10 @@ import Desktop from './window/structure/Desktop.vue';
 
 import BlueScreen from './window/structure/BlueScreen.vue';
 import WindowsGroup from './window/structure/WindowsGroup.vue';
+import LockScreenVue from './window/structure/LockScreen.vue';
 
 import { SystemStatus } from './window/libs/SystemStatus';
+
 
 onMounted(() => {
   SystemStatus.getInstance().openPower()

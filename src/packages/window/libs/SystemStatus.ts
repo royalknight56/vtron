@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-09-14 16:40:16
+ * @LastEditTime: 2021-12-27 20:48:59
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/SystemStatus.ts
  * Need CodeReview 
@@ -10,6 +10,8 @@ import {appconfig } from "../../appconfig";
 
 interface statsCtrl{
     screen:"common"|"blue"|"close",
+    islock:boolean,
+    lockEvent:Function
 }
 
 class SystemStatus {
@@ -18,13 +20,19 @@ class SystemStatus {
     private constructor() {
         this.stats = reactive({
             screen:"close",
+            islock:false,
+            lockEvent:()=>{}
         });
     }
+    
     static getInstance() {
         if (this.instance == undefined) {
             this.instance = new SystemStatus()
         }
         return this.instance
+    }
+    _mountLockEvent(fun:Function){
+        this.stats.lockEvent=fun
     }
     closePower(){
         this.stats.screen='blue'
@@ -59,6 +67,13 @@ class SystemStatus {
         setTimeout(()=>{
             window.location.reload()
         },6000)
+    }
+    lockScreen(){
+        this.stats.islock=true
+        this.stats.lockEvent()
+    }
+    unlockScreen(){
+        this.stats.islock=false;
     }
 }
 export {

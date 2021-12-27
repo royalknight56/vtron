@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 11:16:39
+ * @LastEditTime: 2021-12-27 20:48:27
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -76,6 +76,7 @@ function closeClice(e: MouseEvent) {
     MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
         [
             { name: '关机', func: () => { console.log("关机"); SystemStatus.getInstance().closePower() } },
+            { name: '锁定', func: () => { SystemStatus.getInstance().lockScreen() } },
             { name: '重启', func: () => { console.log("重启"); SystemStatus.getInstance().restartPower() } }
 
         ]

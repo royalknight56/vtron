@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 11:06:59
+ * @LastEditTime: 2021-12-28 11:19:18
  * @Description: 
  * @FilePath: /myindex/src/components/window/BlueScreen.vue
   Need CodeReview 
@@ -135,9 +135,9 @@ body {
     transform: rotateY(-20deg);
 }
 
-#logo:hover {
+/* #logo:hover {
     transform: rotateY(0deg);
-}
+} */
 
 #win1 {
     left: 0;

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-27 20:49:14
+ * @LastEditTime: 2021-12-28 11:20:49
  * @Description: 
 -->
 <script lang="ts" setup>
@@ -9,39 +9,37 @@ import { appconfig } from '../../appconfig';
 import { SystemStatus } from '../libs/SystemStatus';
 
 let userName = ref(appconfig.user_name)
-let userPassword = ref("123456")
+let userPassword = ref("")
 let className = ref('screen-show')
 
-SystemStatus.getInstance()._mountLockEvent(()=>{
+SystemStatus.getInstance()._mountLockEvent(() => {
     className.value = 'screen-show'
+})
+SystemStatus.getInstance()._mountUnlockEvent(() => {
+    className.value = 'screen-hidean'
+    setTimeout(() => {
+        className.value = 'screen-hide'
+    }, 500)
 })
 
 function onLogin() {
     if (appconfig.user_password == userPassword.value) {
-        className.value = 'screen-hidean'
-        setTimeout(() => {
-            className.value = 'screen-hide'
-            SystemStatus.getInstance().unlockScreen()
-        }, 500)
+        SystemStatus.getInstance().unlockScreen()
     }
 }
 </script>
 <template>
-    <div :class="className" class="unLockLogin lockscreen" data-v-5bbebdb5 data-v-1848a59c>
+    <div :class="className" class="lockscreen">
         <!---->
-        <div class="login-box" data-v-5bbebdb5>
+        <div class="login-box">
             <span
-                class="ant-avatar ant-avatar-circle ant-avatar-icon"
-                data-v-5bbebdb5
+                class="ant-avatar  ant-avatar-icon"
                 style="width: 128px; height: 128px; line-height: 128px; font-size: 64px;"
             >
-                <span role="img" aria-label="user" class="anticon anticon-user" data-v-5bbebdb5>
+                <span role="img" aria-label="user" class="anticon">
                     <svg
                         focusable="false"
-                        class
-                        data-icon="user"
                         width="1em"
-                        height="1em"
                         fill="currentColor"
                         aria-hidden="true"
                         viewBox="64 64 896 896"
@@ -52,37 +50,29 @@ function onLogin() {
                     </svg>
                 </span>
             </span>
-            <div class="username" data-v-5bbebdb5>{{ userName }}</div>
-            <span
-                class="ant-input-search ant-input-search-enter-button ant-input-search-large ant-input-group-wrapper ant-input-group-wrapper-lg"
-                data-v-5bbebdb5
-            >
-                <span class="ant-input-wrapper ant-input-group">
+            <div class="username">{{ userName }}</div>
+            <span>
+                <span class="ant-input-group">
                     <!---->
                     <input
                         placeholder="请输入登录密码"
                         type="password"
                         autofocus
-                        class="ant-input ant-input-lg"
+                        class="ant-input"
                         v-model="userPassword"
                     />
                     <span class="ant-input-group-addon">
                         <button
-                            class="ant-btn ant-btn-primary ant-btn-lg ant-input-search-button"
+                            class="ant-btn-primary"
                             type="button"
                             @click="onLogin"
                         >
                             <!---->
                             <span
-                                role="img"
-                                aria-label="arrow-right"
-                                class="anticon anticon-arrow-right"
-                                data-v-5bbebdb5
+                                class="anticon"
                             >
                                 <svg
                                     focusable="false"
-                                    class
-                                    data-icon="arrow-right"
                                     width="1em"
                                     height="1em"
                                     fill="currentColor"
@@ -98,32 +88,24 @@ function onLogin() {
                     </span>
                 </span>
             </span>
-            <!-- <a data-v-5bbebdb5 style="margin-top: 10px;">重新登录</a> -->
         </div>
-
-        <!---->
     </div>
 </template>
 <style scoped lang="scss">
-.lockscreen.unLockLogin {
-    background-color: rgba(25, 28, 34, 0.78);
-    -webkit-backdrop-filter: blur(7px);
-    backdrop-filter: blur(7px);
-}
-.screen-show {
-}
-
 .lockscreen {
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 9999;
+    z-index: 201;
     display: flex;
     overflow: hidden;
     color: #fff;
-    background: #000;
+    // background: #000;
+    background-color: rgba(25, 28, 34, 0.78);
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
     .login-box {
         position: absolute;
         top: 45%;
@@ -139,9 +121,6 @@ function onLogin() {
             background: #ccc;
             border-radius: 50%;
             margin-bottom: 14px;
-            .ant-avatar-icon > .anticon {
-                margin: 0;
-            }
             .anticon {
                 display: inline-block;
                 color: inherit;
@@ -206,9 +185,12 @@ function onLogin() {
     0% {
         opacity: 1;
     }
-    100% {
+    30%{
         opacity: 0;
-        display: none;
+    }
+    100% {
+        transform: translateY(-100%);
+        opacity: 0;
     }
 }
 </style>

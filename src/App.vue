@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 19:28:45
+ * @LastEditTime: 2021-12-28 11:12:12
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -75,7 +75,7 @@ onMounted(() => {
 
 let opt: plug_option = {
   if_logo_show: true,
-  start_time: 0,
+  start_time: 2000,
   // backimg: backimg,
   start_menu_logo: brow,
 }

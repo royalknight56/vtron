@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-28 11:20:49
+ * @LastEditTime: 2021-12-28 15:18:51
  * @Description: 
 -->
 <script lang="ts" setup>
@@ -8,32 +8,45 @@ import { ref } from '@vue/reactivity';
 import { appconfig } from '../../appconfig';
 import { SystemStatus } from '../libs/SystemStatus';
 
-let userName = ref(appconfig.user_name)
 let userPassword = ref("")
 let className = ref('screen-show')
+let userName = ref(appconfig.login?.user_name || 'Admin')
 
 SystemStatus.getInstance()._mountLockEvent(() => {
-    className.value = 'screen-show'
-})
-SystemStatus.getInstance()._mountUnlockEvent(() => {
-    className.value = 'screen-hidean'
-    setTimeout(() => {
-        className.value = 'screen-hide'
-    }, 500)
-})
+        className.value = 'screen-show'
+    })
+    SystemStatus.getInstance()._mountUnlockEvent(() => {
+        className.value = 'screen-hidean'
+        setTimeout(() => {
+            className.value = 'screen-hide'
+        }, 500)
+    })
+if (appconfig.login==null) {
+    SystemStatus.getInstance().unlockScreen()
+}
+
 
 function onLogin() {
-    if (appconfig.user_password == userPassword.value) {
+    console.log(appconfig.login!=null)
+    if(appconfig.login!=null){
+        if (appconfig.login.user_password == userPassword.value) {
+            SystemStatus.getInstance().unlockScreen()
+        }
+    }else{
         SystemStatus.getInstance().unlockScreen()
     }
+    
 }
+
+
+
 </script>
 <template>
     <div :class="className" class="lockscreen">
         <!---->
         <div class="login-box">
             <span
-                class="ant-avatar  ant-avatar-icon"
+                class="ant-avatar ant-avatar-icon"
                 style="width: 128px; height: 128px; line-height: 128px; font-size: 64px;"
             >
                 <span role="img" aria-label="user" class="anticon">
@@ -62,15 +75,9 @@ function onLogin() {
                         v-model="userPassword"
                     />
                     <span class="ant-input-group-addon">
-                        <button
-                            class="ant-btn-primary"
-                            type="button"
-                            @click="onLogin"
-                        >
+                        <button class="ant-btn-primary" type="button" @click="onLogin">
                             <!---->
-                            <span
-                                class="anticon"
-                            >
+                            <span class="anticon">
                                 <svg
                                     focusable="false"
                                     width="1em"
@@ -185,7 +192,7 @@ function onLogin() {
     0% {
         opacity: 1;
     }
-    30%{
+    30% {
         opacity: 0;
     }
     100% {

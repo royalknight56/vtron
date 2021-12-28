@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 11:16:21
+ * @LastEditTime: 2021-12-28 15:22:06
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -25,7 +25,7 @@
                 <div class="baritem_hover_top">
                     <img class="baritem_hover_top_img" :src="item.icon" />
                     {{item.title}}
-                    <div @click="closeButtonClicked(item)" class="baritem_hover_top_close">
+                    <div @click.stop="closeButtonClicked(item)" class="baritem_hover_top_close">
                         ×
                     </div>
                 </div>

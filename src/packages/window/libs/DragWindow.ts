@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 20:16:21
+ * @LastEditTime: 2021-12-28 21:11:27
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
@@ -22,6 +22,7 @@ interface option {
     height?: number,
     title?: string,
     icon?: string,
+    isScalable?:boolean
 }
 class DragWindow {
     evMap: {
@@ -33,6 +34,7 @@ class DragWindow {
     icon: string
     width: number
     height: number
+
     option: option
     use?: any
     id: string
@@ -80,7 +82,6 @@ class DragWindow {
             DWM.getInstance().upSetWindowIndex(this.id)
             this.ifcreated = true;
         })
-
 
     }
 }

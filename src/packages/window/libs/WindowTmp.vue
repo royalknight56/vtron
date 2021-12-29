@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-20 09:46:07
+ * @LastEditTime: 2021-12-28 21:54:29
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -135,8 +135,8 @@ let winWidth = ref(props.ctx.width)
 let winHeight = ref(props.ctx.height)
 
 /*
-计算样式
-*/
+ *计算样式
+ */
 onMounted(() => {
 
     customerStyle.value = {

@@ -1,7 +1,7 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-28 15:18:51
- * @Description: 
+ * @LastEditTime: 2021-12-28 15:35:38
+ * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
 import { ref } from '@vue/reactivity';
@@ -13,29 +13,28 @@ let className = ref('screen-show')
 let userName = ref(appconfig.login?.user_name || 'Admin')
 
 SystemStatus.getInstance()._mountLockEvent(() => {
-        className.value = 'screen-show'
-    })
-    SystemStatus.getInstance()._mountUnlockEvent(() => {
-        className.value = 'screen-hidean'
-        setTimeout(() => {
-            className.value = 'screen-hide'
-        }, 500)
-    })
-if (appconfig.login==null) {
+    className.value = 'screen-show'
+})
+SystemStatus.getInstance()._mountUnlockEvent(() => {
+    className.value = 'screen-hidean'
+    setTimeout(() => {
+        className.value = 'screen-hide'
+    }, 500)
+})
+if (appconfig.login == null) {
     SystemStatus.getInstance().unlockScreen()
 }
 
 
 function onLogin() {
-    console.log(appconfig.login!=null)
-    if(appconfig.login!=null){
+    if (appconfig.login != null) {
         if (appconfig.login.user_password == userPassword.value) {
             SystemStatus.getInstance().unlockScreen()
         }
-    }else{
+    } else {
         SystemStatus.getInstance().unlockScreen()
     }
-    
+
 }
 
 

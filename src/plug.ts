@@ -8,11 +8,11 @@
 import { App } from "vue";
 import { appList,appconfig,appInfo,plug_option } from "./packages/appconfig";
 import Win from "./packages/Win.vue"
+import { Plugin } from 'vue'
 
 
-let plug = {
-    version:'0.1.1',
-    install:function(app:App<any>, opt: plug_option):void {
+let plug:Plugin = {
+    install:function(app:App, opt: plug_option):void {
         Object.assign(appconfig,opt)
         app.component('Win10',Win)
     },

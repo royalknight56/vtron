@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-27 20:48:59
+ * @LastEditTime: 2021-12-27 20:53:42
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/SystemStatus.ts
  * Need CodeReview 
@@ -11,7 +11,8 @@ import {appconfig } from "../../appconfig";
 interface statsCtrl{
     screen:"common"|"blue"|"close",
     islock:boolean,
-    lockEvent:Function
+    lockEvent:Function,
+    unlockEvent:Function,
 }
 
 class SystemStatus {
@@ -21,7 +22,8 @@ class SystemStatus {
         this.stats = reactive({
             screen:"close",
             islock:false,
-            lockEvent:()=>{}
+            lockEvent:()=>{},
+            unlockEvent:()=>{}
         });
     }
     
@@ -33,6 +35,9 @@ class SystemStatus {
     }
     _mountLockEvent(fun:Function){
         this.stats.lockEvent=fun
+    }
+    _mountUnlockEvent(fun:Function){
+        this.stats.unlockEvent=fun
     }
     closePower(){
         this.stats.screen='blue'
@@ -74,6 +79,7 @@ class SystemStatus {
     }
     unlockScreen(){
         this.stats.islock=false;
+        this.stats.unlockEvent()
     }
 }
 export {

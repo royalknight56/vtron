@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 19:28:45
+ * @LastEditTime: 2021-12-28 15:22:48
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -71,12 +71,14 @@ onMounted(() => {
   appList.push({ name: '我的电脑', icon: brow, window: testwin });
 })
 
-// new DragWindow(0, 0, '窗口通信',beatico, 300, 400, { content: AdmVue},[ElementPlus])
-
 let opt: plug_option = {
   if_logo_show: true,
   start_time: 0,
   // backimg: backimg,
+  login:{
+    user_name:'Ad',
+    user_password:''
+  },
   start_menu_logo: brow,
 }
 Object.assign(appconfig, opt)

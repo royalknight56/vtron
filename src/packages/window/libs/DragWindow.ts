@@ -1,17 +1,12 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-11 16:12:27
+ * @LastEditTime: 2022-01-11 17:49:02
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
  */
 import { defineComponent, nextTick } from "vue";
-// import { DragElement } from "./DragElement";
-// import WindowTmpVue from "./WindowTmp.vue";
-
-
 import { WindowInfo, DWM } from "./DWM"
-import type { DefineComponent, App } from "vue";
 
 interface option {
     content: ReturnType<typeof defineComponent>,

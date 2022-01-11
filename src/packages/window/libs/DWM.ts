@@ -1,15 +1,14 @@
-import { reactive } from "vue";
-import { defineComponent, App } from "vue";
-import { UnwrapNestedRefs } from "@vue/reactivity";
-import { option } from "./DragWindow";
-
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-11 16:12:44
+ * @LastEditTime: 2022-01-11 16:20:05
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DWM.ts
  * Need CodeReview 
  */
+import { reactive } from "vue";
+import { UnwrapNestedRefs } from "@vue/reactivity";
+import { option } from "./DragWindow";
+
 
 // interface option {
 //     content: ReturnType<typeof defineComponent>,

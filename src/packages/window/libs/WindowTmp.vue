@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-28 21:54:29
+ * @LastEditTime: 2022-01-11 15:03:31
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -12,7 +12,7 @@
         @touchstart.passive="onFocus"
         @mousedown="onFocus"
         :class="{ topwin: iftop, maxwin: isMaximize }"
-        ref='$win_outer'
+        ref="$win_outer"
     >
         <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
             <div class="wintmp_left">
@@ -27,18 +27,25 @@
                         <path d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z" />
                     </svg>
                 </div>
-                <div @click="maxWindow()" class="winbutton max_button">
+                <div v-if="isScaleAble" @click="maxWindow()" class="winbutton max_button">
                     <svg v-if="isMaximize" class="icon" viewBox="0 0 1024 1024">
-                        <path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" />
+                        <path
+                            d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z"
+                        />
                     </svg>
-                    <svg v-else  class="icon" viewBox="0 0 1024 1024">
-                        <path d="M926.45937303 97.54062697v828.2973677H97.54062697V97.54062697h828.91874606m4.97102697-77.6722963h-838.8608c-39.7682157 0-72.07989097 32.31167525-72.07989097 72.07989096v839.48217837c0 39.7682157 32.31167525 72.07989097 72.07989097 72.07989097h839.48217837c39.7682157 0 72.07989097-32.31167525 72.07989096-72.07989097v-838.8608c0-40.38959408-32.31167525-72.70126933-72.70126933-72.70126933 0.62137837 0 0 0 0 0z" />
+                    <svg v-else class="icon" viewBox="0 0 1024 1024">
+                        <path
+                            d="M926.45937303 97.54062697v828.2973677H97.54062697V97.54062697h828.91874606m4.97102697-77.6722963h-838.8608c-39.7682157 0-72.07989097 32.31167525-72.07989097 72.07989096v839.48217837c0 39.7682157 32.31167525 72.07989097 72.07989097 72.07989097h839.48217837c39.7682157 0 72.07989097-32.31167525 72.07989096-72.07989097v-838.8608c0-40.38959408-32.31167525-72.70126933-72.70126933-72.70126933 0.62137837 0 0 0 0 0z"
+                        />
                     </svg>
                 </div>
                 <!-- <svg t="1629857965098" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3294" width="200" height="200"><path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" p-id="3295"></path></svg> -->
                 <div @click="closeWindow()" class="winbutton close_button">
-                    <svg class="icon" viewBox="0 0 1024 1024" >
-                        <path d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z" fill="#363F4D" />
+                    <svg class="icon" viewBox="0 0 1024 1024">
+                        <path
+                            d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z"
+                            fill="#363F4D"
+                        />
                     </svg>
                 </div>
             </div>
@@ -50,12 +57,27 @@
             @mousedown.stop="predown"
             @touchstart.stop.passive="predown"
         >
-            <component :is="componentValue" ></component>
+            <component :is="componentValue"></component>
             <!-- <div ></div> -->
         </div>
-        <div class="right_border" @mousedown.stop="startScale($event, 'r')" @touchstart.stop.passive="startScale($event, 'r')"></div>
-        <div class="bottom_border" @mousedown.stop="startScale($event, 'b')" @touchstart.stop.passive="startScale($event, 'b')"></div>
-        <div class="right_bottom_border" @mousedown.stop="startScale($event, 'rb')" @touchstart.stop.passive="startScale($event, 'rb')"></div>
+        <div
+            class="right_border"
+            v-if="isScaleAble"
+            @mousedown.stop="startScale($event, 'r')"
+            @touchstart.stop.passive="startScale($event, 'r')"
+        ></div>
+        <div
+            class="bottom_border"
+            v-if="isScaleAble"
+            @mousedown.stop="startScale($event, 'b')"
+            @touchstart.stop.passive="startScale($event, 'b')"
+        ></div>
+        <div
+            class="right_bottom_border"
+            v-if="isScaleAble"
+            @mousedown.stop="startScale($event, 'rb')"
+            @touchstart.stop.passive="startScale($event, 'rb')"
+        ></div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -113,14 +135,14 @@ let winmount = ref(null)
 
 let customerStyle = ref<any>({})
 
-function onFocus(e: MouseEvent|TouchEvent): void {
+function onFocus(e: MouseEvent | TouchEvent): void {
     DWM.getInstance().upSetWindowIndex(props.ctx.id)
     if (isMaximize.value) {
-        
-        if(e instanceof MouseEvent) {
+
+        if (e instanceof MouseEvent) {
             e.preventDefault()
             e.stopPropagation()
-        }else{
+        } else {
             // e.stopPropagation()
         }
     }
@@ -166,25 +188,25 @@ onMounted(() => {
 /*
 挂载拖动事件
 */
-let $win_outer=ref(null);
+let $win_outer = ref(null);
 let wininfo = DWM.getInstance().getWindow(props.ctx.id)
-onMounted(()=>{
-    let dragAble = new DragElement(wininfo.x,wininfo.y).mountDomEvent($win_outer.value)
+onMounted(() => {
+    let dragAble = new DragElement(wininfo.x, wininfo.y).mountDomEvent($win_outer.value)
 })
-
 
 
 /*
 挂载缩放事件
 */
-
-
+let isScaleAble = ref(wininfo.isScalable)
 let resizemode = ref('null')
-let scaleAble = new ScaleElement(resizemode,winWidth,winHeight,props.ctx.windowEventMap['resize']);
+let scaleAble = new ScaleElement(resizemode, winWidth, winHeight, props.ctx.windowEventMap['resize']);
 
-function startScale(e: MouseEvent|TouchEvent, dire: string){
+
+function startScale(e: MouseEvent | TouchEvent, dire: string) {
     scaleAble?.startScale(e, dire)
 }
+
 
 </script>
 <style>
@@ -279,7 +301,7 @@ function startScale(e: MouseEvent|TouchEvent, dire: string){
     top: 0;
     right: 0;
 }
-.icon{
+.icon {
     width: 12px;
     height: 12px;
 }

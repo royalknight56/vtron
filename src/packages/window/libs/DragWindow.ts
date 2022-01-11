@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-28 21:11:27
+ * @LastEditTime: 2022-01-11 16:12:27
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
@@ -30,32 +30,20 @@ class DragWindow {
         onResizing?: (x: number, y: number) => void
     }
     windowInfo: WindowInfo | null
-    title: string
-    icon: string
-    width: number
-    height: number
 
     option: option
-    use?: any
     id: string
     ifcreated: boolean
-    appPointer: App | null
+
     constructor(option: option) {
 
-        // super(option.x || 0, option.y || 0)
         this.windowInfo = null;
 
         this.evMap = {};
-
-        this.title = option.title || '未命名窗口';
-        this.icon = option.icon || ''
-        this.width = option.width || 400;
-        this.height = option.height || 400;
         this.option = option
+
         this.id = 'NULL'
         this.ifcreated = false;
-        this.appPointer = null;
-        // this.show()
 
     }
     onWindowDraging(event: Function) {

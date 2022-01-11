@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-28 15:22:48
+ * @LastEditTime: 2022-01-11 15:40:17
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -23,13 +23,14 @@ import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {
   let testwin = new DragWindow(
-      {
-        title: '浏览器',
-        icon: brow,
-        width: 600,
-        height: 500,
-        content: Mycom
-      })
+    {
+      title: '浏览器',
+      icon: brow,
+      width: 600,
+      height: 500,
+      content: Mycom,
+      isScalable: false
+    })
   appList.splice(0, 100000)
   appList.push({
     name: '浏览器',
@@ -75,9 +76,9 @@ let opt: plug_option = {
   if_logo_show: true,
   start_time: 0,
   // backimg: backimg,
-  login:{
-    user_name:'Ad',
-    user_password:''
+  login: {
+    user_name: 'Ad',
+    user_password: ''
   },
   start_menu_logo: brow,
 }

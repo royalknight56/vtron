@@ -1,11 +1,11 @@
 import { reactive } from "vue";
-import { DefineComponent,App } from "vue";
+import { defineComponent, App } from "vue";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { option } from "./DragWindow";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-18 20:42:26
+ * @LastEditTime: 2022-01-11 16:12:44
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DWM.ts
  * Need CodeReview 
@@ -22,7 +22,7 @@ import { option } from "./DragWindow";
 //     icon?: string,
 // }
 
-interface WindowInfo {
+interface WindowInfo extends Required<option> {
     //内建属性
     id: string,
     wid: number,
@@ -30,19 +30,10 @@ interface WindowInfo {
     ifShow: boolean,
     iftop: boolean,
     ifDestory: boolean,
-    isMaximize:boolean,
+    isMaximize: boolean,
 
-    //自定义属性
-    width:number,
-    height:number,
-    x:number,
-    y:number,
-    title: string,
-    icon:string,
-    content:DefineComponent<{}, {}, any>,
-    props:any,
-    windowEventMap:{
-        [index: string]:Function
+    windowEventMap: {
+        [index: string]: Function
     },
 
 }
@@ -58,12 +49,12 @@ class DWM {
     winnum: number;
     windowInfoMap: UnwrapNestedRefs<windowInfoMapInter>;
     zIndexIdArray: string[];
-    eventMap:eventMapInter;
+    eventMap: eventMapInter;
     private constructor() {
         this.winnum = 0;
         this.windowInfoMap = reactive({});
         this.zIndexIdArray = [];
-        this.eventMap={}
+        this.eventMap = {}
     }
     static getInstance() {
         if (this.instance == undefined) {
@@ -71,21 +62,21 @@ class DWM {
         }
         return this.instance
     }
-    
-    
-    getWindow(id: string):WindowInfo {
+
+
+    getWindow(id: string): WindowInfo {
         return this.windowInfoMap[id]
     }
 
     getWinnum() {
         return this.winnum
     }
-    getWinid():string {
-        return "dragwinelementhash89103"+this.getWinnum()
+    getWinid(): string {
+        return "dragwinelementhash89103" + this.getWinnum()
     }
-    registerWindow(id: string, 
-        option:option
-        ):WindowInfo {
+    registerWindow(id: string,
+        option: option
+    ): WindowInfo {
         if (this.windowInfoMap[id]) {
             return this.windowInfoMap[id]
         } else {
@@ -96,18 +87,20 @@ class DWM {
                 ifShow: true,
                 iftop: false,
                 ifDestory: false,
-                isMaximize:false,
+                isMaximize: false,
 
-                x:option.x || 0,
-                y:option.y || 0,
-                width:option.width || 400,
-                height:option.height || 400,
-                title:option.title || '未命名窗口',
-                icon:option.icon|| '',
-                content:option.content,
-                props:option.props,
+                x: option.x ?? 0,
+                y: option.y ?? 0,
+                width: option.width ?? 400,
+                height: option.height ?? 400,
+                isScalable: option.isScalable ?? true,
+                title: option.title || '未命名窗口',
+                icon: option.icon || '',
 
-                windowEventMap:{}
+                content: option.content,
+                props: option.props,
+
+                windowEventMap: {}
             });
 
             this.zIndexIdArray.push(id)
@@ -115,10 +108,10 @@ class DWM {
             return this.windowInfoMap[id]
         }
     }
-    addEventListener(id:string,name:string,func:Function){
+    addEventListener(id: string, name: string, func: Function) {
         this.windowInfoMap[id].windowEventMap[name] = func
     }
-    mountWindow(id:string,func:Function){
+    mountWindow(id: string, func: Function) {
         this.windowInfoMap[id].windowEventMap['mount'] = func
     }
     private unRegisterWindow(id: string) {//删除在windowInfoMap中的存储
@@ -126,9 +119,9 @@ class DWM {
         let ind = this.zIndexIdArray.indexOf(id)
         this.zIndexIdArray.splice(ind, 1)
     }
-    
 
-    upSetWindowIndex(id: string):number {
+
+    upSetWindowIndex(id: string): number {
         for (let key in this.windowInfoMap) {
             this.windowInfoMap[key].iftop = false
         }
@@ -157,15 +150,15 @@ class DWM {
 
     }
     maxWindow(id: string) {
-        if(this.windowInfoMap[id]){
-            this.windowInfoMap[id].isMaximize =!this.windowInfoMap[id]?.isMaximize
+        if (this.windowInfoMap[id]) {
+            this.windowInfoMap[id].isMaximize = !this.windowInfoMap[id]?.isMaximize
         }
-        
+
     }
-    on(ev:string,func:Function){
-        this.eventMap[ev]=func
+    on(ev: string, func: Function) {
+        this.eventMap[ev] = func
     }
-    emit(ev:string,...args:any){
+    emit(ev: string, ...args: any) {
         this.eventMap[ev]?.(...args)
     }
 

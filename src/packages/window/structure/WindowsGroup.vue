@@ -7,7 +7,7 @@
 -->
 <template>
     <div class="winitem" v-for="item in winlist" :key="item.id">
-        <teleport to="body">
+        <teleport to="#win10id">
             <WindowTmpVue :id="item.id" :ref="'ref' + item.id" :ctx="item"></WindowTmpVue>
         </teleport>
     </div>

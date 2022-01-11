@@ -95,9 +95,9 @@ Object.assign(appconfig, opt)
 </style>
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* font-family: Avenir, Helvetica, Arial, sans-serif; */
+  /* -webkit-font-smoothing: antialiased; */
+  /* -moz-osx-font-smoothing: grayscale; */
   /* text-align: center; */
   /* color: #2c3e50; */
   /* margin-top: 60px; */
@@ -105,7 +105,7 @@ Object.assign(appconfig, opt)
 body {
   padding: 0;
   margin: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 /* .dragobj {
   cursor: all-scroll;

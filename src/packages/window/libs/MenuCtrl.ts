@@ -4,7 +4,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-13 16:07:00
+ * @LastEditTime: 2022-01-13 17:17:43
  * @Description: 右键菜单控制
  * @FilePath: /myindex/src/components/window/libs/MenuCtrl.ts
  * Need CodeReview 
@@ -55,7 +55,6 @@ class MenuCtrl {
         return el.offsetLeft;
     }
     callMenu(e: MouseEvent, list: UnwrapNestedRefs<Array<menuItem>>) {
-        console.log(e);
         document.addEventListener("click", (e) => {
             this.ifShow.value = false
         }, {

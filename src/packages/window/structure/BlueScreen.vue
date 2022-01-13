@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-28 15:19:15
+ * @LastEditTime: 2022-01-13 16:02:37
  * @Description: 
  * @FilePath: /myindex/src/components/window/BlueScreen.vue
   Need CodeReview 
@@ -47,7 +47,8 @@ import { SystemStatus } from "../libs/SystemStatus";
 let stat = SystemStatus.getInstance().stats;
 
 function backgroundRightClick(e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
+    console.log(e);
+    MenuCtrl.getInstance().callMenu(e,
         [
             { name: '刷新', func: () => {  } },
         ]

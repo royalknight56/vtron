@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 11:16:19
+ * @LastEditTime: 2022-01-13 16:02:32
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -32,7 +32,7 @@ function openApp(item: appInfo) {
 }
 
 function rightClick(item:appInfo,e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
+    MenuCtrl.getInstance().callMenu(e,
         [
             { name: '打开(O)', func: () => { item.window.show(); } },
             { name: '属性(R)', func: () => { 

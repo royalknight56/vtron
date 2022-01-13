@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-28 15:22:06
+ * @LastEditTime: 2022-01-13 16:10:09
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -70,7 +70,7 @@ function barClick(item: WindowInfo) {
 
 let ifMagnetShow = ref(false)
 function barFirskClick(e: MouseEvent) {
-    ifMagnetShow.value = true
+    ifMagnetShow.value = !ifMagnetShow.value 
     document.addEventListener("click", (e) => {
         ifMagnetShow.value = false
     }, {
@@ -79,14 +79,14 @@ function barFirskClick(e: MouseEvent) {
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {
-        MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
+        MenuCtrl.getInstance().callMenu(e,
             [
                 { name: '关闭', func: () => { DWM.getInstance().destoryWindow(item.id) } },
                 { name: '最小化', func: () => { DWM.getInstance().hideWindow(item.id) } }
             ]
         )
     } else {
-        MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
+        MenuCtrl.getInstance().callMenu(e,
             [
                 { name: '关闭', func: () => { DWM.getInstance().destoryWindow(item.id) } },
                 { name: '显示', func: () => { DWM.getInstance().showWindow(item.id) } }

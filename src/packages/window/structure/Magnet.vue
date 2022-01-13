@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-27 20:48:27
+ * @LastEditTime: 2022-01-13 16:05:43
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -10,19 +10,13 @@
         <div class="m_left">
             <div class="left_list_item" @click="closeClice">
                 <svg
-                    t="1628247206921"
                     class="icon"
                     viewBox="0 0 1024 1024"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    p-id="2013"
                     width="200"
                     height="200"
                 >
                     <path
                         d="M537 625.2h-50v-560h50v560z m135-509.7V170c40.4 18.8 76.9 44.3 108.7 76.1 34.9 34.9 62.3 75.6 81.5 120.8C882 413.7 892 463.5 892 514.8s-10 101.1-29.8 147.9c-19.1 45.2-46.5 85.9-81.5 120.8-34.9 34.9-75.6 62.3-120.8 81.5-46.8 19.8-96.6 29.8-147.9 29.8-51.3 0-101.1-10-147.9-29.8-45.2-19.1-85.9-46.5-120.8-81.5-34.9-34.9-62.3-75.6-81.5-120.8C142 615.9 132 566.1 132 514.8s10-101.1 29.8-147.9c19.1-45.2 46.5-85.9 81.5-120.8 31.8-31.8 68.3-57.3 108.7-76.1v-54.5C193.8 179 82 333.8 82 514.8c0 237.5 192.5 430 430 430s430-192.5 430-430c0-181-111.8-335.8-270-399.3z"
-                        fill='true'
-                        p-id="2014"
                     />
                 </svg>
                 <div class="item_text">关机</div>
@@ -73,7 +67,7 @@ import { MenuCtrl } from "../libs/MenuCtrl";
 import { DragWindow } from "../libs/DragWindow";
 
 function closeClice(e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
+    MenuCtrl.getInstance().callMenu(e,
         [
             { name: '关机', func: () => { console.log("关机"); SystemStatus.getInstance().closePower() } },
             { name: '锁定', func: () => { SystemStatus.getInstance().lockScreen() } },

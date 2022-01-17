@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-11 15:03:31
+ * @LastEditTime: 2022-01-13 16:03:07
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -122,7 +122,7 @@ function predown() {
     DWM.getInstance().upSetWindowIndex(props.ctx.id)
 }
 function uperRightClick(e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e.pageX, e.pageY,
+    MenuCtrl.getInstance().callMenu(e,
         [
             { name: '关闭', func: () => { DWM.getInstance().destoryWindow(props.ctx.id) } },
             { name: '最小化', func: () => { DWM.getInstance().hideWindow(props.ctx.id) } }

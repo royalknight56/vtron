@@ -45,10 +45,10 @@ interface eventMapInter {
 }
 class DWM {
     private static instance: DWM;
-    winnum: number;
+    private winnum: number;
     windowInfoMap: UnwrapNestedRefs<windowInfoMapInter>;
-    zIndexIdArray: string[];
-    eventMap: eventMapInter;
+    private zIndexIdArray: string[];
+    private eventMap: eventMapInter;
     private constructor() {
         this.winnum = 0;
         this.windowInfoMap = reactive({});
@@ -67,7 +67,7 @@ class DWM {
         return this.windowInfoMap[id]
     }
 
-    getWinnum() {
+    private getWinnum() {
         return this.winnum
     }
     getWinid(): string {
@@ -109,9 +109,6 @@ class DWM {
     }
     addEventListener(id: string, name: string, func: Function) {
         this.windowInfoMap[id].windowEventMap[name] = func
-    }
-    mountWindow(id: string, func: Function) {
-        this.windowInfoMap[id].windowEventMap['mount'] = func
     }
     private unRegisterWindow(id: string) {//删除在windowInfoMap中的存储
         delete this.windowInfoMap[id]

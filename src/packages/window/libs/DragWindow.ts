@@ -20,7 +20,7 @@ interface option {
     isScalable?:boolean
 }
 class DragWindow {
-    evMap: {
+    private evMap: {
         onDraging?: Function
         onResizing?: (x: number, y: number) => void
     }
@@ -48,11 +48,11 @@ class DragWindow {
         this.evMap.onResizing = event;
     }
 
-    readyRegister() {
+    private readyRegister() {
         let id = DWM.getInstance().getWinid();//获得一个id
         this.id = id
     }
-    register(option: option) {
+    private register(option: option) {
         this.windowInfo = DWM.getInstance().registerWindow(this.id,option);//在IPC中注册，传递windowInfo
     }
     show() {

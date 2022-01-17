@@ -17,6 +17,7 @@ function openInfo(info:any){
         height:400,
         content:appInfo,
         props:info.item,
+        isScalable:false,
     })
     wininfo.show();
 }

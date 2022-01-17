@@ -1,10 +1,13 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-13 15:50:57
+ * @LastEditTime: 2022-01-17 16:08:56
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
 <template>
+  <div class="outer">
+    <WinVue></WinVue>
+  </div>
   <div class="outer">
     <WinVue></WinVue>
   </div>
@@ -89,7 +92,7 @@ Object.assign(appconfig, opt)
 <style scoped>
 .outer {
   position: relative;
-  top: 300px;
+  top: 20px;
   width: 500px;
   height: 400px;
 }

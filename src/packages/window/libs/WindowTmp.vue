@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-13 16:03:07
+ * @LastEditTime: 2022-01-17 16:07:13
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -167,13 +167,6 @@ onMounted(() => {
         zIndex: computed(() => {
             return props.ctx.zindex
         }),
-        // visibility: computed(() => {
-        //     if (props.ctx.ifShow) {
-        //         return "visible"
-        //     } else {
-        //         return "hidden"
-        //     }
-        // }),
         display: computed(() => {
             if (props.ctx.ifShow) {
                 return ""

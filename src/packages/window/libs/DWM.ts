@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-11 16:20:05
+ * @LastEditTime: 2022-01-17 16:06:50
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DWM.ts
  * Need CodeReview 
@@ -9,17 +9,6 @@ import { reactive } from "vue";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { option } from "./DragWindow";
 
-
-// interface option {
-//     content: ReturnType<typeof defineComponent>,
-//     props?: any,
-//     x?: number,
-//     y?: number,
-//     width?: number,
-//     height?: number,
-//     title?: string,
-//     icon?: string,
-// }
 
 interface WindowInfo extends Required<option> {
     //内建属性
@@ -141,7 +130,6 @@ class DWM {
 
         this.windowInfoMap[id].ifDestory = true
         this.windowInfoMap[id].windowEventMap['destroy']?.()
-        // this.windowInfoMap[id].appPointer?.unmount()
         this.unRegisterWindow(id);
 
     }

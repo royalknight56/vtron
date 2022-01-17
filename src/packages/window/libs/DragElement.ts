@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-20 09:45:54
+ * @LastEditTime: 2022-01-17 16:06:33
  * @Description: 实现可移动Object
  * @FilePath: /myindex/src/components/window/libs/DragElement.ts
  * Need CodeReview 
@@ -50,30 +50,6 @@ class DragElement extends DragObj {
     constructor(x: number, y: number) {
         super(x, y);
         this.ifDraging = false;
-        // this.e = element;
-        // this.ifDraging = false;
-        // this.e.style.left = this.posX + 'px';
-        // this.e.style.top = this.posY + 'px'
-        // this.e.addEventListener('mousedown', (ev) => {
-        //     this.startMove(ev.pageX, ev.pageY);
-
-        //     this.ifDraging = true;
-        // })
-        // document.body.addEventListener('mouseup', (ev) => {
-        //     this.ifDraging = false;
-        // })
-        // document.body.addEventListener('mousemove', (ev) => {
-            
-        //     if (this.ifDraging&&ev.buttons==1) {
-
-        //         this.onMoving(ev.pageX, ev.pageY);
-        //         this.e.style.left = this.posX + 'px';
-        //         this.e.style.top = this.posY + 'px'
-        //     }else if(this.ifDraging&&ev.buttons==0){
-        //         this.ifDraging=false
-
-        //     }
-        // })
     }
     mountDomEvent(element: any){
         this.el=element;

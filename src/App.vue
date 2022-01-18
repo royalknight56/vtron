@@ -1,13 +1,10 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-17 16:08:56
+ * @LastEditTime: 2022-01-18 09:54:16
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
 <template>
-  <div class="outer">
-    <WinVue></WinVue>
-  </div>
   <div class="outer">
     <WinVue></WinVue>
   </div>
@@ -20,6 +17,9 @@ import WinVue from "./packages/Win.vue";
 import brow from "./assets/浏览器.png"
 import backimg from "./assets/back.jpg"
 import Test3 from "./apps/Test3.vue"
+import Browser from "./apps/Browser.vue"
+import app_vscode from "./apps/app_vscode.vue"
+
 import Mycom from "./apps/MyComputer.vue"
 import { DragWindow } from "./packages/window/libs/DragWindow";
 import { onMounted } from "@vue/runtime-core";
@@ -62,13 +62,35 @@ onMounted(() => {
         content: Mycom
       })
   });
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
+
+  appList.push({
+    name: '浏览器',
+    icon: brow,
+    // 0, 0, '窗口通信', brow, 600, 500,
+    window: new DragWindow(
+      {
+        title: '浏览器',
+        icon: brow,
+        width: 600,
+        height: 500,
+        content: Browser
+      })
+  });
+
+  appList.push({
+    name: 'vscode',
+    icon: brow,
+    // 0, 0, '窗口通信', brow, 600, 500,
+    window: new DragWindow(
+      {
+        title: 'vscode',
+        icon: brow,
+        width: 600,
+        height: 500,
+        content: app_vscode
+      })
+  });
+
   appList.push({ name: '我的电脑', icon: brow, window: testwin });
   appList.push({ name: '我的电脑', icon: brow, window: testwin });
   appList.push({ name: '我的电脑', icon: brow, window: testwin });

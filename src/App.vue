@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-18 09:54:16
+ * @LastEditTime: 2022-01-18 09:55:47
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -115,8 +115,8 @@ Object.assign(appconfig, opt)
 .outer {
   position: relative;
   top: 20px;
-  width: 500px;
-  height: 400px;
+  width: 100vw;
+  height: 100vh;
 }
 </style>
 <style>

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-08 11:21:01
+ * @LastEditTime: 2022-01-19 14:11:50
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -12,8 +12,6 @@
 Vue3 仿Win10 UI 框架
 
 </div>
-
-![](https://komarev.com/ghpvc/?username=royalknight56&color=blue)
 
 <a href="https://github.com/royalknight56/vue3-windows10/blob/master/README_en.md" target="_blank">English</a>|<a href="https://github.com/royalknight56/vue3-windows10" target="_blank">中文</a>
 
@@ -97,15 +95,9 @@ createApp(App).use(win10).mount('#app')
 4. 在apps文件夹下新建vue文件，主要在此文件夹中编写窗口内容（非必须）
 
 # 感谢Star
+
 感谢各位大佬的支持
 
-@bri11y
-@LinYUAN-code
-@smj227227
-@songjunhao
-@LZZDream
-@6688774
-@FL-STU
-@debuginn
+![](https://komarev.com/ghpvc/?username=royalknight56&color=blue)
 
 

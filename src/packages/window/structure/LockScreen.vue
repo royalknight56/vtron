@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-28 15:35:38
+ * @LastEditTime: 2022-01-19 11:18:07
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
@@ -12,27 +12,36 @@ let userPassword = ref("")
 let className = ref('screen-show')
 let userName = ref(appconfig.login?.user_name || 'Admin')
 
-SystemStatus.getInstance()._mountLockEvent(() => {
+SystemStatus.getInstance().mountLockEvent('show', () => {
     className.value = 'screen-show'
 })
-SystemStatus.getInstance()._mountUnlockEvent(() => {
+SystemStatus.getInstance().mountUnlockEvent('hide', () => {
     className.value = 'screen-hidean'
     setTimeout(() => {
         className.value = 'screen-hide'
     }, 500)
 })
 if (appconfig.login == null) {
-    SystemStatus.getInstance().unlockScreen()
+    SystemStatus.getInstance().unlockScreen({
+        username: '',
+        password: ''
+    })
 }
 
 
 function onLogin() {
     if (appconfig.login != null) {
         if (appconfig.login.user_password == userPassword.value) {
-            SystemStatus.getInstance().unlockScreen()
+            SystemStatus.getInstance().unlockScreen({
+                username: appconfig.login.user_name,
+                password: userPassword.value
+            })
         }
     } else {
-        SystemStatus.getInstance().unlockScreen()
+        SystemStatus.getInstance().unlockScreen({
+            username: '',
+            password: ''
+        })
     }
 
 }

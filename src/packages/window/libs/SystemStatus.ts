@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-27 20:53:42
+ * @LastEditTime: 2022-01-19 11:17:59
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/SystemStatus.ts
  * Need CodeReview 
@@ -11,8 +11,17 @@ import {appconfig } from "../../appconfig";
 interface statsCtrl{
     screen:"common"|"blue"|"close",
     islock:boolean,
-    lockEvent:Function,
-    unlockEvent:Function,
+    lockEvent:{
+        [index: string]: Function
+    },
+    unlockEvent:{
+        [index: string]: Function
+    },
+}
+
+interface loginInfo{
+    username:string,
+    password:string,
 }
 
 class SystemStatus {
@@ -22,8 +31,8 @@ class SystemStatus {
         this.stats = reactive({
             screen:"close",
             islock:false,
-            lockEvent:()=>{},
-            unlockEvent:()=>{}
+            lockEvent:{},
+            unlockEvent:{}
         });
     }
     
@@ -33,11 +42,14 @@ class SystemStatus {
         }
         return this.instance
     }
-    _mountLockEvent(fun:Function){
-        this.stats.lockEvent=fun
+    _clearLockEvent(){
+        this.stats.lockEvent={}
     }
-    _mountUnlockEvent(fun:Function){
-        this.stats.unlockEvent=fun
+    mountLockEvent(name:string,fun:Function){
+        this.stats.lockEvent[name]=fun
+    }
+    mountUnlockEvent(name:string,fun:Function){
+        this.stats.unlockEvent[name]=fun
     }
     closePower(){
         this.stats.screen='blue'
@@ -73,13 +85,18 @@ class SystemStatus {
             window.location.reload()
         },6000)
     }
-    lockScreen(){
+    lockScreen({username,password}:loginInfo){
         this.stats.islock=true
-        this.stats.lockEvent()
+        for(let key in this.stats.lockEvent){
+            this.stats.lockEvent[key]({username,password})
+        }
+        
     }
-    unlockScreen(){
+    unlockScreen({username,password}:loginInfo){
         this.stats.islock=false;
-        this.stats.unlockEvent()
+        for(let key in this.stats.unlockEvent){
+            this.stats.unlockEvent[key]({username,password})
+        }
     }
 }
 export {

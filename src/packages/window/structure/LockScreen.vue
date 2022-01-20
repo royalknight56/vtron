@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-19 11:18:07
+ * @LastEditTime: 2022-01-20 18:38:40
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
@@ -22,26 +22,22 @@ SystemStatus.getInstance().mountUnlockEvent('hide', () => {
     }, 500)
 })
 if (appconfig.login == null) {
-    SystemStatus.getInstance().unlockScreen({
-        username: '',
-        password: ''
-    })
+    SystemStatus.getInstance().unlockScreen('', '')
 }
 
 
 function onLogin() {
     if (appconfig.login != null) {
-        if (appconfig.login.user_password == userPassword.value) {
-            SystemStatus.getInstance().unlockScreen({
-                username: appconfig.login.user_name,
-                password: userPassword.value
-            })
+        if (appconfig.login.user_password) {
+            if (appconfig.login.user_password == userPassword.value) {
+                SystemStatus.getInstance().unlockScreen(appconfig.login.user_name, userPassword.value)
+            }
+        }else{
+            SystemStatus.getInstance().notifyUnlock(appconfig.login.user_name, userPassword.value)
         }
+
     } else {
-        SystemStatus.getInstance().unlockScreen({
-            username: '',
-            password: ''
-        })
+        SystemStatus.getInstance().unlockScreen('', '')
     }
 
 }

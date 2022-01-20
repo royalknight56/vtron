@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-28 15:19:55
+ * @LastEditTime: 2022-01-20 18:31:16
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
@@ -18,7 +18,7 @@ let appList:UnwrapNestedRefs<Array<appInfo>> = shallowReactive([
 ])
 type loginOption = {
     user_name:string,
-    user_password:string,
+    user_password?:string,
 }
 
 let appconfig={

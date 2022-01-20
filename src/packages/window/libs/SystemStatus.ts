@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-19 11:17:59
+ * @LastEditTime: 2022-01-20 18:39:54
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/SystemStatus.ts
  * Need CodeReview 
@@ -85,17 +85,24 @@ class SystemStatus {
             window.location.reload()
         },6000)
     }
-    lockScreen({username,password}:loginInfo){
+    lockScreen(username:string,password:string){
         this.stats.islock=true
         for(let key in this.stats.lockEvent){
             this.stats.lockEvent[key]({username,password})
         }
         
     }
-    unlockScreen({username,password}:loginInfo){
+    unlockScreen(username:string,password:string){
         this.stats.islock=false;
         for(let key in this.stats.unlockEvent){
             this.stats.unlockEvent[key]({username,password})
+        }
+    }
+    notifyUnlock(username:string,password:string){
+        for(let key in this.stats.unlockEvent){
+            if(key !='hide'){
+                this.stats.unlockEvent[key]({username,password})
+            }
         }
     }
 }

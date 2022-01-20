@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-18 09:55:47
+ * @LastEditTime: 2022-01-20 18:35:59
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -103,7 +103,6 @@ let opt: plug_option = {
   // backimg: backimg,
   login: {
     user_name: 'Ad',
-    user_password: ''
   },
   start_menu_logo: brow,
 }

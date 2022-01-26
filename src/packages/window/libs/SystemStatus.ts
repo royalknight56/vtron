@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-20 18:39:54
+ * @LastEditTime: 2022-01-26 11:25:06
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/SystemStatus.ts
  * Need CodeReview 
@@ -85,10 +85,10 @@ class SystemStatus {
             window.location.reload()
         },6000)
     }
-    lockScreen(username:string,password:string){
+    lockScreen(){
         this.stats.islock=true
         for(let key in this.stats.lockEvent){
-            this.stats.lockEvent[key]({username,password})
+            this.stats.lockEvent[key]()
         }
         
     }

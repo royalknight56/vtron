@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 16:56:14
+ * @LastEditTime: 2022-01-26 15:05:36
  * @Description: 
  * @FilePath: /myindex/vite.config.ts
  */
@@ -9,6 +9,9 @@ import vue from '@vitejs/plugin-vue'
 import styleImport from 'vite-plugin-style-import'
 // https://vitejs.dev/config/
 export default defineConfig({
+  server:{
+    https:true
+  },
   plugins: [vue(),
     styleImport({
       libs: [

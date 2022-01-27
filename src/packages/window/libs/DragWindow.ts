@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-27 17:36:50
+ * @LastEditTime: 2022-01-27 18:35:47
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
@@ -73,14 +73,17 @@ class DragWindow {
         this.windowInfo = DWM.getInstance().registerWindow(this.id, option);//在IPC中注册，传递windowInfo
     }
     private makeWindowNotOverSize() {
+
         if (this.windowInfo) {
-            let { x, y, width, height } = this.windowInfo;
-            let { width: winWidth, height: winHeight } = this.getWinInner();
-            if (x + width > winWidth) {
-                this.windowInfo.width = winWidth - x;
-            }
-            if (y + height > winHeight) {
-                this.windowInfo.height = winHeight - y;
+            if (this.windowInfo.isScalable) {
+                let { x, y, width, height } = this.windowInfo;
+                let { width: winWidth, height: winHeight } = this.getWinInner();
+                if (x + width > winWidth) {
+                    this.windowInfo.width = winWidth - x;
+                }
+                if (y + height > winHeight) {
+                    this.windowInfo.height = winHeight - y;
+                }
             }
         }
     }

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-27 17:35:49
+ * @LastEditTime: 2022-01-27 18:34:55
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -49,6 +49,7 @@ onMounted(() => {
       height: 500,
       x: 100,
       y: 100,
+      isScalable: false,
       content: Test3
     })
   });

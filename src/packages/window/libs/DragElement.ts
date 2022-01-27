@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-27 17:44:09
+ * @LastEditTime: 2022-01-27 18:33:50
  * @Description: 实现可移动Object,让Dom元素可以移动
  * Need CodeReview 
  */
@@ -51,10 +51,10 @@ class DragElement extends DragObj {
         this.ifDraging = false;
     }
     private sorption(posX: number, posY: number) {//使得窗口贴边吸附
-        if(posX<10){
+        if(posX<10&&posX>-10){
             posX=0;
         }
-        if(posY<10){
+        if(posY<10&&posY>-10){
             posY=0;
         }
         return [posX, posY]

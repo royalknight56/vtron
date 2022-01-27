@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 19:27:42
+ * @LastEditTime: 2022-01-27 17:31:57
  * @Description: 
  * @FilePath: /myindex/src/components/apps/Test3.vue
 -->
@@ -44,7 +44,7 @@ setTimeout(()=>{
     after.show()
 })
 // after.show()
-after.onWindowResizing((x,y)=>{ console.log(x,y) })
+after.addWindowEventListener('onResizing',(ev)=>{ console.log(ev.x,ev.y) }) 
 </script>
 <style>
 iframe {

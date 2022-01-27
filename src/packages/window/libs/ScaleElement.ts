@@ -1,3 +1,8 @@
+/**
+ * @description: 让Dom元素可以缩放
+ * @param {*}
+ * @return {*}
+ */
 import { Ref } from "vue";
 
 class ScaleElement {
@@ -10,6 +15,9 @@ class ScaleElement {
     mosStartX: number
     mosStartY: number
     resizeEvent:Function|null
+
+    MIN_WIDTH = 200
+    MIN_HEIGHT = 100
     
     constructor(resizemode: Ref, winWidth: Ref, winHeight: Ref,resizeEvent:Function) {
         this.resizemode = resizemode;
@@ -21,6 +29,7 @@ class ScaleElement {
         this.winStartY = 0;
         this.mosStartX = 0;
         this.mosStartY = 0;
+
         this.mount()
         
         
@@ -77,31 +86,31 @@ class ScaleElement {
 
         if (this.resizemode.value == 'r') {
             this.winWidth.value = this.winStartX + pageX - this.mosStartX
-            if (this.winWidth.value < 170) {
-                this.winWidth.value = 170
+            if (this.winWidth.value < this.MIN_WIDTH) {
+                this.winWidth.value = this.MIN_WIDTH
             } else {
                 this.notify(this.winWidth.value, this.winHeight.value)
             }
         } else if (this.resizemode.value == 'b') {
             this.winHeight.value = this.winStartY + pageY - this.mosStartY
-            if (this.winHeight.value < 100) {
-                this.winHeight.value = 100
+            if (this.winHeight.value < this.MIN_HEIGHT) {
+                this.winHeight.value = this.MIN_HEIGHT
             } else {
                 this.notify(this.winWidth.value, this.winHeight.value)
             }
         } else if (this.resizemode.value == 'rb') {
             this.winWidth.value = this.winStartX + pageX - this.mosStartX
             this.winHeight.value = this.winStartY + pageY - this.mosStartY
-            if (this.winWidth.value < 170) {
-                this.winWidth.value = 170
-                if (this.winHeight.value < 100) {
-                    this.winHeight.value = 100
+            if (this.winWidth.value < this.MIN_WIDTH) {
+                this.winWidth.value = this.MIN_WIDTH
+                if (this.winHeight.value < this.MIN_HEIGHT) {
+                    this.winHeight.value = this.MIN_HEIGHT
                 } else {
                     this.notify(this.winWidth.value, this.winHeight.value)
                 }
             } else {
-                if (this.winHeight.value < 100) {
-                    this.winHeight.value = 100
+                if (this.winHeight.value < this.MIN_HEIGHT) {
+                    this.winHeight.value = this.MIN_HEIGHT
                 }
                 this.notify(this.winWidth.value, this.winHeight.value)
             }

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-13 16:02:32
+ * @LastEditTime: 2022-01-27 15:15:10
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -17,21 +17,20 @@
 </template>
 
 <script lang="ts" setup>
-import { DragWindow } from "../libs/DragWindow";
+import { UnwrapNestedRefs } from "@vue/reactivity";
 import { appList } from "../../appconfig";
 import type { appInfo } from "../../appconfig";
 import { MenuCtrl } from "../libs/MenuCtrl";
-import { DWM } from "../libs/DWM";
 import { openInfo } from "../system/openInfo";
 
 
 
-let deskList: Array<appInfo> = appList;
-function openApp(item: appInfo) {
+let deskList: UnwrapNestedRefs<Array<appInfo>> = appList;
+function openApp(item: UnwrapNestedRefs<appInfo>) {
     item.window.show();
 }
 
-function rightClick(item:appInfo,e: MouseEvent) {
+function rightClick(item:UnwrapNestedRefs<appInfo>,e: MouseEvent) {
     MenuCtrl.getInstance().callMenu(e,
         [
             { name: '打开(O)', func: () => { item.window.show(); } },

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-17 19:06:59
+ * @LastEditTime: 2022-01-27 15:13:59
  * @Description: 
  * @FilePath: /publishTest/src/components/apps/MyComputer.vue
 -->
@@ -285,7 +285,7 @@ onMounted(() => {
     let timer = 0;
     document.ondragover = function () {
         clearTimeout(timer);
-        timer = setTimeout(function () {
+        timer = window.setTimeout(function () {
             // oBox.style.display = 'none';
         }, 200);
         //    oBox.style.display = 'block';

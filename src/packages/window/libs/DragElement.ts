@@ -1,8 +1,7 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-17 16:06:33
- * @Description: 实现可移动Object
- * @FilePath: /myindex/src/components/window/libs/DragElement.ts
+ * @LastEditTime: 2022-01-27 17:44:09
+ * @Description: 实现可移动Object,让Dom元素可以移动
  * Need CodeReview 
  */
 interface DragObjInter {
@@ -51,6 +50,15 @@ class DragElement extends DragObj {
         super(x, y);
         this.ifDraging = false;
     }
+    private sorption(posX: number, posY: number) {//使得窗口贴边吸附
+        if(posX<10){
+            posX=0;
+        }
+        if(posY<10){
+            posY=0;
+        }
+        return [posX, posY]
+    }
     mountDomEvent(element: any){
         this.el=element;
         this.ifDraging = false;
@@ -77,29 +85,25 @@ class DragElement extends DragObj {
         document.body.addEventListener('mousemove', (ev) => {
             
             if (this.ifDraging&&ev.buttons==1) {
-                
                 this.onMoving(ev.pageX, ev.pageY);
-                
-                element.style.left = this.posX + 'px';
-                element.style.top = this.posY + 'px'
+                let [posX, posY] = this.sorption(this.posX, this.posY);
+                element.style.left = posX + 'px';
+                element.style.top = posY + 'px'
             }else if(this.ifDraging&&ev.buttons==0){
                 this.ifDraging=false
 
             }
         })
         document.body.addEventListener("touchmove", (ev) => {
-            
             if (this.ifDraging) {
-                
                 this.onMoving(ev.touches[0].pageX, ev.touches[0].pageY);
-                
-                element.style.left = this.posX + 'px';
-                element.style.top = this.posY + 'px'
+                let [posX, posY] = this.sorption(this.posX, this.posY);
+                element.style.left = posX + 'px';
+                element.style.top = posY + 'px'
             }else if(this.ifDraging){
                 this.ifDraging=false
 
             }
-            // ev.preventDefault();
         })
     }
 

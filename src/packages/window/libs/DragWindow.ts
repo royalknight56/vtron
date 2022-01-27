@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-11 17:49:02
+ * @LastEditTime: 2022-01-27 17:36:50
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
@@ -17,18 +17,22 @@ interface option {
     height?: number,
     title?: string,
     icon?: string,
-    isScalable?:boolean
+    isScalable?: boolean
 }
+interface EventMap {
+    onDraging: { x: number, y: number, ifdrag: boolean }
+    onResizing: { x: number, y: number }
+}
+type EventMapFunction = {
+    [K in keyof EventMap]?: (ev: EventMap[K]) => any
+};
 class DragWindow {
-    private evMap: {
-        onDraging?: Function
-        onResizing?: (x: number, y: number) => void
-    }
+    private evMap: EventMapFunction
     windowInfo: WindowInfo | null
 
-    option: option
+    private option: option
     id: string
-    ifcreated: boolean
+    private ifcreated: boolean
 
     constructor(option: option) {
 
@@ -40,12 +44,25 @@ class DragWindow {
         this.id = 'NULL'
         this.ifcreated = false;
 
+
     }
-    onWindowDraging(event: Function) {
-        this.evMap.onDraging = event;
+    private getWinInner() {
+        let dom = document.getElementById('win10id');
+        if (dom) {
+            return {
+                width: dom.clientWidth,
+                height: dom.clientHeight
+            }
+        } else {
+            return {
+                width: 0,
+                height: 0
+            }
+        }
+
     }
-    onWindowResizing(event: (x: number, y: number) => void) {
-        this.evMap.onResizing = event;
+    addWindowEventListener<K extends keyof EventMap>(event: K, callback: EventMapFunction[K]) {
+        this.evMap[event] = callback;
     }
 
     private readyRegister() {
@@ -53,13 +70,27 @@ class DragWindow {
         this.id = id
     }
     private register(option: option) {
-        this.windowInfo = DWM.getInstance().registerWindow(this.id,option);//在IPC中注册，传递windowInfo
+        this.windowInfo = DWM.getInstance().registerWindow(this.id, option);//在IPC中注册，传递windowInfo
+    }
+    private makeWindowNotOverSize() {
+        if (this.windowInfo) {
+            let { x, y, width, height } = this.windowInfo;
+            let { width: winWidth, height: winHeight } = this.getWinInner();
+            if (x + width > winWidth) {
+                this.windowInfo.width = winWidth - x;
+            }
+            if (y + height > winHeight) {
+                this.windowInfo.height = winHeight - y;
+            }
+        }
     }
     show() {
         if (!this.ifcreated && !this.windowInfo?.ifDestory) {
             this.readyRegister();
         }
-        this.register( this.option);
+        this.register(this.option);
+        this.makeWindowNotOverSize();
+
 
         nextTick(() => {
             DWM.getInstance().upSetWindowIndex(this.id)

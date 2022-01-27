@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-27 14:21:49
+ * @LastEditTime: 2022-01-27 17:35:49
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -26,15 +26,17 @@ import { DragWindow } from "./packages/window/libs/DragWindow";
 import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {
-  let testwin = new DragWindow(
-    {
-      title: '浏览器',
-      icon: brow,
-      width: 600,
-      height: 500,
-      content: Mycom,
-      isScalable: false
-    })
+  // let testwin = new DragWindow(
+  //   {
+  //     title: '浏览器',
+  //     icon: brow,
+  //     width: 600,
+  //     height: 500,
+  //     x: 100,
+  //     y: 100,
+  //     content: Mycom,
+  //     isScalable: false
+  //   })
   appList.splice(0, 100000)
   appList.push({
     name: '浏览器',
@@ -45,8 +47,8 @@ onMounted(() => {
       icon: brow,
       width: 600,
       height: 500,
-      x: 0,
-      y: 0,
+      x: 100,
+      y: 100,
       content: Test3
     })
   });
@@ -77,10 +79,7 @@ onMounted(() => {
         content: Browser
       })
   });
-  appList.push({
-    name: '测试按钮',
-    icon: brow,
-    window: new DragWindow(
+  let testVue = new DragWindow(
       {
         title: '测试按钮',
         icon: brow,
@@ -88,6 +87,10 @@ onMounted(() => {
         height: 200,
         content: TestButton
       })
+  appList.push({
+    name: '测试按钮',
+    icon: brow,
+    window: testVue
   });
 
   
@@ -129,33 +132,10 @@ Object.assign(appconfig, opt)
 }
 </style>
 <style>
-#app {
-  /* font-family: Avenir, Helvetica, Arial, sans-serif; */
-  /* -webkit-font-smoothing: antialiased; */
-  /* -moz-osx-font-smoothing: grayscale; */
-  /* text-align: center; */
-  /* color: #2c3e50; */
-  /* margin-top: 60px; */
-}
+
 body {
   padding: 0;
   margin: 0;
   /* overflow: hidden; */
 }
-/* .dragobj {
-  cursor: all-scroll;
-  position: absolute;
-  user-select: none;
-  width: 100px;
-  height: 100px;
-  background-color: #2c3e50;
-}
-.cube3 {
-  z-index: -1;
-  background-color: antiquewhite;
-  position: absolute;
-  user-select: none;
-  width: 100px;
-  height: 100px;
-} */
 </style>

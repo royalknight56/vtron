@@ -1,14 +1,21 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-26 15:58:01
+ * @LastEditTime: 2022-01-27 14:37:12
  * @Description: 
 -->
 <template>
-    <div class="alert">
-        
+<div class="alert_group">
+    <div v-for="item in BIS.getInstance().NotificationMap" class="alert">
+        {{item.title}}
+        {{item.messages}}
     </div>
+</div>
+    
 </template>
 <script setup lang="ts">
+import { BIS } from "../libs/BuildInState";
+// import { Notify } from "../libs/Notify";
+
 // function notifyMe() {
 //     // 先检查浏览器是否支持
 //     if (!("Notification" in window)) {
@@ -32,7 +39,7 @@
 
 //                 const title = "巨蟹座-00年";
 //                 const options = {
-//                     body: "这是我的好姐妹，可以介绍给你", // 通知主体
+//                     body: "", // 通知主体
 //                     requireInteraction: true, // 不自动关闭通知
 //                     image: "https://gitee.com/Wzhichao/img/raw/master/uPic/IMG_xxxxx327356%20.png",
 //                     icon: "https://gitee.com/Wzhichao/img/raw/master/uPic/QlkqKm47%20.jpg",  // 通知图标
@@ -50,10 +57,17 @@
 // }
 </script>
 <style scoped>
-.alert {
+.alert_group{
+    display: flex;
+    flex-direction: column;
+    height: min-content;
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: 10px;
+    bottom: 40px;
+}
+.alert {
+    position: relative;
+    
     width: 200px;
     height: 100px;
     background: rgba(0, 0, 0, 0.418);

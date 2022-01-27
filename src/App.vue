@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-25 15:51:51
+ * @LastEditTime: 2022-01-27 14:21:49
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -18,6 +18,7 @@ import brow from "./assets/浏览器.png"
 import backimg from "./assets/back.jpg"
 import Test3 from "./apps/Test3.vue"
 import Browser from "./apps/Browser.vue"
+import TestButton from "./apps/TestButton.vue"
 import app_vscode from "./apps/app_vscode.vue"
 
 import Mycom from "./apps/MyComputer.vue"
@@ -76,6 +77,20 @@ onMounted(() => {
         content: Browser
       })
   });
+  appList.push({
+    name: '测试按钮',
+    icon: brow,
+    window: new DragWindow(
+      {
+        title: '测试按钮',
+        icon: brow,
+        width: 200,
+        height: 200,
+        content: TestButton
+      })
+  });
+
+  
 
   appList.push({
     name: 'vscode',
@@ -90,11 +105,6 @@ onMounted(() => {
         content: app_vscode
       })
   });
-
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
-  appList.push({ name: '我的电脑', icon: brow, window: testwin });
 })
 
 let opt: plug_option = {

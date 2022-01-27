@@ -4,7 +4,8 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 interface Notify{
     title:string,
-    messages:string
+    messages:string,
+    isHidden:boolean
 }
 class BIS {
     NotificationMap:UnwrapNestedRefs<{
@@ -23,11 +24,16 @@ class BIS {
     static showNotification(id:string,title:string,messages:string){//显示通知
         this.getInstance().NotificationMap[id] = {
             messages:messages,
-            title:title
+            title:title,
+            isHidden:false
         }
     }
     static hideNotification(id:string){//关闭通知
-        delete this.getInstance().NotificationMap[id];
+        this.getInstance().NotificationMap[id].isHidden = true;
+        setTimeout(()=>{
+            delete this.getInstance().NotificationMap[id];
+        },400)
+        
     }
     
 }

@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 19:11:40
+ * @LastEditTime: 2022-01-28 10:39:57
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
  */
@@ -37,6 +37,8 @@ export type { WindowInfo } from "./packages/window/libs/DWM";
 
 export { SystemStatus } from "./packages/window/libs/SystemStatus";
 export { MenuCtrl } from "./packages/window/libs/MenuCtrl";
+export { Notify } from "./packages/window/libs/Notify";
+
 
 
 export {

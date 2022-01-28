@@ -47,7 +47,6 @@ import { SystemStatus } from "../libs/SystemStatus";
 let stat = SystemStatus.getInstance().stats;
 
 function backgroundRightClick(e: MouseEvent) {
-    console.log(e);
     MenuCtrl.getInstance().callMenu(e,
         [
             { name: '刷新', func: () => {  } },

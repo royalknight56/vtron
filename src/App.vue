@@ -21,11 +21,15 @@ import Browser from "./apps/Browser.vue"
 import TestButton from "./apps/TestButton.vue"
 import app_vscode from "./apps/app_vscode.vue"
 
+import { AddToDesktop,ClearDesktop } from "./plug";
+
 import Mycom from "./apps/MyComputer.vue"
 import { DragWindow } from "./packages/window/libs/DragWindow";
 import { onMounted } from "@vue/runtime-core";
+
 // import computer from "./assets/computer.ico"
 onMounted(() => {
+  ClearDesktop();
   // let testwin = new DragWindow(
   //   {
   //     title: '浏览器',
@@ -37,23 +41,23 @@ onMounted(() => {
   //     content: Mycom,
   //     isScalable: false
   //   })
-  appList.splice(0, 100000)
-  appList.push({
+
+  AddToDesktop({
     name: '浏览器',
-    icon: brow,
+    // icon: brow,
     // 0, 0, '窗口通信', brow, 600, 500, 
     window: new DragWindow({
-      title: '浏览器',
-      icon: brow,
-      width: 600,
-      height: 500,
-      x: 100,
-      y: 100,
-      isScalable: false,
+      // title: '浏览器',
+      // icon: brow,
+      // width: 600,
+      // height: 500,
+      // x: 100,
+      // y: 100,
+      // isScalable: false,
       content: Test3
     })
   });
-  appList.push({
+  AddToDesktop({
     name: '我的电脑',
     icon: brow,
     // 0, 0, '窗口通信', brow, 600, 500,
@@ -67,7 +71,7 @@ onMounted(() => {
       })
   });
 
-  appList.push({
+  AddToDesktop({
     name: '浏览器',
     icon: brow,
     // 0, 0, '窗口通信', brow, 600, 500,
@@ -88,7 +92,7 @@ onMounted(() => {
         height: 200,
         content: TestButton
       })
-  appList.push({
+  AddToDesktop({
     name: '测试按钮',
     icon: brow,
     window: testVue
@@ -96,7 +100,7 @@ onMounted(() => {
 
   
 
-  appList.push({
+  AddToDesktop({
     name: 'vscode',
     icon: brow,
     // 0, 0, '窗口通信', brow, 600, 500,

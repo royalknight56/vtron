@@ -8,12 +8,12 @@ import { shallowReactive } from "vue";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { DragWindow } from "./window/libs/DragWindow";
 interface appInfo{
-    name: string,
-    icon:string,
+    name?: string,
+    icon?:string,
     window:DragWindow,
 }
 
-let appList:UnwrapNestedRefs<Array<appInfo>> = shallowReactive([
+let appList:UnwrapNestedRefs<Array<Required<appInfo>>> = shallowReactive([
 
 ])
 type loginOption = {

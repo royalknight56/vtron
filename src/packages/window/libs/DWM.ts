@@ -63,7 +63,7 @@ class DWM {
         return "dragwinelementhash89103" + this.getWinnum()
     }
     registerWindow(id: string,
-        option: option
+        option: Required<option>
     ): WindowInfo {
         if (this.windowInfoMap[id]) {
             return this.windowInfoMap[id]
@@ -77,13 +77,13 @@ class DWM {
                 ifDestory: false,
                 isMaximize: false,
 
-                x: option.x ?? 0,
-                y: option.y ?? 0,
-                width: option.width ?? 400,
-                height: option.height ?? 400,
-                isScalable: option.isScalable ?? true,
-                title: option.title || '未命名窗口',
-                icon: option.icon || '',
+                x: option.x,
+                y: option.y,
+                width: option.width,
+                height: option.height,
+                isScalable: option.isScalable,
+                title: option.title,
+                icon: option.icon,
 
                 content: option.content,
                 props: option.props,

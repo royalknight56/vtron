@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-27 18:34:55
+ * @LastEditTime: 2022-01-28 10:41:17
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -118,7 +118,7 @@ onMounted(() => {
 let opt: plug_option = {
   if_logo_show: true,
   start_time: 0,
-  // backimg: backimg,
+  backimg: backimg,
   // login: {
   //   user_name: 'Ad',
   // },

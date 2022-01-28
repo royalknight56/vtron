@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-27 15:15:10
+ * @LastEditTime: 2022-01-28 17:38:50
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -21,7 +21,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 import { appList } from "../../appconfig";
 import type { appInfo } from "../../appconfig";
 import { MenuCtrl } from "../libs/MenuCtrl";
-import { openInfo } from "../system/openInfo";
+import { openInfo } from "../system/callSystemWins";
 
 
 

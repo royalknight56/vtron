@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-28 10:41:17
+ * @LastEditTime: 2022-02-07 11:23:30
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -119,9 +119,10 @@ let opt: plug_option = {
   if_logo_show: true,
   start_time: 0,
   backimg: backimg,
-  // login: {
-  //   user_name: 'Ad',
-  // },
+  login: {
+    user_name: 'Ad',
+    // user_password:'123'
+  },
   start_menu_logo: brow,
 }
 Object.assign(appconfig, opt)

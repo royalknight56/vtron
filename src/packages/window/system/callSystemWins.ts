@@ -2,7 +2,11 @@ import { DragWindow } from "../libs/DragWindow";
 import icon from "../../../assets/win.png";
 
 
-import appInfo  from "../system/appInfo.vue";
+import appInfo  from "./appInfo.vue";
+import systemSetVue from "../system/systemSet.vue"
+
+// import SystemSet  from "../system/SystemSet.vue";
+
 
 function openInfo(info:any){
     //100, 100, '属性',icon,
@@ -21,6 +25,18 @@ function openInfo(info:any){
     })
     wininfo.show();
 }
+let setwin = new DragWindow({
+    title: '设置',
+    // width: 600,
+    // height: 500,
+    // x: 100,
+    // y: 100,
+    content: systemSetVue
+})
+function openSetting() {
+    setwin.show()
+}
 export{
-    openInfo
+    openInfo,
+    openSetting
 }

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-02-07 11:22:04
+ * @LastEditTime: 2022-02-07 16:13:03
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
@@ -10,6 +10,7 @@ import { SystemStatus } from '../libs/SystemStatus';
 
 let userPassword = ref("")
 let className = ref('screen-show')
+let alertMsg = ref("-")
 let userName = ref(appconfig.login?.user_name || 'Admin')
 
 SystemStatus.getInstance().mountLockEvent('show', () => {
@@ -33,9 +34,11 @@ function onLogin() {
                 SystemStatus.getInstance().unlockScreen(appconfig.login.user_name, userPassword.value)
             }else{
                 console.log('密码错误')
+                alertMsg.value = '密码错误'
             }
         }else{
             console.log('等待确认')
+            alertMsg.value = '等待确认'
             SystemStatus.getInstance().notifyUnlock(appconfig.login.user_name, userPassword.value)
         }
 
@@ -100,7 +103,9 @@ function onLogin() {
                             </span>
                         </button>
                     </span>
+                    
                 </span>
+                <span>{{alertMsg}}</span>
             </span>
         </div>
     </div>

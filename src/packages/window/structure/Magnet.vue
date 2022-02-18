@@ -1,14 +1,14 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-28 17:40:41
+ * @LastEditTime: 2022-02-18 13:47:37
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
 -->
 <template>
-    <div class="magnet" @click.stop>
+    <div class="magnet">
         <div class="m_left">
-            <div class="left_list_item" @click="closeClice">
+            <div class="left_list_item" @click.stop="closeClice">
                 <svg
                     class="icon"
                     viewBox="0 0 1024 1024"
@@ -66,7 +66,7 @@ function closeClice(e: MouseEvent) {
     MenuCtrl.getInstance().callMenu(e,
         [
             { name: '关机', func: () => { console.log("关机"); SystemStatus.getInstance().closePower() } },
-            { name: '锁定', func: () => { SystemStatus.getInstance().lockScreen() } },
+            // { name: '锁定', func: () => { SystemStatus.getInstance().lockScreen() } },
             { name: '重启', func: () => { console.log("重启"); SystemStatus.getInstance().restartPower() } }
 
         ]

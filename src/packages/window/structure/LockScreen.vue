@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-02-07 16:13:03
+ * @LastEditTime: 2022-02-07 16:35:05
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
@@ -25,13 +25,19 @@ SystemStatus.getInstance().mountUnlockEvent('hide', () => {
 if (appconfig.login == null) {
     SystemStatus.getInstance().unlockScreen('', '')
 }
-
+function loginSuccess(){
+    className.value = 'screen-hidean'
+    setTimeout(() => {
+        className.value = 'screen-hide'
+    }, 500)
+}
 
 function onLogin() {
     if (appconfig.login != null) {
         if (appconfig.login.user_password) {
             if (appconfig.login.user_password == userPassword.value) {
-                SystemStatus.getInstance().unlockScreen(appconfig.login.user_name, userPassword.value)
+                loginSuccess()
+                // SystemStatus.getInstance().unlockScreen(appconfig.login.user_name, userPassword.value)
             }else{
                 console.log('密码错误')
                 alertMsg.value = '密码错误'

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-28 17:41:27
+ * @LastEditTime: 2022-02-18 14:01:28
  * @Description: 
 -->
 <template>
@@ -75,6 +75,8 @@ function closeWindow(){
     width: 100%;
     /* background-color: #f0f0f0; */
     user-select: none;
+    background-color: rgb(241, 241, 241);
+
 }
 .outer_main {
     height: 100%;

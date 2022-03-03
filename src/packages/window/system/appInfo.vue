@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 19:56:29
+ * @LastEditTime: 2022-03-03 11:12:07
  * @Description: 
   Need CodeReview 
 -->
@@ -42,18 +42,21 @@
             </div>
         </div>
         <div class="bottom">
-            <div @click="closeWindow" class="bottom_button">
+            <WinCheckBox>Check</WinCheckBox>
+            <WinBotton @click="closeWindow" class="bottom_button">
                  确定
-            </div>
-            <div @click="closeWindow" class="bottom_button">
+            </WinBotton>
+            <WinBotton @click="closeWindow" class="bottom_button">
                  取消
-            </div>
+            </WinBotton>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
 import { inject } from 'vue';
 import { DWM } from '../libs/DWM';
+import WinBotton from "./winComponent/WinButton.vue"
+import WinCheckBox from "./winComponent/WinCheckBox.vue"
 
 let id =<string>inject('windowId')
 
@@ -149,7 +152,7 @@ iframe {
     margin: 6px auto;
     background-color: #f0f0f0;
 }
-.bottom_button{
+/* .bottom_button{
     width:80px;
     height:26px;
     line-height: 26px;
@@ -169,6 +172,6 @@ iframe {
     border: 1px solid #0078d7;
     background-color: #e5f1fb;
     box-shadow: 0 0 0 0px #0078d7 inset;
-}
+} */
 
 </style>

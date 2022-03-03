@@ -1,0 +1,5 @@
+img, svg{
+  margin: 0 auto;
+  vertical-align: unset;
+  display: inline-block;
+}

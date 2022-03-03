@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-17 16:07:13
+ * @LastEditTime: 2022-03-03 16:07:19
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -17,7 +17,7 @@
         <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
             <div class="wintmp_left">
                 <div class="wintmp_logo">
-                    <img width="24" height="24" :src="ctx.icon" />
+                    <img draggable="false" width="24" height="24" :src="ctx.icon" />
                 </div>
                 <div class="wintmp_title">{{ ctx.title }}</div>
             </div>
@@ -210,6 +210,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 }
 </style>
 <style scoped>
+@import "../../main.css";
 .wintmp_outer {
     position: absolute;
     padding: 0;

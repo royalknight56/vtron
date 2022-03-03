@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-19 14:11:50
+ * @LastEditTime: 2022-03-03 10:25:28
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -20,7 +20,9 @@ Vue3 仿Win10 UI 框架
 <span style="color:#999;text-align:center">推荐 Vue 3 + Typescript + Vite + Using `<script setup>`
 </span>
 
-
+<span style="color:#999;text-align:center">
+样例代码：https://github.com/royalknight56/vue3-windows10-demo
+</span>
 
 
 本框架可以让你的页面像win10视窗系统一样，变为一个网页上的win10系统。

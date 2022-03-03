@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-13 16:10:09
+ * @LastEditTime: 2022-03-03 16:08:13
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -110,6 +110,7 @@ function closeButtonClicked(item: WindowInfo){
 // }, 3000)
 </script>
 <style scoped>
+@import "../../main.css";
 .bar {
     position: absolute;
     bottom: 0;

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-02-07 11:23:30
+ * @LastEditTime: 2022-03-03 15:56:02
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -21,7 +21,7 @@ import Browser from "./apps/Browser.vue"
 import TestButton from "./apps/TestButton.vue"
 import app_vscode from "./apps/app_vscode.vue"
 
-import { AddToDesktop,ClearDesktop } from "./plug";
+import { AddToDesktop, ClearDesktop } from "./plug";
 
 import Mycom from "./apps/MyComputer.vue"
 import { DragWindow } from "./packages/window/libs/DragWindow";
@@ -85,20 +85,20 @@ onMounted(() => {
       })
   });
   let testVue = new DragWindow(
-      {
-        title: '测试按钮',
-        icon: brow,
-        width: 200,
-        height: 200,
-        content: TestButton
-      })
+    {
+      title: '测试按钮',
+      icon: brow,
+      width: 200,
+      height: 200,
+      content: TestButton
+    })
   AddToDesktop({
     name: '测试按钮',
     icon: brow,
     window: testVue
   });
 
-  
+
 
   AddToDesktop({
     name: 'vscode',
@@ -138,7 +138,11 @@ Object.assign(appconfig, opt)
 }
 </style>
 <style>
-
+img,
+svg {
+  display: block;
+  vertical-align: middle;
+}
 body {
   padding: 0;
   margin: 0;

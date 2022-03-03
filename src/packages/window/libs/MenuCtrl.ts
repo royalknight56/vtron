@@ -4,7 +4,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-13 17:17:43
+ * @LastEditTime: 2022-03-03 16:32:42
  * @Description: 右键菜单控制
  * @FilePath: /myindex/src/components/window/libs/MenuCtrl.ts
  * Need CodeReview 
@@ -39,20 +39,25 @@ class MenuCtrl {
             return 0;
         }
         let _this = this;
-        if (el.offsetParent) {
-            return _this.getPosToOuterTop(el.offsetParent as HTMLElement) + el.offsetTop;
+        if (el.offsetParent||el.parentElement) {
+            return _this.getPosToOuterTop((el.offsetParent||el.parentElement) as HTMLElement) + (el.offsetTop||0);
+        }else{
+            return el.offsetTop;
         }
-        return el.offsetTop;
+        
     }
     private getPosToOuterLeft(el: HTMLElement): number {
         if (el.id == 'win10id') {
             return 0;
         }
         let _this = this;
-        if (el.offsetParent) {
-            return _this.getPosToOuterLeft(el.offsetParent as HTMLElement) + el.offsetLeft;
+
+        if (el.offsetParent||el.parentElement) {
+            return _this.getPosToOuterLeft((el.offsetParent||el.parentElement) as HTMLElement) + (el.offsetLeft||0);
+        }else{
+            return el.offsetLeft;
         }
-        return el.offsetLeft;
+        
     }
     callMenu(e: MouseEvent, list: UnwrapNestedRefs<Array<menuItem>>) {
         document.addEventListener("click", (e) => {
@@ -66,7 +71,7 @@ class MenuCtrl {
             this.ifTopDown.value = true;
         }
         this.x.value = this.getPosToOuterLeft(e.target as HTMLElement) + e.offsetX ;
-        this.y.value = this.getPosToOuterTop(e.target as HTMLElement)+ e.offsetY
+        this.y.value = this.getPosToOuterTop(e.target as HTMLElement)+ e.offsetY;
         this.ifShow.value = true
         this.menuList.splice(0, this.menuList.length);
         this.menuList.push(...list)

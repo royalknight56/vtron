@@ -1,12 +1,11 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-02-07 16:35:03
+ * @LastEditTime: 2022-03-03 16:05:44
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
 <template>
   <div @contextmenu.prevent class="win_outer" id="win10id">
-    
     <TaskBar></TaskBar>
     <ContextMenu></ContextMenu>
     <Desktop></Desktop>
@@ -14,7 +13,6 @@
     <AlertVue></AlertVue>
     <WindowsGroup></WindowsGroup>
     <!-- <LockScreenVue></LockScreenVue> -->
-    
   </div>
 </template>
   
@@ -39,7 +37,7 @@ onMounted(() => {
 })
 
 </script>
-  <style>
+<style>
 .win_outer {
   position: relative;
   width: 100%;

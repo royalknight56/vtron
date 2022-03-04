@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 19:56:29
+ * @LastEditTime: 2022-03-04 15:44:40
  * @Description: 
   Need CodeReview 
 -->
@@ -36,24 +36,28 @@
                     </tr>
                     <tr>
                         <td>权限:</td>
-                        <td>ALL</td>
+                        <td> <WinCheckBox>ALL</WinCheckBox>
+                        </td>
                     </tr>
                 </table>
             </div>
         </div>
         <div class="bottom">
-            <div @click="closeWindow" class="bottom_button">
+
+            <WinBotton @click="closeWindow" class="bottom_button">
                  确定
-            </div>
-            <div @click="closeWindow" class="bottom_button">
+            </WinBotton>
+            <WinBotton @click="closeWindow" class="bottom_button">
                  取消
-            </div>
+            </WinBotton>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
 import { inject } from 'vue';
 import { DWM } from '../libs/DWM';
+import WinBotton from "./winComponent/WinButton.vue"
+import WinCheckBox from "./winComponent/WinCheckBox.vue"
 
 let id =<string>inject('windowId')
 
@@ -70,6 +74,7 @@ iframe {
 }
 </style>
 <style scoped>
+@import '../../main.css';
 .outer {
     display: flex;
     flex-direction: column;
@@ -149,7 +154,7 @@ iframe {
     margin: 6px auto;
     background-color: #f0f0f0;
 }
-.bottom_button{
+/* .bottom_button{
     width:80px;
     height:26px;
     line-height: 26px;
@@ -169,6 +174,6 @@ iframe {
     border: 1px solid #0078d7;
     background-color: #e5f1fb;
     box-shadow: 0 0 0 0px #0078d7 inset;
-}
+} */
 
 </style>

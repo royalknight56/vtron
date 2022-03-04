@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-02-18 14:01:28
+ * @LastEditTime: 2022-03-04 15:44:17
  * @Description: 
 -->
 <template>
@@ -9,38 +9,14 @@
             <div class="tab">
                 常规  
             </div>
-            <div class="tab tab_unactive">
+            <!-- <div class="tab tab_unactive">
                 高级  
-            </div>
+            </div> -->
         </div>
         <div class="outer_main">
             <div class="main_uper">
                 <!-- <img draggable="false" class="app_icon" :src="windowInfo.props.icon" />
                 <div class="app_name">{{ windowInfo.props.name }}</div> -->
-            </div>
-            <div class="main_card">
-                <!-- <table class="app_info">
-                    <tr>
-                        <td>文件类型:</td>
-                        <td>快捷方式 (.lnk)</td>
-                    </tr>
-                    <tr>
-                        <td>描述:</td>
-                        <td>{{ windowInfo.props.name }}</td>
-                    </tr>
-                </table> -->
-            </div>
-            <div class="main_card">
-                <!-- <table class="app_info">
-                    <tr>
-                        <td>属性:</td>
-                        <td>只读</td>
-                    </tr>
-                    <tr>
-                        <td>权限:</td>
-                        <td>ALL</td>
-                    </tr>
-                </table> -->
             </div>
         </div>
         <div class="bottom">
@@ -68,6 +44,7 @@ function closeWindow(){
 </script>
 
 <style scoped>
+@import '../../main.css';
 .outer {
     display: flex;
     flex-direction: column;

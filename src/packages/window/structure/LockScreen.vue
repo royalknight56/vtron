@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-02-07 16:35:05
+ * @LastEditTime: 2022-03-04 15:45:19
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
@@ -117,6 +117,7 @@ function onLogin() {
     </div>
 </template>
 <style scoped lang="scss">
+@import '../../main.css';
 .lockscreen {
     position: absolute;
     top: 0;

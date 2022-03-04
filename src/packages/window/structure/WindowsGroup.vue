@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 19:56:29
+ * @LastEditTime: 2022-03-04 15:45:28
  * @Description: 
  * @FilePath: /myindex/src/components/window/WindowsGroup.vue
   Need CodeReview 
@@ -22,6 +22,7 @@ let winlist = DWM.getInstance().windowInfoMap
 
 </script>
 <style scoped>
+@import '../../main.css';
 .winitem {
     position: relative;
     z-index: 2;

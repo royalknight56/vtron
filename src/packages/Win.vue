@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-03 16:05:44
+ * @LastEditTime: 2022-03-04 16:52:13
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -33,10 +33,16 @@ import { SystemStatus } from './window/libs/SystemStatus';
 
 
 onMounted(() => {
+  console.log('windows10 in vue3 欢迎访问：')
+  console.log('https://github.com/royalknight56/win10-vue3')
   SystemStatus.getInstance().openPower()
 })
 
 </script>
+<style scoped>
+@import './main.css';
+
+</style>
 <style>
 .win_outer {
   position: relative;

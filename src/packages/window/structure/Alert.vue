@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-27 14:37:12
+ * @LastEditTime: 2022-03-04 15:44:48
  * @Description: 
 -->
 <template>
@@ -23,6 +23,7 @@
 import { BIS } from "../libs/BuildInState";
 </script>
 <style scoped>
+@import '../../main.css';
 .alert_group{
     display: flex;
     flex-direction: column;

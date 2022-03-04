@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-13 16:02:37
+ * @LastEditTime: 2022-03-04 15:44:58
  * @Description: 
  * @FilePath: /myindex/src/components/window/BlueScreen.vue
   Need CodeReview 
@@ -55,6 +55,7 @@ function backgroundRightClick(e: MouseEvent) {
 }
 </script>
 <style scoped>
+@import '../../main.css';
 .outer{
     position: absolute;
     left: 0;

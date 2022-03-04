@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-04 14:17:46
+ * @LastEditTime: 2022-03-04 15:44:40
  * @Description: 
   Need CodeReview 
 -->
@@ -74,6 +74,7 @@ iframe {
 }
 </style>
 <style scoped>
+@import '../../main.css';
 .outer {
     display: flex;
     flex-direction: column;

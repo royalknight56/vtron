@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-17 14:53:24
+ * @LastEditTime: 2022-03-03 16:06:30
  * @Description: 可以拖动的窗口
  * @FilePath: /myindex/src/components/window/DragWindow.vue
   Need CodeReview 
@@ -25,5 +25,6 @@ defineProps({
     },
 })
 </script>
-<style>
+<style scoped>
+@import "../../main.css";
 </style>

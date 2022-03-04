@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-03 17:39:59
+ * @LastEditTime: 2022-03-04 15:44:17
  * @Description: 
 -->
 <template>
@@ -44,6 +44,7 @@ function closeWindow(){
 </script>
 
 <style scoped>
+@import '../../main.css';
 .outer {
     display: flex;
     flex-direction: column;

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-03 16:01:05
+ * @LastEditTime: 2022-03-04 15:45:11
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -45,6 +45,7 @@ function rightClick(item:UnwrapNestedRefs<appInfo>,e: MouseEvent) {
 }
 </script>
 <style scoped>
+@import '../../main.css';
 .desk_outer {
     height: calc(100% - 30px);
     width: min-content;

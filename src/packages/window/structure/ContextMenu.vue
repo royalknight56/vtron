@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 11:16:47
+ * @LastEditTime: 2022-03-04 15:45:06
  * @Description: 
  * @FilePath: /myindex/src/components/window/MenuList.vue
   Need CodeReview 
@@ -32,7 +32,8 @@ function callFunc(item:menuItem) {
     item.func()
 }
 </script>
-<style>
+<style scoped>
+@import '../../main.css';
 .menu_outer {
     position: absolute;
     background-color: rgb(230, 230, 230);

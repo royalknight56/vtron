@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-03 16:05:44
+ * @LastEditTime: 2022-03-04 15:41:52
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -37,6 +37,10 @@ onMounted(() => {
 })
 
 </script>
+<style scoped>
+@import './main.css';
+
+</style>
 <style>
 .win_outer {
   position: relative;

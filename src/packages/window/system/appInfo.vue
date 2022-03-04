@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-03 11:12:07
+ * @LastEditTime: 2022-03-04 14:17:46
  * @Description: 
   Need CodeReview 
 -->
@@ -36,13 +36,14 @@
                     </tr>
                     <tr>
                         <td>权限:</td>
-                        <td>ALL</td>
+                        <td> <WinCheckBox>ALL</WinCheckBox>
+                        </td>
                     </tr>
                 </table>
             </div>
         </div>
         <div class="bottom">
-            <WinCheckBox>Check</WinCheckBox>
+
             <WinBotton @click="closeWindow" class="bottom_button">
                  确定
             </WinBotton>

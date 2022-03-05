@@ -65,6 +65,7 @@ class DWM {
     registerWindow(id: string,
         option: Required<option>
     ): WindowInfo {
+        // 注册窗口，填入到windowInfoMap中
         if (this.windowInfoMap[id]) {
             return this.windowInfoMap[id]
         } else {
@@ -91,7 +92,7 @@ class DWM {
                 windowEventMap: {}
             });
 
-            this.zIndexIdArray.push(id)
+            this.zIndexIdArray.push(id) // 层级数组中压入id
             this.winnum++;
             return this.windowInfoMap[id]
         }

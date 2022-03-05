@@ -96,12 +96,12 @@ class DragWindow {
             }
         }
     }
-    show() {
+    show() {// 调用show之后，注册窗口
         if (!this.ifcreated && !this.windowInfo?.ifDestory) {
-            this.readyRegister();
+            this.readyRegister();//在窗口是第一次注册时，获取一个唯一id
         }
-        this.register(this.option);
-        this.makeWindowNotOverSize();
+        this.register(this.option);//注册窗口，传入选项
+        this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
 
 
         nextTick(() => {

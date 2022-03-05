@@ -30,7 +30,7 @@ class DragObj implements DragObjInter {
         this.posX = this.posStartX + offsetX - this.startX;
         this.posY = this.posStartY + offsetY - this.startY;
 
-        this.notify(this.posX, this.posY)
+        // this.notify(this.posX, this.posY)
     }
     startMove(startX: number, startY: number) {
         this.startX = startX;
@@ -89,6 +89,7 @@ class DragElement extends DragObj {
                 let [posX, posY] = this.sorption(this.posX, this.posY);
                 element.style.left = posX + 'px';
                 element.style.top = posY + 'px'
+                this.notify(posX, posY)
             }else if(this.ifDraging&&ev.buttons==0){
                 this.ifDraging=false
 
@@ -100,6 +101,8 @@ class DragElement extends DragObj {
                 let [posX, posY] = this.sorption(this.posX, this.posY);
                 element.style.left = posX + 'px';
                 element.style.top = posY + 'px'
+                this.notify(posX, posY)
+
             }else if(this.ifDraging){
                 this.ifDraging=false
 

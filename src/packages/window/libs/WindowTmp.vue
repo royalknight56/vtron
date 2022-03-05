@@ -184,7 +184,16 @@ onMounted(() => {
 let $win_outer = ref(null);
 let wininfo = DWM.getInstance().getWindow(props.ctx.id)
 onMounted(() => {
-    let dragAble = new DragElement(wininfo.x, wininfo.y).mountDomEvent($win_outer.value)
+    let dragAble = new DragElement(wininfo.x, wininfo.y)
+    dragAble.mountDomEvent($win_outer.value)
+    dragAble.onDrag((x,y)=>{
+        // console.log(x,y)
+        DWM.getInstance().getWindow(props.ctx.id).x=x;
+        DWM.getInstance().getWindow(props.ctx.id).y=y;
+
+        // wininfo.x=x;
+        // wininfo.y=y
+    })
 })
 
 

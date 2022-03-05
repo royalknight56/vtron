@@ -7,14 +7,23 @@
     <div class="outer">
         <div class="uper_tab">
             <div class="tab">
-                常规  
+                Windows 设置
             </div>
-            <!-- <div class="tab tab_unactive">
-                高级  
-            </div> -->
         </div>
         <div class="outer_main">
             <div class="main_uper">
+                <WinSelect :options="[{
+                    value:'1',
+                    label:'1231'
+                },
+                {
+                    value:'2',
+                    label:'2'
+                },
+                ]"
+                v-model="testselect"
+                ></WinSelect>
+                
                 <!-- <img draggable="false" class="app_icon" :src="windowInfo.props.icon" />
                 <div class="app_name">{{ windowInfo.props.name }}</div> -->
             </div>
@@ -31,16 +40,16 @@
 </template>
 <script lang="ts" setup>
 
-import { inject } from 'vue';
+import { inject, ref } from 'vue';
 import { DWM } from '../libs/DWM';
-
+import WinSelect from './winComponent/WinSelect.vue'
 let id =<string>inject('windowId')
 
 let windowInfo = DWM.getInstance().getWindow(id )
 function closeWindow(){
     DWM.getInstance().destoryWindow(id )
 }
-
+let testselect = ref('2')
 </script>
 
 <style scoped>

@@ -75,31 +75,4 @@ input:checked + label::before {
     /* transform: all 0.5s; */
 }
 
-
-/* .checkbox_group {
-    display: flex;
-    align-items: center;
-} */
-/* .checkbox_button {
-    width: 20px;
-    height: 20px;
-    background-color: #e1e1e1;
-    border: 1px solid #999999;
-    transition: all 0.2s;
-    box-sizing: border-box;
-}
-.checkbox_text {
-    line-height: 20px;
-    font-size: 13px;
-    text-align: center;
-}
-.checkbox_button:first-child {
-    border: 1px solid #0078d7;
-    box-shadow: 0 0 0px 1px #0078d7 inset;
-}
-.checkbox_button:hover {
-    border: 1px solid #0078d7;
-    background-color: #e5f1fb;
-    box-shadow: 0 0 0 0px #0078d7 inset;
-} */
 </style>

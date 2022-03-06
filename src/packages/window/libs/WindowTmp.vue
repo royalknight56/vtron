@@ -86,7 +86,7 @@ import { markRaw, provide, reactive, ref, shallowRef, toRaw } from "vue";
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue"
 
-import { DWM } from "./DWM"
+import { DWM,PrivateDWM } from "./DWM"
 import type { WindowInfo } from "./DWM"
 import { MenuCtrl } from "./MenuCtrl"
 
@@ -109,23 +109,24 @@ let props = defineProps({
         }
     }
 })
+let winID = props.ctx.id
 function closeWindow(): void {
-    DWM.getInstance().destoryWindow(props.ctx.id)
+    PrivateDWM.getInstance().destoryWindow(winID)
 }
 function hideWindow() {
-    DWM.getInstance().hideWindow(props.ctx.id)
+    PrivateDWM.getInstance().hideWindow(winID)
 }
 function maxWindow() {
-    DWM.getInstance().maxWindow(props.ctx.id)
+    PrivateDWM.getInstance().maxWindow(winID)
 }
 function predown() {
-    DWM.getInstance().upSetWindowIndex(props.ctx.id)
+    PrivateDWM.getInstance().upSetWindowIndex(winID)
 }
 function uperRightClick(e: MouseEvent) {
     MenuCtrl.getInstance().callMenu(e,
         [
-            { name: '关闭', func: () => { DWM.getInstance().destoryWindow(props.ctx.id) } },
-            { name: '最小化', func: () => { DWM.getInstance().hideWindow(props.ctx.id) } }
+            { name: '关闭', func: () => { PrivateDWM.getInstance().destoryWindow(winID) } },
+            { name: '最小化', func: () => { PrivateDWM.getInstance().hideWindow(winID) } }
 
         ]
     )
@@ -136,7 +137,7 @@ let winmount = ref(null)
 let customerStyle = ref<any>({})
 
 function onFocus(e: MouseEvent | TouchEvent): void {
-    DWM.getInstance().upSetWindowIndex(props.ctx.id)
+    PrivateDWM.getInstance().upSetWindowIndex(winID)
     if (isMaximize.value) {
 
         if (e instanceof MouseEvent) {
@@ -176,20 +177,20 @@ onMounted(() => {
         }),
     }
     componentValue.value = toRaw(props.ctx).content;
-    provide('windowId', props.ctx.id)
+    provide('windowId', winID)
 })
 /*
 挂载拖动事件
 */
 let $win_outer = ref(null);
-let wininfo = DWM.getInstance().getWindow(props.ctx.id)
+let wininfo = PrivateDWM.getInstance().getWindow(winID)
 onMounted(() => {
     let dragAble = new DragElement(wininfo.x, wininfo.y)
     dragAble.mountDomEvent($win_outer.value)
     dragAble.onDrag((x,y)=>{
         // console.log(x,y)
-        DWM.getInstance().getWindow(props.ctx.id).x=x;
-        DWM.getInstance().getWindow(props.ctx.id).y=y;
+        PrivateDWM.getInstance().getWindow(winID).x=x;
+        PrivateDWM.getInstance().getWindow(winID).y=y;
 
         // wininfo.x=x;
         // wininfo.y=y
@@ -202,9 +203,11 @@ onMounted(() => {
 */
 let isScaleAble = ref(wininfo.isScalable)
 let resizemode = ref('null')
-let scaleAble = new ScaleElement(resizemode, winWidth, winHeight, props.ctx.windowEventMap['resize']);
+let scaleAble = new ScaleElement(resizemode, winWidth, winHeight);
 
-
+scaleAble.onResize((width:number,height:number)=>{
+    PrivateDWM.getInstance().scaleChange(winID,width,height)
+})
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
     scaleAble?.startScale(e, dire)
 }

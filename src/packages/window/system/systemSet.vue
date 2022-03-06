@@ -52,7 +52,7 @@
 <script lang="ts" setup>
 
 import { inject, ref, defineComponent } from 'vue';
-import { DWM } from '../libs/DWM';
+import { PrivateDWM } from '../libs/DWM';
 
 import WinSelect from './winComponent/WinSelect.vue'
 import update from './setApps/SetUpdate.vue'
@@ -66,28 +66,33 @@ import { DragWindow } from '../libs/DragWindow';
 
 let id = <string>inject('windowId')
 
-let windowInfo = DWM.getInstance().getWindow(id)
+let windowInfo = PrivateDWM.getInstance().getWindow(id)
 function closeWindow() {
-    DWM.getInstance().destoryWindow(id)
+    PrivateDWM.getInstance().destoryWindow(id)
 }
 
 let setMap: {
     [key: string]: DragWindow
 } = {}
 function openSet(content: ReturnType<typeof defineComponent>, title: string) {
-
     if (content) {
         if (setMap[title]) {
-            setMap[title].show()
+            setMap[title].show({
+                x:PrivateDWM.getInstance().getWindow(id).x,
+                y:PrivateDWM.getInstance().getWindow(id).y,
+                height:PrivateDWM.getInstance().getWindow(id).height,
+                width:PrivateDWM.getInstance().getWindow(id).width,
+            })
         } else {
-
             setMap[title] = new DragWindow({
                 content: content,
                 title:'系统',
-                x:DWM.getInstance().getWindow(id).x,
-                y:DWM.getInstance().getWindow(id).y,
+                x:PrivateDWM.getInstance().getWindow(id).x,
+                y:PrivateDWM.getInstance().getWindow(id).y,
 
-                height:200
+                height:PrivateDWM.getInstance().getWindow(id).height,
+                width:PrivateDWM.getInstance().getWindow(id).width,
+
             })
             setMap[title].show()
         }

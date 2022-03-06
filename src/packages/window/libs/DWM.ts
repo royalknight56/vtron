@@ -32,8 +32,8 @@ interface windowInfoMapInter {
 interface eventMapInter {
     [index: string]: Function
 }
-class DWM {
-    private static instance: DWM;
+class PrivateDWM {//私有化管理中心，不对外暴露接口
+    private static instance: PrivateDWM;
     private winnum: number;
     windowInfoMap: UnwrapNestedRefs<windowInfoMapInter>;
     private zIndexIdArray: string[];
@@ -46,7 +46,7 @@ class DWM {
     }
     static getInstance() {
         if (this.instance == undefined) {
-            this.instance = new DWM()
+            this.instance = new PrivateDWM()
         }
         return this.instance
     }
@@ -105,6 +105,10 @@ class DWM {
         let ind = this.zIndexIdArray.indexOf(id)
         this.zIndexIdArray.splice(ind, 1)
     }
+    scaleChange(id:string,width?:number,height?:number){
+        this.windowInfoMap[id].width=width||this.windowInfoMap[id].width;
+        this.windowInfoMap[id].height=height||this.windowInfoMap[id].height;
+    }
 
 
     upSetWindowIndex(id: string): number {
@@ -148,7 +152,50 @@ class DWM {
     }
 
 }
+
+
+class DWM{
+    private static instance: DWM;
+    private constructor() {
+
+    }
+    static getInstance() {
+        if (this.instance == undefined) {
+            this.instance = new DWM()
+        }
+        return this.instance
+    }
+    getWindow(id: string): WindowInfo {
+        return PrivateDWM.getInstance().getWindow(id)
+    }
+    addEventListener(id: string, name: string, func: Function) {
+        return PrivateDWM.getInstance().addEventListener(id,name,func)
+    }
+    upSetWindowIndex(id: string){
+        return PrivateDWM.getInstance().upSetWindowIndex(id)
+    }
+    hideWindow(id: string) {
+        return PrivateDWM.getInstance().hideWindow(id)
+    }
+    showWindow(id: string) {
+        return PrivateDWM.getInstance().showWindow(id)
+    }
+    destoryWindow(id: string) {
+        return PrivateDWM.getInstance().destoryWindow(id)
+    }
+    maxWindow(id: string) {
+        return PrivateDWM.getInstance().maxWindow(id)
+    }
+    on(ev: string, func: Function) {
+        return PrivateDWM.getInstance().on(ev,func)
+    }
+    emit(ev: string, ...args: any) {
+        return PrivateDWM.getInstance().emit(ev,...args)
+    }
+
+}
 export {
     DWM,
+    PrivateDWM,
     WindowInfo
 }

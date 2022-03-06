@@ -27,8 +27,8 @@ function openInfo(info:any){
 }
 let setwin = new DragWindow({
     title: '设置',
-    // width: 600,
-    // height: 500,
+    width: 650,
+    height: 400,
     // x: 100,
     // y: 100,
     content: systemSetVue

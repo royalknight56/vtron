@@ -14,11 +14,11 @@
 </template>
 <script setup lang="ts">
 import WindowTmpVue from "../libs/WindowTmp.vue";
-import { DWM } from "../libs/DWM"
+import { PrivateDWM } from "../libs/DWM"
 
 // {title:title,width,height,ctx:ctx}
 
-let winlist = DWM.getInstance().windowInfoMap
+let winlist = PrivateDWM.getInstance().windowInfoMap
 
 </script>
 <style scoped>

@@ -14,16 +14,16 @@ class ScaleElement {
     winStartY:number
     mosStartX: number
     mosStartY: number
-    resizeEvent:Function|null
+    resizeEvent:Function
 
     MIN_WIDTH = 200
     MIN_HEIGHT = 100
     
-    constructor(resizemode: Ref, winWidth: Ref, winHeight: Ref,resizeEvent:Function) {
+    constructor(resizemode: Ref, winWidth: Ref, winHeight: Ref) {
         this.resizemode = resizemode;
         this.winWidth = winWidth;
         this.winHeight = winHeight;
-        this.resizeEvent = resizeEvent;
+        this.resizeEvent = () => { };
 
         this.winStartX = 0;
         this.winStartY = 0;
@@ -59,6 +59,9 @@ class ScaleElement {
         this.winStartX = this.winWidth.value
         this.winStartY = this.winHeight.value
         
+    }
+    onResize(fun: (a0: number, a1: number) => void){
+        this.resizeEvent = fun
     }
     notify(width:number,height:number) {
         if(this.resizeEvent){

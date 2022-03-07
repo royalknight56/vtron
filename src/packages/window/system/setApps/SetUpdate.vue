@@ -1,3 +1,4 @@
 <template>
-无
+背景URL：<input>
+<button>✅</button>
 </template>

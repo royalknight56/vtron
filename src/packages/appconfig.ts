@@ -1,10 +1,10 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-07 16:28:29
+ * @LastEditTime: 2022-03-07 17:17:34
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
-import { shallowReactive } from "vue";
+import { reactive, shallowReactive } from "vue";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { DragWindow } from "./window/libs/DragWindow";
 interface appInfo{
@@ -28,21 +28,31 @@ if(localConfigString){
     isLocalConfig = true
 }
 
-let appconfig={
+let appconfig=reactive({
     start_time:2000,
     if_logo_show:true,
     start_menu_logo:'default',
     backimg:'default',
     login:<loginOption|null>null
-}
+})
 Object.assign(appconfig,localConfig)
+
 function setConfig(params:Partial<typeof appconfig>) {
     Object.assign(appconfig,params)
     if(isLocalConfig){
         Object.assign(appconfig,localConfig)
     }
 }
+function storeConfig<K extends keyof (typeof appconfig)>(key:K,params:(typeof appconfig)[K]) {
+    appconfig[key]=params
+    localStorage.setItem('appconfig',JSON.stringify(appconfig))
+}
+function clearStoreConfig() {
+    localStorage.clear()
+}
 type plug_option=Partial<typeof appconfig>
 export {appList,appconfig,
     setConfig,
+    storeConfig,
+    clearStoreConfig,
     appInfo,plug_option}

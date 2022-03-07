@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-07 16:33:46
+ * @LastEditTime: 2022-03-07 16:41:20
  * @Description: 
 -->
 <template>
@@ -86,8 +86,6 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
     }
 
 }
-let testselect = ref('2')
-
 let setList = [
     {
         title: '系统',

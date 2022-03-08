@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-07 16:41:20
+ * @LastEditTime: 2022-03-08 12:10:21
  * @Description: 
 -->
 <template>
@@ -8,17 +8,6 @@
         <div class="uper_tab">
             <div class="tab">Windows 设置</div>
         </div>
-        <!-- <WinSelect :options="[{
-                    value:'1',
-                    label:'1231'
-                },
-                {
-                    value:'2',
-                    label:'2'
-                },
-                ]"
-                v-model="testselect"
-                ></WinSelect> -->
         <div class="outer_main">
             <div class="main_uper">
                 <div

@@ -1,11 +1,12 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-27 14:32:00
+ * @LastEditTime: 2022-03-08 19:44:41
  * @Description: 
 -->
 <template>
     <div class="outer">
         <button @click="test()">Test</button>
+        <div class="testdiv">TEST</div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -20,4 +21,9 @@ function test(){
 
 </style>
 <style scoped>
+.testdiv{
+    position: fixed;
+    bottom: 0;
+    right: 0i
+}
 </style>

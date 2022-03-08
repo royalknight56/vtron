@@ -1,34 +1,34 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-04 15:45:19
+ * @LastEditTime: 2022-03-08 12:08:07
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
-import { ref } from '@vue/reactivity';
+import { ref } from 'vue';
 import { appconfig } from '../../appconfig';
 import { SystemStatus } from '../libs/SystemStatus';
 
 let userPassword = ref("")
-let className = ref('screen-show')
+let lockClassName = ref('screen-show')
 let alertMsg = ref("-")
 let userName = ref(appconfig.login?.user_name || 'Admin')
 
 SystemStatus.getInstance().mountLockEvent('show', () => {
-    className.value = 'screen-show'
+    lockClassName.value = 'screen-show'
 })
 SystemStatus.getInstance().mountUnlockEvent('hide', () => {
-    className.value = 'screen-hidean'
+    lockClassName.value = 'screen-hidean'
     setTimeout(() => {
-        className.value = 'screen-hide'
+        lockClassName.value = 'screen-hide'
     }, 500)
 })
 if (appconfig.login == null) {
     SystemStatus.getInstance().unlockScreen('', '')
 }
 function loginSuccess(){
-    className.value = 'screen-hidean'
+    lockClassName.value = 'screen-hidean'
     setTimeout(() => {
-        className.value = 'screen-hide'
+        lockClassName.value = 'screen-hide'
     }, 500)
 }
 
@@ -36,6 +36,7 @@ function onLogin() {
     if (appconfig.login != null) {
         if (appconfig.login.user_password) {
             if (appconfig.login.user_password == userPassword.value) {
+                console.log('密码正确')
                 loginSuccess()
                 // SystemStatus.getInstance().unlockScreen(appconfig.login.user_name, userPassword.value)
             }else{
@@ -57,8 +58,9 @@ function onLogin() {
 
 
 </script>
+
 <template>
-    <div :class="className" class="lockscreen">
+    <div class="lockscreen" :class="lockClassName">
         <!---->
         <div class="login-box">
             <span
@@ -175,7 +177,7 @@ function onLogin() {
                 border: none;
                 text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
                 box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
-                height: 40px;
+                height: 30px;
                 padding: 6.4px 15px;
                 font-size: 16px;
                 border-radius: 2px;

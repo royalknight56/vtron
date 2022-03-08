@@ -55,15 +55,15 @@
 </template>
 <script lang="ts" setup>
 import { inject } from 'vue';
-import { DWM } from '../libs/DWM';
+import { PrivateDWM } from '../libs/DWM';
 import WinBotton from "./winComponent/WinButton.vue"
 import WinCheckBox from "./winComponent/WinCheckBox.vue"
 
 let id =<string>inject('windowId')
 
-let windowInfo = DWM.getInstance().getWindow(id )
+let windowInfo = PrivateDWM.getInstance().getWindow(id )
 function closeWindow(){
-    DWM.getInstance().destoryWindow(id )
+    PrivateDWM.getInstance().destoryWindow(id )
 }
 </script>
 <style>

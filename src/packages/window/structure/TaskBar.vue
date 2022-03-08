@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import type { WindowInfo } from "../libs/DWM"
-import { DWM } from "../libs/DWM"
+import { DWM,PrivateDWM } from "../libs/DWM"
 import { MenuCtrl } from "../libs/MenuCtrl"
 import { SystemStatus } from "../libs/SystemStatus";
 import MagnetVue from "./Magnet.vue";
@@ -57,14 +57,14 @@ if (appconfig.start_menu_logo == "default") {
 }
 
 
-let winlist = DWM.getInstance().windowInfoMap
+let winlist = PrivateDWM.getInstance().windowInfoMap
 
 function barClick(item: WindowInfo) {
     if (item.ifShow) {
-        DWM.getInstance().upSetWindowIndex(item.id)
+        PrivateDWM.getInstance().upSetWindowIndex(item.id)
     } else {
-        DWM.getInstance().showWindow(item.id)
-        DWM.getInstance().upSetWindowIndex(item.id)
+        PrivateDWM.getInstance().showWindow(item.id)
+        PrivateDWM.getInstance().upSetWindowIndex(item.id)
     }
 }
 
@@ -81,15 +81,15 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {
         MenuCtrl.getInstance().callMenu(e,
             [
-                { name: '关闭', func: () => { DWM.getInstance().destoryWindow(item.id) } },
-                { name: '最小化', func: () => { DWM.getInstance().hideWindow(item.id) } }
+                { name: '关闭', func: () => { PrivateDWM.getInstance().destoryWindow(item.id) } },
+                { name: '最小化', func: () => { PrivateDWM.getInstance().hideWindow(item.id) } }
             ]
         )
     } else {
         MenuCtrl.getInstance().callMenu(e,
             [
-                { name: '关闭', func: () => { DWM.getInstance().destoryWindow(item.id) } },
-                { name: '显示', func: () => { DWM.getInstance().showWindow(item.id) } }
+                { name: '关闭', func: () => { PrivateDWM.getInstance().destoryWindow(item.id) } },
+                { name: '显示', func: () => { PrivateDWM.getInstance().showWindow(item.id) } }
             ]
         )
     }
@@ -97,7 +97,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo){
-    DWM.getInstance().destoryWindow(item.id)
+    PrivateDWM.getInstance().destoryWindow(item.id)
 }
 // //定期更换截图
 // setInterval(() => {

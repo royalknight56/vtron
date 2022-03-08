@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-27 18:33:50
+ * @LastEditTime: 2022-03-08 20:32:19
  * @Description: 实现可移动Object,让Dom元素可以移动
  * Need CodeReview 
  */
@@ -30,7 +30,7 @@ class DragObj implements DragObjInter {
         this.posX = this.posStartX + offsetX - this.startX;
         this.posY = this.posStartY + offsetY - this.startY;
 
-        this.notify(this.posX, this.posY)
+        // this.notify(this.posX, this.posY)
     }
     startMove(startX: number, startY: number) {
         this.startX = startX;
@@ -45,37 +45,41 @@ class DragObj implements DragObjInter {
 
 class DragElement extends DragObj {
     ifDraging: boolean;
-    el:any
+    canDrag: boolean;
+    el: any
     constructor(x: number, y: number) {
         super(x, y);
         this.ifDraging = false;
+        this.canDrag = true;
     }
     private sorption(posX: number, posY: number) {//使得窗口贴边吸附
-        if(posX<10&&posX>-10){
-            posX=0;
+        if (posX < 10 && posX > -10) {
+            posX = 0;
         }
-        if(posY<10&&posY>-10){
-            posY=0;
+        if (posY < 10 && posY > -10) {
+            posY = 0;
         }
         return [posX, posY]
     }
-    mountDomEvent(element: any){
-        this.el=element;
+    mountDomEvent(element: any) {
+        this.el = element;
         this.ifDraging = false;
-        element.style.left = this.posX + 'px';
-        element.style.top = this.posY + 'px'
-        element.addEventListener('mousedown', (ev:any)=>{
-            this.startMove(ev.pageX, ev.pageY);
-            this.ifDraging = true;
+        // element.style.left = this.posX + 'px';
+        // element.style.top = this.posY + 'px'
+        element.addEventListener('mousedown', (ev: any) => {
+            if (this.canDrag) {
+                this.startMove(ev.pageX, ev.pageY);
+                this.ifDraging = true;
+            }
         })
-        element.addEventListener("touchstart", (ev:TouchEvent)=>{
-            this.startMove(ev.touches[0].pageX, ev.touches[0].pageY);
-            this.ifDraging = true;
-            // ev.preventDefault();
-
+        element.addEventListener("touchstart", (ev: TouchEvent) => {
+            if (this.canDrag) {
+                this.startMove(ev.touches[0].pageX, ev.touches[0].pageY);
+                this.ifDraging = true;
+            }
         }, {
             passive: true
-          })
+        })
         document.body.addEventListener('mouseup', (ev) => {
             this.ifDraging = false;
         })
@@ -83,14 +87,13 @@ class DragElement extends DragObj {
             this.ifDraging = false;
         })
         document.body.addEventListener('mousemove', (ev) => {
-            
-            if (this.ifDraging&&ev.buttons==1) {
+
+            if (this.ifDraging && ev.buttons == 1) {
                 this.onMoving(ev.pageX, ev.pageY);
                 let [posX, posY] = this.sorption(this.posX, this.posY);
-                element.style.left = posX + 'px';
-                element.style.top = posY + 'px'
-            }else if(this.ifDraging&&ev.buttons==0){
-                this.ifDraging=false
+                this.notify(posX, posY)
+            } else if (this.ifDraging && ev.buttons == 0) {
+                this.ifDraging = false
 
             }
         })
@@ -98,10 +101,9 @@ class DragElement extends DragObj {
             if (this.ifDraging) {
                 this.onMoving(ev.touches[0].pageX, ev.touches[0].pageY);
                 let [posX, posY] = this.sorption(this.posX, this.posY);
-                element.style.left = posX + 'px';
-                element.style.top = posY + 'px'
-            }else if(this.ifDraging){
-                this.ifDraging=false
+                this.notify(posX, posY)
+            } else if (this.ifDraging) {
+                this.ifDraging = false
 
             }
         })

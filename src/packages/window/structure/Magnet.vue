@@ -111,10 +111,12 @@ function openset() {
     display: flex;
     flex-direction: column-reverse;
     transition: all 0.2s;
+    transition-delay: 0s;
     overflow: hidden;
 }
 .m_left:hover {
     width: 200px;
+    transition-delay: 0.5s;
     background-color: rgba(36, 32, 26, 0.945);
 }
 
@@ -137,7 +139,7 @@ function openset() {
 }
 .left_list_item svg {
     flex-shrink: 0;
-    width: 30px;
+    width: 34px;
     height: 20px;
     filter: invert(100%);
     padding: 10px;

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-07 17:15:24
+ * @LastEditTime: 2022-03-07 17:37:35
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { appList, appconfig,setConfig, plug_option } from "./packages/appconfig";
+import { appList, appconfig,initConfig, plug_option } from "./packages/appconfig";
 import WinVue from "./packages/Win.vue";
 
 import brow from "./assets/浏览器.png"
@@ -125,7 +125,7 @@ let opt: plug_option = {
   },
   start_menu_logo: brow,
 }
-setConfig(opt)
+initConfig(opt)
 
 </script>
 <style scoped>

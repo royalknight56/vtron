@@ -8,7 +8,7 @@
 
 </template>
 <script lang="ts" setup>
-import { ref } from '@vue/reactivity';
+import { ref } from 'vue';
 import {storeConfig,setConfig,clearStoreConfig,appconfig} from '../../../appconfig'
 let backURL = ref(appconfig.backimg)
 let startTime = ref(appconfig.start_time)

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-04 15:44:58
+ * @LastEditTime: 2022-03-08 12:07:14
  * @Description: 
  * @FilePath: /myindex/src/components/window/BlueScreen.vue
   Need CodeReview 
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div v-if="appconfig.backimg!='default'&&(stat.screen == 'common')" class="backimg">
-        <img draggable="false" :src="appconfig.backimg" alt="">
+        <img draggable="false" onerror="this.src=''" :src="appconfig.backimg">
     </div>
     <div id="text"></div>
     <div id="wait" v-if="stat.screen == 'blue'">
@@ -56,6 +56,10 @@ function backgroundRightClick(e: MouseEvent) {
 </script>
 <style scoped>
 @import '../../main.css';
+
+img[src=""],img:not([src]) {
+    display: none;
+}
 .outer{
     position: absolute;
     left: 0;

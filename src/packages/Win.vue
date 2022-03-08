@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-04 16:52:13
+ * @LastEditTime: 2022-03-08 10:38:36
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -12,7 +12,7 @@
     <BlueScreen></BlueScreen>
     <AlertVue></AlertVue>
     <WindowsGroup></WindowsGroup>
-    <!-- <LockScreenVue></LockScreenVue> -->
+    <LockScreenVue></LockScreenVue>
   </div>
 </template>
   

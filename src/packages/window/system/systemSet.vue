@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-04 15:44:17
+ * @LastEditTime: 2022-03-07 16:41:20
  * @Description: 
 -->
 <template>
@@ -8,6 +8,17 @@
         <div class="uper_tab">
             <div class="tab">Windows 设置</div>
         </div>
+        <!-- <WinSelect :options="[{
+                    value:'1',
+                    label:'1231'
+                },
+                {
+                    value:'2',
+                    label:'2'
+                },
+                ]"
+                v-model="testselect"
+                ></WinSelect> -->
         <div class="outer_main">
             <div class="main_uper">
                 <div
@@ -23,30 +34,8 @@
                         <div class="set_item-desc">{{ item.desc }}</div>
                     </div>
                 </div>
-                <!-- <WinSelect :options="[{
-                    value:'1',
-                    label:'1231'
-                },
-                {
-                    value:'2',
-                    label:'2'
-                },
-                ]"
-                v-model="testselect"
-                ></WinSelect>-->
-
-                <!-- <img draggable="false" class="app_icon" :src="windowInfo.props.icon" />
-                <div class="app_name">{{ windowInfo.props.name }}</div>-->
             </div>
         </div>
-        <!-- <div class="bottom">
-            <div @click="closeWindow" class="bottom_button">
-                 确定
-            </div>
-            <div @click="closeWindow" class="bottom_button">
-                 取消
-            </div>
-        </div>-->
     </div>
 </template>
 <script lang="ts" setup>
@@ -67,9 +56,6 @@ import { DragWindow } from '../libs/DragWindow';
 let id = <string>inject('windowId')
 
 let windowInfo = PrivateDWM.getInstance().getWindow(id)
-function closeWindow() {
-    PrivateDWM.getInstance().destoryWindow(id)
-}
 
 let setMap: {
     [key: string]: DragWindow
@@ -100,8 +86,6 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
     }
 
 }
-let testselect = ref('2')
-
 let setList = [
     {
         title: '系统',

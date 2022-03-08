@@ -1,19 +1,20 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-28 10:39:57
+ * @LastEditTime: 2022-03-07 17:37:30
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
  */
 
 import { App } from "vue";
-import { appList,appconfig,appInfo,plug_option } from "./packages/appconfig";
+import { appList,appconfig,initConfig,appInfo,plug_option } from "./packages/appconfig";
 import Win from "./packages/Win.vue"
 import { Plugin } from 'vue'
 
 
 let plug:Plugin = {
     install:function(app:App, opt: plug_option):void {
-        Object.assign(appconfig,opt)
+        // Object.assign(appconfig,opt)
+        initConfig(opt)
         app.component('Win10',Win)
     },
     

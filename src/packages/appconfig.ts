@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-08 09:53:40
+ * @LastEditTime: 2022-03-08 10:36:12
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
@@ -54,11 +54,19 @@ function initConfig(params:Partial<typeof appconfig>) {
     }
 }
 /**
+ * @description: 设置配置
+ */
+function setConfig<K extends keyof (typeof appconfig)>(key:K,params:(typeof appconfig)[K])  {
+    appconfig[key]=params
+}
+/**
  * @description: 存储配置到本地
  */
-function storeConfig<K extends keyof (typeof appconfig)>(key:K,params:(typeof appconfig)[K]) {
-    appconfig[key]=params
-    localStorage.setItem('appconfig',JSON.stringify(appconfig))
+function storeConfig() {  
+    let temp: Partial<typeof appconfig> = JSON.parse(JSON.stringify(appconfig));
+    temp.login=undefined; //去除login的存储
+
+    localStorage.setItem('appconfig',JSON.stringify(temp))
 }
 
 /**
@@ -70,6 +78,8 @@ function clearStoreConfig() {
 type plug_option=Partial<typeof appconfig>
 export {appList,appconfig,
     initConfig,
+    setConfig,
     storeConfig,
+
     clearStoreConfig,
     appInfo,plug_option}

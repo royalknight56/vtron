@@ -9,14 +9,17 @@
 </template>
 <script lang="ts" setup>
 import { ref } from '@vue/reactivity';
-import {storeConfig,clearStoreConfig,appconfig} from '../../../appconfig'
+import {storeConfig,setConfig,clearStoreConfig,appconfig} from '../../../appconfig'
 let backURL = ref(appconfig.backimg)
 let startTime = ref(appconfig.start_time)
 function saveBack(){
-    storeConfig('backimg',backURL.value)
+    setConfig('backimg',backURL.value)
+    storeConfig()
 }
 function saveStartTime(){
-    storeConfig('start_time',startTime.value)
+    setConfig('start_time',startTime.value)
+    storeConfig()
+
 }
 function clear(){
     clearStoreConfig()

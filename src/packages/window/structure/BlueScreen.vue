@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-08 12:07:14
+ * @LastEditTime: 2022-03-08 12:22:03
  * @Description: 
  * @FilePath: /myindex/src/components/window/BlueScreen.vue
   Need CodeReview 
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div v-if="appconfig.backimg!='default'&&(stat.screen == 'common')" class="backimg">
-        <img draggable="false" onerror="this.src=''" :src="appconfig.backimg">
+        <img ondragstart="return false;" draggable="false" onerror="this.src=''" :src="appconfig.backimg">
     </div>
     <div id="text"></div>
     <div id="wait" v-if="stat.screen == 'blue'">
@@ -77,12 +77,14 @@ img[src=""],img:not([src]) {
     height: 100%;
     width: 100%;
     user-select: none;
+    -moz-user-select: none;
 }
 .backimg img{
     width: 100%;
     height: 100%;
     object-fit: cover;
     user-select: none;
+    -moz-user-select: none;
 }
 .blueclass{
     z-index: 10001;

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-03 16:07:19
+ * @LastEditTime: 2022-03-08 19:45:20
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -246,6 +246,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
     box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
         0 7px 19px rgb(0 0 0 / 58%);
     padding: 0px;
+    contain: content;
 }
 .topwin {
     border: 1px solid #0078d7;

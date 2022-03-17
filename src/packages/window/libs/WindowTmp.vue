@@ -1,94 +1,122 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-08 20:27:58
+ * @LastEditTime: 2022-03-09 15:59:32
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
 -->
 <template>
+  <div
+    class="wintmp_outer dragwin"
+    :style="customerStyle"
+    @touchstart.passive="onFocus"
+    @mousedown="onFocus"
+    :class="{ topwin: iftop, maxwin: isMaximize }"
+    ref="$win_outer"
+  >
     <div
-        class="wintmp_outer dragwin"
-        :style="customerStyle"
-        @touchstart.passive="onFocus"
-        @mousedown="onFocus"
-        :class="{ topwin: iftop, maxwin: isMaximize }"
-        ref="$win_outer"
+      class="wintmp_uper"
+      @dblclick="maxWindow()"
+      @contextmenu.prevent="uperRightClick"
     >
-        <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
-            <div class="wintmp_left">
-                <div class="wintmp_logo">
-                    <img draggable="false" width="24" height="24" :src="ctx.icon" />
-                </div>
-                <div class="wintmp_title">{{ ctx.title }}</div>
-            </div>
-            <div class="winbutton_group">
-                <div @click="hideWindow()" class="winbutton hide_button">
-                    <svg class="icon" viewBox="0 0 1024 1024">
-                        <path d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z" />
-                    </svg>
-                </div>
-                <div v-if="isScaleAble" @click="maxWindow()" class="winbutton max_button">
-                    <svg v-if="isMaximize" class="icon" viewBox="0 0 1024 1024">
-                        <path
-                            d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z"
-                        />
-                    </svg>
-                    <svg v-else class="icon" viewBox="0 0 1024 1024">
-                        <path
-                            d="M926.45937303 97.54062697v828.2973677H97.54062697V97.54062697h828.91874606m4.97102697-77.6722963h-838.8608c-39.7682157 0-72.07989097 32.31167525-72.07989097 72.07989096v839.48217837c0 39.7682157 32.31167525 72.07989097 72.07989097 72.07989097h839.48217837c39.7682157 0 72.07989097-32.31167525 72.07989096-72.07989097v-838.8608c0-40.38959408-32.31167525-72.70126933-72.70126933-72.70126933 0.62137837 0 0 0 0 0z"
-                        />
-                    </svg>
-                </div>
-                <!-- <svg t="1629857965098" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3294" width="200" height="200"><path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" p-id="3295"></path></svg> -->
-                <div @click="closeWindow()" class="winbutton close_button">
-                    <svg class="icon" viewBox="0 0 1024 1024">
-                        <path
-                            d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z"
-                            fill="#363F4D"
-                        />
-                    </svg>
-                </div>
-            </div>
+      <div class="wintmp_left">
+        <div class="wintmp_logo">
+          <img draggable="false" width="24" height="24" :src="ctx.icon" />
+        </div>
+        <div class="wintmp_title">{{ ctx.title }}</div>
+      </div>
+      <div class="winbutton_group">
+        <div @click="flushWindow()" class="winbutton flush_button">
+          <svg
+            t="1632984867128"
+            class="icon"
+            viewBox="0 0 1024 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            p-id="1857"
+            width="15"
+            height="15"
+          >
+            <path
+              d="M927.999436 531.028522a31.998984 31.998984 0 0 0-31.998984 31.998984c0 51.852948-10.147341 102.138098-30.163865 149.461048a385.47252 385.47252 0 0 1-204.377345 204.377345c-47.32295 20.016524-97.6081 30.163865-149.461048 30.163865s-102.138098-10.147341-149.461048-30.163865a385.47252 385.47252 0 0 1-204.377345-204.377345c-20.016524-47.32295-30.163865-97.6081-30.163865-149.461048s10.147341-102.138098 30.163865-149.461048a385.47252 385.47252 0 0 1 204.377345-204.377345c47.32295-20.016524 97.6081-30.163865 149.461048-30.163865a387.379888 387.379888 0 0 1 59.193424 4.533611l-56.538282 22.035878A31.998984 31.998984 0 1 0 537.892156 265.232491l137.041483-53.402685a31.998984 31.998984 0 0 0 18.195855-41.434674L639.723197 33.357261a31.998984 31.998984 0 1 0-59.630529 23.23882l26.695923 68.502679a449.969005 449.969005 0 0 0-94.786785-10.060642c-60.465003 0-119.138236 11.8488-174.390489 35.217667a449.214005 449.214005 0 0 0-238.388457 238.388457c-23.361643 55.252253-35.22128 113.925486-35.22128 174.390489s11.8488 119.138236 35.217668 174.390489a449.214005 449.214005 0 0 0 238.388457 238.388457c55.252253 23.368867 113.925486 35.217667 174.390489 35.217667s119.138236-11.8488 174.390489-35.217667A449.210393 449.210393 0 0 0 924.784365 737.42522c23.368867-55.270316 35.217667-113.925486 35.217667-174.390489a31.998984 31.998984 0 0 0-32.002596-32.006209z"
+              fill=""
+              p-id="1858"
+            ></path>
+          </svg>
+        </div>
+        <div @click="hideWindow()" class="winbutton hide_button">
+          <svg class="icon" viewBox="0 0 1024 1024">
+            <path
+              d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z"
+            />
+          </svg>
         </div>
         <div
-            ref="winmount"
-            class="wintmp_main"
-            :class="{ resizeing: resizemode != 'null' }"
-            @mousedown.stop="predown"
-            @touchstart.stop.passive="predown"
+          v-if="isScaleAble"
+          @click="maxWindow()"
+          class="winbutton max_button"
         >
-            <component :is="componentValue"></component>
-            <!-- <div ></div> -->
+          <svg v-if="isMaximize" class="icon" viewBox="0 0 1024 1024">
+            <path
+              d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z"
+            />
+          </svg>
+          <svg v-else class="icon" viewBox="0 0 1024 1024">
+            <path
+              d="M926.45937303 97.54062697v828.2973677H97.54062697V97.54062697h828.91874606m4.97102697-77.6722963h-838.8608c-39.7682157 0-72.07989097 32.31167525-72.07989097 72.07989096v839.48217837c0 39.7682157 32.31167525 72.07989097 72.07989097 72.07989097h839.48217837c39.7682157 0 72.07989097-32.31167525 72.07989096-72.07989097v-838.8608c0-40.38959408-32.31167525-72.70126933-72.70126933-72.70126933 0.62137837 0 0 0 0 0z"
+            />
+          </svg>
         </div>
-        <div
-            class="right_border"
-            v-if="isScaleAble"
-            @mousedown.stop="startScale($event, 'r')"
-            @touchstart.stop.passive="startScale($event, 'r')"
-        ></div>
-        <div
-            class="bottom_border"
-            v-if="isScaleAble"
-            @mousedown.stop="startScale($event, 'b')"
-            @touchstart.stop.passive="startScale($event, 'b')"
-        ></div>
-        <div
-            class="right_bottom_border"
-            v-if="isScaleAble"
-            @mousedown.stop="startScale($event, 'rb')"
-            @touchstart.stop.passive="startScale($event, 'rb')"
-        ></div>
+        <!-- <svg t="1629857965098" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3294" width="200" height="200"><path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" p-id="3295"></path></svg> -->
+        <div @click="closeWindow()" class="winbutton close_button">
+          <svg class="icon" viewBox="0 0 1024 1024">
+            <path
+              d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z"
+              fill="#363F4D"
+            />
+          </svg>
+        </div>
+      </div>
     </div>
+    <div
+      ref="winmount"
+      class="wintmp_main"
+      :class="{ resizeing: resizemode != 'null' }"
+      @mousedown.stop="predown"
+      @touchstart.stop.passive="predown"
+    >
+      <component :is="componentValue" :key="componentKey"></component>
+      <!-- <div ></div> -->
+    </div>
+    <div
+      class="right_border"
+      v-if="isScaleAble"
+      @mousedown.stop="startScale($event, 'r')"
+      @touchstart.stop.passive="startScale($event, 'r')"
+    ></div>
+    <div
+      class="bottom_border"
+      v-if="isScaleAble"
+      @mousedown.stop="startScale($event, 'b')"
+      @touchstart.stop.passive="startScale($event, 'b')"
+    ></div>
+    <div
+      class="right_bottom_border"
+      v-if="isScaleAble"
+      @mousedown.stop="startScale($event, 'rb')"
+      @touchstart.stop.passive="startScale($event, 'rb')"
+    ></div>
+  </div>
 </template>
 <script lang="ts" setup>
 import { markRaw, provide, reactive, ref, shallowRef, toRaw, watch } from "vue";
 
 import { onMounted, computed } from "vue";
-import type { PropType } from "vue"
+import type { PropType } from "vue";
 
-import { DWM, PrivateDWM } from "./DWM"
-import type { WindowInfo } from "./DWM"
-import { MenuCtrl } from "./MenuCtrl"
+import { DWM, PrivateDWM } from "./DWM";
+import type { WindowInfo } from "./DWM";
+import { MenuCtrl } from "./MenuCtrl";
 
 import { DragElement } from "./DragElement";
 import { ScaleElement } from "./ScaleElement";
@@ -96,303 +124,308 @@ import { ScaleElement } from "./ScaleElement";
 // import html2canvas from 'html2canvas';
 
 let props = defineProps({
-
-    ctx: {
-        type: Object as PropType<WindowInfo>,
-        default: {
-            app: {
-                unmount: () => {
-                }
-            },//创建的app
-            content: {},//组件vue
-
-        }
-    }
-})
-let winID = props.ctx.id
+  ctx: {
+    type: Object as PropType<WindowInfo>,
+    default: {
+      app: {
+        unmount: () => {},
+      }, //创建的app
+      content: {}, //组件vue
+    },
+  },
+});
+let winID = props.ctx.id;
+const componentKey = ref<Number>(1);
+function flushWindow(): void {
+  componentKey.value = Math.round(Math.random() * 10000);
+}
 function closeWindow(): void {
-    PrivateDWM.getInstance().destoryWindow(winID)
+  PrivateDWM.getInstance().destoryWindow(winID);
 }
 function hideWindow() {
-    PrivateDWM.getInstance().hideWindow(winID)
+  PrivateDWM.getInstance().hideWindow(winID);
 }
 function maxWindow() {
-    PrivateDWM.getInstance().maxWindow(winID)
+  PrivateDWM.getInstance().maxWindow(winID);
 }
 function predown() {
-    PrivateDWM.getInstance().upSetWindowIndex(winID)
+  PrivateDWM.getInstance().upSetWindowIndex(winID);
 }
 function uperRightClick(e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e,
-        [
-            { name: '关闭', func: () => { PrivateDWM.getInstance().destoryWindow(winID) } },
-            { name: '最小化', func: () => { PrivateDWM.getInstance().hideWindow(winID) } }
-
-        ]
-    )
+  MenuCtrl.getInstance().callMenu(e, [
+    {
+      name: "关闭",
+      func: () => {
+        PrivateDWM.getInstance().destoryWindow(winID);
+      },
+    },
+    {
+      name: "最小化",
+      func: () => {
+        PrivateDWM.getInstance().hideWindow(winID);
+      },
+    },
+  ]);
 }
-let winmount = ref(null)
+let winmount = ref(null);
 
-
-let customerStyle = ref<any>({})
+let customerStyle = ref<any>({});
 
 function onFocus(e: MouseEvent | TouchEvent): void {
-    PrivateDWM.getInstance().upSetWindowIndex(winID)
-    if (isMaximize.value) {
-
-        if (e instanceof MouseEvent) {
-            e.preventDefault()
-            e.stopPropagation()
-        } else {
-            // e.stopPropagation()
-        }
+  PrivateDWM.getInstance().upSetWindowIndex(winID);
+  if (isMaximize.value) {
+    if (e instanceof MouseEvent) {
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      // e.stopPropagation()
     }
+  }
 }
 
-let componentValue: any = shallowRef(null)
+let componentValue: any = shallowRef(null);
 
-let iftop = computed(() => props.ctx.iftop)
-let isMaximize = computed(() => props.ctx.isMaximize)
+let iftop = computed(() => props.ctx.iftop);
+let isMaximize = computed(() => props.ctx.isMaximize);
 
-let winWidth = ref(props.ctx.width)
-let winHeight = ref(props.ctx.height)
+let winWidth = ref(props.ctx.width);
+let winHeight = ref(props.ctx.height);
 
 /*
  *计算样式
  */
 onMounted(() => {
+  customerStyle.value = {
+    width: computed(() => winWidth.value + "px"),
+    height: computed(() => winHeight.value + "px"),
+    left: computed(() => wininfo.x + "px"),
+    top: computed(() => wininfo.y + "px"),
 
-    customerStyle.value = {
-        width: computed(() => winWidth.value + 'px'),
-        height: computed(() => winHeight.value + 'px'),
-        left: computed(() => wininfo.x + 'px'),
-        top: computed(() => wininfo.y + 'px'),
-
-        zIndex: computed(() => {
-            return props.ctx.zindex
-        }),
-        display: computed(() => {
-            if (props.ctx.ifShow) {
-                return ""
-            } else {
-                return "none"
-            }
-        }),
-    }
-    componentValue.value = toRaw(props.ctx).content;
-    provide('windowId', winID)
-})
+    zIndex: computed(() => {
+      return props.ctx.zindex;
+    }),
+    display: computed(() => {
+      if (props.ctx.ifShow) {
+        return "";
+      } else {
+        return "none";
+      }
+    }),
+  };
+  componentValue.value = toRaw(props.ctx).content;
+  provide("windowId", winID);
+});
 /*
 挂载拖动事件
 */
 let $win_outer = ref(null);
-let wininfo = PrivateDWM.getInstance().getWindow(winID)
+let wininfo = PrivateDWM.getInstance().getWindow(winID);
 
 onMounted(() => {
-    let dragAble = new DragElement(wininfo.x, wininfo.y)
-    dragAble.mountDomEvent($win_outer.value);
-    watch(() => wininfo.isMaximize, (n, o) => {
-        if (n) {
-            dragAble.canDrag=false
-        }else{
-            dragAble.canDrag=true
-        }
-    })
-    dragAble.onDrag((x, y) => {
-        // console.log(x,y)
-        if (!wininfo.isMaximize) {
-            wininfo.x = x;
-            wininfo.y = y
-        }
-        // PrivateDWM.getInstance().getWindow(winID).x=x;
-        // PrivateDWM.getInstance().getWindow(winID).y=y;
-        // if($win_outer){
-        //     $win_outer.value.style.left = this.posX + 'px';
-        //     $win_outer.value.style.top = this.posY + 'px'
-        // }
+  let dragAble = new DragElement(wininfo.x, wininfo.y);
+  dragAble.mountDomEvent($win_outer.value);
+  watch(
+    () => wininfo.isMaximize,
+    (n, o) => {
+      if (n) {
+        dragAble.canDrag = false;
+      } else {
+        dragAble.canDrag = true;
+      }
+    }
+  );
+  dragAble.onDrag((x, y) => {
+    // console.log(x,y)
+    if (!wininfo.isMaximize) {
+      wininfo.x = x;
+      wininfo.y = y;
+    }
+    // PrivateDWM.getInstance().getWindow(winID).x=x;
+    // PrivateDWM.getInstance().getWindow(winID).y=y;
+    // if($win_outer){
+    //     $win_outer.value.style.left = this.posX + 'px';
+    //     $win_outer.value.style.top = this.posY + 'px'
+    // }
 
-        // wininfo.x=x;
-        // wininfo.y=y
-    })
-})
-
+    // wininfo.x=x;
+    // wininfo.y=y
+  });
+});
 
 /*
 挂载缩放事件
 */
-let isScaleAble = ref(wininfo.isScalable)
-let resizemode = ref('null')
+let isScaleAble = ref(wininfo.isScalable);
+let resizemode = ref("null");
 let scaleAble = new ScaleElement(resizemode, winWidth, winHeight);
 
 scaleAble.onResize((width: number, height: number) => {
-    PrivateDWM.getInstance().scaleChange(winID, width, height)
-})
+  PrivateDWM.getInstance().scaleChange(winID, width, height);
+});
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
-    scaleAble?.startScale(e, dire)
+  scaleAble?.startScale(e, dire);
 }
-
-
 </script>
 <style>
 .dragwin {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 </style>
 <style scoped>
 @import "../../main.css";
 .wintmp_outer {
-    position: absolute;
-    padding: 0;
-    margin: 0;
-    left: 0;
-    top: 0;
-    display: block;
-    width: 100px;
-    height: 100px;
-    background-color: rgb(255, 255, 255);
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 100px;
+  height: 100px;
+  background-color: rgb(255, 255, 255);
 
-    /* border: 1px solid rgb(194, 194, 194); */
-    border: 2px solid rgb(194, 194, 194);
+  /* border: 1px solid rgb(194, 194, 194); */
+  border: 2px solid rgb(194, 194, 194);
 
-    display: flex;
-    flex-direction: column;
-    /**/
-    border: #0078d7;
-    border-width: 1px;
-    border-style: solid;
-    box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
-        0 7px 19px rgb(0 0 0 / 58%);
-    padding: 0px;
+  display: flex;
+  flex-direction: column;
+  /**/
+  border: #0078d7;
+  border-width: 1px;
+  border-style: solid;
+  box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
+    0 7px 19px rgb(0 0 0 / 58%);
+  padding: 0px;
 }
 .topwin {
-    border: 1px solid #0078d7;
-    box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
-        0 7px 19px rgb(0 0 0 / 90%);
+  border: 1px solid #0078d7;
+  box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
+    0 7px 19px rgb(0 0 0 / 90%);
 }
 .maxwin {
-    position: absolute;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    height: calc(100% - 30px) !important;
-    transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
+  position: absolute;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: calc(100% - 30px) !important;
+  transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
 }
 
 .wintmp_uper {
-    flex-shrink: 0;
-    position: relative;
-    cursor: default;
-    user-select: none;
-    top: 0;
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
-    font-weight: 100;
-    /* background-color: rgba(255, 255, 255, 0.774); */
-    color: rgb(51, 51, 51);
-    overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  cursor: default;
+  user-select: none;
+  top: 0;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  font-weight: 100;
+  /* background-color: rgba(255, 255, 255, 0.774); */
+  color: rgb(51, 51, 51);
+  overflow: hidden;
 }
 .wintmp_left {
-    display: flex;
-    text-align: center;
-    /* justify-content: center; */
-    align-items: center;
+  display: flex;
+  text-align: center;
+  /* justify-content: center; */
+  align-items: center;
 }
 .wintmp_title {
-    padding: 0 10px;
-    color: black;
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-weight: 400;
-    font-size: 12px;
-    display: inline;
-    padding: 0 10px;
+  padding: 0 10px;
+  color: black;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  display: inline;
+  padding: 0 10px;
 }
 .wintmp_logo {
-    height: 24px;
-    width: 30px;
+  height: 24px;
+  width: 30px;
 }
 .wintmp_main {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(255, 255, 255);
-    overflow: hidden;
-    contain: content;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255, 255, 255);
+  overflow: hidden;
+  contain: content;
 }
 .winbutton_group {
-    display: flex;
-    position: absolute;
-    top: 0;
-    right: 0;
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 .icon {
-    width: 12px;
-    height: 12px;
+  width: 12px;
+  height: 12px;
 }
 .winbutton {
-    cursor: pointer;
-    height: 30px;
-    width: 35px;
-    background-color: rgba(149, 182, 243, 0);
-    text-align: center;
-    transition: all 0.1s;
+  cursor: pointer;
+  height: 30px;
+  width: 35px;
+  background-color: rgba(149, 182, 243, 0);
+  text-align: center;
+  transition: all 0.1s;
 
-    background: #ffffff;
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    font-size: 12px;
-    border: 2px solid white;
-    padding: 0px 4px;
-    transition: 0.1s;
+  background: #ffffff;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-size: 12px;
+  border: 2px solid white;
+  padding: 0px 4px;
+  transition: 0.1s;
 }
 .winbutton:hover {
-    background-color: rgb(200, 217, 245);
-    color: white;
+  background-color: rgb(200, 217, 245);
+  color: white;
 }
 .close_button {
-    /* position: absolute;
+  /* position: absolute;
     right: 0;
     top: 0; */
 }
 .close_button:hover {
-    background-color: red;
+  background-color: red;
 }
 .hide_button {
-    /* position: absolute;
+  /* position: absolute;
     right: 35px;
     top: 0; */
-    text-align: center;
+  text-align: center;
 }
 .max_button {
 }
 .right_border {
-    cursor: ew-resize;
-    position: absolute;
-    right: -12px;
-    background-color: rgba(0, 0, 0, 0);
-    width: 16px;
-    height: calc(100% - 4px);
+  cursor: ew-resize;
+  position: absolute;
+  right: -12px;
+  background-color: rgba(0, 0, 0, 0);
+  width: 16px;
+  height: calc(100% - 4px);
 }
 .bottom_border {
-    cursor: ns-resize;
-    position: absolute;
-    bottom: -12px;
-    background-color: rgba(0, 0, 0, 0);
-    width: calc(100% - 4px);
-    height: 16px;
+  cursor: ns-resize;
+  position: absolute;
+  bottom: -12px;
+  background-color: rgba(0, 0, 0, 0);
+  width: calc(100% - 4px);
+  height: 16px;
 }
 .right_bottom_border {
-    cursor: nwse-resize;
-    position: absolute;
-    right: -12px;
-    bottom: -12px;
-    background-color: rgba(0, 0, 0, 0);
-    width: 16px;
-    height: 16px;
+  cursor: nwse-resize;
+  position: absolute;
+  right: -12px;
+  bottom: -12px;
+  background-color: rgba(0, 0, 0, 0);
+  width: 16px;
+  height: 16px;
 }
 .resizeing {
-    user-select: none;
-    pointer-events: none;
+  user-select: none;
+  pointer-events: none;
 }
 </style>

@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-17 16:06:50
+ * @LastEditTime: 2022-03-17 19:28:32
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DWM.ts
  * Need CodeReview 
@@ -85,6 +85,7 @@ class PrivateDWM {//私有化管理中心，不对外暴露接口
                 isScalable: option.isScalable,
                 title: option.title,
                 icon: option.icon,
+                buttons: option.buttons,
 
                 content: option.content,
                 props: option.props,

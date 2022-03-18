@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-09 15:59:32
+ * @LastEditTime: 2022-03-17 19:40:05
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -26,14 +26,10 @@
         <div class="wintmp_title">{{ ctx.title }}</div>
       </div>
       <div class="winbutton_group">
-        <div @click="flushWindow()" class="winbutton flush_button">
+        <div v-if="wininfo.buttons.includes('flush')" @click="flushWindow()" class="winbutton flush_button">
           <svg
-            t="1632984867128"
             class="icon"
             viewBox="0 0 1024 1024"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            p-id="1857"
             width="15"
             height="15"
           >
@@ -44,7 +40,7 @@
             ></path>
           </svg>
         </div>
-        <div @click="hideWindow()" class="winbutton hide_button">
+        <div v-if="wininfo.buttons.includes('min')" @click="hideWindow()" class="winbutton hide_button">
           <svg class="icon" viewBox="0 0 1024 1024">
             <path
               d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z"
@@ -52,7 +48,7 @@
           </svg>
         </div>
         <div
-          v-if="isScaleAble"
+          v-if="isScaleAble&&wininfo.buttons.includes('max')"
           @click="maxWindow()"
           class="winbutton max_button"
         >
@@ -68,7 +64,8 @@
           </svg>
         </div>
         <!-- <svg t="1629857965098" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3294" width="200" height="200"><path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" p-id="3295"></path></svg> -->
-        <div @click="closeWindow()" class="winbutton close_button">
+        <div v-if="wininfo.buttons.includes('close')"
+         @click="closeWindow()" class="winbutton close_button">
           <svg class="icon" viewBox="0 0 1024 1024">
             <path
               d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z"
@@ -135,6 +132,8 @@ let props = defineProps({
   },
 });
 let winID = props.ctx.id;
+let wininfo = PrivateDWM.getInstance().getWindow(winID);
+console.log(wininfo);
 const componentKey = ref<Number>(1);
 function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);
@@ -219,8 +218,6 @@ onMounted(() => {
 挂载拖动事件
 */
 let $win_outer = ref(null);
-let wininfo = PrivateDWM.getInstance().getWindow(winID);
-
 onMounted(() => {
   let dragAble = new DragElement(wininfo.x, wininfo.y);
   dragAble.mountDomEvent($win_outer.value);

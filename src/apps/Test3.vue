@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-27 17:31:57
+ * @LastEditTime: 2022-03-17 19:40:28
  * @Description: 
  * @FilePath: /myindex/src/components/apps/Test3.vue
 -->
@@ -39,6 +39,7 @@ window.open=<any>function(e:any) {
 let after = new DragWindow({
     title:'test',
     icon,
+    buttons:[],
     content:TestLoadafterVue})
 setTimeout(()=>{
     after.show()

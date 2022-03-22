@@ -82,7 +82,7 @@ function clear() {
         transition: all 0.1s;
     }
     button:hover{
-        background-color: rgba(85, 85, 85, 0.5);
+        background-color: rgba(85, 85, 85, 0.212);
     }
 }
 </style>

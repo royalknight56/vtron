@@ -41,48 +41,5 @@ function clear() {
 </script>
 <style lang="scss" scoped>
 @import "../../../main.css";
-.set_left{
-    width: 20%;
-    height: 100%;
-    position: absolute;
-    left: 0%;
-    background-color: rgba(75, 75, 75, 0.445);
-}
-.set_dash{
-    display:flex;
-    flex-direction:column;
-    width:80%;
-    height:100%;
-    position: absolute;
-    left:20%;
-    padding: 30px;
-    // background-color: blanchedalmond;
-}
-.set_item{
-    font-weight: 300;
-    padding: 6px 10px;
-    input{
-        border: 1px solid #555;
-        padding: 4px 6px;
-        background-color: rgb(221, 221, 221);
-        transition: all 0.1s;
-    }
-    input:focus{
-        background-color: rgb(255, 255, 255);
-    }
-    button{
-        cursor: pointer;
-        vertical-align: bottom;
-        height: 20px;
-        // width: 50px;
-        margin: 0 4px;
-        padding: 10px 20px;
-        border:none;
-        background-color: rgba(85, 85, 85, 0.37);
-        transition: all 0.1s;
-    }
-    button:hover{
-        background-color: rgba(85, 85, 85, 0.212);
-    }
-}
+@import "./setStyle.scss";
 </style>

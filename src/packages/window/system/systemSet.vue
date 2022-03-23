@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-18 17:49:07
+ * @LastEditTime: 2022-03-23 17:37:57
  * @Description: 
 -->
 <template>
@@ -84,15 +84,16 @@ let setList = [
         icon: e7f8,
         content: systemset
     },
+    // {
+    //     title: '网络和Internet',
+    //     desc: 'WLAN，飞行模式，VPN',
+    //     icon: e774
+    // }, {
+    //     title: '个性化',
+    //     desc: '背景，锁屏，颜色',
+    //     icon: e771
+    // }, 
     {
-        title: '网络和Internet',
-        desc: 'WLAN，飞行模式，VPN',
-        icon: e774
-    }, {
-        title: '个性化',
-        desc: '背景，锁屏，颜色',
-        icon: e771
-    }, {
         title: '更新和安全',
         desc: 'Windows 更新，恢复，备份',
         icon: e895,

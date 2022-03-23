@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-03 16:19:11
+ * @LastEditTime: 2022-03-23 16:57:40
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -71,14 +71,15 @@ function openset() {
 .magnet {
     position: absolute;
     left: 0;
-    bottom: 30px;
+    bottom: var(--bar-height);
     width: 500px;
     height: 400px;
     z-index: -1;
     animation: manshow 0.2s;
-    /* background-color: black; */
     backdrop-filter: saturate(180%) blur(20px) brightness(60%);
-    background-color: rgba(0, 0, 0, 0.322);
+    /* background-color: rgba(0, 0, 0, 0.322); */
+    background-color: #ffffffb7;
+
 }
 /* @supports (background: -moz-element(#bg)) {
     .g-glossy-firefox {
@@ -107,7 +108,7 @@ function openset() {
     bottom: 0;
     width: 50px;
     height: 100%;
-    background-color: rgba(36, 32, 26, 0.61);
+    background-color: rgba(255, 255, 255, 0.247);
     display: flex;
     flex-direction: column-reverse;
     transition: all 0.2s;
@@ -117,12 +118,12 @@ function openset() {
 .m_left:hover {
     width: 200px;
     transition-delay: 0.5s;
-    background-color: rgba(36, 32, 26, 0.945);
+    background-color: #e3e3e3;
 }
 
 .left_list_item {
     transition: all 0.2s;
-    color: white;
+    color: rgb(32, 32, 32);
     /* text-align: center; */
     font-size: small;
     display: flex;
@@ -141,7 +142,7 @@ function openset() {
     flex-shrink: 0;
     width: 34px;
     height: 20px;
-    filter: invert(100%);
+    /* filter: invert(100%); */
     padding: 10px;
 }
 
@@ -160,7 +161,7 @@ function openset() {
     align-content: space-between;
     grid-template-columns: 100px 100px 100px 100px;
     grid-template-rows: 100px 100px 100px 100px;
-    grid-gap: 2px;
+    grid-gap: 7px;
     grid-template-areas:
         "a b c d"
         "e f g h"
@@ -170,14 +171,17 @@ function openset() {
 .right_item {
     width: 100%;
     height: 100%;
-    background-color: rgba(184, 184, 184, 0.349);
+    background-color: rgba(255, 255, 255, 0.349);
     line-height: 100px;
     text-align: center;
     position: relative;
-    color: whitesmoke;
+    color: rgb(27, 27, 27);
+    border: 2px solid rgba(255, 255, 255, 0);
 }
 .right_item:hover {
-    background-color: rgba(224, 224, 224, 0.349);
+    /* background-color: rgba(224, 224, 224, 0.349); */
+    border: 2px solid rgb(255, 255, 255);
+
 }
 .right_item_img {
     width: 100%;

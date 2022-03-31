@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-23 17:37:57
+ * @LastEditTime: 2022-03-31 15:24:10
  * @Description: 
 -->
 <template>
@@ -78,12 +78,12 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
 
 }
 let setList = [
-    {
-        title: '系统',
-        desc: '显示，声音，通知，电源',
-        icon: e7f8,
-        content: systemset
-    },
+    // {
+    //     title: '系统',
+    //     desc: '显示，声音，通知，电源',
+    //     icon: e7f8,
+    //     content: systemset
+    // },
     // {
     //     title: '网络和Internet',
     //     desc: 'WLAN，飞行模式，VPN',

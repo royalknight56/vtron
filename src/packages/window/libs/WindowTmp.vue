@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-23 17:49:38
+ * @LastEditTime: 2022-03-31 14:22:10
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -133,7 +133,6 @@ let props = defineProps({
 });
 let winID = props.ctx.id;
 let wininfo = PrivateDWM.getInstance().getWindow(winID);
-console.log(wininfo);
 const componentKey = ref<Number>(1);
 function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);

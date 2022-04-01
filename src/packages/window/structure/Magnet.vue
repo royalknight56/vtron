@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-01 17:51:00
+ * @LastEditTime: 2022-04-01 18:48:27
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -33,7 +33,7 @@
                 <div class="right_item_text">{{ item.name }}</div>
             </div>
         </div>
-        <div ref="mrightborder" class="m_right_border">
+        <div ref="mrightborder" class="m_right m_right_border">
             <div class="right_border_item" v-for="item in mangList"></div>
         </div>
     </div>
@@ -73,13 +73,11 @@ let mright = ref()
 let mrightborder = ref()
 
 onMounted(() => {
+    mrightborder.value.style.webkitMaskPosition = `${- 80}px ${ - 80}px`;
     mright.value.addEventListener("mousemove", function (ev: MouseEvent) {
-
         var x = ev.pageX;
         var y = ev.pageY;
-        console.log(x, y)
         var bounding = mright.value.getBoundingClientRect();
-
         mrightborder.value.style.webkitMaskPosition = `${x - bounding.x - 80}px ${y - bounding.y - 80}px`;
     });
 })
@@ -99,16 +97,7 @@ onMounted(() => {
     /* background-color: rgba(0, 0, 0, 0.322); */
     background-color: #ffffffb7;
 }
-/* @supports (background: -moz-element(#bg)) {
-    .g-glossy-firefox {
-        display: block;
-        position: fixed;
-        width: 600px;
-        height: 300px;
-        background: -moz-element(#bg) no-repeat;
-        filter: blur(10px);
-    }
-} */
+
 @keyframes manshow {
     0% {
         transform: translateY(10%);
@@ -163,47 +152,6 @@ onMounted(() => {
     /* filter: invert(100%); */
     padding: 10px;
 }
-.m_right_border {
-    pointer-events: none;
-    position: absolute;
-    left: 60px;
-    top: 10px;
-    bottom: 0;
-    height: 100%;
-    width: 450px;
-    z-index: -1;
-    display: grid;
-    justify-content: start;
-    align-items: start;
-    justify-items: center;
-    align-content: space-between;
-    grid-template-columns: 100px 100px 100px 100px;
-    grid-template-rows: 100px 100px 100px 100px;
-    grid-gap: 7px;
-    grid-template-areas:
-        "a b c d"
-        "e f g h"
-        "i j k l";
-    /* background-color: wheat; */
-    -webkit-mask-image: radial-gradient(
-        circle at center,
-        white 0%,
-        transparent 80px
-    );
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: 160px 160px; /* The radius is 80px, so size needs to be 160px. */
-}
-.right_border_item {
-    width: 100%;
-    height: 100%;
-    /* background-color: rgba(255, 255, 255, 0.349); */
-    line-height: 100px;
-    text-align: center;
-    position: relative;
-    color: rgb(27, 27, 27);
-    border: 2px solid rgb(255, 255, 255);
-}
-
 .m_right {
     position: absolute;
     left: 60px;
@@ -226,6 +174,34 @@ onMounted(() => {
         "i j k l";
     /* background-color: wheat; */
 }
+
+
+.m_right_border {
+    visibility: hidden;
+
+    pointer-events: none;
+    
+    -webkit-mask-image: radial-gradient(
+        circle at center,
+        white 0%,
+        transparent 80px
+    );
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 160px 160px; /* The radius is 80px, so size needs to be 160px. */
+}
+.right_border_item {
+    width: 100%;
+    height: 100%;
+    line-height: 100px;
+    text-align: center;
+    position: relative;
+    color: rgb(27, 27, 27);
+    border: 2px solid rgba(255, 255, 255, 0.705);
+}
+.m_right:hover + .m_right_border{
+    visibility: visible;
+}
+
 .right_item {
     width: 100%;
     height: 100%;

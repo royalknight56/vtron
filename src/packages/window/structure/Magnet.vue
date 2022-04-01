@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-23 16:57:40
+ * @LastEditTime: 2022-04-01 17:51:00
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -25,13 +25,16 @@
                 <div class="item_text">设置</div>
             </div>
         </div>
-        <div class="m_right">
+        <div ref="mright" class="m_right">
             <div class="right_item" v-for="item in mangList" @click="manclick(item)">
                 <div class="right_item_img">
                     <img :src="item.icon" />
                 </div>
                 <div class="right_item_text">{{ item.name }}</div>
             </div>
+        </div>
+        <div ref="mrightborder" class="m_right_border">
+            <div class="right_border_item" v-for="item in mangList"></div>
         </div>
     </div>
 </template>
@@ -44,6 +47,7 @@ import { MenuCtrl } from "../libs/MenuCtrl";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { DragWindow } from "../libs/DragWindow"
 import { openSetting } from "../system/callSystemWins"
+import { onMounted, ref } from "vue";
 // import systemSetVue from "../system/systemSet.vue"
 function closeClice(e: MouseEvent) {
     // console.log(e.offsetX, e.offsetY)
@@ -65,6 +69,21 @@ function manclick(item: UnwrapNestedRefs<appInfo>) {
 function openset() {
     openSetting()
 }
+let mright = ref()
+let mrightborder = ref()
+
+onMounted(() => {
+    mright.value.addEventListener("mousemove", function (ev: MouseEvent) {
+
+        var x = ev.pageX;
+        var y = ev.pageY;
+        console.log(x, y)
+        var bounding = mright.value.getBoundingClientRect();
+
+        mrightborder.value.style.webkitMaskPosition = `${x - bounding.x - 80}px ${y - bounding.y - 80}px`;
+    });
+})
+
 </script>
 <style scoped>
 @import "../../main.css";
@@ -79,7 +98,6 @@ function openset() {
     backdrop-filter: saturate(180%) blur(20px) brightness(60%);
     /* background-color: rgba(0, 0, 0, 0.322); */
     background-color: #ffffffb7;
-
 }
 /* @supports (background: -moz-element(#bg)) {
     .g-glossy-firefox {
@@ -145,6 +163,46 @@ function openset() {
     /* filter: invert(100%); */
     padding: 10px;
 }
+.m_right_border {
+    pointer-events: none;
+    position: absolute;
+    left: 60px;
+    top: 10px;
+    bottom: 0;
+    height: 100%;
+    width: 450px;
+    z-index: -1;
+    display: grid;
+    justify-content: start;
+    align-items: start;
+    justify-items: center;
+    align-content: space-between;
+    grid-template-columns: 100px 100px 100px 100px;
+    grid-template-rows: 100px 100px 100px 100px;
+    grid-gap: 7px;
+    grid-template-areas:
+        "a b c d"
+        "e f g h"
+        "i j k l";
+    /* background-color: wheat; */
+    -webkit-mask-image: radial-gradient(
+        circle at center,
+        white 0%,
+        transparent 80px
+    );
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 160px 160px; /* The radius is 80px, so size needs to be 160px. */
+}
+.right_border_item {
+    width: 100%;
+    height: 100%;
+    /* background-color: rgba(255, 255, 255, 0.349); */
+    line-height: 100px;
+    text-align: center;
+    position: relative;
+    color: rgb(27, 27, 27);
+    border: 2px solid rgb(255, 255, 255);
+}
 
 .m_right {
     position: absolute;
@@ -180,8 +238,7 @@ function openset() {
 }
 .right_item:hover {
     /* background-color: rgba(224, 224, 224, 0.349); */
-    border: 2px solid rgb(255, 255, 255);
-
+    border: 2px solid rgba(255, 255, 255, 0.325);
 }
 .right_item_img {
     width: 100%;

@@ -1,7 +1,7 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-01-26 11:25:06
- * @Description: 
+ * @LastEditTime: 2022-03-31 17:49:37
+ * @Description: 管理系统状态，开机/重启/关机
  * @FilePath: /myindex/src/components/window/libs/SystemStatus.ts
  * Need CodeReview 
  */

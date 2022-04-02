@@ -1,12 +1,12 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-02 11:06:44
+ * @LastEditTime: 2022-04-02 17:31:25
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
 -->
 <template>
-    <div class="magnet">
+    <div class="magnet" @click.stop='judgeClickTarget'>
         <div class="m_left">
             <div class="left_list_item" @click.stop="closeClice">
                 <svg draggable="false" class="icon" viewBox="0 0 1024 1024">
@@ -28,7 +28,7 @@
         <div ref="mright" class="m_right">
             <div class="right_item" v-for="item in mangList" @click="manclick(item)">
                 <div class="right_item_img">
-                    <img :src="item.icon" />
+                    <img draggable="false" :src="item.icon" />
                 </div>
                 <div class="right_item_text">{{ item.name }}</div>
             </div>
@@ -47,7 +47,7 @@ import { MenuCtrl } from "../libs/MenuCtrl";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { DragWindow } from "../libs/DragWindow"
 import { openSetting } from "../system/callSystemWins"
-import { onMounted, ref } from "vue";
+import { onMounted, ref,defineEmits } from "vue";
 // import systemSetVue from "../system/systemSet.vue"
 function closeClice(e: MouseEvent) {
     // console.log(e.offsetX, e.offsetY)
@@ -60,6 +60,7 @@ function closeClice(e: MouseEvent) {
         ]
     )
 }
+
 let mangList = appList
 
 function manclick(item: UnwrapNestedRefs<appInfo>) {
@@ -81,6 +82,21 @@ onMounted(() => {
         mrightborder.value.style.webkitMaskPosition = `${x - bounding.x - 80}px ${y - bounding.y - 80}px`;
     });
 })
+let emits=defineEmits({
+        "changevis": () => {
+            return {
+                changevis: true
+            }
+        }
+    })
+function judgeClickTarget(ev:MouseEvent){
+    if(ev.target === mright.value){
+        return true
+    }else{
+        //submit
+        emits("changevis")
+    }
+}
 
 </script>
 <style scoped>
@@ -179,6 +195,16 @@ onMounted(() => {
         "e f g h"
         "i j k l";
     /* background-color: wheat; */
+    animation: mrightan 0.3s ;
+    /* animation-delay: 0.3s; */
+}
+@keyframes mrightan{
+    0% {
+        transform: translateY(20%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
 }
 
 

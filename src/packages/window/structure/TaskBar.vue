@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-23 16:49:08
+ * @LastEditTime: 2022-04-02 17:32:11
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -30,7 +30,7 @@
             <img :src="item.icon" />
             <!-- {{ item.title }} -->
         </div>
-        <MagnetVue v-if="ifMagnetShow"></MagnetVue>
+        <MagnetVue v-if="ifMagnetShow" @changevis='changeMagnetShow'></MagnetVue>
         <div class="date_time">
             <div class="date_time_text">
                 {{ date_time }}
@@ -78,6 +78,9 @@ function barFirskClick(e: MouseEvent) {
     }, {
         once: true
     })
+}
+function changeMagnetShow(){
+    ifMagnetShow.value = !ifMagnetShow.value
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {

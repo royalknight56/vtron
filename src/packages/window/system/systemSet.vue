@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-08 12:10:21
+ * @LastEditTime: 2022-03-31 15:24:10
  * @Description: 
 -->
 <template>
@@ -33,7 +33,9 @@ import { inject, ref, defineComponent } from 'vue';
 import { PrivateDWM } from '../libs/DWM';
 
 import WinSelect from './winComponent/WinSelect.vue'
-import update from './setApps/SetUpdate.vue'
+import systemset from './setApps/SetSystemset.vue'
+import version from './setApps/SetVersion.vue'
+
 import e7f8 from '../../../assets/icon/e7f8.png'//系统设置
 import e774 from '../../../assets/icon/e774.png'//网络
 import e771 from '../../../assets/icon/e771.png'//个性化
@@ -76,24 +78,26 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
 
 }
 let setList = [
+    // {
+    //     title: '系统',
+    //     desc: '显示，声音，通知，电源',
+    //     icon: e7f8,
+    //     content: systemset
+    // },
+    // {
+    //     title: '网络和Internet',
+    //     desc: 'WLAN，飞行模式，VPN',
+    //     icon: e774
+    // }, {
+    //     title: '个性化',
+    //     desc: '背景，锁屏，颜色',
+    //     icon: e771
+    // }, 
     {
-        title: '系统',
-        desc: '显示，声音，通知，电源',
-        icon: e7f8,
-        content: update
-    },
-    {
-        title: '网络和Internet',
-        desc: 'WLAN，飞行模式，VPN',
-        icon: e774
-    }, {
-        title: '个性化',
-        desc: '背景，锁屏，颜色',
-        icon: e771
-    }, {
         title: '更新和安全',
         desc: 'Windows 更新，恢复，备份',
-        icon: e895
+        icon: e895,
+        content: version
     },
 ]
 </script>

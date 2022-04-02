@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-17 19:40:05
+ * @LastEditTime: 2022-03-31 14:22:10
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -21,7 +21,7 @@
     >
       <div class="wintmp_left">
         <div class="wintmp_logo">
-          <img draggable="false" width="24" height="24" :src="ctx.icon" />
+          <img draggable="false" :src="ctx.icon" />
         </div>
         <div class="wintmp_title">{{ ctx.title }}</div>
       </div>
@@ -133,7 +133,6 @@ let props = defineProps({
 });
 let winID = props.ctx.id;
 let wininfo = PrivateDWM.getInstance().getWindow(winID);
-console.log(wininfo);
 const componentKey = ref<Number>(1);
 function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);
@@ -342,6 +341,11 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 .wintmp_logo {
   height: 24px;
   width: 30px;
+  
+}
+.wintmp_logo img{
+  width: 18px;
+
 }
 .wintmp_main {
   position: relative;

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-04 15:44:40
+ * @LastEditTime: 2022-03-23 17:44:15
  * @Description: 
   Need CodeReview 
 -->
@@ -31,14 +31,14 @@
             <div class="main_card">
                 <table class="app_info">
                     <tr>
-                        <td>属性:</td>
-                        <td>只读</td>
+                        <td>占用空间:</td>
+                        <td> 0字节 </td>
                     </tr>
                     <tr>
-                        <td>权限:</td>
-                        <td> <WinCheckBox>ALL</WinCheckBox>
-                        </td>
+                        <td>属性:</td>
+                        <td><WinCheckBox>只读</WinCheckBox></td>
                     </tr>
+        
                 </table>
             </div>
         </div>
@@ -128,6 +128,7 @@ iframe {
     width: 100px;
 }
 .app_name {
+    font-size: 12px;
 }
 .uper_tab{
     /* width: 90%; */

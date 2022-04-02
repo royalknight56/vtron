@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-18 17:00:13
+ * @LastEditTime: 2022-04-02 11:27:28
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -30,17 +30,18 @@ import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {
   ClearDesktop();
-  // let testwin = new DragWindow(
-  //   {
-  //     title: '浏览器',
-  //     icon: brow,
-  //     width: 600,
-  //     height: 500,
-  //     x: 100,
-  //     y: 100,
-  //     content: Mycom,
-  //     isScalable: false
-  //   })
+  let testwin = new DragWindow(
+    {
+      title: '浏览器',
+      icon: brow,
+      width: 600,
+      height: 500,
+      x: 100,
+      y: 100,
+      content: Mycom,
+      isScalable: false
+    })
+    // testwin.addWindowEventListener
 
   AddToDesktop({
     name: '浏览器',
@@ -123,7 +124,7 @@ let opt: plug_option = {
   //   user_name: 'AdDD',
   //   user_password:'123'
   // },
-  start_menu_logo: brow,
+  // start_menu_logo: brow,
 }
 initConfig(opt)
 
@@ -131,7 +132,7 @@ initConfig(opt)
 <style scoped>
 .outer {
   position: relative;
-  top: 20px;
+  top: 0px;
   width: 100vw;
   height: 100vh;
 }

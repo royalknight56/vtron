@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-04 15:45:06
+ * @LastEditTime: 2022-03-31 15:53:06
  * @Description: 
  * @FilePath: /myindex/src/components/window/MenuList.vue
   Need CodeReview 
@@ -39,7 +39,7 @@ function callFunc(item:menuItem) {
     background-color: rgb(230, 230, 230);
     color: rgb(41, 41, 41);
     border: 0.5px solid rgba(0, 0, 0, 0.418);
-    
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     z-index: 102;
 }
 .defOver {

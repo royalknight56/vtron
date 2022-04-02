@@ -1,7 +1,7 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-17 19:25:41
- * @Description: 
+ * @LastEditTime: 2022-04-01 15:04:56
+ * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
  */

@@ -1,11 +1,11 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-08 10:38:36
+ * @LastEditTime: 2022-04-02 10:41:48
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
 <template>
-  <div @contextmenu.prevent class="win_outer" id="win10id">
+  <div @contextmenu.prevent class="win_outer SEGOEUI" id="win10id">
     <TaskBar></TaskBar>
     <ContextMenu></ContextMenu>
     <Desktop></Desktop>
@@ -50,5 +50,25 @@ onMounted(() => {
   height: 100%;
   overflow: hidden;
 }
+
+@font-face {
+  font-family: "SEGOEUI";
+  src:url("chinese.msyh.ttf") format("truetype");
+    /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+      /* url("LXGWWenKai-Bold.svg#LXGWWenKai-Bold") format("svg"); iOS 4.1- */
+  font-style: normal;
+  font-weight: normal;
+}
+.SEGOEUI {
+  font-family: "SEGOEUI";
+  font-style: normal;
+  font-weight: normal;
+}
+*{
+  font-family: "SEGOEUI";
+  font-style: normal;
+  font-weight: normal;
+}
+
 </style>
   

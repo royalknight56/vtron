@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-01 15:17:09
+ * @LastEditTime: 2022-04-02 11:02:06
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -71,8 +71,10 @@ function rightClick(item:UnwrapNestedRefs<appInfo>,e: MouseEvent) {
     width: 100px;
     height: 100px;
     background-color: rgba(119, 119, 119, 0);
-    color: rgb(35, 35, 35);
-    /* text-shadow: 0px 0px 10px #000000; */
+    color: rgb(220, 220, 220);
+    /* text-shadow: 2px 2px 3px #000000; */
+    text-shadow: 2px 3px 3px #000, -1px -1px 2px #000;
+    /* -webkit-text-stroke: 1px #000000; */
     border: 1px solid rgba(0, 0, 0, 0);
 }
 .desk_item:hover {

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-01 18:48:27
+ * @LastEditTime: 2022-04-02 11:06:44
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -97,7 +97,13 @@ onMounted(() => {
     /* background-color: rgba(0, 0, 0, 0.322); */
     background-color: #ffffffb7;
 }
+/* 适配火狐无背景模糊 */
+@supports not (backdrop-filter: saturate(180%) blur(20px) brightness(60%)) {
+  .magnet {
+    background-color: #efefef;
 
+  }
+}
 @keyframes manshow {
     0% {
         transform: translateY(10%);

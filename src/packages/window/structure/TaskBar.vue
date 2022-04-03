@@ -198,6 +198,9 @@ setInterval(() => {
     align-items: center;
     justify-content: center;
 }
+.right_item:hover{
+    background-color: #e5eaf2;
+}
 .segoicon{
     font-size: calc(var(--bar-height) * 2/5);
 }

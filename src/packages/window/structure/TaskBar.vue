@@ -1,41 +1,68 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-23 16:49:08
+ * @LastEditTime: 2022-04-02 17:32:11
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
 -->
 <template>
     <div class="bar">
-        <div class="winitem_first" @click.prevent.stop="barFirskClick">
-            <img draggable="false" :src="winlogo" />
-        </div>
-        <div class="bar_search">在这里输入你要搜索的内容</div>
-        <div
-            class="baritem"
-            :class="{ showwin: item.ifShow, topwin: item.iftop && item.ifShow }"
-            v-for="item in winlist"
-            :key="item.id"
-            @click="barClick(item)"
-            @contextmenu.prevent="rightClick($event, item)"
-        >
-            <div class="baritem_hover">
-                <div class="baritem_hover_top">
-                    <img class="baritem_hover_top_img" :src="item.icon" />
-                    {{ item.title }}
-                    <div @click.stop="closeButtonClicked(item)" class="baritem_hover_top_close">×</div>
-                </div>
-                <div :id="'hover' + item.id" class="baritem_hover_shoot"></div>
+        <div class="bar_left">
+            <div class="winitem_first" @click.prevent.stop="barFirskClick">
+                <img draggable="false" :src="winlogo" />
             </div>
-            <img :src="item.icon" />
-            <!-- {{ item.title }} -->
+            <div class="bar_search">在这里输入你要搜索的内容</div>
+            <div
+                class="baritem"
+                :class="{ showwin: item.ifShow, topwin: item.iftop && item.ifShow }"
+                v-for="item in winlist"
+                :key="item.id"
+                @click="barClick(item)"
+                @contextmenu.prevent="rightClick($event, item)"
+            >
+                <div class="baritem_hover">
+                    <div class="baritem_hover_top">
+                        <img class="baritem_hover_top_img" :src="item.icon" />
+                        {{ item.title }}
+                        <div
+                            @click.stop="closeButtonClicked(item)"
+                            class="baritem_hover_top_close"
+                        >×</div>
+                    </div>
+                    <div :id="'hover' + item.id" class="baritem_hover_shoot"></div>
+                </div>
+                <img :src="item.icon" />
+                <!-- {{ item.title }} -->
+            </div>
         </div>
-        <MagnetVue v-if="ifMagnetShow"></MagnetVue>
-        <div class="date_time">
-            <div class="date_time_text">
-                {{ date_time }}
-                <br />
-                {{ date_day }}
+        <MagnetVue v-if="ifMagnetShow" @changevis="changeMagnetShow"></MagnetVue>
+        <div class="bar_right">
+            <div class="right_item">
+                <span class="segoicon SEGOEUIMDL"> &#xE010;</span>
+            </div>
+            <div class="right_item">
+                <span class="segoicon SEGOEUIMDL">&#xE83F;</span>
+            </div>
+            <div class="right_item">
+                <span class="segoicon SEGOEUIMDL">&#xE774;</span>
+               
+            </div>
+            <div class="right_item">
+                <span class="segoicon SEGOEUIMDL">&#xE992;</span>
+            </div>
+            
+            <div class="date_time">
+                <div class="date_time_text">
+                    {{ date_time }}
+                    <br />
+                    {{ date_day }}
+                </div>
+            </div>
+            <div class="right_item">
+                <span class="segoicon SEGOEUIMDL"> &#xE91C;</span>
+            </div>
+            <div class="right_close_win">
+
             </div>
         </div>
     </div>
@@ -78,6 +105,9 @@ function barFirskClick(e: MouseEvent) {
     }, {
         once: true
     })
+}
+function changeMagnetShow() {
+    ifMagnetShow.value = !ifMagnetShow.value
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {
@@ -124,6 +154,19 @@ setInterval(() => {
 </script>
 <style scoped>
 @import "../../main.css";
+@font-face {
+  font-family: "SEGOEUIMDL";
+  src:url("SegMDL2.ttf") format("truetype");
+    /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+      /* url("LXGWWenKai-Bold.svg#LXGWWenKai-Bold") format("svg"); iOS 4.1- */
+  font-style: normal;
+  font-weight: normal;
+}
+.SEGOEUIMDL {
+  font-family: "SEGOEUIMDL";
+  font-style: normal;
+  font-weight: normal;
+}
 .bar {
     position: absolute;
     bottom: 0;
@@ -134,10 +177,41 @@ setInterval(() => {
     overflow-y: visible;
     user-select: none;
     align-items: flex-end;
+    justify-content: space-between;
     background-color: #d2e3ee;
     z-index: 101;
-    --bar-height:30px;
+    --bar-height: 38px;
 }
+.bar_left {
+    height: var(--bar-height);
+    width: 100%;
+    display: flex;
+}
+.bar_right {
+    height: var(--bar-height);
+    display: flex;
+}
+.right_item{
+    margin: 0 3px;
+    width: calc(var(--bar-height) * 4/7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.right_item:hover{
+    background-color: #e5eaf2;
+}
+.segoicon{
+    font-size: calc(var(--bar-height) * 2/5);
+}
+.right_item img{
+    width:50%;
+}
+.right_close_win{
+    width: 4px;
+    border-left: 1px solid rgba(0, 0, 0, 0.219);
+}
+
 .baritem {
     box-sizing: border-box;
     padding: 0 0px;
@@ -259,7 +333,7 @@ setInterval(() => {
     transition: all 0.2s;
 }
 .winitem_first img {
-    width: 40%;
+    width: 30%;
     display: inline-block;
     vertical-align: middle;
     /* filter: invert(100%); */
@@ -288,9 +362,10 @@ setInterval(() => {
     background-color: rgba(255, 255, 255, 0.438);
 }
 .date_time {
-    position: absolute;
-    right: 0;
-    top: 0;
+    justify-self: flex-end;
+    /* position: absolute; */
+    /* right: 0; */
+    /* top: 0; */
     height: 100%;
     /* text-align: center; */
     /* color: white; */
@@ -298,7 +373,7 @@ setInterval(() => {
     display: inline-block;
     transform: scale(0.8); */
 }
-.date_time_text{
+.date_time_text {
     text-align: center;
     font-size: 12px;
     display: inline-block;

@@ -169,10 +169,10 @@ function judgeClickTarget(ev:MouseEvent){
 }
 .left_list_item svg {
     flex-shrink: 0;
-    width: 34px;
-    height: 20px;
+    width: 30px;
+    height: 18px;
     /* filter: invert(100%); */
-    padding: 10px;
+    padding: 12px;
 }
 .m_right {
     position: absolute;

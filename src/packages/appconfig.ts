@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-08 10:36:12
+ * @LastEditTime: 2022-03-31 15:24:57
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
@@ -25,13 +25,13 @@ type loginOption = {
     user_name:string,
     user_password?:string,
 }
-let localConfigString = localStorage.getItem('appconfig');
-let localConfig:Partial<typeof appconfig>={};
-let isLocalConfig= false;
-if(localConfigString){
-    localConfig = JSON.parse(localConfigString)
-    isLocalConfig = true
-}
+// let localConfigString = localStorage.getItem('appconfig');
+// let localConfig:Partial<typeof appconfig>={};
+// let isLocalConfig= false;
+// if(localConfigString){
+//     localConfig = JSON.parse(localConfigString)
+//     isLocalConfig = true
+// }
 
 let appconfig=reactive({
     start_time:2000,
@@ -49,9 +49,9 @@ let appconfig=reactive({
  */
 function initConfig(params:Partial<typeof appconfig>) {
     Object.assign(appconfig,params)
-    if(isLocalConfig){
-        Object.assign(appconfig,localConfig)
-    }
+    // if(isLocalConfig){
+    //     Object.assign(appconfig,localConfig)
+    // }
 }
 /**
  * @description: 设置配置

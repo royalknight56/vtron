@@ -67,6 +67,7 @@ label::before {
     position: absolute;
     opacity: 0;
 }
+
 input:checked + label {
     background: rgba(46, 182, 240, 0);
 }
@@ -74,5 +75,6 @@ input:checked + label::before {
     opacity: 1;
     /* transform: all 0.5s; */
 }
+
 
 </style>

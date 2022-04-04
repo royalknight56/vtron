@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-18 17:49:07
+ * @LastEditTime: 2022-03-31 15:24:10
  * @Description: 
 -->
 <template>
@@ -78,21 +78,22 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
 
 }
 let setList = [
+    // {
+    //     title: '系统',
+    //     desc: '显示，声音，通知，电源',
+    //     icon: e7f8,
+    //     content: systemset
+    // },
+    // {
+    //     title: '网络和Internet',
+    //     desc: 'WLAN，飞行模式，VPN',
+    //     icon: e774
+    // }, {
+    //     title: '个性化',
+    //     desc: '背景，锁屏，颜色',
+    //     icon: e771
+    // }, 
     {
-        title: '系统',
-        desc: '显示，声音，通知，电源',
-        icon: e7f8,
-        content: systemset
-    },
-    {
-        title: '网络和Internet',
-        desc: 'WLAN，飞行模式，VPN',
-        icon: e774
-    }, {
-        title: '个性化',
-        desc: '背景，锁屏，颜色',
-        icon: e771
-    }, {
         title: '更新和安全',
         desc: 'Windows 更新，恢复，备份',
         icon: e895,

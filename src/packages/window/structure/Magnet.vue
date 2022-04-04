@@ -1,12 +1,12 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-03 16:19:11
+ * @LastEditTime: 2022-04-02 17:31:25
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
 -->
 <template>
-    <div class="magnet">
+    <div class="magnet" @click.stop='judgeClickTarget'>
         <div class="m_left">
             <div class="left_list_item" @click.stop="closeClice">
                 <svg draggable="false" class="icon" viewBox="0 0 1024 1024">
@@ -25,13 +25,16 @@
                 <div class="item_text">设置</div>
             </div>
         </div>
-        <div class="m_right">
+        <div ref="mright" class="m_right">
             <div class="right_item" v-for="item in mangList" @click="manclick(item)">
                 <div class="right_item_img">
-                    <img :src="item.icon" />
+                    <img draggable="false" :src="item.icon" />
                 </div>
                 <div class="right_item_text">{{ item.name }}</div>
             </div>
+        </div>
+        <div ref="mrightborder" class="m_right m_right_border">
+            <div class="right_border_item" v-for="item in mangList"></div>
         </div>
     </div>
 </template>
@@ -44,6 +47,7 @@ import { MenuCtrl } from "../libs/MenuCtrl";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { DragWindow } from "../libs/DragWindow"
 import { openSetting } from "../system/callSystemWins"
+import { onMounted, ref,defineEmits } from "vue";
 // import systemSetVue from "../system/systemSet.vue"
 function closeClice(e: MouseEvent) {
     // console.log(e.offsetX, e.offsetY)
@@ -56,6 +60,7 @@ function closeClice(e: MouseEvent) {
         ]
     )
 }
+
 let mangList = appList
 
 function manclick(item: UnwrapNestedRefs<appInfo>) {
@@ -65,31 +70,56 @@ function manclick(item: UnwrapNestedRefs<appInfo>) {
 function openset() {
     openSetting()
 }
+let mright = ref()
+let mrightborder = ref()
+
+onMounted(() => {
+    mrightborder.value.style.webkitMaskPosition = `${- 80}px ${ - 80}px`;
+    mright.value.addEventListener("mousemove", function (ev: MouseEvent) {
+        var x = ev.pageX;
+        var y = ev.pageY;
+        var bounding = mright.value.getBoundingClientRect();
+        mrightborder.value.style.webkitMaskPosition = `${x - bounding.x - 80}px ${y - bounding.y - 80}px`;
+    });
+})
+let emits=defineEmits({
+        "changevis": () => {
+            return {
+                changevis: true
+            }
+        }
+    })
+function judgeClickTarget(ev:MouseEvent){
+    if(ev.target === mright.value){
+        return true
+    }else{
+        //submit
+        emits("changevis")
+    }
+}
+
 </script>
 <style scoped>
 @import "../../main.css";
 .magnet {
     position: absolute;
     left: 0;
-    bottom: 30px;
+    bottom: var(--bar-height);
     width: 500px;
     height: 400px;
     z-index: -1;
     animation: manshow 0.2s;
-    /* background-color: black; */
     backdrop-filter: saturate(180%) blur(20px) brightness(60%);
-    background-color: rgba(0, 0, 0, 0.322);
+    /* background-color: rgba(0, 0, 0, 0.322); */
+    background-color: #ffffffb7;
 }
-/* @supports (background: -moz-element(#bg)) {
-    .g-glossy-firefox {
-        display: block;
-        position: fixed;
-        width: 600px;
-        height: 300px;
-        background: -moz-element(#bg) no-repeat;
-        filter: blur(10px);
-    }
-} */
+/* 适配火狐无背景模糊 */
+@supports not (backdrop-filter: saturate(180%) blur(20px) brightness(60%)) {
+  .magnet {
+    background-color: #efefef;
+
+  }
+}
 @keyframes manshow {
     0% {
         transform: translateY(10%);
@@ -107,7 +137,7 @@ function openset() {
     bottom: 0;
     width: 50px;
     height: 100%;
-    background-color: rgba(36, 32, 26, 0.61);
+    background-color: rgba(255, 255, 255, 0.247);
     display: flex;
     flex-direction: column-reverse;
     transition: all 0.2s;
@@ -117,12 +147,12 @@ function openset() {
 .m_left:hover {
     width: 200px;
     transition-delay: 0.5s;
-    background-color: rgba(36, 32, 26, 0.945);
+    background-color: #e3e3e3;
 }
 
 .left_list_item {
     transition: all 0.2s;
-    color: white;
+    color: rgb(32, 32, 32);
     /* text-align: center; */
     font-size: small;
     display: flex;
@@ -139,12 +169,11 @@ function openset() {
 }
 .left_list_item svg {
     flex-shrink: 0;
-    width: 34px;
-    height: 20px;
-    filter: invert(100%);
-    padding: 10px;
+    width: 30px;
+    height: 18px;
+    /* filter: invert(100%); */
+    padding: 12px;
 }
-
 .m_right {
     position: absolute;
     left: 60px;
@@ -160,24 +189,64 @@ function openset() {
     align-content: space-between;
     grid-template-columns: 100px 100px 100px 100px;
     grid-template-rows: 100px 100px 100px 100px;
-    grid-gap: 2px;
+    grid-gap: 7px;
     grid-template-areas:
         "a b c d"
         "e f g h"
         "i j k l";
     /* background-color: wheat; */
+    animation: mrightan 0.3s ;
+    /* animation-delay: 0.3s; */
 }
-.right_item {
+@keyframes mrightan{
+    0% {
+        transform: translateY(20%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+
+.m_right_border {
+    visibility: hidden;
+
+    pointer-events: none;
+    
+    -webkit-mask-image: radial-gradient(
+        circle at center,
+        white 0%,
+        transparent 80px
+    );
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 160px 160px; /* The radius is 80px, so size needs to be 160px. */
+}
+.right_border_item {
     width: 100%;
     height: 100%;
-    background-color: rgba(184, 184, 184, 0.349);
     line-height: 100px;
     text-align: center;
     position: relative;
-    color: whitesmoke;
+    color: rgb(27, 27, 27);
+    border: 2px solid rgba(255, 255, 255, 0.705);
+}
+.m_right:hover + .m_right_border{
+    visibility: visible;
+}
+
+.right_item {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.349);
+    line-height: 100px;
+    text-align: center;
+    position: relative;
+    color: rgb(27, 27, 27);
+    border: 2px solid rgba(255, 255, 255, 0);
 }
 .right_item:hover {
-    background-color: rgba(224, 224, 224, 0.349);
+    /* background-color: rgba(224, 224, 224, 0.349); */
+    border: 2px solid rgba(255, 255, 255, 0.325);
 }
 .right_item_img {
     width: 100%;

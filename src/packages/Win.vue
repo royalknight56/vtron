@@ -50,23 +50,5 @@ onMounted(() => {
   height: 100%;
   overflow: hidden;
 }
-
-/* @font-face {
-  font-family: "SEGOEUI";
-  src:url("chinese.msyh.ttf") format("truetype");
-  font-style: normal;
-  font-weight: normal;
-} */
-/* .SEGOEUI {
-  font-family: "SEGOEUI";
-  font-style: normal;
-  font-weight: normal;
-} */
-/* *{
-  font-family: "SEGOEUI";
-  font-style: normal;
-  font-weight: normal;
-} */
-
 </style>
   

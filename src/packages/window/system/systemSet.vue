@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-31 15:24:10
+ * @LastEditTime: 2022-04-26 15:45:00
  * @Description: 
 -->
 <template>
@@ -30,18 +30,18 @@
 <script lang="ts" setup>
 
 import { inject, ref, defineComponent } from 'vue';
-import { PrivateDWM } from '../libs/DWM';
+import { PrivateDWM } from '@libs/DWM';
 
-import WinSelect from './winComponent/WinSelect.vue'
-import systemset from './setApps/SetSystemset.vue'
-import version from './setApps/SetVersion.vue'
+import WinSelect from '@system/winComponent/WinSelect.vue'
+import systemset from '@system/setApps/SetSystemset.vue'
+import version from '@system/setApps/SetVersion.vue'
 
 import e7f8 from '../../../assets/icon/e7f8.png'//系统设置
 import e774 from '../../../assets/icon/e774.png'//网络
 import e771 from '../../../assets/icon/e771.png'//个性化
 
 import e895 from '../../../assets/icon/e895.png'//更新
-import { DragWindow } from '../libs/DragWindow';
+import { DragWindow } from '@libs/DragWindow';
 
 
 let id = <string>inject('windowId')

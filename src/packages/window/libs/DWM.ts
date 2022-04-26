@@ -1,13 +1,13 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-01 15:06:45
+ * @LastEditTime: 2022-04-26 15:32:41
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DWM.ts
  * Need CodeReview 
  */
 import { reactive } from "vue";
 import { UnwrapNestedRefs } from "@vue/reactivity";
-import { option } from "./DragWindow";
+import { option } from "@libs/DragWindow";
 
 
 interface WindowInfo extends Required<option> {

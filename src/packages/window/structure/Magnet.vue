@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-02 17:31:25
+ * @LastEditTime: 2022-04-26 15:41:47
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -39,14 +39,14 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { appList } from "../../appconfig";
-import type { appInfo } from "../../appconfig";
-import { SystemState } from "../libs/SystemState";
+import { appList } from "@/packages/appconfig";
+import type { appInfo } from "@/packages/appconfig";
+import { SystemState } from "@libs/SystemState";
 
-import { MenuCtrl } from "../libs/MenuCtrl";
+import { MenuCtrl } from "@libs/MenuCtrl";
 import { UnwrapNestedRefs } from "@vue/reactivity";
-import { DragWindow } from "../libs/DragWindow"
-import { openSetting } from "../system/callSystemWins"
+import { DragWindow } from "@libs/DragWindow"
+import { openSetting } from "@system/callSystemWins"
 import { onMounted, ref,defineEmits } from "vue";
 // import systemSetVue from "../system/systemSet.vue"
 function closeClice(e: MouseEvent) {

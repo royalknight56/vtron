@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 11:21:56
+ * @LastEditTime: 2022-04-26 15:23:19
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -33,8 +33,8 @@ import { SystemState } from '@libs/SystemState';
 
 
 onMounted(() => {
-  console.log('windows10 in vue3 欢迎访问：')
-  console.log('https://github.com/royalknight56/win10-vue3')
+  // console.log('windows10 in vue3 欢迎访问：')
+  // console.log('https://github.com/royalknight56/win10-vue3')
   SystemState.getInstance().openPower()
 })
 

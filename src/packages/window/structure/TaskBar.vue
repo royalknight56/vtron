@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-02 17:32:11
+ * @LastEditTime: 2022-04-26 15:42:03
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -69,13 +69,13 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import type { WindowInfo } from "../libs/DWM"
-import { DWM, PrivateDWM } from "../libs/DWM"
-import { MenuCtrl } from "../libs/MenuCtrl"
-import { SystemState } from "../libs/SystemState";
-import MagnetVue from "./Magnet.vue";
+import type { WindowInfo } from "@libs/DWM"
+import { DWM, PrivateDWM } from "@libs/DWM"
+import { MenuCtrl } from "@libs/MenuCtrl"
+import { SystemState } from "@libs/SystemState";
+import MagnetVue from "@structure/Magnet.vue";
 import winimg from "../../../assets/win.png"
-import { appconfig } from "../../appconfig";
+import { appconfig } from "@/packages/appconfig";
 
 //设置winlogo
 let winlogo = ref(winimg);

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-31 14:22:10
+ * @LastEditTime: 2022-04-26 15:33:16
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -111,12 +111,12 @@ import { markRaw, provide, reactive, ref, shallowRef, toRaw, watch } from "vue";
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
 
-import { DWM, PrivateDWM } from "./DWM";
-import type { WindowInfo } from "./DWM";
-import { MenuCtrl } from "./MenuCtrl";
+import { DWM, PrivateDWM } from "@libs/DWM";
+import type { WindowInfo } from "@libs/DWM";
+import { MenuCtrl } from "@libs/MenuCtrl";
 
-import { DragElement } from "./DragElement";
-import { ScaleElement } from "./ScaleElement";
+import { DragElement } from "@libs/DragElement";
+import { ScaleElement } from "@libs/ScaleElement";
 
 // import html2canvas from 'html2canvas';
 

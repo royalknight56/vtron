@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-04 15:44:48
+ * @LastEditTime: 2022-04-26 15:40:39
  * @Description: 
 -->
 <template>
@@ -20,7 +20,7 @@
     
 </template>
 <script setup lang="ts">
-import { BIS } from "../libs/BuildInState";
+import { BIS } from "@libs/BuildInState";
 </script>
 <style scoped>
 @import '../../main.css';

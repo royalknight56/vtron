@@ -1,4 +1,4 @@
-import {BIS}  from "./BuildInState"
+import {BIS}  from "@libs/BuildInState"
 class Notify{
     constructor(title:string,messages:string){
         let id = this.getNotificationId();

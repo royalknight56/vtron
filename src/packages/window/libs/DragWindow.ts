@@ -1,12 +1,12 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 14:50:09
+ * @LastEditTime: 2022-04-26 15:32:25
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
  */
 import { defineComponent, nextTick } from "vue";
-import { WindowInfo, DWM, PrivateDWM } from "./DWM"
+import { WindowInfo, DWM, PrivateDWM } from "@libs/DWM"
 
 type WindowButton = 'flush'|'close'|'min'|'max'
 

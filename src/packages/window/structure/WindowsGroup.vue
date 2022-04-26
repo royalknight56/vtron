@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-04 15:45:28
+ * @LastEditTime: 2022-04-26 15:42:32
  * @Description: 
  * @FilePath: /myindex/src/components/window/WindowsGroup.vue
   Need CodeReview 
@@ -13,8 +13,8 @@
     </div>
 </template>
 <script setup lang="ts">
-import WindowTmpVue from "../libs/WindowTmp.vue";
-import { PrivateDWM } from "../libs/DWM"
+import WindowTmpVue from "@libs/WindowTmp.vue";
+import { PrivateDWM } from "@libs/DWM"
 
 // {title:title,width,height,ctx:ctx}
 

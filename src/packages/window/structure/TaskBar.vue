@@ -72,7 +72,7 @@ import { ref } from "vue";
 import type { WindowInfo } from "../libs/DWM"
 import { DWM, PrivateDWM } from "../libs/DWM"
 import { MenuCtrl } from "../libs/MenuCtrl"
-import { SystemStatus } from "../libs/SystemStatus";
+import { SystemState } from "../libs/SystemState";
 import MagnetVue from "./Magnet.vue";
 import winimg from "../../../assets/win.png"
 import { appconfig } from "../../appconfig";

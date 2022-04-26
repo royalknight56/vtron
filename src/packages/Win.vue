@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-02 10:41:48
+ * @LastEditTime: 2022-04-26 11:21:56
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -20,22 +20,22 @@
 
 import { onMounted } from 'vue';
 
-import TaskBar from './window/structure/TaskBar.vue';
-import ContextMenu from './window/structure/ContextMenu.vue';
-import Desktop from './window/structure/Desktop.vue';
+import TaskBar from '@structure/TaskBar.vue';
+import ContextMenu from '@structure/ContextMenu.vue';
+import Desktop from '@structure/Desktop.vue';
 
-import BlueScreen from './window/structure/BlueScreen.vue';
-import WindowsGroup from './window/structure/WindowsGroup.vue';
-import LockScreenVue from './window/structure/LockScreen.vue';
-import AlertVue from './window/structure/Alert.vue';
+import BlueScreen from '@structure/BlueScreen.vue';
+import WindowsGroup from '@structure/WindowsGroup.vue';
+import LockScreenVue from '@structure/LockScreen.vue';
+import AlertVue from '@structure/Alert.vue';
 
-import { SystemStatus } from './window/libs/SystemStatus';
+import { SystemState } from '@libs/SystemState';
 
 
 onMounted(() => {
   console.log('windows10 in vue3 欢迎访问：')
   console.log('https://github.com/royalknight56/win10-vue3')
-  SystemStatus.getInstance().openPower()
+  SystemState.getInstance().openPower()
 })
 
 </script>
@@ -50,25 +50,5 @@ onMounted(() => {
   height: 100%;
   overflow: hidden;
 }
-
-@font-face {
-  font-family: "SEGOEUI";
-  src:url("chinese.msyh.ttf") format("truetype");
-    /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
-      /* url("LXGWWenKai-Bold.svg#LXGWWenKai-Bold") format("svg"); iOS 4.1- */
-  font-style: normal;
-  font-weight: normal;
-}
-.SEGOEUI {
-  font-family: "SEGOEUI";
-  font-style: normal;
-  font-weight: normal;
-}
-*{
-  font-family: "SEGOEUI";
-  font-style: normal;
-  font-weight: normal;
-}
-
 </style>
   

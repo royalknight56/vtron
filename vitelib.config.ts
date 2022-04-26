@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-08-19 14:18:56
+ * @LastEditTime: 2022-04-26 11:12:32
  * @Description: 
  * @FilePath: /myindex/vitelib.config.ts
  */
@@ -14,6 +14,13 @@ import typescript from '@rollup/plugin-typescript';
 export default defineConfig({
     plugins: [vue()],
     resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "src"),
+            "@structure": path.resolve(__dirname, "src/packages/window/structure"),
+            "system": path.resolve(__dirname, "src/packages/window/system"),
+            "state": path.resolve(__dirname, "src/packages/window/state"),
+            "libs": path.resolve(__dirname, "src/packages/window/libs"),
+        },
         dedupe: ['vue']
     },
     build: {

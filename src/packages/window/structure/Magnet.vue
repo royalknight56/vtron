@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { appList } from "../../appconfig";
 import type { appInfo } from "../../appconfig";
-import { SystemStatus } from "../libs/SystemStatus";
+import { SystemState } from "../libs/SystemState";
 
 import { MenuCtrl } from "../libs/MenuCtrl";
 import { UnwrapNestedRefs } from "@vue/reactivity";
@@ -53,9 +53,9 @@ function closeClice(e: MouseEvent) {
     // console.log(e.offsetX, e.offsetY)
     MenuCtrl.getInstance().callMenu(e,
         [
-            { name: '关机', func: () => { console.log("关机"); SystemStatus.getInstance().closePower() } },
-            // { name: '锁定', func: () => { SystemStatus.getInstance().lockScreen() } },
-            { name: '重启', func: () => { console.log("重启"); SystemStatus.getInstance().restartPower() } }
+            { name: '关机', func: () => { console.log("关机"); SystemState.getInstance().closePower() } },
+            // { name: '锁定', func: () => { SystemState.getInstance().lockScreen() } },
+            { name: '重启', func: () => { console.log("重启"); SystemState.getInstance().restartPower() } }
 
         ]
     )

@@ -29,13 +29,13 @@ import WindowsGroup from '@structure/WindowsGroup.vue';
 import LockScreenVue from '@structure/LockScreen.vue';
 import AlertVue from '@structure/Alert.vue';
 
-import { SystemStatus } from '@libs/SystemStatus';
+import { SystemState } from '@libs/SystemState';
 
 
 onMounted(() => {
   console.log('windows10 in vue3 欢迎访问：')
   console.log('https://github.com/royalknight56/win10-vue3')
-  SystemStatus.getInstance().openPower()
+  SystemState.getInstance().openPower()
 })
 
 </script>

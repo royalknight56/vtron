@@ -13,7 +13,14 @@
 
     "declaration": true,
     "declarationDir": "distlib",
-    "typeRoots": ["./types","./node_modules/@types"]
+    "typeRoots": ["./types","./node_modules/@types"],
+    "paths":{
+      "@/*": ["./src/*"],
+      "@structure/*": ["./src/packages/window/structure/*"],
+      "@system/*": ["./src/packages/window/system/*"],
+      "@state/*": ["./src/packages/window/state/*"],
+      "@libs/*": ["./src/packages/window/libs/*"],
+     },
 
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]

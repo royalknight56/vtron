@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-02 10:41:48
+ * @LastEditTime: 2022-04-26 11:21:56
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -20,16 +20,16 @@
 
 import { onMounted } from 'vue';
 
-import TaskBar from './window/structure/TaskBar.vue';
-import ContextMenu from './window/structure/ContextMenu.vue';
-import Desktop from './window/structure/Desktop.vue';
+import TaskBar from '@structure/TaskBar.vue';
+import ContextMenu from '@structure/ContextMenu.vue';
+import Desktop from '@structure/Desktop.vue';
 
-import BlueScreen from './window/structure/BlueScreen.vue';
-import WindowsGroup from './window/structure/WindowsGroup.vue';
-import LockScreenVue from './window/structure/LockScreen.vue';
-import AlertVue from './window/structure/Alert.vue';
+import BlueScreen from '@structure/BlueScreen.vue';
+import WindowsGroup from '@structure/WindowsGroup.vue';
+import LockScreenVue from '@structure/LockScreen.vue';
+import AlertVue from '@structure/Alert.vue';
 
-import { SystemStatus } from './window/libs/SystemStatus';
+import { SystemStatus } from '@libs/SystemStatus';
 
 
 onMounted(() => {

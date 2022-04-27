@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:33:16
+ * @LastEditTime: 2022-04-27 11:08:59
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -115,8 +115,8 @@ import { DWM, PrivateDWM } from "@libs/DWM";
 import type { WindowInfo } from "@libs/DWM";
 import { MenuCtrl } from "@libs/MenuCtrl";
 
-import { DragElement } from "@libs/DragElement";
-import { ScaleElement } from "@libs/ScaleElement";
+import { DragElement } from "@libs/Dom/DragElement";
+import { ScaleElement } from "@libs/Dom/ScaleElement";
 
 // import html2canvas from 'html2canvas';
 

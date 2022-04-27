@@ -1,11 +1,16 @@
 import { reactive, ref } from "vue";
+import { UnwrapNestedRefs } from "@vue/reactivity";
 
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:55:48
- * @Description: 
+ * @LastEditTime: 2022-04-27 10:58:38
+ * @Description: 全局的状态
  */
-let sta = reactive({
-  
-})
-export default sta
+interface Notify {
+  title: string,
+  messages: string,
+  isHidden: boolean
+}
+export default reactive({
+  NotificationMap: {} as UnwrapNestedRefs<{ [key: string]: Notify }>
+});

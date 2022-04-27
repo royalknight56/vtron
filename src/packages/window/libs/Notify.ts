@@ -1,14 +1,9 @@
-import {BIS}  from "@libs/BuildInState"
+
+import {showNotification,hideNotification}  from "@libs/GlobalOps";
+
 class Notify{
     constructor(title:string,messages:string){
-        let id = this.getNotificationId();
-        BIS.showNotification(id,title,messages);
-        setTimeout(()=>{
-            BIS.hideNotification(id);
-        },3000)
-    }
-    private getNotificationId(){
-        return "notification"+Math.random()+Date.now();
+        showNotification(title,messages);
     }
 }
 export {

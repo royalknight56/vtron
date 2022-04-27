@@ -1,11 +1,11 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:40:39
+ * @LastEditTime: 2022-04-27 10:41:13
  * @Description: 
 -->
 <template>
 <div class="alert_group">
-    <template v-for="item in BIS.getInstance().NotificationMap" :key="item">
+    <template v-for="item in state.NotificationMap" :key="item">
     <div class="alert" :class="{isHidden:item.isHidden}">
         <div class="alert_title">
             {{item.title}}
@@ -20,7 +20,7 @@
     
 </template>
 <script setup lang="ts">
-import { BIS } from "@libs/BuildInState";
+import state from "@state/index";
 </script>
 <style scoped>
 @import '../../main.css';

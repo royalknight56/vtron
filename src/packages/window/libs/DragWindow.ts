@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:32:25
+ * @LastEditTime: 2022-04-27 11:02:36
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
@@ -87,7 +87,7 @@ class DragWindow {
     private register(option: Required<option>) {
         this.windowInfo = PrivateDWM.getInstance().registerWindow(this.id, option);//在IPC中注册，传递windowInfo
     }
-    private makeWindowNotOverSize() {
+    private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
 
         if (this.windowInfo) {
             if (this.windowInfo.isScalable) {

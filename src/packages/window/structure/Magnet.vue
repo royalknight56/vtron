@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:41:47
+ * @LastEditTime: 2022-04-27 16:40:47
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -45,7 +45,7 @@ import { SystemState } from "@libs/SystemState";
 
 import { MenuCtrl } from "@libs/MenuCtrl";
 import { UnwrapNestedRefs } from "@vue/reactivity";
-import { DragWindow } from "@libs/DragWindow"
+import { DragWindow } from "@/packages/window/libs/DragWindow"
 import { openSetting } from "@system/callSystemWins"
 import { onMounted, ref,defineEmits } from "vue";
 // import systemSetVue from "../system/systemSet.vue"

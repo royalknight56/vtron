@@ -1,10 +1,10 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 16:15:58
+ * @LastEditTime: 2022-04-27 16:40:49
  * @Description: 控制窗口信息
  */
 import type { windowInfoMapInter,eventMapInter,WindowInfo } from "@libs/DWM/type";
-import { option } from "@libs/DragWindow";
+import { option } from "@/packages/window/libs/DragWindow";
 import {UnwrapNestedRefs} from "@vue/reactivity";
 
 import { reactive } from "vue";

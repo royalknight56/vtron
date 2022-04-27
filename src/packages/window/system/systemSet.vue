@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 16:39:14
+ * @LastEditTime: 2022-04-27 16:40:36
  * @Description: 
 -->
 <template>
@@ -41,7 +41,7 @@ import e774 from '../../../assets/icon/e774.png'//网络
 import e771 from '../../../assets/icon/e771.png'//个性化
 
 import e895 from '../../../assets/icon/e895.png'//更新
-import { DragWindow } from '@libs/DragWindow';
+import { DragWindow } from '@/packages/window/libs/DragWindow';
 
 
 let id = <string>inject('windowId')

@@ -1,12 +1,12 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 14:08:02
+ * @LastEditTime: 2022-04-27 16:40:42
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
 import { reactive, shallowReactive } from "vue";
 import { UnwrapNestedRefs } from "@vue/reactivity";
-import { DragWindow } from "@libs/DragWindow";
+import { DragWindow } from "@/packages/window/libs/DragWindow";
 
 // 桌面图标配置
 interface appInfo{

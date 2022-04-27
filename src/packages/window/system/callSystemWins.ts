@@ -1,4 +1,4 @@
-import { DragWindow } from "@libs/DragWindow";
+import { DragWindow } from "@/packages/window/libs/DragWindow";
 import icon from "../../../assets/win.png";
 
 

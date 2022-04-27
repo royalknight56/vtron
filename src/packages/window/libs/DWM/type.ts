@@ -1,9 +1,9 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 15:39:39
+ * @LastEditTime: 2022-04-27 16:40:41
  * @Description: 
  */
-import { option } from "@libs/DragWindow";
+import { option } from "@/packages/window/libs/DragWindow";
 export interface WindowInfo extends Required<option> {
   //内建属性
   id: string,

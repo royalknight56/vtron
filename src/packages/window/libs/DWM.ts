@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:32:41
+ * @LastEditTime: 2022-04-27 15:20:16
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/DWM.ts
  * Need CodeReview 
@@ -96,12 +96,6 @@ class PrivateDWM {//私有化管理中心，不对外暴露接口
         let ind = this.zIndexIdArray.indexOf(id)
         this.zIndexIdArray.splice(ind, 1)
     }
-    scaleChange(id:string,width?:number,height?:number){
-        this.windowInfoMap[id].width=width||this.windowInfoMap[id].width;
-        this.windowInfoMap[id].height=height||this.windowInfoMap[id].height;
-    }
-
-
     upSetWindowIndex(id: string): number {
         for (let key in this.windowInfoMap) {
             this.windowInfoMap[key].iftop = false

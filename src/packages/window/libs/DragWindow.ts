@@ -1,13 +1,13 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 11:02:36
+ * @LastEditTime: 2022-04-27 15:10:41
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
  */
 import { defineComponent, nextTick } from "vue";
 import { WindowInfo, DWM, PrivateDWM } from "@libs/DWM"
-
+import { getRandomId } from "@libs/GlobalOps";
 type WindowButton = 'flush'|'close'|'min'|'max'
 
 interface option {
@@ -35,7 +35,7 @@ class DragWindow {
 
     private option: Required<option>
     id: string
-    private ifcreated: boolean
+    private isCreated: boolean
 
     constructor(option: option) {
 
@@ -53,13 +53,8 @@ class DragWindow {
             buttons:['close','min','max'],
             title: "未命名窗口"
         }, option)
-        this.id = 'NULL'
-        this.ifcreated = false;
-    }
-    private setOption(option: Partial<option>): Required<option> {
-        this.option = Object.assign(this.option, option)
-        return this.option
-
+        this.id = PrivateDWM.getInstance().getWinid();
+        this.isCreated = false;
     }
     private getWinInner() {
         let dom = document.getElementById('win10id');
@@ -79,11 +74,6 @@ class DragWindow {
     addWindowEventListener<K extends keyof EventMap>(event: K, callback: EventMapFunction[K]) {
         this.evMap[event] = callback;
     }
-
-    private readyRegister() {
-        let id = PrivateDWM.getInstance().getWinid();//获得一个id
-        this.id = id
-    }
     private register(option: Required<option>) {
         this.windowInfo = PrivateDWM.getInstance().registerWindow(this.id, option);//在IPC中注册，传递windowInfo
     }
@@ -102,25 +92,23 @@ class DragWindow {
             }
         }
     }
-    show(option?: Partial<option>) {// 调用show之后，注册窗口
-        if (!this.ifcreated && !this.windowInfo?.ifDestory) {
-            this.readyRegister();//在窗口是第一次注册时，获取一个唯一id
-        }
-        if (option) {
-            this.register(this.setOption(option));//注册窗口，传入选项
-
-        } else {
-            this.register(this.option);//注册窗口，传入选项
-
-        }
+    private afterRegister(){// 注册之后的操作
         this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
-
-
+        
         nextTick(() => {
             PrivateDWM.getInstance().upSetWindowIndex(this.id)
-            this.ifcreated = true;
+            this.isCreated = true;
         })
+    }
 
+    show(option?: Partial<option>) {// 调用show之后，注册窗口，展示窗口
+        // this.id = PrivateDWM.getInstance().getWinid();
+        if (!this.isCreated && !this.windowInfo?.ifDestory) {
+            this.id=PrivateDWM.getInstance().getWinid();//在窗口是第一次注册时，获取一个唯一id
+        }
+        this.register(Object.assign(this.option, option))
+        // console.log(this.id)
+        this.afterRegister()
     }
 }
 export {

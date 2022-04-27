@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 11:06:45
+ * @LastEditTime: 2022-04-27 11:11:56
  * @Description: 操作全局的方法
  */
 import state from "@state/index";
@@ -25,6 +25,7 @@ function hideNotification(id: string) {//关闭通知
   }, 400)
 }
 export {
+  getRandomId,
   showNotification,
   hideNotification
 }

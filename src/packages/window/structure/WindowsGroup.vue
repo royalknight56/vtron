@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:42:32
+ * @LastEditTime: 2022-04-27 16:39:18
  * @Description: 
  * @FilePath: /myindex/src/components/window/WindowsGroup.vue
   Need CodeReview 
@@ -14,11 +14,11 @@
 </template>
 <script setup lang="ts">
 import WindowTmpVue from "@libs/WindowTmp.vue";
-import { PrivateDWM } from "@libs/DWM"
-
+import { PrivateDWM } from "@/packages/window/libs/DWM/index"
+import state from "@state/index";
 // {title:title,width,height,ctx:ctx}
 
-let winlist = PrivateDWM.getInstance().windowInfoMap
+let winlist = state.windowInfoMap
 
 </script>
 <style scoped>

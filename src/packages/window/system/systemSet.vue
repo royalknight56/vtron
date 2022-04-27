@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:45:00
+ * @LastEditTime: 2022-04-27 16:39:14
  * @Description: 
 -->
 <template>
@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 
 import { inject, ref, defineComponent } from 'vue';
-import { PrivateDWM } from '@libs/DWM';
+import { PrivateDWM } from '@/packages/window/libs/DWM/index';
 
 import WinSelect from '@system/winComponent/WinSelect.vue'
 import systemset from '@system/setApps/SetSystemset.vue'

@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-07 17:37:30
+ * @LastEditTime: 2022-04-27 16:39:19
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
  */
@@ -33,8 +33,8 @@ function ClearDesktop() {
 
 
 export { DragWindow } from "./packages/window/libs/DragWindow";
-export { DWM } from "./packages/window/libs/DWM";
-export type { WindowInfo } from "./packages/window/libs/DWM";
+export { DWM } from "./packages/window/libs/DWM/index";
+export type { WindowInfo } from "./packages/window/libs/DWM/index";
 
 export { SystemState } from "./packages/window/libs/SystemState";
 export { MenuCtrl } from "./packages/window/libs/MenuCtrl";

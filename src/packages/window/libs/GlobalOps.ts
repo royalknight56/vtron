@@ -1,15 +1,15 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 11:11:56
+ * @LastEditTime: 2022-04-28 19:16:31
  * @Description: 操作全局的方法
  */
-import state from "@state/index";
+import {NotificationMap} from "@state/index";
 function getRandomId(prefix:string){
   return prefix+Math.random()+Date.now();
 }
 function showNotification(title: string, messages: string) {//显示通知
   let id = getRandomId("notification");
-  state.NotificationMap[id] = {
+  NotificationMap[id] = {
     messages: messages,
     title: title,
     isHidden: false
@@ -19,9 +19,9 @@ function showNotification(title: string, messages: string) {//显示通知
   },3000)
 }
 function hideNotification(id: string) {//关闭通知
-  state.NotificationMap[id].isHidden = true;
+  NotificationMap[id].isHidden = true;
   setTimeout(() => {
-    delete state.NotificationMap[id];
+    delete NotificationMap[id];
   }, 400)
 }
 export {

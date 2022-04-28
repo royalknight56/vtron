@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 16:40:49
+ * @LastEditTime: 2022-04-28 19:16:46
  * @Description: 控制窗口信息
  */
 import type { windowInfoMapInter,eventMapInter,WindowInfo } from "@libs/DWM/type";
@@ -8,8 +8,8 @@ import { option } from "@/packages/window/libs/DragWindow";
 import {UnwrapNestedRefs} from "@vue/reactivity";
 
 import { reactive } from "vue";
-import state from "@state/index"
-let windowInfoMap = state.windowInfoMap
+import {windowInfoMap} from "@state/index"
+// let windowInfoMap = state.windowInfoMap
 class PrivateDWM {//私有化管理中心，不对外暴露接口
   private static instance: PrivateDWM;
   private winnum: number;

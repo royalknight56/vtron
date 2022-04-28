@@ -1,13 +1,13 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-28 10:50:27
+ * @LastEditTime: 2022-04-28 19:16:09
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
 import { reactive, shallowReactive } from "vue";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { DragWindow } from "@libs/DragWindow";
-import state from "@state/index"
+import {appList} from "@state/index"
 // import type {appInfo} from "@state/type"
 
 
@@ -20,7 +20,7 @@ import state from "@state/index"
 
 // let appList:UnwrapNestedRefs<Array<Required<appInfo>>> = shallowReactive([])
 
-let appList = state.appList
+// let appList = state.appList
 // 系统设置
 type loginOption = {
     user_name:string,

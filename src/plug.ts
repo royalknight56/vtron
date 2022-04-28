@@ -6,7 +6,8 @@
  */
 
 import { App } from "vue";
-import { appList,appconfig,initConfig,plug_option } from "./packages/appconfig";
+import { appconfig,initConfig,plug_option } from "./packages/appconfig";
+import {appList} from "@state/index"
 import Win from "./packages/Win.vue"
 import { Plugin } from 'vue'
 import type {Notify,appInfo} from "@state/type"

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-28 19:15:37
+ * @LastEditTime: 2022-04-28 19:30:55
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -27,6 +27,7 @@ import { openInfo } from "@system/callSystemWins";
 
 // let deskList: UnwrapNestedRefs<Array<appInfo>> = appList;
 function openApp(item: UnwrapNestedRefs<appInfo>) {
+    
     item.window.show();
 }
 

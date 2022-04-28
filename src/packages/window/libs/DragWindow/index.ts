@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-28 16:14:49
+ * @LastEditTime: 2022-04-28 19:27:44
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
@@ -109,6 +109,7 @@ class DragWindow {
     }
 
     show(option?: Partial<option>) {// 调用show之后，注册窗口，展示窗口
+        
         // this.id = PrivateDWM.getInstance().getWinid();
         if (!this.isCreated && !this.windowInfo?.ifDestory) {
             this.id=PrivateDWM.getInstance().getWinid();//在窗口是第一次注册时，获取一个唯一id

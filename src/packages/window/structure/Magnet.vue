@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-28 10:52:25
+ * @LastEditTime: 2022-04-28 19:22:25
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -39,7 +39,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { appList } from "@/packages/appconfig";
+import { appList } from "@state/index";
 import type {appInfo} from "@state/type"
 import { SystemState } from "@libs/SystemState";
 

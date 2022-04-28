@@ -1,38 +1,19 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-28 19:16:09
+ * @LastEditTime: 2022-04-28 19:32:50
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
 import { reactive, shallowReactive } from "vue";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { DragWindow } from "@libs/DragWindow";
-import {appList} from "@state/index"
-// import type {appInfo} from "@state/type"
 
 
-// // 桌面图标配置
-// interface appInfo{
-//     name?: string,
-//     icon?:string,
-//     window:DragWindow,
-// }
-
-// let appList:UnwrapNestedRefs<Array<Required<appInfo>>> = shallowReactive([])
-
-// let appList = state.appList
 // 系统设置
 type loginOption = {
     user_name:string,
     user_password?:string,
 }
-// let localConfigString = localStorage.getItem('appconfig');
-// let localConfig:Partial<typeof appconfig>={};
-// let isLocalConfig= false;
-// if(localConfigString){
-//     localConfig = JSON.parse(localConfigString)
-//     isLocalConfig = true
-// }
 
 let appconfig=reactive({
     start_time:2000,
@@ -41,8 +22,6 @@ let appconfig=reactive({
     backimg:'default',
     login:<loginOption|null>null
 })
-// Object.assign(appconfig,localConfig)
-
 
 /**
  * @description: 初始化设置过程
@@ -50,6 +29,7 @@ let appconfig=reactive({
  */
 function initConfig(params:Partial<typeof appconfig>) {
     Object.assign(appconfig,params)
+    // console.log(appconfig)
     // if(isLocalConfig){
     //     Object.assign(appconfig,localConfig)
     // }
@@ -77,7 +57,7 @@ function clearStoreConfig() {
     localStorage.clear()
 }
 type plug_option=Partial<typeof appconfig>
-export {appList,appconfig,
+export {appconfig,
     initConfig,
     setConfig,
     storeConfig,

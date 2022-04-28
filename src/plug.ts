@@ -1,15 +1,15 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 16:40:38
+ * @LastEditTime: 2022-04-28 10:50:38
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
  */
 
 import { App } from "vue";
-import { appList,appconfig,initConfig,appInfo,plug_option } from "./packages/appconfig";
+import { appList,appconfig,initConfig,plug_option } from "./packages/appconfig";
 import Win from "./packages/Win.vue"
 import { Plugin } from 'vue'
-
+import type {Notify,appInfo} from "@state/type"
 
 let plug:Plugin = {
     install:function(app:App, opt: plug_option):void {

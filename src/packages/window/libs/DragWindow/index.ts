@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 16:42:51
+ * @LastEditTime: 2022-04-28 16:14:49
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
@@ -22,15 +22,15 @@ interface option {
     buttons?: WindowButton[],    // 右上角按钮
     isScalable?: boolean
 }
-interface EventMap {
+interface EvMap {
     onDraging: { x: number, y: number, ifdrag: boolean }
     onResizing: { x: number, y: number }
 }
-type EventMapFunction = {
-    [K in keyof EventMap]?: (ev: EventMap[K]) => any
+type EvMapFunction = {
+    [K in keyof EvMap]?: (ev: EvMap[K]) => void
 };
 class DragWindow {
-    private evMap: EventMapFunction
+    evMap: EvMapFunction
     windowInfo: WindowInfo | null
 
     private option: Required<option>
@@ -71,7 +71,14 @@ class DragWindow {
         }
 
     }
-    addWindowEventListener<K extends keyof EventMap>(event: K, callback: EventMapFunction[K]) {
+    // interface EvMap {
+    //     onDraging: { x: number, y: number, ifdrag: boolean }
+    //     onResizing: { x: number, y: number }
+    // }
+    addWindowEventListener(event: 'onDraging', callback: (x: number, y: number, ifdrag: boolean)=>void) : void;
+    addWindowEventListener(event: 'onResizing', callback: (x: number, y: number)=>void) : void;
+
+    addWindowEventListener(event:keyof EvMap, callback:any) : any {
         this.evMap[event] = callback;
     }
     private register(option: Required<option>) {

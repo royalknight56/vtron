@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 16:40:47
+ * @LastEditTime: 2022-04-28 10:52:25
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -40,7 +40,7 @@
 </template>
 <script lang="ts" setup>
 import { appList } from "@/packages/appconfig";
-import type { appInfo } from "@/packages/appconfig";
+import type {appInfo} from "@state/type"
 import { SystemState } from "@libs/SystemState";
 
 import { MenuCtrl } from "@libs/MenuCtrl";

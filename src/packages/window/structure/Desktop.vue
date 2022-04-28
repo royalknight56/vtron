@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:41:17
+ * @LastEditTime: 2022-04-28 10:52:14
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { appList } from "@/packages/appconfig";
-import type { appInfo } from "@/packages/appconfig";
+import type {appInfo} from "@state/type"
 import { MenuCtrl } from "@libs/MenuCtrl";
 import { openInfo } from "@system/callSystemWins";
 

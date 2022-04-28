@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 16:40:46
+ * @LastEditTime: 2022-04-28 10:43:40
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { appList, appconfig,initConfig, plug_option } from "./packages/appconfig";
+import { initConfig, plug_option } from "./packages/appconfig";
 import WinVue from "./packages/Win.vue";
 
 import brow from "./assets/浏览器.png"

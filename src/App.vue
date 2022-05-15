@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-28 10:43:40
+ * @LastEditTime: 2022-05-15 17:45:09
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -72,6 +72,14 @@ onMounted(() => {
       })
   });
 
+  AddToDesktop({
+    name: '浏览器',
+    // icon: brow,
+    // 0, 0, '窗口通信', brow, 600, 500, 
+    window: new DragWindow({
+      content: 'https://v3.cn.vuejs.org/api/global-api.html#h'
+    })
+  });
   AddToDesktop({
     name: '浏览器',
     icon: brow,

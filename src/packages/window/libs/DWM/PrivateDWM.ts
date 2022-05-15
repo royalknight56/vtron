@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-28 19:28:57
+ * @LastEditTime: 2022-05-15 16:16:03
  * @Description: 控制窗口信息
  */
 import type { windowInfoMapInter,eventMapInter,WindowInfo } from "@libs/DWM/type";
@@ -55,7 +55,6 @@ class PrivateDWM {//私有化管理中心，不对外暴露接口
 
           this.zIndexIdArray.push(id) // 层级数组中压入id
           this.winnum++;
-          console.log(windowInfoMap)
           return windowInfoMap[id]
       }
   }

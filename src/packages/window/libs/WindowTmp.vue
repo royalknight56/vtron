@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-15 14:55:59
+ * @LastEditTime: 2022-05-15 16:13:28
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -21,7 +21,13 @@
         </div>
         <div class="wintmp_title">{{ ctx.title }}</div>
       </div>
-      <div class="winbutton_group">
+      <Statebar 
+      @buttonEvent="handelButtonEvent"
+      :isMaximize="isMaximize"
+      :isScaleAble="isScaleAble"
+      :wininfo="wininfo"
+      ></Statebar>
+      <!-- <div class="winbutton_group">
         <div
           v-if="wininfo.buttons.includes('flush')"
           @click="flushWindow()"
@@ -60,7 +66,6 @@
             />
           </svg>
         </div>
-        <!-- <svg t="1629857965098" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3294" width="200" height="200"><path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" p-id="3295"></path></svg> -->
         <div
           v-if="wininfo.buttons.includes('close')"
           @click="closeWindow()"
@@ -73,7 +78,7 @@
             />
           </svg>
         </div>
-      </div>
+      </div> -->
     </div>
     <div
       ref="winmount"
@@ -117,7 +122,7 @@ import { MenuCtrl } from "@libs/MenuCtrl";
 
 import { DragElement } from "@libs/Dom/DragElement";
 import { ScaleElement } from "@libs/Dom/ScaleElement";
-
+import Statebar from "@libs/WindowTemplate/statebarButton.vue";
 // import html2canvas from 'html2canvas';
 
 let props = defineProps({
@@ -151,6 +156,16 @@ function maxWindow() {
 }
 function predown() {
   PrivateDWM.getInstance().upSetWindowIndex(winID);
+}
+type buttonEvent = 'flush'|'close'|'min'|'max'
+const buttonEventFunc = {
+  close: closeWindow,
+  min: hideWindow,
+  max: maxWindow,
+  flush: flushWindow,
+};
+function handelButtonEvent(event:buttonEvent){
+  buttonEventFunc[event]();
 }
 function uperRightClick(e: MouseEvent) {
   MenuCtrl.getInstance().callMenu(e, [
@@ -274,7 +289,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 }
 </style>
 <style scoped>
-@import "../../main.css";
+@import "@/packages/main.css";
 .wintmp_outer {
   position: absolute;
   padding: 0;
@@ -303,6 +318,10 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   border: 1px solid #0078d7;
   box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
     0 7px 19px rgb(0 0 0 / 90%);
+}
+.icon {
+  width: 12px;
+  height: 12px;
 }
 .maxwin {
   position: absolute;
@@ -356,51 +375,6 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   background-color: rgb(255, 255, 255);
   overflow: hidden;
   contain: content;
-}
-.winbutton_group {
-  display: flex;
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.icon {
-  width: 12px;
-  height: 12px;
-}
-.winbutton {
-  cursor: pointer;
-  height: 30px;
-  width: 35px;
-  background-color: rgba(149, 182, 243, 0);
-  text-align: center;
-  transition: all 0.1s;
-
-  background: #ffffff;
-  font-family: "Segoe UI", Tahoma, sans-serif;
-  font-size: 12px;
-  border: 2px solid white;
-  padding: 0px 4px;
-  transition: 0.1s;
-}
-.winbutton:hover {
-  background-color: rgb(200, 217, 245);
-  color: white;
-}
-.close_button {
-  /* position: absolute;
-    right: 0;
-    top: 0; */
-}
-.close_button:hover {
-  background-color: red;
-}
-.hide_button {
-  /* position: absolute;
-    right: 35px;
-    top: 0; */
-  text-align: center;
-}
-.max_button {
 }
 .right_border {
   cursor: ew-resize;

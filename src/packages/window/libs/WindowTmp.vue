@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 16:39:16
+ * @LastEditTime: 2022-05-15 14:55:59
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -145,7 +145,9 @@ function hideWindow() {
   PrivateDWM.getInstance().hideWindow(winID);
 }
 function maxWindow() {
-  PrivateDWM.getInstance().maxWindow(winID);
+  if(isScaleAble.value) {
+    PrivateDWM.getInstance().maxWindow(winID);
+  }
 }
 function predown() {
   PrivateDWM.getInstance().upSetWindowIndex(winID);

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-23 17:44:15
+ * @LastEditTime: 2022-04-27 16:39:13
  * @Description: 
   Need CodeReview 
 -->
@@ -55,9 +55,9 @@
 </template>
 <script lang="ts" setup>
 import { inject } from 'vue';
-import { PrivateDWM } from '../libs/DWM';
-import WinBotton from "./winComponent/WinButton.vue"
-import WinCheckBox from "./winComponent/WinCheckBox.vue"
+import { PrivateDWM } from '@/packages/window/libs/DWM/index';
+import WinBotton from "@system/winComponent/WinButton.vue"
+import WinCheckBox from "@system/winComponent/WinCheckBox.vue"
 
 let id =<string>inject('windowId')
 

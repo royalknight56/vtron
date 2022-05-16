@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-31 15:53:06
+ * @LastEditTime: 2022-04-26 15:41:03
  * @Description: 
  * @FilePath: /myindex/src/components/window/MenuList.vue
   Need CodeReview 
@@ -12,8 +12,8 @@
 </template>
 <script lang="ts" setup>
 import { computed, reactive, ref } from "vue";
-import { MenuCtrl } from "../libs/MenuCtrl";
-import type {menuItem}from "../libs/MenuCtrl";
+import { MenuCtrl } from "@libs/MenuCtrl";
+import type {menuItem}from "@libs/MenuCtrl";
 
 let IPC = MenuCtrl.getInstance()
 

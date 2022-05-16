@@ -1,12 +1,12 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-31 17:49:37
+ * @LastEditTime: 2022-04-26 15:39:27
  * @Description: 管理系统状态，开机/重启/关机
  * @FilePath: /myindex/src/components/window/libs/SystemState.ts
  * Need CodeReview 
  */
 import { reactive } from "vue";
-import {appconfig } from "../../appconfig";
+import {appconfig } from "@/packages/appconfig";
 
 interface stateCtrl{
     screen:"common"|"blue"|"close",

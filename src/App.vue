@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-23 15:46:24
+ * @LastEditTime: 2022-05-15 17:45:09
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { appList, appconfig,initConfig, plug_option } from "./packages/appconfig";
+import { initConfig, plug_option } from "./packages/appconfig";
 import WinVue from "./packages/Win.vue";
 
 import brow from "./assets/浏览器.png"
@@ -72,6 +72,14 @@ onMounted(() => {
       })
   });
 
+  AddToDesktop({
+    name: '浏览器',
+    // icon: brow,
+    // 0, 0, '窗口通信', brow, 600, 500, 
+    window: new DragWindow({
+      content: 'https://v3.cn.vuejs.org/api/global-api.html#h'
+    })
+  });
   AddToDesktop({
     name: '浏览器',
     icon: brow,

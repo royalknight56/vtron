@@ -16,7 +16,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { storeConfig, setConfig, clearStoreConfig, appconfig } from '../../../appconfig'
+import { storeConfig, setConfig, clearStoreConfig, appconfig } from '@/packages/appconfig'
 let localVersion = ref('0.2.5')
 let remoteVersion = ref('0.0.0')
 

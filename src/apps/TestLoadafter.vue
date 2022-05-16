@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2021-12-16 19:24:01
+ * @LastEditTime: 2022-04-27 16:39:20
  * @Description: 
  * @FilePath: /myindex/src/components/apps/TestLoadafter.vue
 -->
@@ -16,7 +16,7 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref } from "vue";
-import { DWM } from "../packages/window/libs/DWM";
+import { DWM } from "../packages/window/libs/DWM/index";
 
 let winId = <string>inject('windowId')
 DWM.getInstance().addEventListener(winId,'resize',()=>{ console.log('resize')})

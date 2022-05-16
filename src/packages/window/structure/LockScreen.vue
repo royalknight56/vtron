@@ -1,12 +1,12 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-08 12:08:07
+ * @LastEditTime: 2022-04-26 15:41:31
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { appconfig } from '../../appconfig';
-import { SystemState } from '../libs/SystemState';
+import { appconfig } from '@/packages/appconfig';
+import { SystemState } from '@libs/SystemState';
 
 let userPassword = ref("")
 let lockClassName = ref('screen-show')

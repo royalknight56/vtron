@@ -17,9 +17,9 @@ export default defineConfig({
         alias: {
             "@": path.resolve(__dirname, "src"),
             "@structure": path.resolve(__dirname, "src/packages/window/structure"),
-            "system": path.resolve(__dirname, "src/packages/window/system"),
-            "state": path.resolve(__dirname, "src/packages/window/state"),
-            "libs": path.resolve(__dirname, "src/packages/window/libs"),
+            "@system": path.resolve(__dirname, "src/packages/window/system"),
+            "@state": path.resolve(__dirname, "src/packages/window/state"),
+            "@libs": path.resolve(__dirname, "src/packages/window/libs"),
         },
         dedupe: ['vue']
     },

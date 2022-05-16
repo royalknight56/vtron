@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-15 17:08:05
+ * @LastEditTime: 2022-04-26 15:08:12
  * @Description: 
  * @FilePath: /myindex/README.md
 -->
@@ -98,7 +98,7 @@ createApp(App).use(win10).mount('#app')
 
 # 感谢Star
 
-感谢各位大佬的支持
+欢迎协作，感谢各位大佬的支持
 
 ![](https://komarev.com/ghpvc/?username=royalknight56&color=blue)
 

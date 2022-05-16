@@ -1,15 +1,16 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-07 17:37:30
+ * @LastEditTime: 2022-04-28 10:50:38
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
  */
 
 import { App } from "vue";
-import { appList,appconfig,initConfig,appInfo,plug_option } from "./packages/appconfig";
+import { appconfig,initConfig,plug_option } from "./packages/appconfig";
+import {appList} from "@state/index"
 import Win from "./packages/Win.vue"
 import { Plugin } from 'vue'
-
+import type {Notify,appInfo} from "@state/type"
 
 let plug:Plugin = {
     install:function(app:App, opt: plug_option):void {
@@ -33,8 +34,8 @@ function ClearDesktop() {
 
 
 export { DragWindow } from "./packages/window/libs/DragWindow";
-export { DWM } from "./packages/window/libs/DWM";
-export type { WindowInfo } from "./packages/window/libs/DWM";
+export { DWM } from "./packages/window/libs/DWM/index";
+export type { WindowInfo } from "./packages/window/libs/DWM/index";
 
 export { SystemState } from "./packages/window/libs/SystemState";
 export { MenuCtrl } from "./packages/window/libs/MenuCtrl";

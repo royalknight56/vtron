@@ -1,9 +1,9 @@
-import { DragWindow } from "../libs/DragWindow";
+import { DragWindow } from "@/packages/window/libs/DragWindow";
 import icon from "../../../assets/win.png";
 
 
-import appInfo  from "./appInfo.vue";
-import systemSetVue from "../system/systemSet.vue"
+import appInfo  from "@system/appInfo.vue";
+import systemSetVue from "@system/systemSet.vue"
 
 // import SystemSet  from "../system/SystemSet.vue";
 

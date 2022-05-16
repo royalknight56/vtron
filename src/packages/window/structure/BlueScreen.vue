@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-08 12:22:03
+ * @LastEditTime: 2022-04-26 15:40:54
  * @Description: 
  * @FilePath: /myindex/src/components/window/BlueScreen.vue
   Need CodeReview 
@@ -39,12 +39,12 @@
     
 </template>
 <script lang="ts" setup>
-import { appconfig } from "../../appconfig";
-import { MenuCtrl } from "../libs/MenuCtrl";
-import { SystemStatus } from "../libs/SystemStatus";
+import { appconfig } from "@/packages/appconfig";
+import { MenuCtrl } from "@libs/MenuCtrl";
+import { SystemState } from "@libs/SystemState";
 
 
-let stat = SystemStatus.getInstance().stats;
+let stat = SystemState.getInstance().state;
 
 function backgroundRightClick(e: MouseEvent) {
     MenuCtrl.getInstance().callMenu(e,

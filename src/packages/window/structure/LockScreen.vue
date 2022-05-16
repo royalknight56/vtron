@@ -1,29 +1,29 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-08 12:08:07
+ * @LastEditTime: 2022-04-26 15:41:31
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { appconfig } from '../../appconfig';
-import { SystemStatus } from '../libs/SystemStatus';
+import { appconfig } from '@/packages/appconfig';
+import { SystemState } from '@libs/SystemState';
 
 let userPassword = ref("")
 let lockClassName = ref('screen-show')
 let alertMsg = ref("-")
 let userName = ref(appconfig.login?.user_name || 'Admin')
 
-SystemStatus.getInstance().mountLockEvent('show', () => {
+SystemState.getInstance().mountLockEvent('show', () => {
     lockClassName.value = 'screen-show'
 })
-SystemStatus.getInstance().mountUnlockEvent('hide', () => {
+SystemState.getInstance().mountUnlockEvent('hide', () => {
     lockClassName.value = 'screen-hidean'
     setTimeout(() => {
         lockClassName.value = 'screen-hide'
     }, 500)
 })
 if (appconfig.login == null) {
-    SystemStatus.getInstance().unlockScreen('', '')
+    SystemState.getInstance().unlockScreen('', '')
 }
 function loginSuccess(){
     lockClassName.value = 'screen-hidean'
@@ -38,7 +38,7 @@ function onLogin() {
             if (appconfig.login.user_password == userPassword.value) {
                 console.log('密码正确')
                 loginSuccess()
-                // SystemStatus.getInstance().unlockScreen(appconfig.login.user_name, userPassword.value)
+                // SystemState.getInstance().unlockScreen(appconfig.login.user_name, userPassword.value)
             }else{
                 console.log('密码错误')
                 alertMsg.value = '密码错误'
@@ -46,11 +46,11 @@ function onLogin() {
         }else{
             console.log('等待确认')
             alertMsg.value = '等待确认'
-            SystemStatus.getInstance().notifyUnlock(appconfig.login.user_name, userPassword.value)
+            SystemState.getInstance().notifyUnlock(appconfig.login.user_name, userPassword.value)
         }
 
     } else {
-        SystemStatus.getInstance().unlockScreen('', '')
+        SystemState.getInstance().unlockScreen('', '')
     }
 
 }

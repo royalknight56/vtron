@@ -1,13 +1,13 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-01 15:04:56
+ * @LastEditTime: 2022-04-28 19:27:44
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
  */
 import { defineComponent, nextTick } from "vue";
-import { WindowInfo, DWM, PrivateDWM } from "./DWM"
-
+import { WindowInfo, DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
+import { getRandomId } from "@libs/GlobalOps";
 type WindowButton = 'flush'|'close'|'min'|'max'
 
 interface option {
@@ -22,20 +22,20 @@ interface option {
     buttons?: WindowButton[],    // 右上角按钮
     isScalable?: boolean
 }
-interface EventMap {
+interface EvMap {
     onDraging: { x: number, y: number, ifdrag: boolean }
     onResizing: { x: number, y: number }
 }
-type EventMapFunction = {
-    [K in keyof EventMap]?: (ev: EventMap[K]) => any
+type EvMapFunction = {
+    [K in keyof EvMap]?: (ev: EvMap[K]) => void
 };
 class DragWindow {
-    private evMap: EventMapFunction
+    evMap: EvMapFunction
     windowInfo: WindowInfo | null
 
     private option: Required<option>
     id: string
-    private ifcreated: boolean
+    private isCreated: boolean
 
     constructor(option: option) {
 
@@ -53,13 +53,8 @@ class DragWindow {
             buttons:['close','min','max'],
             title: "未命名窗口"
         }, option)
-        this.id = 'NULL'
-        this.ifcreated = false;
-    }
-    private setOption(option: Partial<option>): Required<option> {
-        this.option = Object.assign(this.option, option)
-        return this.option
-
+        this.id = PrivateDWM.getInstance().getWinid();
+        this.isCreated = false;
     }
     private getWinInner() {
         let dom = document.getElementById('win10id');
@@ -76,18 +71,20 @@ class DragWindow {
         }
 
     }
-    addWindowEventListener<K extends keyof EventMap>(event: K, callback: EventMapFunction[K]) {
-        this.evMap[event] = callback;
-    }
+    // interface EvMap {
+    //     onDraging: { x: number, y: number, ifdrag: boolean }
+    //     onResizing: { x: number, y: number }
+    // }
+    addWindowEventListener(event: 'onDraging', callback: (x: number, y: number, ifdrag: boolean)=>void) : void;
+    addWindowEventListener(event: 'onResizing', callback: (x: number, y: number)=>void) : void;
 
-    private readyRegister() {
-        let id = PrivateDWM.getInstance().getWinid();//获得一个id
-        this.id = id
+    addWindowEventListener(event:keyof EvMap, callback:any) : any {
+        this.evMap[event] = callback;
     }
     private register(option: Required<option>) {
         this.windowInfo = PrivateDWM.getInstance().registerWindow(this.id, option);//在IPC中注册，传递windowInfo
     }
-    private makeWindowNotOverSize() {
+    private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
 
         if (this.windowInfo) {
             if (this.windowInfo.isScalable) {
@@ -102,25 +99,24 @@ class DragWindow {
             }
         }
     }
-    show(option?: Partial<option>) {// 调用show之后，注册窗口
-        if (!this.ifcreated && !this.windowInfo?.ifDestory) {
-            this.readyRegister();//在窗口是第一次注册时，获取一个唯一id
-        }
-        if (option) {
-            this.register(this.setOption(option));//注册窗口，传入选项
-
-        } else {
-            this.register(this.option);//注册窗口，传入选项
-
-        }
+    private afterRegister(){// 注册之后的操作
         this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
-
-
+        
         nextTick(() => {
             PrivateDWM.getInstance().upSetWindowIndex(this.id)
-            this.ifcreated = true;
+            this.isCreated = true;
         })
+    }
 
+    show(option?: Partial<option>) {// 调用show之后，注册窗口，展示窗口
+        
+        // this.id = PrivateDWM.getInstance().getWinid();
+        if (!this.isCreated && !this.windowInfo?.ifDestory) {
+            this.id=PrivateDWM.getInstance().getWinid();//在窗口是第一次注册时，获取一个唯一id
+        }
+        this.register(Object.assign(this.option, option))
+        // console.log(this.id)
+        this.afterRegister()
     }
 }
 export {

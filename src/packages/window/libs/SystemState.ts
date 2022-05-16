@@ -1,14 +1,14 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-31 17:49:37
+ * @LastEditTime: 2022-04-26 15:39:27
  * @Description: 管理系统状态，开机/重启/关机
- * @FilePath: /myindex/src/components/window/libs/SystemStatus.ts
+ * @FilePath: /myindex/src/components/window/libs/SystemState.ts
  * Need CodeReview 
  */
 import { reactive } from "vue";
-import {appconfig } from "../../appconfig";
+import {appconfig } from "@/packages/appconfig";
 
-interface statsCtrl{
+interface stateCtrl{
     screen:"common"|"blue"|"close",
     islock:boolean,
     lockEvent:{
@@ -24,11 +24,11 @@ interface loginInfo{
     password:string,
 }
 
-class SystemStatus {
-    private static instance: SystemStatus;
-    stats: statsCtrl;
+class SystemState {
+    private static instance: SystemState;
+    state: stateCtrl;
     private constructor() {
-        this.stats = reactive({
+        this.state = reactive({
             screen:"close",
             islock:false,
             lockEvent:{},
@@ -38,47 +38,47 @@ class SystemStatus {
     
     static getInstance() {
         if (this.instance == undefined) {
-            this.instance = new SystemStatus()
+            this.instance = new SystemState()
         }
         return this.instance
     }
     _clearLockEvent(){
-        this.stats.lockEvent={}
+        this.state.lockEvent={}
     }
     mountLockEvent(name:string,fun:Function){
-        this.stats.lockEvent[name]=fun
+        this.state.lockEvent[name]=fun
     }
     mountUnlockEvent(name:string,fun:Function){
-        this.stats.unlockEvent[name]=fun
+        this.state.unlockEvent[name]=fun
     }
     closePower(){
-        this.stats.screen='blue'
+        this.state.screen='blue'
         setTimeout(()=>{
-            this.stats.screen='close'
+            this.state.screen='close'
         },1000)
     }
     openPower(){
         if(appconfig.start_time==0){
-            this.stats.screen='common'
+            this.state.screen='common'
         }else{
-            this.stats.screen='close'
+            this.state.screen='close'
         }
 
         setTimeout(()=>{
-            this.stats.screen='blue'
+            this.state.screen='blue'
         },appconfig.start_time/2)
         setTimeout(()=>{
-            this.stats.screen='common'
+            this.state.screen='common'
         },appconfig.start_time)
     }
     restartPower(){
-        // this.stats.screen='blue'
+        // this.state.screen='blue'
         setTimeout(()=>{
-            this.stats.screen='blue'
+            this.state.screen='blue'
         },2000)
 
         setTimeout(()=>{
-            this.stats.screen='close'
+            this.state.screen='close'
         },5000)
 
         setTimeout(()=>{
@@ -86,26 +86,26 @@ class SystemStatus {
         },6000)
     }
     lockScreen(){
-        this.stats.islock=true
-        for(let key in this.stats.lockEvent){
-            this.stats.lockEvent[key]()
+        this.state.islock=true
+        for(let key in this.state.lockEvent){
+            this.state.lockEvent[key]()
         }
         
     }
     unlockScreen(username:string,password:string){
-        this.stats.islock=false;
-        for(let key in this.stats.unlockEvent){
-            this.stats.unlockEvent[key]({username,password})
+        this.state.islock=false;
+        for(let key in this.state.unlockEvent){
+            this.state.unlockEvent[key]({username,password})
         }
     }
     notifyUnlock(username:string,password:string){
-        for(let key in this.stats.unlockEvent){
+        for(let key in this.state.unlockEvent){
             if(key !='hide'){
-                this.stats.unlockEvent[key]({username,password})
+                this.state.unlockEvent[key]({username,password})
             }
         }
     }
 }
 export {
-    SystemStatus
+    SystemState
 }

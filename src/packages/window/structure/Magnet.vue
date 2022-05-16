@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-02 17:31:25
+ * @LastEditTime: 2022-04-28 19:22:25
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -39,23 +39,23 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { appList } from "../../appconfig";
-import type { appInfo } from "../../appconfig";
-import { SystemStatus } from "../libs/SystemStatus";
+import { appList } from "@state/index";
+import type {appInfo} from "@state/type"
+import { SystemState } from "@libs/SystemState";
 
-import { MenuCtrl } from "../libs/MenuCtrl";
+import { MenuCtrl } from "@libs/MenuCtrl";
 import { UnwrapNestedRefs } from "@vue/reactivity";
-import { DragWindow } from "../libs/DragWindow"
-import { openSetting } from "../system/callSystemWins"
+import { DragWindow } from "@/packages/window/libs/DragWindow"
+import { openSetting } from "@system/callSystemWins"
 import { onMounted, ref,defineEmits } from "vue";
 // import systemSetVue from "../system/systemSet.vue"
 function closeClice(e: MouseEvent) {
     // console.log(e.offsetX, e.offsetY)
     MenuCtrl.getInstance().callMenu(e,
         [
-            { name: '关机', func: () => { console.log("关机"); SystemStatus.getInstance().closePower() } },
-            // { name: '锁定', func: () => { SystemStatus.getInstance().lockScreen() } },
-            { name: '重启', func: () => { console.log("重启"); SystemStatus.getInstance().restartPower() } }
+            { name: '关机', func: () => { console.log("关机"); SystemState.getInstance().closePower() } },
+            // { name: '锁定', func: () => { SystemState.getInstance().lockScreen() } },
+            { name: '重启', func: () => { console.log("重启"); SystemState.getInstance().restartPower() } }
 
         ]
     )

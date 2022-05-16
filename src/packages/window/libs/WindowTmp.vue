@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-03-31 14:22:10
+ * @LastEditTime: 2022-05-15 19:02:08
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -14,66 +14,19 @@
     :class="{ topwin: iftop, maxwin: isMaximize }"
     ref="$win_outer"
   >
-    <div
-      class="wintmp_uper"
-      @dblclick="maxWindow()"
-      @contextmenu.prevent="uperRightClick"
-    >
+    <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
       <div class="wintmp_left">
         <div class="wintmp_logo">
           <img draggable="false" :src="ctx.icon" />
         </div>
         <div class="wintmp_title">{{ ctx.title }}</div>
       </div>
-      <div class="winbutton_group">
-        <div v-if="wininfo.buttons.includes('flush')" @click="flushWindow()" class="winbutton flush_button">
-          <svg
-            class="icon"
-            viewBox="0 0 1024 1024"
-            width="15"
-            height="15"
-          >
-            <path
-              d="M927.999436 531.028522a31.998984 31.998984 0 0 0-31.998984 31.998984c0 51.852948-10.147341 102.138098-30.163865 149.461048a385.47252 385.47252 0 0 1-204.377345 204.377345c-47.32295 20.016524-97.6081 30.163865-149.461048 30.163865s-102.138098-10.147341-149.461048-30.163865a385.47252 385.47252 0 0 1-204.377345-204.377345c-20.016524-47.32295-30.163865-97.6081-30.163865-149.461048s10.147341-102.138098 30.163865-149.461048a385.47252 385.47252 0 0 1 204.377345-204.377345c47.32295-20.016524 97.6081-30.163865 149.461048-30.163865a387.379888 387.379888 0 0 1 59.193424 4.533611l-56.538282 22.035878A31.998984 31.998984 0 1 0 537.892156 265.232491l137.041483-53.402685a31.998984 31.998984 0 0 0 18.195855-41.434674L639.723197 33.357261a31.998984 31.998984 0 1 0-59.630529 23.23882l26.695923 68.502679a449.969005 449.969005 0 0 0-94.786785-10.060642c-60.465003 0-119.138236 11.8488-174.390489 35.217667a449.214005 449.214005 0 0 0-238.388457 238.388457c-23.361643 55.252253-35.22128 113.925486-35.22128 174.390489s11.8488 119.138236 35.217668 174.390489a449.214005 449.214005 0 0 0 238.388457 238.388457c55.252253 23.368867 113.925486 35.217667 174.390489 35.217667s119.138236-11.8488 174.390489-35.217667A449.210393 449.210393 0 0 0 924.784365 737.42522c23.368867-55.270316 35.217667-113.925486 35.217667-174.390489a31.998984 31.998984 0 0 0-32.002596-32.006209z"
-              fill=""
-              p-id="1858"
-            ></path>
-          </svg>
-        </div>
-        <div v-if="wininfo.buttons.includes('min')" @click="hideWindow()" class="winbutton hide_button">
-          <svg class="icon" viewBox="0 0 1024 1024">
-            <path
-              d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z"
-            />
-          </svg>
-        </div>
-        <div
-          v-if="isScaleAble&&wininfo.buttons.includes('max')"
-          @click="maxWindow()"
-          class="winbutton max_button"
-        >
-          <svg v-if="isMaximize" class="icon" viewBox="0 0 1024 1024">
-            <path
-              d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z"
-            />
-          </svg>
-          <svg v-else class="icon" viewBox="0 0 1024 1024">
-            <path
-              d="M926.45937303 97.54062697v828.2973677H97.54062697V97.54062697h828.91874606m4.97102697-77.6722963h-838.8608c-39.7682157 0-72.07989097 32.31167525-72.07989097 72.07989096v839.48217837c0 39.7682157 32.31167525 72.07989097 72.07989097 72.07989097h839.48217837c39.7682157 0 72.07989097-32.31167525 72.07989096-72.07989097v-838.8608c0-40.38959408-32.31167525-72.70126933-72.70126933-72.70126933 0.62137837 0 0 0 0 0z"
-            />
-          </svg>
-        </div>
-        <!-- <svg t="1629857965098" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3294" width="200" height="200"><path d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" p-id="3295"></path></svg> -->
-        <div v-if="wininfo.buttons.includes('close')"
-         @click="closeWindow()" class="winbutton close_button">
-          <svg class="icon" viewBox="0 0 1024 1024">
-            <path
-              d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z"
-              fill="#363F4D"
-            />
-          </svg>
-        </div>
-      </div>
+      <Statebar 
+      @buttonEvent="handelButtonEvent"
+      :isMaximize="isMaximize"
+      :isScaleAble="isScaleAble"
+      :wininfo="wininfo"
+      ></Statebar>
     </div>
     <div
       ref="winmount"
@@ -82,8 +35,8 @@
       @mousedown.stop="predown"
       @touchstart.stop.passive="predown"
     >
-      <component :is="componentValue" :key="componentKey"></component>
-      <!-- <div ></div> -->
+    <WindowInner :component="componentValue" :componentKey="componentKey"></WindowInner>
+      <!-- <component :is="componentValue" :key="componentKey"></component> -->
     </div>
     <div
       class="right_border"
@@ -111,12 +64,14 @@ import { markRaw, provide, reactive, ref, shallowRef, toRaw, watch } from "vue";
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
 
-import { DWM, PrivateDWM } from "./DWM";
-import type { WindowInfo } from "./DWM";
-import { MenuCtrl } from "./MenuCtrl";
+import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index";
+import type { WindowInfo } from "@/packages/window/libs/DWM/index";
+import { MenuCtrl } from "@libs/MenuCtrl";
 
-import { DragElement } from "./DragElement";
-import { ScaleElement } from "./ScaleElement";
+import { DragElement } from "@libs/Dom/DragElement";
+import { ScaleElement } from "@libs/Dom/ScaleElement";
+import Statebar from "@libs/WindowTemplate/statebarButton.vue";
+import WindowInner from "@libs/WindowTemplate/windowInner.vue";
 
 // import html2canvas from 'html2canvas';
 
@@ -125,7 +80,7 @@ let props = defineProps({
     type: Object as PropType<WindowInfo>,
     default: {
       app: {
-        unmount: () => {},
+        unmount: () => { },
       }, //创建的app
       content: {}, //组件vue
     },
@@ -133,6 +88,7 @@ let props = defineProps({
 });
 let winID = props.ctx.id;
 let wininfo = PrivateDWM.getInstance().getWindow(winID);
+
 const componentKey = ref<Number>(1);
 function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);
@@ -144,10 +100,22 @@ function hideWindow() {
   PrivateDWM.getInstance().hideWindow(winID);
 }
 function maxWindow() {
-  PrivateDWM.getInstance().maxWindow(winID);
+  if(isScaleAble.value) {
+    PrivateDWM.getInstance().maxWindow(winID);
+  }
 }
 function predown() {
   PrivateDWM.getInstance().upSetWindowIndex(winID);
+}
+type buttonEvent = 'flush'|'close'|'min'|'max'
+const buttonEventFunc = {
+  close: closeWindow,
+  min: hideWindow,
+  max: maxWindow,
+  flush: flushWindow,
+};
+function handelButtonEvent(event:buttonEvent){
+  buttonEventFunc[event]();
 }
 function uperRightClick(e: MouseEvent) {
   MenuCtrl.getInstance().callMenu(e, [
@@ -210,7 +178,15 @@ onMounted(() => {
       }
     }),
   };
-  componentValue.value = toRaw(props.ctx).content;
+  if(typeof props.ctx.content === 'object') {
+      componentValue.value = toRaw(props.ctx).content
+  }else{
+    componentValue.value = {
+      isUrl:true,
+      url: props.ctx.content,
+    };
+  }
+  
   provide("windowId", winID);
 });
 /*
@@ -231,20 +207,10 @@ onMounted(() => {
     }
   );
   dragAble.onDrag((x, y) => {
-    // console.log(x,y)
     if (!wininfo.isMaximize) {
       wininfo.x = x;
       wininfo.y = y;
     }
-    // PrivateDWM.getInstance().getWindow(winID).x=x;
-    // PrivateDWM.getInstance().getWindow(winID).y=y;
-    // if($win_outer){
-    //     $win_outer.value.style.left = this.posX + 'px';
-    //     $win_outer.value.style.top = this.posY + 'px'
-    // }
-
-    // wininfo.x=x;
-    // wininfo.y=y
   });
 });
 
@@ -256,7 +222,8 @@ let resizemode = ref("null");
 let scaleAble = new ScaleElement(resizemode, winWidth, winHeight);
 
 scaleAble.onResize((width: number, height: number) => {
-  PrivateDWM.getInstance().scaleChange(winID, width, height);
+  wininfo.width = width || wininfo.width;
+  wininfo.height = height || wininfo.height;
 });
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
   scaleAble?.startScale(e, dire);
@@ -270,7 +237,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 }
 </style>
 <style scoped>
-@import "../../main.css";
+@import "@/packages/main.css";
 .wintmp_outer {
   position: absolute;
   padding: 0;
@@ -299,6 +266,10 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   border: 1px solid #0078d7;
   box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
     0 7px 19px rgb(0 0 0 / 90%);
+}
+.icon {
+  width: 12px;
+  height: 12px;
 }
 .maxwin {
   position: absolute;
@@ -341,11 +312,9 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 .wintmp_logo {
   height: 24px;
   width: 30px;
-  
 }
-.wintmp_logo img{
+.wintmp_logo img {
   width: 18px;
-
 }
 .wintmp_main {
   position: relative;
@@ -354,51 +323,6 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   background-color: rgb(255, 255, 255);
   overflow: hidden;
   contain: content;
-}
-.winbutton_group {
-  display: flex;
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.icon {
-  width: 12px;
-  height: 12px;
-}
-.winbutton {
-  cursor: pointer;
-  height: 30px;
-  width: 35px;
-  background-color: rgba(149, 182, 243, 0);
-  text-align: center;
-  transition: all 0.1s;
-
-  background: #ffffff;
-  font-family: "Segoe UI", Tahoma, sans-serif;
-  font-size: 12px;
-  border: 2px solid white;
-  padding: 0px 4px;
-  transition: 0.1s;
-}
-.winbutton:hover {
-  background-color: rgb(200, 217, 245);
-  color: white;
-}
-.close_button {
-  /* position: absolute;
-    right: 0;
-    top: 0; */
-}
-.close_button:hover {
-  background-color: red;
-}
-.hide_button {
-  /* position: absolute;
-    right: 35px;
-    top: 0; */
-  text-align: center;
-}
-.max_button {
 }
 .right_border {
   cursor: ew-resize;

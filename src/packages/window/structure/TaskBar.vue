@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-02 17:32:11
+ * @LastEditTime: 2022-04-28 19:17:26
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -69,13 +69,18 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import type { WindowInfo } from "../libs/DWM"
-import { DWM, PrivateDWM } from "../libs/DWM"
-import { MenuCtrl } from "../libs/MenuCtrl"
-import { SystemStatus } from "../libs/SystemStatus";
-import MagnetVue from "./Magnet.vue";
+import type { WindowInfo } from "@/packages/window/libs/DWM/index"
+import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
+import { MenuCtrl } from "@libs/MenuCtrl"
+import { SystemState } from "@libs/SystemState";
+import MagnetVue from "@structure/Magnet.vue";
 import winimg from "../../../assets/win.png"
-import { appconfig } from "../../appconfig";
+import { appconfig } from "@/packages/appconfig";
+
+import {windowInfoMap} from "@state/index";
+// {title:title,width,height,ctx:ctx}
+
+// let winlist = state.windowInfoMap
 
 //设置winlogo
 let winlogo = ref(winimg);
@@ -86,7 +91,7 @@ if (appconfig.start_menu_logo == "default") {
 }
 
 
-let winlist = PrivateDWM.getInstance().windowInfoMap
+let winlist = windowInfoMap
 
 function barClick(item: WindowInfo) {
     if (item.ifShow) {

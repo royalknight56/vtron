@@ -23,7 +23,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { storeConfig, setConfig, clearStoreConfig, appconfig } from '../../../appconfig'
+import { storeConfig, setConfig, clearStoreConfig, appconfig } from '@/packages/appconfig'
 let backURL = ref(appconfig.backimg)
 let startTime = ref(appconfig.start_time)
 function saveBack() {

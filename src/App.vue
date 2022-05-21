@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-15 17:45:09
+ * @LastEditTime: 2022-05-17 13:19:01
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -20,6 +20,8 @@ import Test3 from "./apps/Test3.vue"
 import Browser from "./apps/Browser.vue"
 import TestButton from "./apps/TestButton.vue"
 import app_vscode from "./apps/app_vscode.vue"
+import ImgViewer from "./apps/ImgViewer.vue"
+
 
 import { AddToDesktop, ClearDesktop } from "./plug";
 
@@ -79,6 +81,17 @@ onMounted(() => {
     window: new DragWindow({
       content: 'https://v3.cn.vuejs.org/api/global-api.html#h'
     })
+  });
+  
+  AddToDesktop({
+    name: '图片查看器',
+    icon: brow,
+    window: new DragWindow(
+      {
+        title: '图片查看器',
+        icon: brow,
+        content: ImgViewer
+      })
   });
   AddToDesktop({
     name: '浏览器',

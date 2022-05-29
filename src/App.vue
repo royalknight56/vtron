@@ -44,7 +44,7 @@ onMounted(() => {
     // testwin.addWindowEventListener
 
   AddToDesktop({
-    name: '浏览器',
+    name: '浏览器1',
     // icon: brow,
     // 0, 0, '窗口通信', brow, 600, 500, 
     window: new DragWindow({

@@ -1,13 +1,11 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-27 11:08:05
+ * @LastEditTime: 2022-05-29 16:27:05
  * @Description: 
- * @FilePath: /myindex/src/components/window/BlueScreen.vue
-  Need CodeReview 
 -->
 <template>
-<div class="outer" @contextmenu.prevent="backgroundRightClick" :class="{blueclass:stat.screen=='blue',blackclass:stat.screen=='close'}">
-    <div id="dot"  v-if="stat.screen == 'blue'">
+<div class="outer blueclass">
+    <div id="dot" >
         !
         <div id="dottext">
             Royal
@@ -16,7 +14,7 @@
             </span>
         </div>
     </div>
-    <div  id="logoW" v-if="appconfig.if_logo_show&&(stat.screen == 'blue'||stat.screen == 'common')">
+    <div  id="logoW">
         <div id="logo">
             <div class="win" id="win1"></div>
             <div class="win" id="win2"></div>
@@ -25,7 +23,7 @@
         </div>
     </div>
     <div id="text"></div>
-    <div id="wait" v-if="stat.screen == 'blue'">
+    <div id="wait">
         <div class="waitd" id="wait1"></div>
         <div class="waitd" id="wait2"></div>
         <div class="waitd" id="wait3"></div>
@@ -36,23 +34,9 @@
     
 </template>
 <script lang="ts" setup>
-import { appconfig } from "@/packages/appconfig";
-import { MenuCtrl } from "@libs/MenuCtrl";
-import { SystemState } from "@libs/SystemState";
-
-
-let stat = SystemState.getInstance().state;
-
-function backgroundRightClick(e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e,
-        [
-            { name: '刷新', func: () => {  } },
-        ]
-    )
-}
 </script>
 <style scoped>
-@import '../../main.css';
+@import '../../../main.css';
 
 img[src=""],img:not([src]) {
     display: none;

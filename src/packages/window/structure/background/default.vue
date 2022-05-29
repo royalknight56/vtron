@@ -1,22 +1,11 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-27 11:08:05
+ * @LastEditTime: 2022-05-29 15:29:56
  * @Description: 
- * @FilePath: /myindex/src/components/window/BlueScreen.vue
-  Need CodeReview 
 -->
 <template>
-<div class="outer" @contextmenu.prevent="backgroundRightClick" :class="{blueclass:stat.screen=='blue',blackclass:stat.screen=='close'}">
-    <div id="dot"  v-if="stat.screen == 'blue'">
-        !
-        <div id="dottext">
-            Royal
-            <span>
-                Knight
-            </span>
-        </div>
-    </div>
-    <div  id="logoW" v-if="appconfig.if_logo_show&&(stat.screen == 'blue'||stat.screen == 'common')">
+<div class="outer">
+    <div  id="logoW">
         <div id="logo">
             <div class="win" id="win1"></div>
             <div class="win" id="win2"></div>
@@ -25,34 +14,13 @@
         </div>
     </div>
     <div id="text"></div>
-    <div id="wait" v-if="stat.screen == 'blue'">
-        <div class="waitd" id="wait1"></div>
-        <div class="waitd" id="wait2"></div>
-        <div class="waitd" id="wait3"></div>
-        <div class="waitd" id="wait4"></div>
-    </div>
-    
 </div>
     
 </template>
 <script lang="ts" setup>
-import { appconfig } from "@/packages/appconfig";
-import { MenuCtrl } from "@libs/MenuCtrl";
-import { SystemState } from "@libs/SystemState";
-
-
-let stat = SystemState.getInstance().state;
-
-function backgroundRightClick(e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e,
-        [
-            { name: '刷新', func: () => {  } },
-        ]
-    )
-}
 </script>
 <style scoped>
-@import '../../main.css';
+@import '../../../main.css';
 
 img[src=""],img:not([src]) {
     display: none;
@@ -67,37 +35,7 @@ img[src=""],img:not([src]) {
     background-color: rgb(0, 119, 210);
     user-select: none;
 }
-.blueclass{
-    z-index: 10001;
-    background-color: rgb(0, 119, 210);
-    /* background-color: black; */
-}
-.blackclass{
-    z-index: 10001;
-    background-color: black;
-}
 
-
-* {
-    transition: all 0.3s;
-}
-
-/* #mous{
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 1;
-        cursor: none; 
-    } */
-body {
-    padding: 0;
-    margin: 0;
-    /* background-color: rgb(0, 119, 210); */
-    /* cursor: none; */
-    /* rgb(0, 120, 212); */
-}
 
 .win {
     width: 60px;

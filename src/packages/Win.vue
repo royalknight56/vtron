@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:23:19
+ * @LastEditTime: 2022-05-29 13:47:12
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -9,7 +9,8 @@
     <TaskBar></TaskBar>
     <ContextMenu></ContextMenu>
     <Desktop></Desktop>
-    <BlueScreen></BlueScreen>
+    <!-- <BlueScreen></BlueScreen> -->
+    <BackgroundVue></BackgroundVue>
     <AlertVue></AlertVue>
     <WindowsGroup></WindowsGroup>
     <LockScreenVue></LockScreenVue>
@@ -25,6 +26,7 @@ import ContextMenu from '@structure/ContextMenu.vue';
 import Desktop from '@structure/Desktop.vue';
 
 import BlueScreen from '@structure/BlueScreen.vue';
+import BackgroundVue from '@structure/background/index.vue';
 import WindowsGroup from '@structure/WindowsGroup.vue';
 import LockScreenVue from '@structure/LockScreen.vue';
 import AlertVue from '@structure/Alert.vue';

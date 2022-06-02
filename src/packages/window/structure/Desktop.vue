@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-29 20:32:52
+ * @LastEditTime: 2022-05-31 16:23:54
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -88,12 +88,13 @@ function onDragEndCheck(item: posItem) {
             }
         }
     }
+    // console.log(lastTemp)
     // 得出lastTemp：需要交换到的位置
-    if (lastTemp >= 0) {
-        let curappInfo = appList[currentMoveIcon]
-        appList.splice(currentMoveIcon, 1);
-        appList.splice(lastTemp, 0, curappInfo);
-    }
+    // if (lastTemp >= 0) {
+    //     let curappInfo = appList[currentMoveIcon]
+    //     appList.splice(currentMoveIcon, 1);
+    //     appList.splice(lastTemp, 0, curappInfo);
+    // }
 
 
 }

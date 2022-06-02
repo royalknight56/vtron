@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-29 16:32:51
+ * @LastEditTime: 2022-06-01 10:15:29
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -17,7 +17,7 @@
   </div>
 </template>
   
-  <script lang="ts" setup>
+<script lang="ts" setup>
 
 import { onMounted } from 'vue';
 
@@ -30,13 +30,10 @@ import WindowsGroup from '@structure/WindowsGroup.vue';
 import LockScreenVue from '@structure/LockScreen.vue';
 import AlertVue from '@structure/Alert.vue';
 
-import { SystemState } from '@libs/SystemState';
+import {globalInit} from './init'
 
-
-onMounted(() => {
-  // console.log('windows10 in vue3 欢迎访问：')
-  // console.log('https://github.com/royalknight56/win10-vue3')
-  SystemState.getInstance().openPower()
+onMounted(()=>{
+  globalInit()
 })
 
 </script>

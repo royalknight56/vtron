@@ -30,7 +30,7 @@ import { reactive } from "vue";
 import { appList } from "@state/index";
 import type { appInfo } from "@state/type"
 import { MenuCtrl } from "@libs/MenuCtrl";
-import { openInfo } from "@system/callSystemWins";
+import { openInfo } from "@builtin/callSystemWins";
 import { watch } from "fs";
 
 const MAX_ICON_COUNT = 99

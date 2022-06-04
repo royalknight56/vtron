@@ -46,7 +46,7 @@ import { SystemState } from "@libs/SystemState";
 import { MenuCtrl } from "@libs/MenuCtrl";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { DragWindow } from "@/packages/window/libs/DragWindow"
-import { openSetting } from "@system/callSystemWins"
+import { openSetting } from "@builtin/callSystemWins"
 import { onMounted, ref,defineEmits } from "vue";
 // import systemSetVue from "../system/systemSet.vue"
 function closeClice(e: MouseEvent) {

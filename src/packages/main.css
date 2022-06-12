@@ -1,5 +1,17 @@
 
-
+@font-face {
+  font-family: "SEGOEUIMDL";
+  src:url("SegMDL2.ttf") format("truetype");
+    /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+      /* url("LXGWWenKai-Bold.svg#LXGWWenKai-Bold") format("svg"); iOS 4.1- */
+  font-style: normal;
+  font-weight: normal;
+}
+.SEGOEUIMDL {
+  font-family: "SEGOEUIMDL";
+  font-style: normal;
+  font-weight: normal;
+}
 /*公共样式--开始*/
 html, body, div, ul, li, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ol, form, input, textarea, th, td, select {
   margin: 0;

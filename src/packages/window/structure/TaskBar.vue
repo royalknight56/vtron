@@ -1,10 +1,11 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-28 19:17:26
+ * @LastEditTime: 2022-06-02 15:13:53
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
 -->
+<!-- 任务栏 -->
 <template>
     <div class="bar">
         <div class="bar_left">
@@ -41,16 +42,11 @@
                 <span class="segoicon SEGOEUIMDL"> &#xE010;</span>
             </div>
             <div class="right_item">
-                <span class="segoicon SEGOEUIMDL">&#xE83F;</span>
+                <ChargingVue></ChargingVue>
             </div>
             <div class="right_item">
-                <span class="segoicon SEGOEUIMDL">&#xE774;</span>
-               
+                <NetworkVue></NetworkVue>
             </div>
-            <div class="right_item">
-                <span class="segoicon SEGOEUIMDL">&#xE992;</span>
-            </div>
-            
             <div class="date_time">
                 <div class="date_time_text">
                     {{ date_time }}
@@ -74,10 +70,13 @@ import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
 import { MenuCtrl } from "@libs/MenuCtrl"
 import { SystemState } from "@libs/SystemState";
 import MagnetVue from "@structure/Magnet.vue";
+import NetworkVue from "@structure/taskbarIcon/network.vue";
+import ChargingVue from "@structure/taskbarIcon/charging.vue";
+
 import winimg from "../../../assets/win.png"
 import { appconfig } from "@/packages/appconfig";
 
-import {windowInfoMap} from "@state/index";
+import {windowInfoMap,sysInfo} from "@state/index";
 // {title:title,width,height,ctx:ctx}
 
 // let winlist = state.windowInfoMap
@@ -159,19 +158,6 @@ setInterval(() => {
 </script>
 <style scoped>
 @import "../../main.css";
-@font-face {
-  font-family: "SEGOEUIMDL";
-  src:url("SegMDL2.ttf") format("truetype");
-    /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
-      /* url("LXGWWenKai-Bold.svg#LXGWWenKai-Bold") format("svg"); iOS 4.1- */
-  font-style: normal;
-  font-weight: normal;
-}
-.SEGOEUIMDL {
-  font-family: "SEGOEUIMDL";
-  font-style: normal;
-  font-weight: normal;
-}
 .bar {
     position: absolute;
     bottom: 0;

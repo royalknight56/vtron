@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-15 19:02:08
+ * @LastEditTime: 2022-05-29 20:38:09
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -187,8 +187,9 @@ onMounted(() => {
     };
   }
   
-  provide("windowId", winID);
+  
 });
+provide("windowId", winID);
 /*
 挂载拖动事件
 */

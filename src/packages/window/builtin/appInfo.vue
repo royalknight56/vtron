@@ -56,8 +56,8 @@
 <script lang="ts" setup>
 import { inject } from 'vue';
 import { PrivateDWM } from '@/packages/window/libs/DWM/index';
-import WinBotton from "@system/winComponent/WinButton.vue"
-import WinCheckBox from "@system/winComponent/WinCheckBox.vue"
+import WinBotton from "@builtin/winComponent/WinButton.vue"
+import WinCheckBox from "@builtin/winComponent/WinCheckBox.vue"
 
 let id =<string>inject('windowId')
 

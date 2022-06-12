@@ -32,9 +32,9 @@
 import { inject, ref, defineComponent } from 'vue';
 import { PrivateDWM } from '@/packages/window/libs/DWM/index';
 
-import WinSelect from '@system/winComponent/WinSelect.vue'
-import systemset from '@system/setApps/SetSystemset.vue'
-import version from '@system/setApps/SetVersion.vue'
+import WinSelect from '@builtin/winComponent/WinSelect.vue'
+import systemset from '@builtin/setApps/SetSystemset.vue'
+import version from '@builtin/setApps/SetVersion.vue'
 
 import e7f8 from '../../../assets/icon/e7f8.png'//系统设置
 import e774 from '../../../assets/icon/e774.png'//网络

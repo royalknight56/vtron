@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-15 17:45:09
+ * @LastEditTime: 2022-06-08 18:46:07
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -30,38 +30,17 @@ import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {
   ClearDesktop();
-  let testwin = new DragWindow(
-    {
-      title: '浏览器',
-      icon: brow,
-      width: 600,
-      height: 500,
-      x: 100,
-      y: 100,
-      content: Mycom,
-      isScalable: false
-    })
-    // testwin.addWindowEventListener
-
+  
   AddToDesktop({
-    name: '浏览器',
-    // icon: brow,
-    // 0, 0, '窗口通信', brow, 600, 500, 
+    name: '浏览器1',
     window: new DragWindow({
-      // title: '浏览器',
-      // icon: brow,
-      // width: 600,
-      // height: 500,
-      // x: 100,
-      // y: 100,
-      // isScalable: false,
+      isScalable: false,
       content: Test3
     })
   });
   AddToDesktop({
     name: '我的电脑',
     icon: brow,
-    // 0, 0, '窗口通信', brow, 600, 500,
     window: new DragWindow(
       {
         title: '浏览器',
@@ -74,8 +53,6 @@ onMounted(() => {
 
   AddToDesktop({
     name: '浏览器',
-    // icon: brow,
-    // 0, 0, '窗口通信', brow, 600, 500, 
     window: new DragWindow({
       content: 'https://v3.cn.vuejs.org/api/global-api.html#h'
     })
@@ -83,7 +60,6 @@ onMounted(() => {
   AddToDesktop({
     name: '浏览器',
     icon: brow,
-    // 0, 0, '窗口通信', brow, 600, 500,
     window: new DragWindow(
       {
         title: '浏览器',
@@ -112,7 +88,6 @@ onMounted(() => {
   AddToDesktop({
     name: 'vscode',
     icon: brow,
-    // 0, 0, '窗口通信', brow, 600, 500,
     window: new DragWindow(
       {
         title: 'vscode',

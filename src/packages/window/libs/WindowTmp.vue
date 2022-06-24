@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-29 20:38:09
+ * @LastEditTime: 2022-06-24 15:06:43
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -35,7 +35,7 @@
       @mousedown.stop="predown"
       @touchstart.stop.passive="predown"
     >
-    <WindowInner :component="componentValue" :componentKey="componentKey"></WindowInner>
+    <WindowInner :id="winID" :componentKey="componentKey"></WindowInner>
       <!-- <component :is="componentValue" :key="componentKey"></component> -->
     </div>
     <div
@@ -76,6 +76,10 @@ import WindowInner from "@libs/WindowTemplate/windowInner.vue";
 // import html2canvas from 'html2canvas';
 
 let props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
   ctx: {
     type: Object as PropType<WindowInfo>,
     default: {
@@ -86,7 +90,7 @@ let props = defineProps({
     },
   },
 });
-let winID = props.ctx.id;
+let winID = props.id;
 let wininfo = PrivateDWM.getInstance().getWindow(winID);
 
 const componentKey = ref<Number>(1);
@@ -151,11 +155,11 @@ function onFocus(e: MouseEvent | TouchEvent): void {
 
 let componentValue: any = shallowRef(null);
 
-let iftop = computed(() => props.ctx.iftop);
-let isMaximize = computed(() => props.ctx.isMaximize);
+let iftop = computed(() => wininfo.iftop);
+let isMaximize = computed(() => wininfo.isMaximize);
 
-let winWidth = ref(props.ctx.width);
-let winHeight = ref(props.ctx.height);
+let winWidth = ref(wininfo.width);
+let winHeight = ref(wininfo.height);
 
 /*
  *计算样式
@@ -168,24 +172,29 @@ onMounted(() => {
     top: computed(() => wininfo.y + "px"),
 
     zIndex: computed(() => {
-      return props.ctx.zindex;
+      return wininfo.zindex;
     }),
     display: computed(() => {
-      if (props.ctx.ifShow) {
+      if (wininfo.ifShow) {
         return "";
       } else {
         return "none";
       }
     }),
   };
-  if(typeof props.ctx.content === 'object') {
-      componentValue.value = toRaw(props.ctx).content
-  }else{
-    componentValue.value = {
-      isUrl:true,
-      url: props.ctx.content,
-    };
-  }
+  // if(props.ctx.isVue){
+  //   componentValue.value = {
+  //     isVue:true,
+  //     url: props.ctx.content,
+  //   };
+  // }else if(typeof props.ctx.content === 'object') {
+  //     componentValue.value = toRaw(props.ctx).content
+  // }else{
+  //   componentValue.value = {
+  //     isUrl:true,
+  //     url: props.ctx.content,
+  //   };
+  // }
   
   
 });

@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-28 19:27:44
+ * @LastEditTime: 2022-06-23 18:58:02
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
@@ -20,7 +20,8 @@ interface option {
     title?: string,
     icon?: string,
     buttons?: WindowButton[],    // 右上角按钮
-    isScalable?: boolean
+    isScalable?: boolean,
+    isVue?: boolean,//是否为vue链接
 }
 interface EvMap {
     onDraging: { x: number, y: number, ifdrag: boolean }

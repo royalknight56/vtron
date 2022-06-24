@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-28 19:29:51
+ * @LastEditTime: 2022-06-24 15:05:30
  * @Description: 
  * @FilePath: /myindex/src/components/window/WindowsGroup.vue
   Need CodeReview 
@@ -8,7 +8,7 @@
 <template>
     <div class="winitem" v-for="item in windowInfoMap" :key="item.id">
         <teleport to="#win10id">
-            <WindowTmpVue :id="item.id" :ref="'ref' + item.id" :ctx="item"></WindowTmpVue>
+            <WindowTmpVue :id="item.id" :ref="'ref' + item.id"></WindowTmpVue>
         </teleport>
     </div>
 </template>

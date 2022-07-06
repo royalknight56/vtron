@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-06-24 14:57:48
+ * @LastEditTime: 2022-07-06 15:22:35
  * @Description: 
  */
 import { onBeforeMount, ref, defineAsyncComponent } from "vue";
@@ -33,15 +33,10 @@ function compileStringToComponent(string: string) {
 function fetchComponent(url: string) {
   return fetch(url,
     {
-      method: 'GET', 
-    }).then(response =>response.json())
+      method: 'GET',
+    }).then(response => response.json())
     .then(text => {
-      
       return compileStringToComponent(text.content)
-    }).catch((err)=>{
-      console.log(err)
     })
-
-    
 }
 export { compileStringToComponent, fetchComponent }

@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-06-24 14:32:08
+ * @LastEditTime: 2022-07-06 15:21:39
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -54,7 +54,7 @@ onMounted(() => {
 AddToDesktop({
     name: 'Vue浏览器',
     window: new DragWindow({
-      isVue:true,
+      isSFC:true,
       content: 'http://localhost:3002/app'
     })
   });

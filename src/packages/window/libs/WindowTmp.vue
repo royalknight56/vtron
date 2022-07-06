@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-06-24 15:06:43
+ * @LastEditTime: 2022-07-06 15:21:46
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -182,21 +182,6 @@ onMounted(() => {
       }
     }),
   };
-  // if(props.ctx.isVue){
-  //   componentValue.value = {
-  //     isVue:true,
-  //     url: props.ctx.content,
-  //   };
-  // }else if(typeof props.ctx.content === 'object') {
-  //     componentValue.value = toRaw(props.ctx).content
-  // }else{
-  //   componentValue.value = {
-  //     isUrl:true,
-  //     url: props.ctx.content,
-  //   };
-  // }
-  
-  
 });
 provide("windowId", winID);
 /*

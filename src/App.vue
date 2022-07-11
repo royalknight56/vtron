@@ -6,16 +6,13 @@
 -->
 <template>
   <div class="outer">
-    <WinVue></WinVue>
+    <Win10></Win10>
   </div>
 </template>
 
 <script setup lang="ts">
-import { initConfig, plug_option } from "./packages/appconfig";
-import WinVue from "./packages/Win.vue";
 
 import brow from "./assets/浏览器.png"
-import backimg from "./assets/back.jpg"
 import Test3 from "./apps/Test3.vue"
 import Browser from "./apps/Browser.vue"
 import TestButton from "./apps/TestButton.vue"
@@ -106,17 +103,6 @@ onMounted(() => {
   });
 })
 
-let opt: plug_option = {
-  if_logo_show: true,
-  start_time: 0,
-  backimg: backimg,
-  // login: {
-  //   user_name: 'AdDD',
-  //   user_password:'123'
-  // },
-  // start_menu_logo: brow,
-}
-initConfig(opt)
 
 </script>
 <style scoped>

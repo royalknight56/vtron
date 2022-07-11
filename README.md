@@ -13,9 +13,11 @@ Vue3 仿Win10 UI 框架
 
 </div>
 
-<a href="https://github.com/royalknight56/vue3-windows10/blob/master/README_en.md" target="_blank">English</a>|<a href="https://github.com/royalknight56/vue3-windows10" target="_blank">中文</a>
+<div align="center">
 
 <a href="http://v3w10.myim.online" target="_blank">文档</a>|<a href="http://v3w10.myim.online" target="_blank">官网</a>|<a href="http://myim.online" target="_blank">样例</a>
+
+</div>
 
 <span style="color:#999;text-align:center">推荐 Vue 3 + Typescript + Vite + Using `<script setup>`
 </span>
@@ -98,8 +100,80 @@ createApp(App).use(win10).mount('#app')
 
 # 感谢Star
 
-欢迎协作，感谢各位大佬的支持
+欢迎PR，意见，想法，感谢各位大佬的支持
 
 ![](https://komarev.com/ghpvc/?username=royalknight56&color=blue)
 
 
+
+# 目录
+```
+|-- packages
+    |-- appconfig.ts  // APP的配置
+    |-- init.ts       // 初始化过程
+    |-- main.css      // 全局css
+    |-- Win.vue       // Win10组件
+    |-- window        // Win10逻辑
+        |-- builtin     // 内建的页面，设置等
+        |   |-- appInfo.vue
+        |   |-- callSystemWins.ts
+        |   |-- systemSet.vue
+        |   |-- setApps
+        |   |   |-- setStyle.scss
+        |   |   |-- SetSystemset.vue
+        |   |   |-- SetVersion.vue
+        |   |-- winComponent
+        |       |-- WinButton.vue
+        |       |-- WinCheckBox.vue
+        |       |-- WinRadio.vue
+        |       |-- WinSelect.vue
+        |-- libs        // 主要依赖
+        |   |-- GlobalOps.ts
+        |   |-- MenuCtrl.ts
+        |   |-- Notify.ts
+        |   |-- SystemState.ts
+        |   |-- WindowTmp.vue
+        |   |-- Dom             // Dom操作
+        |   |   |-- DragElement.ts
+        |   |   |-- ScaleElement.ts
+        |   |-- DragWindow      // 窗口
+        |   |   |-- index.ts
+        |   |   |-- option.ts
+        |   |-- DWM             // 窗口管理中心
+        |   |   |-- DWM.ts
+        |   |   |-- index.ts
+        |   |   |-- PrivateDWM.ts
+        |   |   |-- type.ts
+        |   |-- WindowTemplate  // 窗口模板
+        |       |-- getCom.ts
+        |       |-- statebarButton.vue
+        |       |-- windowInner.vue
+        |       |-- defaultInner
+        |           |-- error.vue
+        |           |-- loadding.vue
+        |-- state       // 集中状态管理
+        |   |-- index.ts
+        |   |-- listener.ts
+        |   |-- type.ts
+        |-- structure   // Win所必需的结构
+            |-- Alert.vue
+            |-- ContextMenu.vue
+            |-- Desktop.vue
+            |-- DragWindow.vue
+            |-- LockScreen.vue
+            |-- Magnet.vue
+            |-- TaskBar.vue
+            |-- WindowsGroup.vue
+            |-- background
+            |   |-- default.vue
+            |   |-- imgbackground.vue
+            |   |-- index.vue
+            |-- status
+            |   |-- black.vue
+            |   |-- blue.vue
+            |   |-- index.vue
+            |-- taskbarIcon
+                |-- charging.vue
+                |-- network.vue
+
+```

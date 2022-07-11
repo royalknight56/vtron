@@ -4,11 +4,11 @@
  * @Description: 启动时操作
  */
 import { SystemState } from '@libs/SystemState';
-import {init} from "@state/listener";
+import {initListener} from "@state/listener";
 
 function globalInit() {
   SystemState.getInstance().openPower();
-  init()
+  initListener()
 }
 export {
   globalInit

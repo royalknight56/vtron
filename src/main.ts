@@ -6,8 +6,16 @@
  */
 import { createApp } from 'vue'
 import App from './App.vue';
-// import ElementPlus from 'element-plus'
-// import 'element-plus/dist/index.css'
-
-const app = createApp(App)
+import Win10 from './plug'
+import backimg from "./assets/back.jpg"
+const app = createApp(App).use(Win10,{
+    if_logo_show: true,
+    start_time: 0,
+    backimg: backimg,
+    // login: {
+    //   user_name: 'AdDD',
+    //   user_password:'123'
+    // },
+    // start_menu_logo: brow,
+  })
 app.mount('#app-hash')

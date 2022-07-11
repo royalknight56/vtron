@@ -4,7 +4,6 @@
  * @Description: 
 -->
 <template>
-  <template v-if="!loadding">
     <template v-if="componentType=='loadding'">
       <LoaddingVue></LoaddingVue>
     </template>
@@ -21,8 +20,6 @@
     <template v-else>
       <component :is="compileCom" :key="componentKey"></component>
     </template>
-
-  </template>
 </template>
 <script lang="ts" setup>
 import { defineAsyncComponent, defineComponent, onMounted, ref, shallowRef, toRaw } from 'vue';
@@ -38,31 +35,24 @@ let props = defineProps([
 let winID = props.id;
 let wininfo = PrivateDWM.getInstance().getWindow(winID);
 let componentType = ref('loadding')
-let loadding = ref(true)
 let compileCom = shallowRef({}) as any;
 
 onMounted(()=>{
   
   if(wininfo.isSFC){
-    componentType.value ='sfc'
     fetchComponent(wininfo.content).then(res=>{
       compileCom.value = res
+      componentType.value ='sfc'
     }).catch(err=>{
       componentType.value ='error'
       console.log(err)
-    }).finally(()=>{
-      loadding.value = false
     })
   }else if(typeof wininfo.content === 'object') {
     componentType.value= 'vue'
     compileCom.value = toRaw(wininfo.content)
-    loadding.value = false
-
   }else{
-    
     componentType.value = 'url'
     compileCom.value =toRaw(wininfo.content)
-    loadding.value = false
   }
 })
 

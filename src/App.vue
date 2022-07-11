@@ -1,6 +1,6 @@
 <!--
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-07-06 15:21:39
+ * @LastEditTime: 2022-07-11 18:50:07
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
@@ -30,7 +30,7 @@ import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {
   ClearDesktop();
-  
+
   AddToDesktop({
     name: '浏览器1',
     window: new DragWindow({
@@ -51,10 +51,10 @@ onMounted(() => {
       })
   });
 
-AddToDesktop({
+  AddToDesktop({
     name: 'Vue浏览器',
     window: new DragWindow({
-      isSFC:true,
+      isSFC: true,
       content: 'http://localhost:3002/app'
     })
   });
@@ -133,6 +133,7 @@ svg {
   display: block;
   vertical-align: middle;
 }
+
 body {
   padding: 0;
   margin: 0;

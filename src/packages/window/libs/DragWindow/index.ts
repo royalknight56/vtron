@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-07-11 18:51:21
+ * @LastEditTime: 2022-07-11 19:14:46
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
@@ -87,11 +87,10 @@ class DragWindow {
         this.windowInfo = PrivateDWM.getInstance().registerWindow(this.id, option);//在IPC中注册，传递windowInfo
     }
     private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
-
         if (this.windowInfo) {
-            if (this.windowInfo.isScalable) {
+            if (this.windowInfo.isScalable) {//只有可缩放窗口
                 let { x, y, width, height } = this.windowInfo;
-                let { width: winWidth, height: winHeight } = this.getWinInner();
+                let { width: winWidth, height: winHeight } = this.getWinInner();//获取窗口大小
                 if (x + width > winWidth) {
                     this.windowInfo.width = winWidth - x;
                 }
@@ -105,20 +104,17 @@ class DragWindow {
         this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         
         nextTick(() => {
-            PrivateDWM.getInstance().upSetWindowIndex(this.id)
+            PrivateDWM.getInstance().upSetWindowIndex(this.id)//新窗口在顶部
             this.isCreated = true;
         })
     }
 
     show(option?: Partial<option>) {// 调用show之后，注册窗口，展示窗口
-        
-        // this.id = PrivateDWM.getInstance().getWinid();
-        if (!this.isCreated && !this.windowInfo?.ifDestory) {
+        if (!this.isCreated && !this.windowInfo?.ifDestory) {// 如果没有被创建，并且没被销毁
             this.id=PrivateDWM.getInstance().getWinid();//在窗口是第一次注册时，获取一个唯一id
         }
-        this.register(Object.assign(this.option, option))
-        // console.log(this.id)
-        this.afterRegister()
+        this.register(Object.assign(this.option, option))//注册
+        this.afterRegister()//注册之后
     }
 }
 export {

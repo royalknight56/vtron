@@ -1,5 +1,5 @@
 <!--
- * @Author: zhangweiyuan-Royal
+ * @Author: Royal
  * @LastEditTime: 2022-03-03 16:06:30
  * @Description: 可以拖动的窗口
  * @FilePath: /myindex/src/components/window/DragWindow.vue

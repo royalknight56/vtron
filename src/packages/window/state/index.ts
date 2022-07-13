@@ -3,7 +3,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 import type {windowInfoMapInter} from "@libs/DWM/type";
 import type {Notify,appInfo} from "@state/type"
 /*
- * @Author: zhangweiyuan-Royal
+ * @Author: Royal
  * @LastEditTime: 2022-06-01 11:19:02
  * @Description: 全局的状态
  */

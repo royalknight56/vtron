@@ -1,5 +1,5 @@
 <!--
- * @Author: zhangweiyuan-Royal
+ * @Author: Royal
  * @LastEditTime: 2022-04-28 19:22:25
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue

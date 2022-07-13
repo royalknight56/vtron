@@ -1,5 +1,5 @@
 /*
- * @Author: zhangweiyuan-Royal
+ * @Author: Royal
  * @LastEditTime: 2022-04-28 10:50:38
  * @Description: 
  * @FilePath: /myindex/src/plug.ts

@@ -1,6 +1,6 @@
 /*
  * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-07-11 19:14:46
+ * @LastEditTime: 2022-07-13 10:14:06
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
@@ -8,28 +8,7 @@
 import { defineComponent, nextTick } from "vue";
 import { WindowInfo, DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
 import { getRandomId } from "@libs/GlobalOps";
-type WindowButton = 'flush'|'close'|'min'|'max'
-
-interface option {
-    content: ReturnType<typeof defineComponent>,
-    props?: any,
-    x?: number,
-    y?: number,
-    width?: number,
-    height?: number,
-    title?: string,
-    icon?: string,
-    buttons?: WindowButton[],    // 右上角按钮
-    isScalable?: boolean,
-    isSFC?: boolean,//是否为vue SFC 链接
-}
-interface EvMap {
-    onDraging: { x: number, y: number, ifdrag: boolean }
-    onResizing: { x: number, y: number }
-}
-type EvMapFunction = {
-    [K in keyof EvMap]?: (ev: EvMap[K]) => void
-};
+import {EvMap,EvMapFunction,option,OptionAll,OptionSFC,OptionNoSFC,} from "./type";
 class DragWindow {
     evMap: EvMapFunction
     windowInfo: WindowInfo | null
@@ -119,5 +98,4 @@ class DragWindow {
 }
 export {
     DragWindow,
-    option
 }

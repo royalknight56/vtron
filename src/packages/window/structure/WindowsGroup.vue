@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-06-24 15:05:30
+ * @LastEditTime: 2022-07-14 16:36:32
  * @Description: 
  * @FilePath: /myindex/src/components/window/WindowsGroup.vue
   Need CodeReview 
@@ -8,7 +8,7 @@
 <template>
     <div class="winitem" v-for="item in windowInfoMap" :key="item.id">
         <teleport to="#win10id">
-            <WindowTmpVue :id="item.id" :ref="'ref' + item.id"></WindowTmpVue>
+            <WindowTmpVue :system="system" :id="item.id" :ref="'ref' + item.id"></WindowTmpVue>
         </teleport>
     </div>
 </template>
@@ -16,6 +16,14 @@
 import WindowTmpVue from "@libs/WindowTmp.vue";
 import { PrivateDWM } from "@/packages/window/libs/DWM/index"
 import {windowInfoMap} from "@state/index";
+
+import {System} from '@libs/System'
+defineProps({
+  system:{
+    type:System,
+    required:true
+  }
+})
 
 // {title:title,width,height,ctx:ctx}
 

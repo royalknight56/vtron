@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-06-02 15:13:53
+ * @LastEditTime: 2022-07-14 16:58:13
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -36,7 +36,7 @@
                 <!-- {{ item.title }} -->
             </div>
         </div>
-        <MagnetVue v-if="ifMagnetShow" @changevis="changeMagnetShow"></MagnetVue>
+        <MagnetVue v-if="ifMagnetShow" :system="system" @changevis="changeMagnetShow"></MagnetVue>
         <div class="bar_right">
             <div class="right_item">
                 <span class="segoicon SEGOEUIMDL"> &#xE010;</span>
@@ -67,7 +67,7 @@
 import { ref } from "vue";
 import type { WindowInfo } from "@/packages/window/libs/DWM/index"
 import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
-import { MenuCtrl } from "@libs/MenuCtrl"
+import { ContextMenu } from "@libs/ContextMenu"
 import { SystemState } from "@libs/SystemState";
 import MagnetVue from "@structure/Magnet.vue";
 import NetworkVue from "@structure/taskbarIcon/network.vue";
@@ -77,9 +77,13 @@ import winimg from "../../../assets/win.png"
 import { appconfig } from "@/packages/appconfig";
 
 import {windowInfoMap,sysInfo} from "@state/index";
-// {title:title,width,height,ctx:ctx}
-
-// let winlist = state.windowInfoMap
+import {System} from '@libs/System'
+let props = defineProps({
+  system:{
+    type:System,
+    required:true
+  }
+})
 
 //设置winlogo
 let winlogo = ref(winimg);
@@ -94,10 +98,10 @@ let winlist = windowInfoMap
 
 function barClick(item: WindowInfo) {
     if (item.ifShow) {
-        PrivateDWM.getInstance().upSetWindowIndex(item.id)
+        props.system.DWM.privateDWM.upSetWindowIndex(item.id)
     } else {
-        PrivateDWM.getInstance().showWindow(item.id)
-        PrivateDWM.getInstance().upSetWindowIndex(item.id)
+        props.system.DWM.privateDWM.showWindow(item.id)
+        props.system.DWM.privateDWM.upSetWindowIndex(item.id)
     }
 }
 
@@ -115,17 +119,17 @@ function changeMagnetShow() {
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {
-        MenuCtrl.getInstance().callMenu(e,
+        ContextMenu.getInstance().callMenu(e,
             [
-                { name: '关闭', func: () => { PrivateDWM.getInstance().destoryWindow(item.id) } },
-                { name: '最小化', func: () => { PrivateDWM.getInstance().hideWindow(item.id) } }
+                { name: '关闭', func: () => { props.system.DWM.privateDWM.destoryWindow(item.id) } },
+                { name: '最小化', func: () => { props.system.DWM.privateDWM.hideWindow(item.id) } }
             ]
         )
     } else {
-        MenuCtrl.getInstance().callMenu(e,
+        ContextMenu.getInstance().callMenu(e,
             [
-                { name: '关闭', func: () => { PrivateDWM.getInstance().destoryWindow(item.id) } },
-                { name: '显示', func: () => { PrivateDWM.getInstance().showWindow(item.id) } }
+                { name: '关闭', func: () => { props.system.DWM.privateDWM.destoryWindow(item.id) } },
+                { name: '显示', func: () => { props.system.DWM.privateDWM.showWindow(item.id) } }
             ]
         )
     }
@@ -133,7 +137,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo) {
-    PrivateDWM.getInstance().destoryWindow(item.id)
+    props.system.DWM.privateDWM.destoryWindow(item.id)
 }
 // //定期更换截图
 // setInterval(() => {

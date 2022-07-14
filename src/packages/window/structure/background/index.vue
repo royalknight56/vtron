@@ -11,7 +11,7 @@
 </template>
 <script lang="ts" setup>
 import { appconfig } from "@/packages/appconfig";
-import { MenuCtrl } from "@libs/MenuCtrl";
+import { ContextMenu } from "@libs/ContextMenu";
 
 import defaultBackground from "@structure/background/default.vue";
 import imgBackground from "@structure/background/imgbackground.vue";
@@ -21,7 +21,7 @@ import imgBackground from "@structure/background/imgbackground.vue";
 
 
 function backgroundRightClick(e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e,
+    ContextMenu.getInstance().callMenu(e,
         [
             { name: '刷新', func: () => { } },
         ]

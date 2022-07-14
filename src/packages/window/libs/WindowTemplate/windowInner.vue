@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-06 15:35:21
+ * @LastEditTime: 2022-07-14 17:26:18
  * @Description: 
 -->
 <template>
@@ -23,17 +23,34 @@
 </template>
 <script lang="ts" setup>
 import { defineAsyncComponent, defineComponent, onMounted, ref, shallowRef, toRaw } from 'vue';
+import  {Ref,PropType} from 'vue'
 import {fetchComponent} from "@libs/WindowTemplate/getCom";
 import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index";
 import LoaddingVue from '@libs/WindowTemplate/defaultInner/loadding.vue';
 import ErrorVue from '@libs/WindowTemplate/defaultInner/error.vue';
+import {System} from '@libs/System'
+let props = defineProps({
+  componentKey:{
+    type:Number as PropType<Number>,
+    required:true
+  },
+  id:{
+    type:String,
+    required:true
+  },
+  system:{
+    type:System,
+    required:true
+  }
+})
 
-let props = defineProps([
-  'componentKey',
-  'id',
-])
+// let props = defineProps([
+//   'componentKey',
+//   'id',
+//   'system',
+// ])
 let winID = props.id;
-let wininfo = PrivateDWM.getInstance().getWindow(winID);
+let wininfo = props.system.DWM.privateDWM.getWindow(winID);
 let componentType = ref('loadding')
 let compileCom = shallowRef({}) as any;
 

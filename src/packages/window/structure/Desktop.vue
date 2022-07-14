@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-05-31 16:23:54
+ * @LastEditTime: 2022-07-14 17:00:12
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -29,10 +29,16 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 import { reactive } from "vue";
 import { appList } from "@state/index";
 import type { appInfo } from "@state/type"
-import { MenuCtrl } from "@libs/MenuCtrl";
+import { ContextMenu } from "@libs/ContextMenu";
 import { openInfo } from "@builtin/callSystemWins";
 import { watch } from "fs";
-
+import {System} from '@libs/System'
+let props = defineProps({
+  system:{
+    type:System,
+    required:true
+  }
+})
 const MAX_ICON_COUNT = 99
 interface posItem {
     dom: Element | null,
@@ -88,15 +94,6 @@ function onDragEndCheck(item: posItem) {
             }
         }
     }
-    // console.log(lastTemp)
-    // 得出lastTemp：需要交换到的位置
-    // if (lastTemp >= 0) {
-    //     let curappInfo = appList[currentMoveIcon]
-    //     appList.splice(currentMoveIcon, 1);
-    //     appList.splice(lastTemp, 0, curappInfo);
-    // }
-
-
 }
 function onDragEnd() {
     // console.log('dragend', ev.clientX, ev.clientY)
@@ -115,17 +112,16 @@ function moveCheck(ev: MouseEvent) {
 }
 // let deskList: UnwrapNestedRefs<Array<appInfo>> = appList;
 function openApp(item: UnwrapNestedRefs<appInfo>) {
-
     item.window.show();
 }
 
 function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e,
+    ContextMenu.getInstance().callMenu(e,
         [
             { name: '打开(O)', func: () => { item.window.show(); } },
             {
                 name: '属性(R)', func: () => {
-                    openInfo({
+                    openInfo(props.system,{
                         item,
                     })
                 }

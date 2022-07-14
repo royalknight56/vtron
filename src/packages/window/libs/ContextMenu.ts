@@ -6,15 +6,15 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
  * @Author: Royal
  * @LastEditTime: 2022-03-03 16:32:42
  * @Description: 右键菜单控制
- * @FilePath: /myindex/src/components/window/libs/MenuCtrl.ts
+ * @FilePath: /myindex/src/components/window/libs/ContextMenu.ts
  * Need CodeReview 
  */
 interface menuItem {
     name: string,
     func: Function
 }
-class MenuCtrl {
-    private static instance: MenuCtrl;
+class ContextMenu {
+    private static instance: ContextMenu;
 
     x: Ref<number>;
     y: Ref<number>;
@@ -30,7 +30,7 @@ class MenuCtrl {
     }
     static getInstance() {
         if (this.instance == undefined) {
-            this.instance = new MenuCtrl()
+            this.instance = new ContextMenu()
         }
         return this.instance
     }
@@ -79,6 +79,6 @@ class MenuCtrl {
 }
 
 export {
-    MenuCtrl,
+    ContextMenu,
     menuItem
 }

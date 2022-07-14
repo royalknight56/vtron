@@ -1,6 +1,6 @@
 /*
  * @Author: Royal
- * @LastEditTime: 2022-04-28 10:50:38
+ * @LastEditTime: 2022-07-14 18:21:00
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
  */
@@ -20,7 +20,7 @@ let plug:Plugin = {
     },
     
 }
-export default plug
+export default plug;
 
 function AddToDesktop(app:appInfo) {
     appList.push(Object.assign({
@@ -38,8 +38,10 @@ export { DWM } from "./packages/window/libs/DWM/index";
 export type { WindowInfo } from "./packages/window/libs/DWM/index";
 
 export { SystemState } from "./packages/window/libs/SystemState";
-export { MenuCtrl } from "./packages/window/libs/MenuCtrl";
+export { ContextMenu } from "./packages/window/libs/ContextMenu";
 export { Notify } from "./packages/window/libs/Notify";
+export { System } from "./packages/window/libs/System";
+
 
 
 

@@ -1,19 +1,19 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 10:44:25
+ * @LastEditTime: 2022-07-14 16:38:17
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
 <template>
   <div @contextmenu.prevent class="win_outer SEGOEUI" id="win10id">
-    <TaskBar></TaskBar>
-    <ContextMenu></ContextMenu>
-    <Desktop></Desktop>
-    <BackgroundVue></BackgroundVue>
-    <StatusVue></StatusVue>
-    <AlertVue></AlertVue>
-    <WindowsGroup></WindowsGroup>
-    <LockScreenVue></LockScreenVue>
+    <TaskBar :system="system"></TaskBar>
+    <ContextMenu :system="system"></ContextMenu>
+    <Desktop :system="system"></Desktop>
+    <BackgroundVue :system="system"></BackgroundVue>
+    <StatusVue :system="system"></StatusVue>
+    <AlertVue :system="system"></AlertVue>
+    <WindowsGroup :system="system"></WindowsGroup>
+    <LockScreenVue :system="system"></LockScreenVue>
   </div>
 </template>
   
@@ -32,6 +32,14 @@ import AlertVue from '@structure/Alert.vue';
 
 import {globalInit} from './init'
 
+import {System} from '@libs/System'
+let props = defineProps({
+  system:{
+    type:System,
+    required:true
+  }
+});
+console.log(props)
 onMounted(()=>{
   globalInit()
 })

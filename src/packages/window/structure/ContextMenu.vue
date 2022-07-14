@@ -12,21 +12,21 @@
 </template>
 <script lang="ts" setup>
 import { computed, reactive, ref } from "vue";
-import { MenuCtrl } from "@libs/MenuCtrl";
-import type {menuItem}from "@libs/MenuCtrl";
+import { ContextMenu } from "@libs/ContextMenu";
+import type {menuItem}from "@libs/ContextMenu";
 
-let IPC = MenuCtrl.getInstance()
+let IPC = ContextMenu.getInstance()
 
 let IPClist = computed(() => {
-    return MenuCtrl.getInstance().menuList
+    return ContextMenu.getInstance().menuList
 })
 
 let cusStyle = ref<any>({
 })
-cusStyle.value.left = computed(() => MenuCtrl.getInstance().x.value + 'px')
-cusStyle.value.top = computed(() => MenuCtrl.getInstance().y.value + 'px')
+cusStyle.value.left = computed(() => ContextMenu.getInstance().x.value + 'px')
+cusStyle.value.top = computed(() => ContextMenu.getInstance().y.value + 'px')
 
-cusStyle.value.visibility = computed(() => MenuCtrl.getInstance().ifShow.value?"visible":"hidden" )
+cusStyle.value.visibility = computed(() => ContextMenu.getInstance().ifShow.value?"visible":"hidden" )
 
 function callFunc(item:menuItem) {
     item.func()

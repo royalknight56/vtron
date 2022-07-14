@@ -1,9 +1,9 @@
 /*
  * @Author: Royal
- * @LastEditTime: 2022-04-28 11:05:41
+ * @LastEditTime: 2022-07-14 16:12:17
  * @Description: 
  */
-import { DragWindow } from "@libs/DragWindow/index";
+import { DragWindow,DragWindowFactory } from "@libs/DragWindow/index";
 interface Notify {
   title: string,
   messages: string,

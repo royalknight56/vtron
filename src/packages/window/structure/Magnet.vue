@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-04-28 19:22:25
+ * @LastEditTime: 2022-07-14 16:57:52
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -43,15 +43,22 @@ import { appList } from "@state/index";
 import type {appInfo} from "@state/type"
 import { SystemState } from "@libs/SystemState";
 
-import { MenuCtrl } from "@libs/MenuCtrl";
+import { ContextMenu } from "@libs/ContextMenu";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { DragWindow } from "@/packages/window/libs/DragWindow"
 import { openSetting } from "@builtin/callSystemWins"
 import { onMounted, ref,defineEmits } from "vue";
+import {System} from '@libs/System'
+let props = defineProps({
+  system:{
+    type:System,
+    required:true
+  }
+})
 // import systemSetVue from "../system/systemSet.vue"
 function closeClice(e: MouseEvent) {
     // console.log(e.offsetX, e.offsetY)
-    MenuCtrl.getInstance().callMenu(e,
+    ContextMenu.getInstance().callMenu(e,
         [
             { name: '关机', func: () => { console.log("关机"); SystemState.getInstance().closePower() } },
             // { name: '锁定', func: () => { SystemState.getInstance().lockScreen() } },
@@ -68,7 +75,7 @@ function manclick(item: UnwrapNestedRefs<appInfo>) {
 }
 
 function openset() {
-    openSetting()
+    openSetting(props.system)
 }
 let mright = ref()
 let mrightborder = ref()

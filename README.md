@@ -129,7 +129,7 @@ createApp(App).use(win10).mount('#app')
         |       |-- WinSelect.vue
         |-- libs        // 主要依赖
         |   |-- GlobalOps.ts
-        |   |-- MenuCtrl.ts
+        |   |-- ContextMenu.ts
         |   |-- Notify.ts
         |   |-- SystemState.ts
         |   |-- WindowTmp.vue

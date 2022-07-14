@@ -1,13 +1,16 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-12 14:35:12
+ * @LastEditTime: 2022-07-14 17:01:04
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
 <template>
   <div class="outer">
-    <Win10></Win10>
+    <Win10 :system="system"></Win10>
   </div>
+  <!-- <div class="outer">
+    <Win10 :system="system"></Win10>
+  </div> -->
 </template>
 
 <script setup lang="ts">
@@ -21,24 +24,23 @@ import app_vscode from "./apps/app_vscode.vue"
 import { AddToDesktop, ClearDesktop } from "./plug";
 
 import Mycom from "./apps/MyComputer.vue"
-import { DragWindow } from "./packages/window/libs/DragWindow";
+// import { DragWindow } from "./packages/window/libs/DragWindow";
 import { onMounted } from "@vue/runtime-core";
-
+import {system} from "./systeminit"
 // import computer from "./assets/computer.ico"
 onMounted(() => {
-  ClearDesktop();
-
-  AddToDesktop({
+  system.ClearDesktop();
+  system.AddToDesktop({
     name: '浏览器1',
-    window: new DragWindow({
+    window: system.DragWindow({
       isScalable: false,
       content: Test3
     })
   });
-  AddToDesktop({
+  system.AddToDesktop({
     name: '我的电脑',
     icon: brow,
-    window: new DragWindow(
+    window: system.DragWindow(
       {
         title: '浏览器',
         icon: brow,
@@ -47,24 +49,23 @@ onMounted(() => {
         content: Mycom
       })
   });
-
-  AddToDesktop({
+  system.AddToDesktop({
     name: 'Vue浏览器',
-    window: new DragWindow({
+    window: system.DragWindow({
       isSFC: true,
       content: 'http://localhost:3002/app'
     })
   });
-  AddToDesktop({
+  system.AddToDesktop({
     name: '浏览器',
-    window: new DragWindow({
+    window: system.DragWindow({
       content: 'https://v3.cn.vuejs.org/api/global-api.html#h'
     })
   });
-  AddToDesktop({
+  system.AddToDesktop({
     name: '浏览器',
     icon: brow,
-    window: new DragWindow(
+    window: system.DragWindow(
       {
         title: '浏览器',
         icon: brow,
@@ -73,7 +74,7 @@ onMounted(() => {
         content: Browser
       })
   });
-  let testVue = new DragWindow(
+  let testVue = system.DragWindow(
     {
       title: '测试按钮',
       icon: brow,
@@ -81,18 +82,16 @@ onMounted(() => {
       height: 200,
       content: TestButton
     })
-  AddToDesktop({
+  system.AddToDesktop({
     name: '测试按钮',
     icon: brow,
     window: testVue
   });
 
-
-
-  AddToDesktop({
+  system.AddToDesktop({
     name: 'vscode',
     icon: brow,
-    window: new DragWindow(
+    window: system.DragWindow(
       {
         title: 'vscode',
         icon: brow,
@@ -110,7 +109,7 @@ onMounted(() => {
   position: relative;
   top: 0px;
   width: 100vw;
-  height: 100vh;
+  height: 50vh;
 }
 </style>
 <style>

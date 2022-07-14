@@ -40,6 +40,6 @@ function clear() {
 }
 </script>
 <style lang="scss" scoped>
-@import "../../../main.css";
+@import "@/packages/main.css";
 @import "./setStyle.scss";
 </style>

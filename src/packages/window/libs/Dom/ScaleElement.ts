@@ -37,15 +37,14 @@ class ScaleElement {
     mount() {
         document.addEventListener("touchmove", this.moveListener.bind(this))
         document.addEventListener('mousemove', this.moveListener.bind(this))
+        // document.addEventListener('drag', this.moveListener.bind(this))
         document.addEventListener("mouseup", () => {
             this.resizemode.value = 'null'
         })
         document.addEventListener("touchend", () => {
             this.resizemode.value = 'null'
         })
-        document.addEventListener('drag', ()=>{
-            this.resizemode.value = 'null'
-        })
+        
     }
     startScale(e: MouseEvent|TouchEvent, dire: string) {
         this.resizemode.value = dire
@@ -58,7 +57,6 @@ class ScaleElement {
         }
         this.winStartX = this.winWidth.value
         this.winStartY = this.winHeight.value
-        
     }
     onResize(fun: (a0: number, a1: number) => void){
         this.resizeEvent = fun
@@ -69,14 +67,13 @@ class ScaleElement {
         }
     }
     moveListener(e: MouseEvent | TouchEvent) {
-        // e.preventDefault()
         if (e instanceof MouseEvent) {
-            if (e.buttons == 1) {
-
-            } else {
+            if (e.buttons !== 1) {
+                this.resizemode.value = 'null'
                 return
             }
         }
+
         let pageX = 0;
         let pageY = 0;
         if (e instanceof MouseEvent) {
@@ -121,8 +118,6 @@ class ScaleElement {
         } else {
             return
         }
-
-        // e.stopPropagation()
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * @Author: zhangweiyuan-Royal
+ * @Author: Royal
  * @LastEditTime: 2022-04-26 11:16:31
  * @Description: 
  * @FilePath: /myindex/vite.config.ts
@@ -14,7 +14,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "src"),
       "@structure": path.resolve(__dirname, "src/packages/window/structure"),
-      "@system": path.resolve(__dirname, "src/packages/window/system"),
+      "@builtin": path.resolve(__dirname, "src/packages/window/builtin"),
       "@state": path.resolve(__dirname, "src/packages/window/state"),
       "@libs": path.resolve(__dirname, "src/packages/window/libs"),
     },

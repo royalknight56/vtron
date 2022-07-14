@@ -1,5 +1,5 @@
 /*
- * @Author: zhangweiyuan-Royal
+ * @Author: Royal
  * @LastEditTime: 2022-04-28 10:50:38
  * @Description: 
  * @FilePath: /myindex/src/plug.ts
@@ -14,7 +14,7 @@ import type {Notify,appInfo} from "@state/type"
 
 let plug:Plugin = {
     install:function(app:App, opt: plug_option):void {
-        // Object.assign(appconfig,opt)
+        // TODO: 不在此处初始化配置
         initConfig(opt)
         app.component('Win10',Win)
     },

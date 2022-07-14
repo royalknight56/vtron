@@ -1,5 +1,5 @@
 /*
- * @Author: zhangweiyuan-Royal
+ * @Author: Royal
  * @LastEditTime: 2022-04-26 11:16:31
  * @Description: 
  * @FilePath: /myindex/vite.config.ts

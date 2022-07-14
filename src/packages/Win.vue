@@ -1,6 +1,6 @@
 <!--
- * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-06-01 10:15:29
+ * @Author: Royal
+ * @LastEditTime: 2022-07-14 10:44:25
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
@@ -38,7 +38,7 @@ onMounted(()=>{
 
 </script>
 <style scoped>
-@import './main.css';
+@import "@/packages/main.css";
 
 </style>
 <style>

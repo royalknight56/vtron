@@ -1,27 +1,5 @@
-<!--
- * @Author: Royal
- * @LastEditTime: 2022-05-29 16:27:05
- * @Description: 
--->
 <template>
 <div class="outer blueclass">
-    <div id="dot" >
-        !
-        <div id="dottext">
-            Royal
-            <span>
-                Knight
-            </span>
-        </div>
-    </div>
-    <div  id="logoW">
-        <div id="logo">
-            <div class="win" id="win1"></div>
-            <div class="win" id="win2"></div>
-            <div class="win" id="win3"></div>
-            <div class="win" id="win4"></div>
-        </div>
-    </div>
     <div id="text"></div>
     <div id="wait">
         <div class="waitd" id="wait1"></div>
@@ -29,14 +7,12 @@
         <div class="waitd" id="wait3"></div>
         <div class="waitd" id="wait4"></div>
     </div>
-    
 </div>
-    
 </template>
 <script lang="ts" setup>
 </script>
 <style scoped>
-@import '../../../main.css';
+@import "@/packages/main.css";
 
 img[src=""],img:not([src]) {
     display: none;
@@ -145,7 +121,7 @@ body {
 #wait {
     position: absolute;
     left: 50%;
-    top: calc(50% + 150px);
+    top: 50%;
 }
 
 .waitd {

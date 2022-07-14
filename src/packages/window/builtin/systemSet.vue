@@ -1,6 +1,6 @@
 <!--
- * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 16:40:36
+ * @Author: Royal
+ * @LastEditTime: 2022-07-14 10:58:39
  * @Description: 
 -->
 <template>
@@ -35,6 +35,8 @@ import { PrivateDWM } from '@/packages/window/libs/DWM/index';
 import WinSelect from '@builtin/winComponent/WinSelect.vue'
 import systemset from '@builtin/setApps/SetSystemset.vue'
 import version from '@builtin/setApps/SetVersion.vue'
+import appstore from '@builtin/Appstore.vue'
+
 
 import e7f8 from '../../../assets/icon/e7f8.png'//系统设置
 import e774 from '../../../assets/icon/e774.png'//网络
@@ -93,6 +95,12 @@ let setList = [
     //     desc: '背景，锁屏，颜色',
     //     icon: e771
     // }, 
+    //  {
+    //     title: '软件商店',
+    //     desc: '获取网络上的应用',
+    //     icon: e771,
+    //     content:appstore
+    // }, 
     {
         title: '更新和安全',
         desc: 'Windows 更新，恢复，备份',
@@ -103,7 +111,7 @@ let setList = [
 </script>
 
 <style lang="scss" scoped>
-@import "../../main.css";
+@import "@/packages/main.css";
 .outer {
     display: flex;
     flex-direction: column;

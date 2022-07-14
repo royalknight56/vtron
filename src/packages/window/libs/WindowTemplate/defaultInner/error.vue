@@ -1,26 +1,20 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-05-29 16:30:20
+ * @LastEditTime: 2022-07-06 15:35:39
  * @Description: 
 -->
 <template>
 <div class="outer">
     <div  id="logoW">
-        <div id="logo">
-            <div class="win" id="win1"></div>
-            <div class="win" id="win2"></div>
-            <div class="win" id="win3"></div>
-            <div class="win" id="win4"></div>
-        </div>
     </div>
-    <div id="text"></div>
+    <div id="text">ERROR</div>
 </div>
     
 </template>
 <script lang="ts" setup>
 </script>
 <style scoped>
-@import '../../../main.css';
+@import "@/packages/main.css";
 
 img[src=""],img:not([src]) {
     display: none;

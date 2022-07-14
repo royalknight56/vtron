@@ -1,6 +1,6 @@
 <!--
- * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-29 20:38:09
+ * @Author: Royal
+ * @LastEditTime: 2022-07-06 15:21:46
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -29,37 +29,36 @@
       ></Statebar>
     </div>
     <div
-      ref="winmount"
       class="wintmp_main"
       :class="{ resizeing: resizemode != 'null' }"
       @mousedown.stop="predown"
       @touchstart.stop.passive="predown"
     >
-    <WindowInner :component="componentValue" :componentKey="componentKey"></WindowInner>
-      <!-- <component :is="componentValue" :key="componentKey"></component> -->
+    <WindowInner :id="winID" :componentKey="componentKey"></WindowInner>
     </div>
     <div
       class="right_border"
       v-if="isScaleAble"
-      @mousedown.stop="startScale($event, 'r')"
+      @mousedown.stop.prevent="startScale($event, 'r')"
       @touchstart.stop.passive="startScale($event, 'r')"
     ></div>
     <div
       class="bottom_border"
       v-if="isScaleAble"
-      @mousedown.stop="startScale($event, 'b')"
+      @mousedown.stop.prevent="startScale($event, 'b')"
       @touchstart.stop.passive="startScale($event, 'b')"
     ></div>
     <div
       class="right_bottom_border"
       v-if="isScaleAble"
-      @mousedown.stop="startScale($event, 'rb')"
+      draggable="false"
+      @mousedown.stop.prevent="startScale($event, 'rb')"
       @touchstart.stop.passive="startScale($event, 'rb')"
     ></div>
   </div>
 </template>
 <script lang="ts" setup>
-import { markRaw, provide, reactive, ref, shallowRef, toRaw, watch } from "vue";
+import {  provide, ref, watch } from "vue";
 
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
@@ -73,9 +72,11 @@ import { ScaleElement } from "@libs/Dom/ScaleElement";
 import Statebar from "@libs/WindowTemplate/statebarButton.vue";
 import WindowInner from "@libs/WindowTemplate/windowInner.vue";
 
-// import html2canvas from 'html2canvas';
-
 let props = defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
   ctx: {
     type: Object as PropType<WindowInfo>,
     default: {
@@ -86,7 +87,7 @@ let props = defineProps({
     },
   },
 });
-let winID = props.ctx.id;
+let winID = props.id;
 let wininfo = PrivateDWM.getInstance().getWindow(winID);
 
 const componentKey = ref<Number>(1);
@@ -133,7 +134,6 @@ function uperRightClick(e: MouseEvent) {
     },
   ]);
 }
-let winmount = ref(null);
 
 let customerStyle = ref<any>({});
 
@@ -143,19 +143,15 @@ function onFocus(e: MouseEvent | TouchEvent): void {
     if (e instanceof MouseEvent) {
       e.preventDefault();
       e.stopPropagation();
-    } else {
-      // e.stopPropagation()
-    }
+    } 
   }
 }
 
-let componentValue: any = shallowRef(null);
+let iftop = computed(() => wininfo.iftop);
+let isMaximize = computed(() => wininfo.isMaximize);
 
-let iftop = computed(() => props.ctx.iftop);
-let isMaximize = computed(() => props.ctx.isMaximize);
-
-let winWidth = ref(props.ctx.width);
-let winHeight = ref(props.ctx.height);
+let winWidth = ref(wininfo.width);
+let winHeight = ref(wininfo.height);
 
 /*
  *计算样式
@@ -168,28 +164,20 @@ onMounted(() => {
     top: computed(() => wininfo.y + "px"),
 
     zIndex: computed(() => {
-      return props.ctx.zindex;
+      return wininfo.zindex;
     }),
     display: computed(() => {
-      if (props.ctx.ifShow) {
+      if (wininfo.ifShow) {
         return "";
       } else {
         return "none";
       }
     }),
   };
-  if(typeof props.ctx.content === 'object') {
-      componentValue.value = toRaw(props.ctx).content
-  }else{
-    componentValue.value = {
-      isUrl:true,
-      url: props.ctx.content,
-    };
-  }
-  
-  
 });
+// 传递windowid
 provide("windowId", winID);
+
 /*
 挂载拖动事件
 */
@@ -277,7 +265,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   left: 0 !important;
   top: 0 !important;
   width: 100% !important;
-  height: calc(100% - 30px) !important;
+  height: calc(100% - 38px) !important;
   transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
 }
 

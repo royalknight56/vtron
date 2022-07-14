@@ -1,21 +1,18 @@
 <!--
- * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-06-08 18:46:07
+ * @Author: Royal
+ * @LastEditTime: 2022-07-12 14:35:12
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
 <template>
   <div class="outer">
-    <WinVue></WinVue>
+    <Win10></Win10>
   </div>
 </template>
 
 <script setup lang="ts">
-import { initConfig, plug_option } from "./packages/appconfig";
-import WinVue from "./packages/Win.vue";
 
 import brow from "./assets/浏览器.png"
-import backimg from "./assets/back.jpg"
 import Test3 from "./apps/Test3.vue"
 import Browser from "./apps/Browser.vue"
 import TestButton from "./apps/TestButton.vue"
@@ -30,7 +27,7 @@ import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {
   ClearDesktop();
-  
+
   AddToDesktop({
     name: '浏览器1',
     window: new DragWindow({
@@ -51,6 +48,13 @@ onMounted(() => {
       })
   });
 
+  AddToDesktop({
+    name: 'Vue浏览器',
+    window: new DragWindow({
+      isSFC: true,
+      content: 'http://localhost:3002/app'
+    })
+  });
   AddToDesktop({
     name: '浏览器',
     window: new DragWindow({
@@ -99,17 +103,6 @@ onMounted(() => {
   });
 })
 
-let opt: plug_option = {
-  if_logo_show: true,
-  start_time: 0,
-  backimg: backimg,
-  // login: {
-  //   user_name: 'AdDD',
-  //   user_password:'123'
-  // },
-  // start_menu_logo: brow,
-}
-initConfig(opt)
 
 </script>
 <style scoped>
@@ -126,6 +119,7 @@ svg {
   display: block;
   vertical-align: middle;
 }
+
 body {
   padding: 0;
   margin: 0;

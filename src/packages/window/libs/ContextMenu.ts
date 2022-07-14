@@ -1,10 +1,10 @@
 import { reactive, ref, Ref, } from "vue";
 import { UnwrapNestedRefs } from "@vue/reactivity";
-
+import {System} from '@libs/System';
 
 /*
  * @Author: Royal
- * @LastEditTime: 2022-03-03 16:32:42
+ * @LastEditTime: 2022-07-14 18:56:44
  * @Description: 右键菜单控制
  * @FilePath: /myindex/src/components/window/libs/ContextMenu.ts
  * Need CodeReview 
@@ -21,19 +21,16 @@ class ContextMenu {
     menuList: UnwrapNestedRefs<Array<menuItem>>;
     ifShow: Ref<boolean>;
     ifTopDown: Ref<boolean>;
-    private constructor() {
+    system:System;
+    constructor(system:System) {
+        this.system = system;
         this.menuList = reactive([]);
         this.ifShow = ref(false);
         this.x = ref(0);
         this.y = ref(0);
         this.ifTopDown = ref(true)
     }
-    static getInstance() {
-        if (this.instance == undefined) {
-            this.instance = new ContextMenu()
-        }
-        return this.instance
-    }
+
     private getPosToOuterTop(el: HTMLElement): number {
         if (el.id == 'win10id') {
             return 0;
@@ -74,7 +71,7 @@ class ContextMenu {
         this.y.value = this.getPosToOuterTop(e.target as HTMLElement)+ e.offsetY;
         this.ifShow.value = true
         this.menuList.splice(0, this.menuList.length);
-        this.menuList.push(...list)
+        this.menuList.push(...list);
     }
 }
 

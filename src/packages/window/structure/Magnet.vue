@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 16:57:52
+ * @LastEditTime: 2022-07-14 19:06:25
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -39,7 +39,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { appList } from "@state/index";
+// import { appList } from "@state/index";
 import type {appInfo} from "@state/type"
 import { SystemState } from "@libs/SystemState";
 
@@ -47,18 +47,14 @@ import { ContextMenu } from "@libs/ContextMenu";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 import { DragWindow } from "@/packages/window/libs/DragWindow"
 import { openSetting } from "@builtin/callSystemWins"
-import { onMounted, ref,defineEmits } from "vue";
+import { onMounted, ref,defineEmits, inject } from "vue";
 import {System} from '@libs/System'
-let props = defineProps({
-  system:{
-    type:System,
-    required:true
-  }
-})
+
+let system = <System>inject('system')
 // import systemSetVue from "../system/systemSet.vue"
 function closeClice(e: MouseEvent) {
     // console.log(e.offsetX, e.offsetY)
-    ContextMenu.getInstance().callMenu(e,
+    system.ContextMenu.callMenu(e,
         [
             { name: '关机', func: () => { console.log("关机"); SystemState.getInstance().closePower() } },
             // { name: '锁定', func: () => { SystemState.getInstance().lockScreen() } },
@@ -68,14 +64,14 @@ function closeClice(e: MouseEvent) {
     )
 }
 
-let mangList = appList
+let mangList = system.State.appList
 
 function manclick(item: UnwrapNestedRefs<appInfo>) {
     item.window.show()
 }
 
 function openset() {
-    openSetting(props.system)
+    openSetting(system)
 }
 let mright = ref()
 let mrightborder = ref()

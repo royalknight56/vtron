@@ -1,6 +1,6 @@
 /*
  * @Author: Royal
- * @LastEditTime: 2022-07-14 16:20:38
+ * @LastEditTime: 2022-07-14 19:02:47
  * @Description: 控制窗口信息
  */
 import type { windowInfoMapInter, eventMapInter, WindowInfo } from "@libs/DWM/type";
@@ -8,7 +8,7 @@ import { option } from "@/packages/window/libs/DragWindow/type";
 import { UnwrapNestedRefs } from "@vue/reactivity";
 
 import { reactive } from "vue";
-import { windowInfoMap } from "@state/index"
+// import { windowInfoMap } from "@state/index"
 import { System } from '@libs/System'
 class PrivateDWM {//私有化管理中心，不对外暴露接口
     private static instance: PrivateDWM;
@@ -23,7 +23,6 @@ class PrivateDWM {//私有化管理中心，不对外暴露接口
         this.eventMap = {}
     }
     getWindow(id: string): WindowInfo {
-        console.log(this.system)
         return this.system.State.windowInfoMap[id]
     }
     getWinid(): string {
@@ -64,7 +63,7 @@ class PrivateDWM {//私有化管理中心，不对外暴露接口
         this.zIndexIdArray.splice(ind, 1)
     }
     upSetWindowIndex(id: string): number {
-        for (let key in windowInfoMap) {
+        for (let key in this.system.State.windowInfoMap) {
             this.system.State.windowInfoMap[key].iftop = false
         }
         this.system.State.windowInfoMap[id].iftop = true

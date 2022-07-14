@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 16:58:13
+ * @LastEditTime: 2022-07-14 19:05:56
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -36,16 +36,16 @@
                 <!-- {{ item.title }} -->
             </div>
         </div>
-        <MagnetVue v-if="ifMagnetShow" :system="system" @changevis="changeMagnetShow"></MagnetVue>
+        <MagnetVue v-if="ifMagnetShow"  @changevis="changeMagnetShow"></MagnetVue>
         <div class="bar_right">
             <div class="right_item">
                 <span class="segoicon SEGOEUIMDL"> &#xE010;</span>
             </div>
             <div class="right_item">
-                <ChargingVue></ChargingVue>
+                <ChargingVue :sysInfo="sysInfo"></ChargingVue>
             </div>
             <div class="right_item">
-                <NetworkVue></NetworkVue>
+                <NetworkVue :sysInfo="sysInfo"></NetworkVue>
             </div>
             <div class="date_time">
                 <div class="date_time_text">
@@ -64,11 +64,11 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
+import { inject, ref } from "vue";
 import type { WindowInfo } from "@/packages/window/libs/DWM/index"
-import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
-import { ContextMenu } from "@libs/ContextMenu"
-import { SystemState } from "@libs/SystemState";
+
+// import { ContextMenu } from "@libs/ContextMenu"
+
 import MagnetVue from "@structure/Magnet.vue";
 import NetworkVue from "@structure/taskbarIcon/network.vue";
 import ChargingVue from "@structure/taskbarIcon/charging.vue";
@@ -76,15 +76,13 @@ import ChargingVue from "@structure/taskbarIcon/charging.vue";
 import winimg from "../../../assets/win.png"
 import { appconfig } from "@/packages/appconfig";
 
-import {windowInfoMap,sysInfo} from "@state/index";
-import {System} from '@libs/System'
-let props = defineProps({
-  system:{
-    type:System,
-    required:true
-  }
-})
+// import {windowInfoMap,sysInfo} from "@state/index";
 
+import {System} from '@libs/System'
+let system = <System>inject('system')
+
+let sysInfo = system.State.sysInfo
+let ContextMenu = system.ContextMenu
 //设置winlogo
 let winlogo = ref(winimg);
 if (appconfig.start_menu_logo == "default") {
@@ -94,14 +92,14 @@ if (appconfig.start_menu_logo == "default") {
 }
 
 
-let winlist = windowInfoMap
+let winlist =system.State.windowInfoMap
 
 function barClick(item: WindowInfo) {
     if (item.ifShow) {
-        props.system.DWM.privateDWM.upSetWindowIndex(item.id)
+        system.DWM.privateDWM.upSetWindowIndex(item.id)
     } else {
-        props.system.DWM.privateDWM.showWindow(item.id)
-        props.system.DWM.privateDWM.upSetWindowIndex(item.id)
+        system.DWM.privateDWM.showWindow(item.id)
+        system.DWM.privateDWM.upSetWindowIndex(item.id)
     }
 }
 
@@ -119,17 +117,17 @@ function changeMagnetShow() {
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {
-        ContextMenu.getInstance().callMenu(e,
+        ContextMenu.callMenu(e,
             [
-                { name: '关闭', func: () => { props.system.DWM.privateDWM.destoryWindow(item.id) } },
-                { name: '最小化', func: () => { props.system.DWM.privateDWM.hideWindow(item.id) } }
+                { name: '关闭', func: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
+                { name: '最小化', func: () => { system.DWM.privateDWM.hideWindow(item.id) } }
             ]
         )
     } else {
-        ContextMenu.getInstance().callMenu(e,
+        ContextMenu.callMenu(e,
             [
-                { name: '关闭', func: () => { props.system.DWM.privateDWM.destoryWindow(item.id) } },
-                { name: '显示', func: () => { props.system.DWM.privateDWM.showWindow(item.id) } }
+                { name: '关闭', func: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
+                { name: '显示', func: () => { system.DWM.privateDWM.showWindow(item.id) } }
             ]
         )
     }
@@ -137,7 +135,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo) {
-    props.system.DWM.privateDWM.destoryWindow(item.id)
+    system.DWM.privateDWM.destoryWindow(item.id)
 }
 // //定期更换截图
 // setInterval(() => {

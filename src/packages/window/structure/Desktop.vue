@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 17:00:12
+ * @LastEditTime: 2022-07-14 19:04:13
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -26,19 +26,15 @@
 
 <script lang="ts" setup>
 import { UnwrapNestedRefs } from "@vue/reactivity";
-import { reactive } from "vue";
-import { appList } from "@state/index";
+import { inject, reactive } from "vue";
+// import { appList } from "@state/index";
 import type { appInfo } from "@state/type"
 import { ContextMenu } from "@libs/ContextMenu";
 import { openInfo } from "@builtin/callSystemWins";
 import { watch } from "fs";
 import {System} from '@libs/System'
-let props = defineProps({
-  system:{
-    type:System,
-    required:true
-  }
-})
+let system = <System>inject('system')
+
 const MAX_ICON_COUNT = 99
 interface posItem {
     dom: Element | null,
@@ -52,6 +48,7 @@ interface posItem {
 }
 let iconPos: Array<posItem> = reactive([]);
 let currentMoveIcon: number = -1;
+let appList = system.State.appList
 for (let i = 0; i < MAX_ICON_COUNT; i++) {
     iconPos.push({
         dom: null,
@@ -116,12 +113,12 @@ function openApp(item: UnwrapNestedRefs<appInfo>) {
 }
 
 function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
-    ContextMenu.getInstance().callMenu(e,
+    system.ContextMenu.callMenu(e,
         [
             { name: '打开(O)', func: () => { item.window.show(); } },
             {
                 name: '属性(R)', func: () => {
-                    openInfo(props.system,{
+                    openInfo(system,{
                         item,
                     })
                 }

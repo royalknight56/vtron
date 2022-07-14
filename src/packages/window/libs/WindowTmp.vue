@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 17:29:40
+ * @LastEditTime: 2022-07-14 19:07:35
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -34,7 +34,7 @@
       @mousedown.stop="predown"
       @touchstart.stop.passive="predown"
     >
-    <WindowInner :system="system" :id="winID" :componentKey="componentKey"></WindowInner>
+    <WindowInner :id="winID" :componentKey="componentKey"></WindowInner>
     </div>
     <div
       class="right_border"
@@ -58,7 +58,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {  provide, ref, watch } from "vue";
+import {  inject, provide, ref, watch } from "vue";
 
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
@@ -73,10 +73,6 @@ import Statebar from "@libs/WindowTemplate/statebarButton.vue";
 import WindowInner from "@libs/WindowTemplate/windowInner.vue";
 import {System} from '@libs/System'
 let props = defineProps({
-  system:{
-    type:System,
-    required:true
-  },
   id: {
     type: String,
     required: true,
@@ -91,10 +87,12 @@ let props = defineProps({
     },
   },
 });
+
+let system = <System>inject('system')
 let winID = props.id;
-let privateDWM = props.system.DWM.privateDWM;
+let privateDWM = system.DWM.privateDWM;
 let wininfo = privateDWM.getWindow(winID);
-console.log(props)
+
 const componentKey = ref<Number>(1);
 function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);
@@ -124,7 +122,7 @@ function handelButtonEvent(event:buttonEvent){
   buttonEventFunc[event]();
 }
 function uperRightClick(e: MouseEvent) {
-  ContextMenu.getInstance().callMenu(e, [
+  system.ContextMenu.callMenu(e, [
     {
       name: "关闭",
       func: () => {
@@ -182,8 +180,6 @@ onMounted(() => {
 });
 // 传递windowid
 provide("windowId", winID);
-provide("system", props.system);
-
 
 /*
 挂载拖动事件

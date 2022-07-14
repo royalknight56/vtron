@@ -1,25 +1,25 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 16:38:17
+ * @LastEditTime: 2022-07-14 19:10:34
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
 <template>
   <div @contextmenu.prevent class="win_outer SEGOEUI" id="win10id">
-    <TaskBar :system="system"></TaskBar>
-    <ContextMenu :system="system"></ContextMenu>
-    <Desktop :system="system"></Desktop>
-    <BackgroundVue :system="system"></BackgroundVue>
-    <StatusVue :system="system"></StatusVue>
-    <AlertVue :system="system"></AlertVue>
-    <WindowsGroup :system="system"></WindowsGroup>
-    <LockScreenVue :system="system"></LockScreenVue>
+    <TaskBar></TaskBar>
+    <ContextMenu></ContextMenu>
+    <Desktop></Desktop>
+    <BackgroundVue></BackgroundVue>
+    <StatusVue></StatusVue>
+    <AlertVue></AlertVue>
+    <WindowsGroup></WindowsGroup>
+    <LockScreenVue></LockScreenVue>
   </div>
 </template>
   
 <script lang="ts" setup>
 
-import { onMounted } from 'vue';
+import { onMounted, provide } from 'vue';
 
 import TaskBar from '@structure/TaskBar.vue';
 import ContextMenu from '@structure/ContextMenu.vue';
@@ -30,24 +30,23 @@ import WindowsGroup from '@structure/WindowsGroup.vue';
 import LockScreenVue from '@structure/LockScreen.vue';
 import AlertVue from '@structure/Alert.vue';
 
-import {globalInit} from './init'
+import { globalInit } from './init'
 
-import {System} from '@libs/System'
+import { System } from '@libs/System'
 let props = defineProps({
-  system:{
-    type:System,
-    required:true
+  system: {
+    type: System,
+    required: true
   }
 });
-console.log(props)
-onMounted(()=>{
-  globalInit()
+provide('system', props.system);
+onMounted(() => {
+  globalInit(props.system)
 })
 
 </script>
 <style scoped>
 @import "@/packages/main.css";
-
 </style>
 <style>
 .win_outer {

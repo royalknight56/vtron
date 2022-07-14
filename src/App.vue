@@ -1,16 +1,16 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 17:01:04
+ * @LastEditTime: 2022-07-14 19:17:09
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
 <template>
   <div class="outer">
-    <Win10 :system="system"></Win10>
+    <Win10 :system="p1"></Win10>
   </div>
-  <!-- <div class="outer">
-    <Win10 :system="system"></Win10>
-  </div> -->
+  <div class="outer">
+    <Win10 :system="p2"></Win10>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -21,15 +21,29 @@ import Browser from "./apps/Browser.vue"
 import TestButton from "./apps/TestButton.vue"
 import app_vscode from "./apps/app_vscode.vue"
 
-import { AddToDesktop, ClearDesktop } from "./plug";
+// import { AddToDesktop, ClearDesktop } from "./plug";
 
 import Mycom from "./apps/MyComputer.vue"
 // import { DragWindow } from "./packages/window/libs/DragWindow";
-import { onMounted } from "@vue/runtime-core";
-import {system} from "./systeminit"
+import { onMounted, reactive, ref } from "@vue/runtime-core";
+import {system,system2} from "./systeminit"
 // import computer from "./assets/computer.ico"
+let p1 = system;
+let p2 = system2;
+setInterval(()=>{
+  
+},1000)
 onMounted(() => {
   system.ClearDesktop();
+
+  system2.ClearDesktop();
+  system2.AddToDesktop({
+    name: '浏览器',
+    window: system2.DragWindow({
+      content: 'https://v3.cn.vuejs.org/api/global-api.html#h'
+    })
+  });
+
   system.AddToDesktop({
     name: '浏览器1',
     window: system.DragWindow({

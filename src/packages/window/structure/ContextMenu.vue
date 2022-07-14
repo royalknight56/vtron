@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-04-26 15:41:03
+ * @LastEditTime: 2022-07-14 19:09:49
  * @Description: 
  * @FilePath: /myindex/src/components/window/MenuList.vue
   Need CodeReview 
@@ -11,22 +11,22 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, reactive, ref } from "vue";
-import { ContextMenu } from "@libs/ContextMenu";
+import { computed, inject, reactive, ref } from "vue";
 import type {menuItem}from "@libs/ContextMenu";
 
-let IPC = ContextMenu.getInstance()
+import {System} from '@libs/System'
 
-let IPClist = computed(() => {
-    return ContextMenu.getInstance().menuList
-})
+let system = <System>inject('system')
+
+let IPC = system.ContextMenu
+
 
 let cusStyle = ref<any>({
 })
-cusStyle.value.left = computed(() => ContextMenu.getInstance().x.value + 'px')
-cusStyle.value.top = computed(() => ContextMenu.getInstance().y.value + 'px')
+cusStyle.value.left = computed(() => system.ContextMenu.x.value + 'px')
+cusStyle.value.top = computed(() => system.ContextMenu.y.value + 'px')
 
-cusStyle.value.visibility = computed(() => ContextMenu.getInstance().ifShow.value?"visible":"hidden" )
+cusStyle.value.visibility = computed(() => system.ContextMenu.ifShow.value?"visible":"hidden" )
 
 function callFunc(item:menuItem) {
     item.func()

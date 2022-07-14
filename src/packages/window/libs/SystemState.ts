@@ -1,12 +1,13 @@
 /*
  * @Author: Royal
- * @LastEditTime: 2022-05-29 20:58:18
+ * @LastEditTime: 2022-07-14 19:41:07
  * @Description: 管理系统状态，开机/重启/关机
  * @FilePath: /myindex/src/components/window/libs/SystemState.ts
  * Need CodeReview 
  */
 import { reactive } from "vue";
 import {appconfig } from "@/packages/appconfig";
+import {System} from '@libs/System'
 
 interface stateCtrl{
     screen:"common"|"blue"|"close",
@@ -27,7 +28,9 @@ interface loginInfo{
 class SystemState {
     private static instance: SystemState;
     state: stateCtrl;
-    private constructor() {
+    system:System
+    constructor(system:System) {
+        this.system = system;
         this.state = reactive({
             screen:"close",
             islock:false,
@@ -36,12 +39,6 @@ class SystemState {
         });
     }
     
-    static getInstance() {
-        if (this.instance == undefined) {
-            this.instance = new SystemState()
-        }
-        return this.instance
-    }
     _clearLockEvent(){
         this.state.lockEvent={}
     }
@@ -82,7 +79,7 @@ class SystemState {
         },3000)
 
         setTimeout(()=>{
-            window.location.reload()
+            this.openPower()
         },4000)
     }
     lockScreen(){

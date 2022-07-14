@@ -1,13 +1,13 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:09:12
+ * @LastEditTime: 2022-07-14 19:34:05
  * @Description: 
  * @FilePath: /myindex/src/components/window/WindowsGroup.vue
   Need CodeReview 
 -->
 <template>
     <div class="winitem" v-for="item in windowInfoMap" :key="item.id">
-        <teleport to="#win10id">
+        <teleport :to="'#'+system.id">
             <WindowTmpVue :id="item.id" :ref="'ref' + item.id"></WindowTmpVue>
         </teleport>
     </div>

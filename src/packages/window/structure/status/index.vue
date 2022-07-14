@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-05-29 16:13:11
+ * @LastEditTime: 2022-07-14 19:40:07
  * @Description: 
 -->
 <template>
@@ -14,8 +14,10 @@ import { appconfig } from "@/packages/appconfig";
 import { SystemState } from "@libs/SystemState";
 import BlackScreen from '@structure/status/black.vue';
 import BlueScreen from '@structure/status/blue.vue';
-
-let stat = SystemState.getInstance().state;
+import {System} from '@libs/System'
+import { inject } from "vue";
+let system = <System>inject('system')
+let stat = system.Power.state;
 
 // import Background from '@structure/background/background.vue';
 

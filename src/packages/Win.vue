@@ -1,11 +1,11 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:10:34
+ * @LastEditTime: 2022-07-14 19:31:05
  * @Description: 
  * @FilePath: /myindex/src/components/win.vue
 -->
 <template>
-  <div @contextmenu.prevent class="win_outer SEGOEUI" id="win10id">
+  <div @contextmenu.prevent class="win_outer SEGOEUI" :id="system.id">
     <TaskBar></TaskBar>
     <ContextMenu></ContextMenu>
     <Desktop></Desktop>

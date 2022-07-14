@@ -4,7 +4,7 @@ import {System} from '@libs/System';
 
 /*
  * @Author: Royal
- * @LastEditTime: 2022-07-14 18:56:44
+ * @LastEditTime: 2022-07-14 19:36:18
  * @Description: 右键菜单控制
  * @FilePath: /myindex/src/components/window/libs/ContextMenu.ts
  * Need CodeReview 
@@ -32,7 +32,7 @@ class ContextMenu {
     }
 
     private getPosToOuterTop(el: HTMLElement): number {
-        if (el.id == 'win10id') {
+        if (el.id == this.system.id) {
             return 0;
         }
         let _this = this;
@@ -44,7 +44,7 @@ class ContextMenu {
         
     }
     private getPosToOuterLeft(el: HTMLElement): number {
-        if (el.id == 'win10id') {
+        if (el.id == this.system.id) {
             return 0;
         }
         let _this = this;

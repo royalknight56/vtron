@@ -1,29 +1,31 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-04-26 15:41:31
+ * @LastEditTime: 2022-07-14 19:41:44
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { appconfig } from '@/packages/appconfig';
 import { SystemState } from '@libs/SystemState';
+import {System} from '@libs/System'
+let system = <System>inject('system')
 
 let userPassword = ref("")
 let lockClassName = ref('screen-show')
 let alertMsg = ref("-")
 let userName = ref(appconfig.login?.user_name || 'Admin')
 
-SystemState.getInstance().mountLockEvent('show', () => {
+system.Power.mountLockEvent('show', () => {
     lockClassName.value = 'screen-show'
 })
-SystemState.getInstance().mountUnlockEvent('hide', () => {
+system.Power.mountUnlockEvent('hide', () => {
     lockClassName.value = 'screen-hidean'
     setTimeout(() => {
         lockClassName.value = 'screen-hide'
     }, 500)
 })
 if (appconfig.login == null) {
-    SystemState.getInstance().unlockScreen('', '')
+    system.Power.unlockScreen('', '')
 }
 function loginSuccess(){
     lockClassName.value = 'screen-hidean'
@@ -38,7 +40,6 @@ function onLogin() {
             if (appconfig.login.user_password == userPassword.value) {
                 console.log('密码正确')
                 loginSuccess()
-                // SystemState.getInstance().unlockScreen(appconfig.login.user_name, userPassword.value)
             }else{
                 console.log('密码错误')
                 alertMsg.value = '密码错误'
@@ -46,11 +47,11 @@ function onLogin() {
         }else{
             console.log('等待确认')
             alertMsg.value = '等待确认'
-            SystemState.getInstance().notifyUnlock(appconfig.login.user_name, userPassword.value)
+            system.Power.notifyUnlock(appconfig.login.user_name, userPassword.value)
         }
 
     } else {
-        SystemState.getInstance().unlockScreen('', '')
+        system.Power.unlockScreen('', '')
     }
 
 }

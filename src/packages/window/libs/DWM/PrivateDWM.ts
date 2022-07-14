@@ -1,17 +1,15 @@
 /*
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:02:47
+ * @LastEditTime: 2022-07-14 19:26:31
  * @Description: 控制窗口信息
  */
 import type { windowInfoMapInter, eventMapInter, WindowInfo } from "@libs/DWM/type";
 import { option } from "@/packages/window/libs/DragWindow/type";
-import { UnwrapNestedRefs } from "@vue/reactivity";
 
 import { reactive } from "vue";
-// import { windowInfoMap } from "@state/index"
+
 import { System } from '@libs/System'
 class PrivateDWM {//私有化管理中心，不对外暴露接口
-    private static instance: PrivateDWM;
     system: System;
     private winnum: number;
     private zIndexIdArray: string[];
@@ -53,6 +51,7 @@ class PrivateDWM {//私有化管理中心，不对外暴露接口
             this.winnum++;
             return this.system.State.windowInfoMap[id]
         }
+        
     }
     addEventListener(id: string, name: string, func: Function) {
         this.system.State.windowInfoMap[id].windowEventMap[name] = func
@@ -93,7 +92,6 @@ class PrivateDWM {//私有化管理中心，不对外暴露接口
         if (this.system.State.windowInfoMap[id]) {
             this.system.State.windowInfoMap[id].isMaximize = !this.system.State.windowInfoMap[id]?.isMaximize
         }
-
     }
     on(ev: string, func: Function) {
         this.eventMap[ev] = func

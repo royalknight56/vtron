@@ -1,13 +1,12 @@
 /*
  * @Author: Royal
- * @LastEditTime: 2022-07-14 18:22:34
+ * @LastEditTime: 2022-07-14 19:35:35
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
  */
 import { defineComponent, nextTick } from "vue";
 import { WindowInfo, DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
-import { getRandomId } from "@libs/GlobalOps";
 import {EvMap,EvMapFunction,option,OptionAll,OptionSFC,OptionNoSFC,} from "./type";
 import { System } from '@libs/System'
 
@@ -41,7 +40,7 @@ class DragWindow {
         this.isCreated = false;
     }
     private getWinInner() {
-        let dom = document.getElementById('win10id');
+        let dom = document.getElementById(this.system.id);
         if (dom) {
             return {
                 width: dom.clientWidth,

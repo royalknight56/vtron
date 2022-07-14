@@ -1,6 +1,6 @@
 /*
  * @Author: RoyalKnight
- * @LastEditTime: 2022-07-14 18:57:08
+ * @LastEditTime: 2022-07-14 19:38:30
  * @Description: 
  */
 import { SystemState } from "@libs/SystemState";
@@ -18,6 +18,7 @@ import {
 import type {appInfo} from "@state/type";
 import {DragWindowFactory} from "@libs/DragWindow"
 class System {
+  id:string;
   Power: SystemState;
   Notify: Notify;
   ContextMenu: ContextMenu;
@@ -25,7 +26,8 @@ class System {
   State: State
   DragWindow:ReturnType<typeof DragWindowFactory>
   constructor() {
-    this.Power = SystemState.getInstance();
+    this.id='win10'+Math.random().toString(36).substr(2, 9);
+    this.Power =new SystemState(this);
     this.Notify = new Notify(this);
     this.ContextMenu =new ContextMenu(this);
     let {

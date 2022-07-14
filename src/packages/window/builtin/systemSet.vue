@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 10:44:17
+ * @LastEditTime: 2022-07-14 10:58:39
  * @Description: 
 -->
 <template>
@@ -95,12 +95,12 @@ let setList = [
     //     desc: '背景，锁屏，颜色',
     //     icon: e771
     // }, 
-     {
-        title: '软件商店',
-        desc: '获取网络上的应用',
-        icon: e771,
-        content:appstore
-    }, 
+    //  {
+    //     title: '软件商店',
+    //     desc: '获取网络上的应用',
+    //     icon: e771,
+    //     content:appstore
+    // }, 
     {
         title: '更新和安全',
         desc: 'Windows 更新，恢复，备份',

@@ -1,21 +1,18 @@
 <!--
- * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-05-15 17:45:09
+ * @Author: Royal
+ * @LastEditTime: 2022-07-12 14:35:12
  * @Description: 
  * @FilePath: /myindex/src/App.vue
 -->
 <template>
   <div class="outer">
-    <WinVue></WinVue>
+    <Win10></Win10>
   </div>
 </template>
 
 <script setup lang="ts">
-import { initConfig, plug_option } from "./packages/appconfig";
-import WinVue from "./packages/Win.vue";
 
 import brow from "./assets/浏览器.png"
-import backimg from "./assets/back.jpg"
 import Test3 from "./apps/Test3.vue"
 import Browser from "./apps/Browser.vue"
 import TestButton from "./apps/TestButton.vue"
@@ -30,38 +27,17 @@ import { onMounted } from "@vue/runtime-core";
 // import computer from "./assets/computer.ico"
 onMounted(() => {
   ClearDesktop();
-  let testwin = new DragWindow(
-    {
-      title: '浏览器',
-      icon: brow,
-      width: 600,
-      height: 500,
-      x: 100,
-      y: 100,
-      content: Mycom,
-      isScalable: false
-    })
-    // testwin.addWindowEventListener
 
   AddToDesktop({
-    name: '浏览器',
-    // icon: brow,
-    // 0, 0, '窗口通信', brow, 600, 500, 
+    name: '浏览器1',
     window: new DragWindow({
-      // title: '浏览器',
-      // icon: brow,
-      // width: 600,
-      // height: 500,
-      // x: 100,
-      // y: 100,
-      // isScalable: false,
+      isScalable: false,
       content: Test3
     })
   });
   AddToDesktop({
     name: '我的电脑',
     icon: brow,
-    // 0, 0, '窗口通信', brow, 600, 500,
     window: new DragWindow(
       {
         title: '浏览器',
@@ -73,9 +49,14 @@ onMounted(() => {
   });
 
   AddToDesktop({
+    name: 'Vue浏览器',
+    window: new DragWindow({
+      isSFC: true,
+      content: 'http://localhost:3002/app'
+    })
+  });
+  AddToDesktop({
     name: '浏览器',
-    // icon: brow,
-    // 0, 0, '窗口通信', brow, 600, 500, 
     window: new DragWindow({
       content: 'https://v3.cn.vuejs.org/api/global-api.html#h'
     })
@@ -83,7 +64,6 @@ onMounted(() => {
   AddToDesktop({
     name: '浏览器',
     icon: brow,
-    // 0, 0, '窗口通信', brow, 600, 500,
     window: new DragWindow(
       {
         title: '浏览器',
@@ -112,7 +92,6 @@ onMounted(() => {
   AddToDesktop({
     name: 'vscode',
     icon: brow,
-    // 0, 0, '窗口通信', brow, 600, 500,
     window: new DragWindow(
       {
         title: 'vscode',
@@ -124,17 +103,6 @@ onMounted(() => {
   });
 })
 
-let opt: plug_option = {
-  if_logo_show: true,
-  start_time: 0,
-  backimg: backimg,
-  // login: {
-  //   user_name: 'AdDD',
-  //   user_password:'123'
-  // },
-  // start_menu_logo: brow,
-}
-initConfig(opt)
 
 </script>
 <style scoped>
@@ -151,6 +119,7 @@ svg {
   display: block;
   vertical-align: middle;
 }
+
 body {
   padding: 0;
   margin: 0;

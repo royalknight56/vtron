@@ -1,61 +1,18 @@
-<!--
- * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:40:54
- * @Description: 
- * @FilePath: /myindex/src/components/window/BlueScreen.vue
-  Need CodeReview 
--->
 <template>
-<div class="outer" @contextmenu.prevent="backgroundRightClick" :class="{blueclass:stat.screen=='blue',blackclass:stat.screen=='close'}">
-    <div id="dot"  v-if="stat.screen == 'blue'">
-        !
-        <div id="dottext">
-            Royal
-            <span>
-                Knight
-            </span>
-        </div>
-    </div>
-    <div  id="logoW" v-if="appconfig.if_logo_show&&(stat.screen == 'blue'||stat.screen == 'common')">
-        <div id="logo">
-            <div class="win" id="win1"></div>
-            <div class="win" id="win2"></div>
-            <div class="win" id="win3"></div>
-            <div class="win" id="win4"></div>
-        </div>
-    </div>
-    <div v-if="appconfig.backimg!='default'&&(stat.screen == 'common')" class="backimg">
-        <img ondragstart="return false;" draggable="false" onerror="this.src=''" :src="appconfig.backimg">
-    </div>
+<div class="outer blueclass">
     <div id="text"></div>
-    <div id="wait" v-if="stat.screen == 'blue'">
+    <div id="wait">
         <div class="waitd" id="wait1"></div>
         <div class="waitd" id="wait2"></div>
         <div class="waitd" id="wait3"></div>
         <div class="waitd" id="wait4"></div>
     </div>
-    
 </div>
-    
 </template>
 <script lang="ts" setup>
-import { appconfig } from "@/packages/appconfig";
-import { MenuCtrl } from "@libs/MenuCtrl";
-import { SystemState } from "@libs/SystemState";
-
-
-let stat = SystemState.getInstance().state;
-
-function backgroundRightClick(e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e,
-        [
-            { name: '刷新', func: () => {  } },
-        ]
-    )
-}
 </script>
 <style scoped>
-@import '../../main.css';
+@import "@/packages/main.css";
 
 img[src=""],img:not([src]) {
     display: none;
@@ -69,22 +26,6 @@ img[src=""],img:not([src]) {
     /* z-index: -50; */
     background-color: rgb(0, 119, 210);
     user-select: none;
-}
-.backimg{
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    user-select: none;
-    -moz-user-select: none;
-}
-.backimg img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    user-select: none;
-    -moz-user-select: none;
 }
 .blueclass{
     z-index: 10001;
@@ -180,7 +121,7 @@ body {
 #wait {
     position: absolute;
     left: 50%;
-    top: calc(50% + 150px);
+    top: 50%;
 }
 
 .waitd {

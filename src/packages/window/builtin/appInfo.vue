@@ -1,6 +1,6 @@
 <!--
- * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-27 16:39:13
+ * @Author: Royal
+ * @LastEditTime: 2022-07-14 10:44:22
  * @Description: 
   Need CodeReview 
 -->
@@ -56,8 +56,8 @@
 <script lang="ts" setup>
 import { inject } from 'vue';
 import { PrivateDWM } from '@/packages/window/libs/DWM/index';
-import WinBotton from "@system/winComponent/WinButton.vue"
-import WinCheckBox from "@system/winComponent/WinCheckBox.vue"
+import WinBotton from "@builtin/winComponent/WinButton.vue"
+import WinCheckBox from "@builtin/winComponent/WinCheckBox.vue"
 
 let id =<string>inject('windowId')
 
@@ -74,7 +74,7 @@ iframe {
 }
 </style>
 <style scoped>
-@import '../../main.css';
+@import "@/packages/main.css";
 .outer {
     display: flex;
     flex-direction: column;

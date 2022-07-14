@@ -1,6 +1,6 @@
 {
   "name": "vue3-win10",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "files": [
     "distlib"
   ],
@@ -17,7 +17,8 @@
     "tag": "node script/auto_tag.js"
   },
   "dependencies": {
-    "vue": "^3.2.16"
+    "vue": "^3.2.16",
+    "vue3-sfc-loader": "^0.8.4"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.2.5",

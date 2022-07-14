@@ -1,6 +1,6 @@
 /*
- * @Author: zhangweiyuan-Royal
- * @LastEditTime: 2022-04-26 15:39:27
+ * @Author: Royal
+ * @LastEditTime: 2022-05-29 20:58:18
  * @Description: 管理系统状态，开机/重启/关机
  * @FilePath: /myindex/src/components/window/libs/SystemState.ts
  * Need CodeReview 
@@ -75,15 +75,15 @@ class SystemState {
         // this.state.screen='blue'
         setTimeout(()=>{
             this.state.screen='blue'
-        },2000)
+        },400)
 
         setTimeout(()=>{
             this.state.screen='close'
-        },5000)
+        },3000)
 
         setTimeout(()=>{
             window.location.reload()
-        },6000)
+        },4000)
     }
     lockScreen(){
         this.state.islock=true

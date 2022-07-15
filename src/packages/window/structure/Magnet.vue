@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-15 10:52:59
+ * @LastEditTime: 2022-07-15 11:09:04
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -39,13 +39,8 @@
     </div>
 </template>
 <script lang="ts" setup>
-// import { appList } from "@state/index";
 import type {appInfo} from "@state/type"
-import { SystemState } from "@libs/SystemState";
-
-import { ContextMenu } from "@libs/ContextMenu";
 import { UnwrapNestedRefs } from "@vue/reactivity";
-import { DragWindow } from "@/packages/window/libs/DragWindow"
 import { openSetting } from "@builtin/callSystemWins"
 import { onMounted, ref,defineEmits, inject } from "vue";
 import {System} from '@libs/System'

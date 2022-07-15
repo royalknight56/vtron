@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-15 10:52:55
+ * @LastEditTime: 2022-07-15 11:09:29
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -29,9 +29,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity";
 import { inject, reactive } from "vue";
 // import { appList } from "@state/index";
 import type { appInfo } from "@state/type"
-import { ContextMenu } from "@libs/ContextMenu";
 import { openInfo } from "@builtin/callSystemWins";
-import { watch } from "fs";
 import {System} from '@libs/System'
 let system = <System>inject('system')
 

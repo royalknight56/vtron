@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:08:03
+ * @LastEditTime: 2022-07-15 11:10:34
  * @Description: 
 -->
 <template>
@@ -25,7 +25,6 @@
 import { defineAsyncComponent, defineComponent, inject, onMounted, ref, shallowRef, toRaw } from 'vue';
 import  {Ref,PropType} from 'vue'
 import {fetchComponent} from "@libs/WindowTemplate/getCom";
-import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index";
 import LoaddingVue from '@libs/WindowTemplate/defaultInner/loadding.vue';
 import ErrorVue from '@libs/WindowTemplate/defaultInner/error.vue';
 import {System} from '@libs/System'

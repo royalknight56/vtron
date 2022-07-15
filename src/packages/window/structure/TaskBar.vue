@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-15 10:52:50
+ * @LastEditTime: 2022-07-15 11:08:48
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -67,16 +67,12 @@
 import { inject, ref } from "vue";
 import type { WindowInfo } from "@/packages/window/libs/DWM/index"
 
-// import { ContextMenu } from "@libs/ContextMenu"
-
 import MagnetVue from "@structure/Magnet.vue";
 import NetworkVue from "@structure/taskbarIcon/network.vue";
 import ChargingVue from "@structure/taskbarIcon/charging.vue";
 
 import winimg from "../../../assets/win.png"
 import { appconfig } from "@/packages/appconfig";
-
-// import {windowInfoMap,sysInfo} from "@state/index";
 
 import {System} from '@libs/System'
 let system = <System>inject('system')

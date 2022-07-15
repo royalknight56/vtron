@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:02:24
+ * @LastEditTime: 2022-07-15 11:12:39
  * @Description: 
   Need CodeReview 
 -->
@@ -55,7 +55,6 @@
 </template>
 <script lang="ts" setup>
 import { inject } from 'vue';
-import { PrivateDWM } from '@/packages/window/libs/DWM/index';
 import WinBotton from "@builtin/winComponent/WinButton.vue"
 import WinCheckBox from "@builtin/winComponent/WinCheckBox.vue"
 import {System} from '@libs/System'

@@ -1,12 +1,11 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:41:44
+ * @LastEditTime: 2022-07-15 11:09:16
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
 import { inject, ref } from 'vue';
 import { appconfig } from '@/packages/appconfig';
-import { SystemState } from '@libs/SystemState';
 import {System} from '@libs/System'
 let system = <System>inject('system')
 

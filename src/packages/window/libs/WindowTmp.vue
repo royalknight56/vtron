@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-15 10:53:23
+ * @LastEditTime: 2022-07-15 11:10:16
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -59,14 +59,9 @@
 </template>
 <script lang="ts" setup>
 import {  inject, provide, ref, watch } from "vue";
-
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
-
-import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index";
 import type { WindowInfo } from "@/packages/window/libs/DWM/index";
-import { ContextMenu } from "@libs/ContextMenu";
-
 import { DragElement } from "@libs/Dom/DragElement";
 import { ScaleElement } from "@libs/Dom/ScaleElement";
 import Statebar from "@libs/WindowTemplate/statebarButton.vue";

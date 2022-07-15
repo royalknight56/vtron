@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:39:45
+ * @LastEditTime: 2022-07-15 10:52:59
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -56,8 +56,8 @@ function closeClice(e: MouseEvent) {
     // console.log(e.offsetX, e.offsetY)
     system.ContextMenu.callMenu(e,
         [
-            { name: '关机', func: () => { console.log("关机"); system.Power.closePower() } },
-            { name: '重启', func: () => { console.log("重启"); system.Power.restartPower() } }
+            { name: '关机', click: () => { console.log("关机"); system.Power.closePower() } },
+            { name: '重启', click: () => { console.log("重启"); system.Power.restartPower() } }
 
         ]
     )

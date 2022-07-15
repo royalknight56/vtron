@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:05:56
+ * @LastEditTime: 2022-07-15 10:52:50
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -119,15 +119,15 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', func: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
-                { name: '最小化', func: () => { system.DWM.privateDWM.hideWindow(item.id) } }
+                { name: '关闭', click: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
+                { name: '最小化', click: () => { system.DWM.privateDWM.hideWindow(item.id) } }
             ]
         )
     } else {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', func: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
-                { name: '显示', func: () => { system.DWM.privateDWM.showWindow(item.id) } }
+                { name: '关闭', click: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
+                { name: '显示', click: () => { system.DWM.privateDWM.showWindow(item.id) } }
             ]
         )
     }

@@ -1,6 +1,6 @@
 /*
  * @Author: RoyalKnight
- * @LastEditTime: 2022-07-14 19:38:30
+ * @LastEditTime: 2022-07-14 19:54:50
  * @Description: 
  */
 import { SystemState } from "@libs/SystemState";
@@ -30,6 +30,7 @@ class System {
     this.Power =new SystemState(this);
     this.Notify = new Notify(this);
     this.ContextMenu =new ContextMenu(this);
+    this.DWM = new DWM(this);
     let {
       appList,
       windowInfoMap,
@@ -42,8 +43,6 @@ class System {
       NotificationMap,
       sysInfo
     }
-    this.DWM = new DWM(this);
-    // console.log(this)
     this.DragWindow=DragWindowFactory(this)
   }
   ClearDesktop() {

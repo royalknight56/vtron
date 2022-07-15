@@ -4,14 +4,14 @@ import {System} from '@libs/System';
 
 /*
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:36:18
+ * @LastEditTime: 2022-07-15 10:52:16
  * @Description: 右键菜单控制
  * @FilePath: /myindex/src/components/window/libs/ContextMenu.ts
  * Need CodeReview 
  */
 interface menuItem {
     name: string,
-    func: Function
+    click: Function
 }
 class ContextMenu {
     private static instance: ContextMenu;

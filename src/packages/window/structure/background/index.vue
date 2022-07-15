@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 18:59:43
+ * @LastEditTime: 2022-07-15 10:53:02
  * @Description: 
 -->
 <template>
@@ -26,7 +26,7 @@ let system =<System>inject('system');
 function backgroundRightClick(e: MouseEvent) {
     system.ContextMenu.callMenu(e,
         [
-            { name: '刷新', func: () => { } },
+            { name: '刷新', click: () => { } },
         ]
     )
 }

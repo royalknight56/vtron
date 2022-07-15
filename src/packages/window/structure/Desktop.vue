@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:04:13
+ * @LastEditTime: 2022-07-15 10:52:55
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -115,9 +115,9 @@ function openApp(item: UnwrapNestedRefs<appInfo>) {
 function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
     system.ContextMenu.callMenu(e,
         [
-            { name: '打开(O)', func: () => { item.window.show(); } },
+            { name: '打开(O)', click: () => { item.window.show(); } },
             {
-                name: '属性(R)', func: () => {
+                name: '属性(R)', click: () => {
                     openInfo(system,{
                         item,
                     })

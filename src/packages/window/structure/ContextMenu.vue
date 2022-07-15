@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:09:49
+ * @LastEditTime: 2022-07-15 10:53:07
  * @Description: 
  * @FilePath: /myindex/src/components/window/MenuList.vue
   Need CodeReview 
@@ -29,7 +29,7 @@ cusStyle.value.top = computed(() => system.ContextMenu.y.value + 'px')
 cusStyle.value.visibility = computed(() => system.ContextMenu.ifShow.value?"visible":"hidden" )
 
 function callFunc(item:menuItem) {
-    item.func()
+    item.click()
 }
 </script>
 <style scoped>

@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 19:07:35
+ * @LastEditTime: 2022-07-15 10:53:23
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -125,13 +125,13 @@ function uperRightClick(e: MouseEvent) {
   system.ContextMenu.callMenu(e, [
     {
       name: "关闭",
-      func: () => {
+      click: () => {
         privateDWM.destoryWindow(winID);
       },
     },
     {
       name: "最小化",
-      func: () => {
+      click: () => {
         privateDWM.hideWindow(winID);
       },
     },

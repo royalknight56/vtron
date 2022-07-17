@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-04-28 11:22:59
+ * @LastEditTime: 2022-07-14 16:45:53
  * @Description: 
  * @FilePath: /myindex/src/components/apps/Test3.vue
 -->
@@ -18,10 +18,16 @@
 import { ref,useAttrs,getCurrentInstance } from "vue";
 // import { DragWindow } from "../packages/window/libs/DragWindow";
 import { DragWindow } from "../plug";
+import { system } from "../systeminit";
 
 import icon from "../assets/浏览器.png"
 import TestLoadafterVue from "./TestLoadafter.vue";
+// let system = new System();
+system.Power.closePower();
+setTimeout(()=>{
+system.Power.openPower()
 
+},4000)
 let urlinput = ref('')
 let urlsrc = ref('')
 function urlkey(e:KeyboardEvent) {
@@ -36,7 +42,7 @@ function changeUrl() {
 }
 window.open=<any>function(e:any) { 
 }
-let after = new DragWindow({
+let after = system.DragWindow({
     title:'test',
     icon,
     buttons:[],

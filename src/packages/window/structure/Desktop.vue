@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-05-31 16:23:54
+ * @LastEditTime: 2022-07-15 11:09:29
  * @Description:
  * @FilePath: /myindex/src/components/window/Desktop.vue
   Need CodeReview 
@@ -26,12 +26,12 @@
 
 <script lang="ts" setup>
 import { UnwrapNestedRefs } from "@vue/reactivity";
-import { reactive } from "vue";
-import { appList } from "@state/index";
+import { inject, reactive } from "vue";
+// import { appList } from "@state/index";
 import type { appInfo } from "@state/type"
-import { MenuCtrl } from "@libs/MenuCtrl";
 import { openInfo } from "@builtin/callSystemWins";
-import { watch } from "fs";
+import {System} from '@libs/System'
+let system = <System>inject('system')
 
 const MAX_ICON_COUNT = 99
 interface posItem {
@@ -46,6 +46,7 @@ interface posItem {
 }
 let iconPos: Array<posItem> = reactive([]);
 let currentMoveIcon: number = -1;
+let appList = system.State.appList
 for (let i = 0; i < MAX_ICON_COUNT; i++) {
     iconPos.push({
         dom: null,
@@ -88,15 +89,6 @@ function onDragEndCheck(item: posItem) {
             }
         }
     }
-    // console.log(lastTemp)
-    // 得出lastTemp：需要交换到的位置
-    // if (lastTemp >= 0) {
-    //     let curappInfo = appList[currentMoveIcon]
-    //     appList.splice(currentMoveIcon, 1);
-    //     appList.splice(lastTemp, 0, curappInfo);
-    // }
-
-
 }
 function onDragEnd() {
     // console.log('dragend', ev.clientX, ev.clientY)
@@ -115,17 +107,16 @@ function moveCheck(ev: MouseEvent) {
 }
 // let deskList: UnwrapNestedRefs<Array<appInfo>> = appList;
 function openApp(item: UnwrapNestedRefs<appInfo>) {
-
     item.window.show();
 }
 
 function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e,
+    system.ContextMenu.callMenu(e,
         [
-            { name: '打开(O)', func: () => { item.window.show(); } },
+            { name: '打开(O)', click: () => { item.window.show(); } },
             {
-                name: '属性(R)', func: () => {
-                    openInfo({
+                name: '属性(R)', click: () => {
+                    openInfo(system,{
                         item,
                     })
                 }

@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-04-28 19:17:03
+ * @LastEditTime: 2022-07-14 19:08:24
  * @Description: 
 -->
 <template>
@@ -20,7 +20,14 @@
     
 </template>
 <script setup lang="ts">
-import {NotificationMap} from "@state/index";
+// import {NotificationMap} from "@state/index";
+
+import {System} from '@libs/System'
+import { inject } from 'vue';
+let system = <System>inject('system')
+
+let NotificationMap = system.State.NotificationMap
+
 </script>
 <style scoped>
 @import '../../main.css';

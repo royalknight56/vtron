@@ -1,13 +1,10 @@
 /*
  * @Author: Royal
- * @LastEditTime: 2022-04-28 19:32:50
+ * @LastEditTime: 2022-07-15 11:08:34
  * @Description: 
  * @FilePath: /myindex/src/components/appconfig.ts
  */
 import { reactive, shallowReactive } from "vue";
-import { UnwrapNestedRefs } from "@vue/reactivity";
-import { DragWindow } from "@libs/DragWindow";
-
 
 // 系统设置
 type loginOption = {

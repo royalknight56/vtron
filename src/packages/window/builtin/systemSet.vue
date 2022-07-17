@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 10:58:39
+ * @LastEditTime: 2022-07-14 17:30:30
  * @Description: 
 -->
 <template>
@@ -45,32 +45,36 @@ import e771 from '../../../assets/icon/e771.png'//个性化
 import e895 from '../../../assets/icon/e895.png'//更新
 import { DragWindow } from '@/packages/window/libs/DragWindow';
 
+import {System} from '@libs/System'
 
 let id = <string>inject('windowId')
+let system = <System>inject('system')
 
-let windowInfo = PrivateDWM.getInstance().getWindow(id)
+
+// let windowInfo = PrivateDWM.getInstance().getWindow(id)
 
 let setMap: {
     [key: string]: DragWindow
 } = {}
+let privateDWM = system.DWM.privateDWM
 function openSet(content: ReturnType<typeof defineComponent>, title: string) {
     if (content) {
         if (setMap[title]) {
             setMap[title].show({
-                x:PrivateDWM.getInstance().getWindow(id).x,
-                y:PrivateDWM.getInstance().getWindow(id).y,
-                height:PrivateDWM.getInstance().getWindow(id).height,
-                width:PrivateDWM.getInstance().getWindow(id).width,
+                x:privateDWM.getWindow(id).x,
+                y:privateDWM.getWindow(id).y,
+                height:privateDWM.getWindow(id).height,
+                width:privateDWM.getWindow(id).width,
             })
         } else {
-            setMap[title] = new DragWindow({
+            setMap[title] = system.DragWindow({
                 content: content,
                 title:'系统',
-                x:PrivateDWM.getInstance().getWindow(id).x,
-                y:PrivateDWM.getInstance().getWindow(id).y,
+                x:privateDWM.getWindow(id).x,
+                y:privateDWM.getWindow(id).y,
 
-                height:PrivateDWM.getInstance().getWindow(id).height,
-                width:PrivateDWM.getInstance().getWindow(id).width,
+                height:privateDWM.getWindow(id).height,
+                width:privateDWM.getWindow(id).width,
 
             })
             setMap[title].show()

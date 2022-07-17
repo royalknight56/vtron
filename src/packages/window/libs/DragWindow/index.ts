@@ -1,24 +1,26 @@
 /*
  * @Author: Royal
- * @LastEditTime: 2022-07-13 10:14:06
+ * @LastEditTime: 2022-07-14 19:35:35
  * @Description: 新建窗口类
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
  */
 import { defineComponent, nextTick } from "vue";
 import { WindowInfo, DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
-import { getRandomId } from "@libs/GlobalOps";
 import {EvMap,EvMapFunction,option,OptionAll,OptionSFC,OptionNoSFC,} from "./type";
+import { System } from '@libs/System'
+
 class DragWindow {
     evMap: EvMapFunction
     windowInfo: WindowInfo | null
 
     private option: Required<option>
     id: string
+    private system: System
     private isCreated: boolean
 
-    constructor(option: option) {
-
+    constructor(option: option,system:System) {
+        this.system = system
         this.windowInfo = null;
 
         this.evMap = {};
@@ -34,11 +36,11 @@ class DragWindow {
             buttons:['close','min','max'],
             title: "未命名窗口"
         }, option)
-        this.id = PrivateDWM.getInstance().getWinid();
+        this.id = this.system.DWM.privateDWM.getWinid();
         this.isCreated = false;
     }
     private getWinInner() {
-        let dom = document.getElementById('win10id');
+        let dom = document.getElementById(this.system.id);
         if (dom) {
             return {
                 width: dom.clientWidth,
@@ -63,7 +65,7 @@ class DragWindow {
         this.evMap[event] = callback;
     }
     private register(option: Required<option>) {
-        this.windowInfo = PrivateDWM.getInstance().registerWindow(this.id, option);//在IPC中注册，传递windowInfo
+        this.windowInfo = this.system.DWM.privateDWM.registerWindow(this.id, option);//在IPC中注册，传递windowInfo
     }
     private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
         if (this.windowInfo) {
@@ -83,19 +85,27 @@ class DragWindow {
         this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         
         nextTick(() => {
-            PrivateDWM.getInstance().upSetWindowIndex(this.id)//新窗口在顶部
+            this.system.DWM.privateDWM.upSetWindowIndex(this.id)//新窗口在顶部
             this.isCreated = true;
         })
     }
 
     show(option?: Partial<option>) {// 调用show之后，注册窗口，展示窗口
         if (!this.isCreated && !this.windowInfo?.ifDestory) {// 如果没有被创建，并且没被销毁
-            this.id=PrivateDWM.getInstance().getWinid();//在窗口是第一次注册时，获取一个唯一id
+            this.id=this.system.DWM.privateDWM.getWinid();//在窗口是第一次注册时，获取一个唯一id
         }
         this.register(Object.assign(this.option, option))//注册
         this.afterRegister()//注册之后
     }
 }
+
+function DragWindowFactory(system:System){
+    return (option:option) => {
+        return new DragWindow(option,system)
+    }
+    
+}
 export {
     DragWindow,
+    DragWindowFactory
 }

@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-03-08 19:44:41
+ * @LastEditTime: 2022-07-14 15:12:43
  * @Description: 
 -->
 <template>
@@ -11,10 +11,10 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import { Notify } from "../packages/window/libs/Notify";
+import { system } from "../systeminit";
 function test(){
     // console.log('test') 
-    new Notify('test',"testtest")
+    system.Notify.notify('test',"testtest")
 }
 </script>
 <style>

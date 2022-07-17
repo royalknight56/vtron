@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-05-29 15:54:52
+ * @LastEditTime: 2022-07-15 11:08:05
  * @Description: 
 -->
 <template>
@@ -11,19 +11,17 @@
 </template>
 <script lang="ts" setup>
 import { appconfig } from "@/packages/appconfig";
-import { MenuCtrl } from "@libs/MenuCtrl";
-
 import defaultBackground from "@structure/background/default.vue";
 import imgBackground from "@structure/background/imgbackground.vue";
-// import Background from '@structure/background/background.vue';
-// import BlackScreen from '@structure/background/blackScreen.vue';
-// import BlueScreen from '@structure/background/blueScreen.vue';
 
+import {System} from '@libs/System'
+import { inject } from "vue";
+let system =<System>inject('system');
 
 function backgroundRightClick(e: MouseEvent) {
-    MenuCtrl.getInstance().callMenu(e,
+    system.ContextMenu.callMenu(e,
         [
-            { name: '刷新', func: () => { } },
+            { name: '刷新', click: () => { } },
         ]
     )
 }

@@ -4,14 +4,12 @@ import icon from "../../../assets/win.png";
 
 import appInfo  from "@builtin/appInfo.vue";
 import systemSetVue from "@builtin/systemSet.vue"
-
+import {System} from '@libs/System'
 // import SystemSet  from "../system/SystemSet.vue";
 
 
-function openInfo(info:any){
-    //100, 100, '属性',icon,
-    // 300,400, 
-    let wininfo = new DragWindow(
+function openInfo(system:System, info:any){
+    let wininfo = system.DragWindow(
     {
         x:100,
         y:100,
@@ -25,15 +23,14 @@ function openInfo(info:any){
     })
     wininfo.show();
 }
-let setwin = new DragWindow({
-    title: '设置',
-    width: 650,
-    height: 400,
-    // x: 100,
-    // y: 100,
-    content: systemSetVue
-})
-function openSetting() {
+
+function openSetting(system:System) {
+    let setwin = system.DragWindow({
+        title: '设置',
+        width: 650,
+        height: 400,
+        content: systemSetVue
+    })
     setwin.show()
 }
 export{

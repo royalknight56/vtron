@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-06-02 15:13:53
+ * @LastEditTime: 2022-07-15 11:08:48
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -36,16 +36,16 @@
                 <!-- {{ item.title }} -->
             </div>
         </div>
-        <MagnetVue v-if="ifMagnetShow" @changevis="changeMagnetShow"></MagnetVue>
+        <MagnetVue v-if="ifMagnetShow"  @changevis="changeMagnetShow"></MagnetVue>
         <div class="bar_right">
             <div class="right_item">
                 <span class="segoicon SEGOEUIMDL"> &#xE010;</span>
             </div>
             <div class="right_item">
-                <ChargingVue></ChargingVue>
+                <ChargingVue :sysInfo="sysInfo"></ChargingVue>
             </div>
             <div class="right_item">
-                <NetworkVue></NetworkVue>
+                <NetworkVue :sysInfo="sysInfo"></NetworkVue>
             </div>
             <div class="date_time">
                 <div class="date_time_text">
@@ -64,11 +64,9 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
+import { inject, ref } from "vue";
 import type { WindowInfo } from "@/packages/window/libs/DWM/index"
-import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
-import { MenuCtrl } from "@libs/MenuCtrl"
-import { SystemState } from "@libs/SystemState";
+
 import MagnetVue from "@structure/Magnet.vue";
 import NetworkVue from "@structure/taskbarIcon/network.vue";
 import ChargingVue from "@structure/taskbarIcon/charging.vue";
@@ -76,11 +74,11 @@ import ChargingVue from "@structure/taskbarIcon/charging.vue";
 import winimg from "../../../assets/win.png"
 import { appconfig } from "@/packages/appconfig";
 
-import {windowInfoMap,sysInfo} from "@state/index";
-// {title:title,width,height,ctx:ctx}
+import {System} from '@libs/System'
+let system = <System>inject('system')
 
-// let winlist = state.windowInfoMap
-
+let sysInfo = system.State.sysInfo
+let ContextMenu = system.ContextMenu
 //设置winlogo
 let winlogo = ref(winimg);
 if (appconfig.start_menu_logo == "default") {
@@ -90,14 +88,14 @@ if (appconfig.start_menu_logo == "default") {
 }
 
 
-let winlist = windowInfoMap
+let winlist =system.State.windowInfoMap
 
 function barClick(item: WindowInfo) {
     if (item.ifShow) {
-        PrivateDWM.getInstance().upSetWindowIndex(item.id)
+        system.DWM.privateDWM.upSetWindowIndex(item.id)
     } else {
-        PrivateDWM.getInstance().showWindow(item.id)
-        PrivateDWM.getInstance().upSetWindowIndex(item.id)
+        system.DWM.privateDWM.showWindow(item.id)
+        system.DWM.privateDWM.upSetWindowIndex(item.id)
     }
 }
 
@@ -115,17 +113,17 @@ function changeMagnetShow() {
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {
-        MenuCtrl.getInstance().callMenu(e,
+        ContextMenu.callMenu(e,
             [
-                { name: '关闭', func: () => { PrivateDWM.getInstance().destoryWindow(item.id) } },
-                { name: '最小化', func: () => { PrivateDWM.getInstance().hideWindow(item.id) } }
+                { name: '关闭', click: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
+                { name: '最小化', click: () => { system.DWM.privateDWM.hideWindow(item.id) } }
             ]
         )
     } else {
-        MenuCtrl.getInstance().callMenu(e,
+        ContextMenu.callMenu(e,
             [
-                { name: '关闭', func: () => { PrivateDWM.getInstance().destoryWindow(item.id) } },
-                { name: '显示', func: () => { PrivateDWM.getInstance().showWindow(item.id) } }
+                { name: '关闭', click: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
+                { name: '显示', click: () => { system.DWM.privateDWM.showWindow(item.id) } }
             ]
         )
     }
@@ -133,7 +131,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo) {
-    PrivateDWM.getInstance().destoryWindow(item.id)
+    system.DWM.privateDWM.destoryWindow(item.id)
 }
 // //定期更换截图
 // setInterval(() => {

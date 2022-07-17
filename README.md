@@ -131,7 +131,7 @@ createApp(App).use(win10).mount('#app')
         |   |-- GlobalOps.ts
         |   |-- ContextMenu.ts
         |   |-- Notify.ts
-        |   |-- SystemState.ts
+        |   |-- Power.ts
         |   |-- WindowTmp.vue
         |   |-- Dom             // Dom操作
         |   |   |-- DragElement.ts

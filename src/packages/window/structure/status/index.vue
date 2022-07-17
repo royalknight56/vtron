@@ -11,7 +11,7 @@
 </template>
 <script lang="ts" setup>
 import { appconfig } from "@/packages/appconfig";
-import { SystemState } from "@libs/SystemState";
+import { Power } from "@libs/Power";
 import BlackScreen from '@structure/status/black.vue';
 import BlueScreen from '@structure/status/blue.vue';
 import {System} from '@libs/System'

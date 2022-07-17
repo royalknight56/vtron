@@ -3,7 +3,7 @@
  * @LastEditTime: 2022-07-14 19:20:39
  * @Description: 启动时操作
  */
-// import { SystemState } from '@libs/SystemState';
+// import { Power } from '@libs/Power';
 import {initListener} from "@state/listener";
 import {System} from '@libs/System'
 

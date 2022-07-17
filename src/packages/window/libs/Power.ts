@@ -2,7 +2,7 @@
  * @Author: Royal
  * @LastEditTime: 2022-07-14 19:41:07
  * @Description: 管理系统状态，开机/重启/关机
- * @FilePath: /myindex/src/components/window/libs/SystemState.ts
+ * @FilePath: /myindex/src/components/window/libs/Power.ts
  * Need CodeReview 
  */
 import { reactive } from "vue";
@@ -25,8 +25,8 @@ interface loginInfo{
     password:string,
 }
 
-class SystemState {
-    private static instance: SystemState;
+class Power {
+    private static instance: Power;
     state: stateCtrl;
     system:System
     constructor(system:System) {
@@ -104,5 +104,5 @@ class SystemState {
     }
 }
 export {
-    SystemState
+    Power
 }

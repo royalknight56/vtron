@@ -3,15 +3,11 @@
  * @LastEditTime: 2022-07-14 19:54:50
  * @Description: 
  */
-import { SystemState } from "@libs/SystemState";
+import { Power } from "@libs/Power";
 import { Notify } from "@libs/Notify";
 import { ContextMenu } from "@libs/ContextMenu";
 import { DWM } from "@libs/DWM"
 import {
-  // appList,
-  // windowInfoMap,
-  // NotificationMap,
-  // sysInfo,
   State,
   stateInit
 } from "@state/index";
@@ -19,7 +15,7 @@ import type {appInfo} from "@state/type";
 import {DragWindowFactory} from "@libs/DragWindow"
 class System {
   id:string;
-  Power: SystemState;
+  Power: Power;
   Notify: Notify;
   ContextMenu: ContextMenu;
   DWM: DWM;
@@ -27,7 +23,7 @@ class System {
   DragWindow:ReturnType<typeof DragWindowFactory>
   constructor() {
     this.id='win10'+Math.random().toString(36).substr(2, 9);
-    this.Power =new SystemState(this);
+    this.Power =new Power(this);
     this.Notify = new Notify(this);
     this.ContextMenu =new ContextMenu(this);
     this.DWM = new DWM(this);

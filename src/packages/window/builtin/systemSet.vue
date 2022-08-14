@@ -30,7 +30,6 @@
 <script lang="ts" setup>
 
 import { inject, ref, defineComponent } from 'vue';
-import { PrivateDWM } from '@/packages/window/libs/DWM/index';
 
 import WinSelect from '@builtin/winComponent/WinSelect.vue'
 import systemset from '@builtin/setApps/SetSystemset.vue'
@@ -51,30 +50,28 @@ let id = <string>inject('windowId')
 let system = <System>inject('system')
 
 
-// let windowInfo = PrivateDWM.getInstance().getWindow(id)
-
 let setMap: {
     [key: string]: DragWindow
 } = {}
-let privateDWM = system.DWM.privateDWM
+let windowInfo = system.DWM.getWindow(id)
 function openSet(content: ReturnType<typeof defineComponent>, title: string) {
     if (content) {
         if (setMap[title]) {
             setMap[title].show({
-                x:privateDWM.getWindow(id).x,
-                y:privateDWM.getWindow(id).y,
-                height:privateDWM.getWindow(id).height,
-                width:privateDWM.getWindow(id).width,
+                x:windowInfo.x,
+                y:windowInfo.y,
+                height:windowInfo.height,
+                width:windowInfo.width,
             })
         } else {
             setMap[title] = system.DragWindow({
                 content: content,
                 title:'系统',
-                x:privateDWM.getWindow(id).x,
-                y:privateDWM.getWindow(id).y,
+                x:windowInfo.x,
+                y:windowInfo.y,
 
-                height:privateDWM.getWindow(id).height,
-                width:privateDWM.getWindow(id).width,
+                height:windowInfo.height,
+                width:windowInfo.width,
 
             })
             setMap[title].show()

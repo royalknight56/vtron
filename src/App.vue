@@ -30,9 +30,7 @@ import {system,system2} from "./systeminit"
 // import computer from "./assets/computer.ico"
 let p1 = system;
 let p2 = system2;
-setInterval(()=>{
-  
-},1000)
+
 onMounted(() => {
   system.ClearDesktop();
 

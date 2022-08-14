@@ -5,7 +5,7 @@ function getRandomId(prefix:string){
 }
 
 class Notify{
-  system:System;
+  private system:System;
     constructor(system:System){
       this.system = system;
     }

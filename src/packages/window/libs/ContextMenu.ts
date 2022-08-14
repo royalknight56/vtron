@@ -21,7 +21,7 @@ class ContextMenu {
     menuList: UnwrapNestedRefs<Array<menuItem>>;
     ifShow: Ref<boolean>;
     ifTopDown: Ref<boolean>;
-    system:System;
+    private system:System;
     constructor(system:System) {
         this.system = system;
         this.menuList = reactive([]);

@@ -85,26 +85,26 @@ let props = defineProps({
 
 let system = <System>inject('system')
 let winID = props.id;
-let privateDWM = system.DWM.privateDWM;
-let wininfo = privateDWM.getWindow(winID);
+let DWM = system.DWM;
+let wininfo = DWM.getWindow(winID);
 
 const componentKey = ref<Number>(1);
 function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);
 }
 function closeWindow(): void {
-  privateDWM.destoryWindow(winID);
+  DWM.destoryWindow(winID);
 }
 function hideWindow() {
-  privateDWM.hideWindow(winID);
+  DWM.hideWindow(winID);
 }
 function maxWindow() {
   if(isScaleAble.value) {
-    privateDWM.maxWindow(winID);
+    DWM.maxWindow(winID);
   }
 }
 function predown() {
-  privateDWM.upSetWindowIndex(winID);
+  DWM.upSetWindowIndex(winID);
 }
 type buttonEvent = 'flush'|'close'|'min'|'max'
 const buttonEventFunc = {
@@ -121,13 +121,13 @@ function uperRightClick(e: MouseEvent) {
     {
       name: "关闭",
       click: () => {
-        privateDWM.destoryWindow(winID);
+        DWM.destoryWindow(winID);
       },
     },
     {
       name: "最小化",
       click: () => {
-        privateDWM.hideWindow(winID);
+        DWM.hideWindow(winID);
       },
     },
   ]);
@@ -136,7 +136,7 @@ function uperRightClick(e: MouseEvent) {
 let customerStyle = ref<any>({});
 
 function onFocus(e: MouseEvent | TouchEvent): void {
-  privateDWM.upSetWindowIndex(winID);
+  DWM.upSetWindowIndex(winID);
   if (isMaximize.value) {
     if (e instanceof MouseEvent) {
       e.preventDefault();

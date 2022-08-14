@@ -27,18 +27,9 @@ class System {
     this.Notify = new Notify(this);
     this.ContextMenu =new ContextMenu(this);
     this.DWM = new DWM(this);
-    let {
-      appList,
-      windowInfoMap,
-      NotificationMap,
-      sysInfo
-    } = stateInit();
-    this.State = {
-      appList,
-      windowInfoMap,
-      NotificationMap,
-      sysInfo
-    }
+    
+    ({...this.State} = stateInit())
+
     this.DragWindow=DragWindowFactory(this)
   }
   ClearDesktop() {

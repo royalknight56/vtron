@@ -92,10 +92,10 @@ let winlist =system.State.windowInfoMap
 
 function barClick(item: WindowInfo) {
     if (item.ifShow) {
-        system.DWM.privateDWM.upSetWindowIndex(item.id)
+        system.DWM.upSetWindowIndex(item.id)
     } else {
-        system.DWM.privateDWM.showWindow(item.id)
-        system.DWM.privateDWM.upSetWindowIndex(item.id)
+        system.DWM.showWindow(item.id)
+        system.DWM.upSetWindowIndex(item.id)
     }
 }
 
@@ -115,15 +115,15 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.ifShow) {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', click: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
-                { name: '最小化', click: () => { system.DWM.privateDWM.hideWindow(item.id) } }
+                { name: '关闭', click: () => { system.DWM.destoryWindow(item.id) } },
+                { name: '最小化', click: () => { system.DWM.hideWindow(item.id) } }
             ]
         )
     } else {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', click: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
-                { name: '显示', click: () => { system.DWM.privateDWM.showWindow(item.id) } }
+                { name: '关闭', click: () => { system.DWM.destoryWindow(item.id) } },
+                { name: '显示', click: () => { system.DWM.showWindow(item.id) } }
             ]
         )
     }
@@ -131,7 +131,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo) {
-    system.DWM.privateDWM.destoryWindow(item.id)
+    system.DWM.destoryWindow(item.id)
 }
 // //定期更换截图
 // setInterval(() => {

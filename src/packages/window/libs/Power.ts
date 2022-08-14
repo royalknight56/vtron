@@ -28,7 +28,7 @@ interface loginInfo{
 class Power {
     private static instance: Power;
     state: stateCtrl;
-    system:System
+    private system:System
     constructor(system:System) {
         this.system = system;
         this.state = reactive({

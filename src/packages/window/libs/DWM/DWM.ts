@@ -4,47 +4,48 @@
  * @Description: 
  */
 
-import { PrivateDWM} from '@libs/DWM/PrivateDWM';
+// import { WinManagement} from '@libs/DWM/WinManagement';
+import * as  WinManagement from '@libs/DWM/WinManagement';
+
 import type { windowInfoMapInter,eventMapInter,WindowInfo } from "@libs/DWM/type";
 import {System} from '@libs/System'
 class DWM{
     // private static instance: DWM;
-    system:System;
-    privateDWM :PrivateDWM
+    private system:System;
+    // WinManagement :WinManagement
     constructor(system:System) {
         this.system = system
-        this.privateDWM =new PrivateDWM(this.system)
+        // this.WinManagement =new WinManagement(this.system)
     }
     getWindow(id: string): WindowInfo {
-        return this.privateDWM.getWindow(id)
+        return WinManagement.getWindow(this.system,id)
     }
     addEventListener(id: string, name: string, func: Function) {
-        return this.privateDWM.addEventListener(id,name,func)
+        return WinManagement.addEventListener(this.system,id,name,func)
     }
     upSetWindowIndex(id: string){
-        return this.privateDWM.upSetWindowIndex(id)
+        return WinManagement.upSetWindowIndex(this.system,id)
     }
     hideWindow(id: string) {
-        return this.privateDWM.hideWindow(id)
+        return WinManagement.hideWindow(this.system,id)
     }
     showWindow(id: string) {
-        return this.privateDWM.showWindow(id)
+        return WinManagement.showWindow(this.system,id)
     }
     destoryWindow(id: string) {
-        return this.privateDWM.destoryWindow(id)
+        return WinManagement.destoryWindow(this.system,id)
     }
     maxWindow(id: string) {
-        return this.privateDWM.maxWindow(id)
+        return WinManagement.maxWindow(this.system,id)
     }
     on(ev: string, func: Function) {
-        return this.privateDWM.on(ev,func)
+        return WinManagement.on(this.system,ev,func)
     }
     emit(ev: string, ...args: any) {
-        return this.privateDWM.emit(ev,...args)
+        return WinManagement.emit(this.system,ev,...args)
     }
 
 }
 export {
-    DWM,
-    PrivateDWM,
+    DWM
 }

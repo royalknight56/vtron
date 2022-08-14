@@ -6,10 +6,10 @@
  * Need CodeReview 
  */
 import { defineComponent, nextTick } from "vue";
-import { WindowInfo, DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
+import { WindowInfo } from "@/packages/window/libs/DWM/index"
 import {EvMap,EvMapFunction,option,OptionAll,OptionSFC,OptionNoSFC,} from "./type";
 import { System } from '@libs/System'
-
+import * as  WinManagement from '@libs/DWM/WinManagement';
 class DragWindow {
     evMap: EvMapFunction
     windowInfo: WindowInfo | null
@@ -36,7 +36,7 @@ class DragWindow {
             buttons:['close','min','max'],
             title: "未命名窗口"
         }, option)
-        this.id = this.system.DWM.privateDWM.getWinid();
+        this.id = WinManagement.getWinid(this.system);
         this.isCreated = false;
     }
     private getWinInner() {
@@ -65,7 +65,7 @@ class DragWindow {
         this.evMap[event] = callback;
     }
     private register(option: Required<option>) {
-        this.windowInfo = this.system.DWM.privateDWM.registerWindow(this.id, option);//在IPC中注册，传递windowInfo
+        this.windowInfo = WinManagement.registerWindow(this.system,this.id, option);//在IPC中注册，传递windowInfo
     }
     private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
         if (this.windowInfo) {
@@ -85,14 +85,14 @@ class DragWindow {
         this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         
         nextTick(() => {
-            this.system.DWM.privateDWM.upSetWindowIndex(this.id)//新窗口在顶部
+            WinManagement.upSetWindowIndex(this.system,this.id)//新窗口在顶部
             this.isCreated = true;
         })
     }
 
     show(option?: Partial<option>) {// 调用show之后，注册窗口，展示窗口
         if (!this.isCreated && !this.windowInfo?.ifDestory) {// 如果没有被创建，并且没被销毁
-            this.id=this.system.DWM.privateDWM.getWinid();//在窗口是第一次注册时，获取一个唯一id
+            this.id=WinManagement.getWinid(this.system);//在窗口是第一次注册时，获取一个唯一id
         }
         this.register(Object.assign(this.option, option))//注册
         this.afterRegister()//注册之后

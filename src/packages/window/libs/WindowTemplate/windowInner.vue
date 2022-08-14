@@ -42,7 +42,7 @@ let props = defineProps({
 let system = <System>inject('system')
 
 let winID = props.id;
-let wininfo = system.DWM.privateDWM.getWindow(winID);
+let wininfo = system.DWM.getWindow(winID);
 let componentType = ref('loadding')
 let compileCom = shallowRef({}) as any;
 

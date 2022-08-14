@@ -14,8 +14,6 @@ interface menuItem {
     click: Function
 }
 class ContextMenu {
-    private static instance: ContextMenu;
-
     x: Ref<number>;
     y: Ref<number>;
     menuList: UnwrapNestedRefs<Array<menuItem>>;

@@ -26,7 +26,6 @@ interface loginInfo{
 }
 
 class Power {
-    private static instance: Power;
     state: stateCtrl;
     private system:System
     constructor(system:System) {

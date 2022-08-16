@@ -54,10 +54,6 @@ class DragWindow {
         }
 
     }
-    // interface EvMap {
-    //     onDraging: { x: number, y: number, ifdrag: boolean }
-    //     onResizing: { x: number, y: number }
-    // }
     addWindowEventListener(event: 'onDraging', callback: (x: number, y: number, ifdrag: boolean)=>void) : void;
     addWindowEventListener(event: 'onResizing', callback: (x: number, y: number)=>void) : void;
 

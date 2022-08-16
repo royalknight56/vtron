@@ -4,18 +4,14 @@
  * @Description: 
  */
 
-// import { WinManagement} from '@libs/DWM/WinManagement';
 import * as  WinManagement from '@libs/DWM/WinManagement';
 
 import type { windowInfoMapInter,eventMapInter,WindowInfo } from "@libs/DWM/type";
 import {System} from '@libs/System'
 class DWM{
-    // private static instance: DWM;
     private system:System;
-    // WinManagement :WinManagement
     constructor(system:System) {
         this.system = system
-        // this.WinManagement =new WinManagement(this.system)
     }
     getWindow(id: string): WindowInfo {
         return WinManagement.getWindow(this.system,id)

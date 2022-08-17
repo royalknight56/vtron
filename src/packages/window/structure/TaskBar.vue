@@ -72,10 +72,11 @@ import NetworkVue from "@structure/taskbarIcon/network.vue";
 import ChargingVue from "@structure/taskbarIcon/charging.vue";
 
 import winimg from "../../../assets/win.png"
-import { appconfig } from "@/packages/appconfig";
+
 
 import {System} from '@libs/System'
 let system = <System>inject('system')
+const appconfig = system.SystemConfig.config
 
 let sysInfo = system.State.sysInfo
 let ContextMenu = system.ContextMenu

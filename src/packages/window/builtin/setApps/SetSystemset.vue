@@ -22,21 +22,23 @@
     
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { storeConfig, setConfig, clearStoreConfig, appconfig } from '@/packages/appconfig'
+import { ref,inject } from 'vue';
+
+import {System} from '@libs/System'
+let system =<System>inject('system');
+const appconfig = system.SystemConfig.config
+
 let backURL = ref(appconfig.backimg)
 let startTime = ref(appconfig.start_time)
+
 function saveBack() {
-    setConfig('backimg', backURL.value)
-    storeConfig()
+    system.SystemConfig.setConfig('backimg', backURL.value)
 }
 function saveStartTime() {
-    setConfig('start_time', startTime.value)
-    storeConfig()
-
+    system.SystemConfig.setConfig('start_time', startTime.value)
 }
 function clear() {
-    clearStoreConfig()
+    // clearStoreConfig()
 }
 </script>
 <style lang="scss" scoped>

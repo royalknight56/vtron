@@ -14,17 +14,21 @@ import {
 import type {appInfo} from "@state/type";
 import {DragWindowFactory} from "@libs/DragWindow"
 import { defaultOption } from '@libs/option'
+import { SystemConfig,OptionType,partialOption } from "@/packages/appconfig";
 
 class System {
   id:string;
+  SystemConfig:SystemConfig;
   Power: Power;
   Notify: Notify;
   ContextMenu: ContextMenu;
   DWM: DWM;
-  State: State
+  State: State;
   DragWindow:ReturnType<typeof DragWindowFactory>
-  constructor() {
+  constructor(option:partialOption) {
     this.id='win10'+Math.random().toString(36).substr(2, 9);
+    this.SystemConfig=new SystemConfig(this)
+    this.SystemConfig.initConfig(option)
     this.Power =new Power(this);
     this.Notify = new Notify(this);
     this.ContextMenu =new ContextMenu(this);

@@ -14,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-
 import brow from "./assets/浏览器.png"
 import Test3 from "./apps/Test3.vue"
 import Browser from "./apps/Browser.vue"

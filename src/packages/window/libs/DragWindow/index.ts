@@ -5,7 +5,7 @@
  * @FilePath: /myindex/src/components/window/libs/DragWindow.ts
  * Need CodeReview 
  */
-import { defineComponent, nextTick } from "vue";
+import { defineComponent, nextTick, reactive } from "vue";
 import { WindowInfo } from "@/packages/window/libs/DWM/index"
 import {EvMap,EvMapFunction,option,OptionAll,OptionSFC,OptionNoSFC,} from "./type";
 import { System } from '@libs/System'
@@ -40,7 +40,18 @@ class DragWindow {
             title:defaultOption.untitle
         }, option)
         this.id = WinManagement.getWinid(this.system);
-        this.windowInfo = this.register(Object.assign(this.option, option))//注册;
+        this.windowInfo =  reactive({
+            id: this.id ,
+            wid: system.State.winnum,
+            zindex: 0,
+            isVisible: true,
+            istop: false,
+            isMaximize: false,
+            isCreate: false,
+            ...this.option,
+            windowEventMap: {}
+        });
+        this.register(this)//注册;
     }
     private getWinInner() {
         let dom = document.getElementById(this.system.id);
@@ -63,8 +74,8 @@ class DragWindow {
     addWindowEventListener(event:keyof EvMap, callback:any) : any {
         this.evMap[event] = callback;
     }
-    private register(option: Required<option>) {
-        return WinManagement.registerWindow(this.system,this.id, option);//在IPC中注册，传递windowInfo
+    private register(dragWindow:DragWindow) {
+        WinManagement.registerWindow(this.system,this.id, dragWindow);//在IPC中注册，传递windowInfo
     }
     private showWindow() {// 显示窗口
         WinManagement.showWindow(this.system,this.id)
@@ -95,8 +106,11 @@ class DragWindow {
         if (option) {
             this.option = Object.assign(this.option, option)
         }
+        // console.log(this)
         WinManagement.createWindow(this.system,this.id)
+        // console.log(this)
         this.showWindow();// 显示窗口
+        // console.log(this)
         this.afterRegister()//注册之后
     }
     hide() {// 隐藏窗口

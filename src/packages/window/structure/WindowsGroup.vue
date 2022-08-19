@@ -18,15 +18,15 @@ import WindowTmpVue from "@libs/WindowTmp.vue";
 import {System} from '@libs/System'
 import { computed, inject } from "vue";
 import { windowInfoMapInter } from "../libs/DWM";
+import { DragWindow } from "@libs/DragWindow";
 
 let system = <System>inject('system')
 
 let windowCreacted =computed(()=>{
-    let Obj:windowInfoMapInter = {}
+    let Obj:windowInfoMapInter={};
     Object.keys(system.State.windowInfoMap).forEach((key)=>{
-        if(system.State.windowInfoMap[key].isCreate){
-            Obj[key] = system.State.windowInfoMap[key]
-            // system.State.windowInfoMap[key].isCreate = false
+        if(system.State.windowInfoMap[key].windowInfo.isCreate){
+            Obj[key] = system.State.windowInfoMap[key].windowInfo
         }
     })
     return Obj

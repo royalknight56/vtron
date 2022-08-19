@@ -93,8 +93,8 @@ if (appconfig.start_menu_logo == "default") {
 let winlist =computed(()=>{
     let Obj:windowInfoMapInter = {}
     Object.keys(system.State.windowInfoMap).forEach((key)=>{
-        if(system.State.windowInfoMap[key].isCreate){
-            Obj[key] = system.State.windowInfoMap[key]
+        if(system.State.windowInfoMap[key].windowInfo.isCreate){
+            Obj[key] = system.State.windowInfoMap[key].windowInfo
             // system.State.windowInfoMap[key].isCreate = false
         }
     })

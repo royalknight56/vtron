@@ -7,13 +7,14 @@
 import * as  WinManagement from '@libs/DWM/WindowManage';
 
 import type { windowInfoMapInter,eventMapInter,WindowInfo } from "@libs/DWM/type";
+import { DragWindow } from "@libs/DragWindow";
 import {System} from '@libs/System'
 class DWM{
     private system:System;
     constructor(system:System) {
         this.system = system
     }
-    getWindow(id: string): WindowInfo {
+    getWindow(id: string): DragWindow {
         return WinManagement.getWindow(this.system,id)
     }
     addEventListener(id: string, name: string, func: Function) {

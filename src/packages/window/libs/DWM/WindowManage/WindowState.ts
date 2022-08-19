@@ -7,35 +7,35 @@ import { System } from '@libs/System';
 
 function upSetWindowIndex(system:System,id: string): number {
   for (let key in system.State.windowInfoMap) {
-      system.State.windowInfoMap[key].istop = false
+      system.State.windowInfoMap[key].windowInfo.istop = false
   }
-  system.State.windowInfoMap[id].istop = true
+  system.State.windowInfoMap[id].windowInfo.istop = true
 
   let ind = system.State.zIndexIdArray.indexOf(id);
   system.State.zIndexIdArray.splice(ind, 1);
   system.State.zIndexIdArray.push(id);
   for (let i = 0; i < system.State.zIndexIdArray.length; i++) {
-      system.State.windowInfoMap[system.State.zIndexIdArray[i]].zindex = i + 10
+      system.State.windowInfoMap[system.State.zIndexIdArray[i]].windowInfo.zindex = i + 10
   }
   return system.State.zIndexIdArray.length
 }
 function hideWindow(system:System,id: string) {
-  system.State.windowInfoMap[id].isVisible = false
+  system.State.windowInfoMap[id].windowInfo.isVisible = false
 }
 function showWindow(system:System,id: string) {
-  system.State.windowInfoMap[id].isVisible = true
+  system.State.windowInfoMap[id].windowInfo.isVisible = true
 }
 function createWindow(system:System,id: string) {
-  system.State.windowInfoMap[id].isCreate = true
+  system.State.windowInfoMap[id].windowInfo.isCreate = true
 }
 function destroyWindow(system:System,id: string) {
 
-  system.State.windowInfoMap[id].isCreate = false
-  system.State.windowInfoMap[id].windowEventMap['destroy']?.()
+  system.State.windowInfoMap[id].windowInfo.isCreate = false
+  system.State.windowInfoMap[id].windowInfo.windowEventMap['destroy']?.()
 
 }
 function maxWindow(system:System,id: string) {
-  system.State.windowInfoMap[id].isMaximize = !system.State.windowInfoMap[id]?.isMaximize
+  system.State.windowInfoMap[id].windowInfo.isMaximize = !system.State.windowInfoMap[id]?.windowInfo.isMaximize
 }
 function on(system:System,ev: string, func: Function) {
   system.State.eventMap[ev] = func

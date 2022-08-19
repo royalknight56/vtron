@@ -4,7 +4,8 @@ import { option } from "@/packages/window/libs/DragWindow/type";
 import { reactive } from "vue";
 
 import { System } from '@libs/System';
-function getWindow(system:System,id: string): WindowInfo{
+import { DragWindow } from "@libs/DragWindow";
+function getWindow(system:System,id: string): DragWindow{
   return system.State.windowInfoMap[id]
 }
 function getWinid(system:System): string {

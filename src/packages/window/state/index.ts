@@ -16,6 +16,8 @@ function stateInit() {
     connection: 0,
     isCharging: false,
     chargeLevel: 0,
+    width:0,
+    height:0
   })//系统信息
   let zIndexIdArray:string[]=[];// 窗口层叠信息
   let eventMap: eventMapInter={};// 事件

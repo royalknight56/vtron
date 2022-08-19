@@ -131,6 +131,9 @@ class DragWindow {
     maximize() {// 最大化窗口
         this.windowInfo.isMaximize = true;
     }
+    moveTop(){
+        WinManagement.upSetWindowIndex(this.system,this.id)
+    }
 }
 
 function DragWindowFactory(system:System){

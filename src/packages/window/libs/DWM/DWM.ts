@@ -17,24 +17,6 @@ class DWM{
     getWindow(id: string): DragWindow {
         return WinManagement.getWindow(this.system,id)
     }
-    addEventListener(id: string, name: string, func: Function) {
-        return WinManagement.addEventListener(this.system,id,name,func)
-    }
-    upSetWindowIndex(id: string){
-        return WinManagement.upSetWindowIndex(this.system,id)
-    }
-    hideWindow(id: string) {
-        return WinManagement.hideWindow(this.system,id)
-    }
-    showWindow(id: string) {
-        return WinManagement.showWindow(this.system,id)
-    }
-    destroyWindow(id: string) {
-        return WinManagement.destroyWindow(this.system,id)
-    }
-    maxWindow(id: string) {
-        return WinManagement.maxWindow(this.system,id)
-    }
     on(ev: string, func: Function) {
         return WinManagement.on(this.system,ev,func)
     }

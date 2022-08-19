@@ -11,7 +11,9 @@ import {EvMap,EvMapFunction,option,OptionAll,OptionSFC,OptionNoSFC,} from "./typ
 import { System } from '@libs/System'
 import { defaultOption } from '@libs/option'
 
-import * as  WinManagement from '@libs/DWM/WinManagement';
+// import * as  WinManagement from '@libs/DWM/WinManagement';
+import * as  WinManagement from '@libs/DWM/WindowManage';
+
 class DragWindow {
     evMap: EvMapFunction
     readonly windowInfo: WindowInfo
@@ -102,6 +104,18 @@ class DragWindow {
     }
     destroy() {// 销毁窗口
         WinManagement.destroyWindow(this.system,this.id)
+    }
+    isMinimized() {// 是否最小化
+        return this.windowInfo.isVisible?false:true
+    }
+    minimize() {// 最小化窗口
+        this.windowInfo.isVisible = false;
+    }
+    isMaximized() {// 是否最大化
+        return this.windowInfo.isMaximize
+    }
+    maximize() {// 最大化窗口
+        this.windowInfo.isMaximize = true;
     }
 }
 

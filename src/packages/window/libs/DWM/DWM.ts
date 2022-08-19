@@ -4,7 +4,7 @@
  * @Description: 
  */
 
-import * as  WinManagement from '@libs/DWM/WinManagement';
+import * as  WinManagement from '@libs/DWM/WindowManage';
 
 import type { windowInfoMapInter,eventMapInter,WindowInfo } from "@libs/DWM/type";
 import {System} from '@libs/System'

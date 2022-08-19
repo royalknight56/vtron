@@ -50,11 +50,18 @@ setTimeout(()=>{
     after.show()
 },1000)
 setTimeout(()=>{
-    after.hide()
+    // after.hide()
 },2000)
+
+setTimeout(()=>{
+    after.maximize()
+},3000)
+setTimeout(()=>{
+    after.minimize()
+},4000)
 setTimeout(()=>{
     after.destroy()
-},3000)
+},10000)
 // after.show()
 // after.addWindowEventListener('onResizing',(ev)=>{ console.log(ev.x,ev.y) }) 
 </script>

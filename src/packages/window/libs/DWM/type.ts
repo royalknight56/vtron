@@ -9,11 +9,10 @@ interface BuiltinPorps {
   id: string,
   wid: number,
   zindex: number,
-  ifShow: boolean,
-  iftop: boolean,
-  ifDestory: boolean,
+  isVisible: boolean,
+  istop: boolean,
   isMaximize: boolean,
-
+  isCreate: boolean,
   windowEventMap: {
       [index: string]: Function
   },

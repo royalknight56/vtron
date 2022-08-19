@@ -28,8 +28,8 @@ class DWM{
     showWindow(id: string) {
         return WinManagement.showWindow(this.system,id)
     }
-    destoryWindow(id: string) {
-        return WinManagement.destoryWindow(this.system,id)
+    destroyWindow(id: string) {
+        return WinManagement.destroyWindow(this.system,id)
     }
     maxWindow(id: string) {
         return WinManagement.maxWindow(this.system,id)

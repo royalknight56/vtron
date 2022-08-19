@@ -23,11 +23,11 @@ import { system } from "../systeminit";
 import icon from "../assets/浏览器.png"
 import TestLoadafterVue from "./TestLoadafter.vue";
 // let system = new System();
-system.Power.closePower();
-setTimeout(()=>{
-system.Power.openPower()
+// system.Power.closePower();
+// setTimeout(()=>{
+// system.Power.openPower()
 
-},4000)
+// },4000)
 let urlinput = ref('')
 let urlsrc = ref('')
 function urlkey(e:KeyboardEvent) {
@@ -41,7 +41,7 @@ function changeUrl() {
     urlsrc.value=urlinput.value
 }
 window.open=<any>function(e:any) { 
-}
+} 
 let after = system.DragWindow({
     title:'test',
     icon,
@@ -49,7 +49,13 @@ let after = system.DragWindow({
     content:TestLoadafterVue})
 setTimeout(()=>{
     after.show()
-})
+},1000)
+setTimeout(()=>{
+    after.hide()
+},2000)
+setTimeout(()=>{
+    after.destroy()
+},3000)
 // after.show()
 // after.addWindowEventListener('onResizing',(ev)=>{ console.log(ev.x,ev.y) }) 
 </script>

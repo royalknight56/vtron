@@ -6,7 +6,7 @@
   Need CodeReview 
 -->
 <template>
-    <div class="winitem" v-for="item in windowInfoMap" :key="item.id">
+    <div class="winitem" v-for="item in windowCreacted" :key="item.id">
         <teleport :to="'#'+system.id">
             <WindowTmpVue :id="item.id" :ref="'ref' + item.id"></WindowTmpVue>
         </teleport>
@@ -16,11 +16,21 @@
 import WindowTmpVue from "@libs/WindowTmp.vue";
 
 import {System} from '@libs/System'
-import { inject } from "vue";
+import { computed, inject } from "vue";
+import { windowInfoMapInter } from "../libs/DWM";
 
 let system = <System>inject('system')
 
-let windowInfoMap = system.State.windowInfoMap
+let windowCreacted =computed(()=>{
+    let Obj:windowInfoMapInter = {}
+    Object.keys(system.State.windowInfoMap).forEach((key)=>{
+        if(system.State.windowInfoMap[key].isCreate){
+            Obj[key] = system.State.windowInfoMap[key]
+            // system.State.windowInfoMap[key].isCreate = false
+        }
+    })
+    return Obj
+})
 
 </script>
 <style scoped>

@@ -63,7 +63,7 @@ let system = <System>inject('system');
 
 let windowInfo = system.DWM.getWindow(id )
 function closeWindow(){
-    system.DWM.destoryWindow(id )
+    system.DWM.destroyWindow(id )
 }
 </script>
 <style>

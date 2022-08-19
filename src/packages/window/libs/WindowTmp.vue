@@ -11,7 +11,7 @@
     :style="customerStyle"
     @touchstart.passive="onFocus"
     @mousedown="onFocus"
-    :class="{ topwin: iftop, maxwin: isMaximize }"
+    :class="{ topwin: istop, maxwin: isMaximize }"
     ref="$win_outer"
   >
     <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
@@ -93,7 +93,7 @@ function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);
 }
 function closeWindow(): void {
-  DWM.destoryWindow(winID);
+  DWM.destroyWindow(winID);
 }
 function hideWindow() {
   DWM.hideWindow(winID);
@@ -121,7 +121,7 @@ function uperRightClick(e: MouseEvent) {
     {
       name: "关闭",
       click: () => {
-        DWM.destoryWindow(winID);
+        DWM.destroyWindow(winID);
       },
     },
     {
@@ -145,7 +145,7 @@ function onFocus(e: MouseEvent | TouchEvent): void {
   }
 }
 
-let iftop = computed(() => wininfo.iftop);
+let istop = computed(() => wininfo.istop);
 let isMaximize = computed(() => wininfo.isMaximize);
 
 let winWidth = ref(wininfo.width);
@@ -165,7 +165,7 @@ onMounted(() => {
       return wininfo.zindex;
     }),
     display: computed(() => {
-      if (wininfo.ifShow) {
+      if (wininfo.isVisible) {
         return "";
       } else {
         return "none";

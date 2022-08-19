@@ -27,11 +27,10 @@ function registerWindow(system:System,id: string,
             id,
             wid: system.State.winnum,
             zindex: 0,
-            ifShow: true,
-            iftop: false,
-            ifDestory: false,
+            isVisible: true,
+            istop: false,
             isMaximize: false,
-
+            isCreate: false,
             ...option,
 
             windowEventMap: {}
@@ -53,9 +52,9 @@ function unRegisterWindow(system:System,id: string) {//删除在windowInfoMap中
 }
 function upSetWindowIndex(system:System,id: string): number {
     for (let key in system.State.windowInfoMap) {
-        system.State.windowInfoMap[key].iftop = false
+        system.State.windowInfoMap[key].istop = false
     }
-    system.State.windowInfoMap[id].iftop = true
+    system.State.windowInfoMap[id].istop = true
 
     let ind = system.State.zIndexIdArray.indexOf(id);
     system.State.zIndexIdArray.splice(ind, 1);
@@ -66,16 +65,18 @@ function upSetWindowIndex(system:System,id: string): number {
     return system.State.zIndexIdArray.length
 }
 function hideWindow(system:System,id: string) {
-    system.State.windowInfoMap[id].ifShow = false
+    system.State.windowInfoMap[id].isVisible = false
 }
 function showWindow(system:System,id: string) {
-    system.State.windowInfoMap[id].ifShow = true
+    system.State.windowInfoMap[id].isVisible = true
 }
-function destoryWindow(system:System,id: string) {
+function createWindow(system:System,id: string) {
+    system.State.windowInfoMap[id].isCreate = true
+}
+function destroyWindow(system:System,id: string) {
 
-    system.State.windowInfoMap[id].ifDestory = true
+    system.State.windowInfoMap[id].isCreate = false
     system.State.windowInfoMap[id].windowEventMap['destroy']?.()
-    unRegisterWindow(system,id);
 
 }
 function maxWindow(system:System,id: string) {
@@ -98,7 +99,8 @@ export {
     upSetWindowIndex,
     hideWindow,
     showWindow,
-    destoryWindow,
+    createWindow,
+    destroyWindow,
     maxWindow,
     on,
     emit

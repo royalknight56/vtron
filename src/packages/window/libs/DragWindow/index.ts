@@ -14,16 +14,15 @@ import { defaultOption } from '@libs/option'
 import * as  WinManagement from '@libs/DWM/WinManagement';
 class DragWindow {
     evMap: EvMapFunction
-    windowInfo: WindowInfo | null
+    readonly windowInfo: WindowInfo
 
     private option: Required<option>
     id: string
     private system: System
-    private isCreated: boolean
 
     constructor(option: option,system:System) {
         this.system = system
-        this.windowInfo = null;
+        
 
         this.evMap = {};
         this.option = Object.assign({
@@ -39,7 +38,7 @@ class DragWindow {
             title:defaultOption.untitle
         }, option)
         this.id = WinManagement.getWinid(this.system);
-        this.isCreated = false;
+        this.windowInfo = this.register(Object.assign(this.option, option))//注册;
     }
     private getWinInner() {
         let dom = document.getElementById(this.system.id);
@@ -63,7 +62,10 @@ class DragWindow {
         this.evMap[event] = callback;
     }
     private register(option: Required<option>) {
-        this.windowInfo = WinManagement.registerWindow(this.system,this.id, option);//在IPC中注册，传递windowInfo
+        return WinManagement.registerWindow(this.system,this.id, option);//在IPC中注册，传递windowInfo
+    }
+    private showWindow() {// 显示窗口
+        WinManagement.showWindow(this.system,this.id)
     }
     private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
         if (this.windowInfo) {
@@ -84,16 +86,19 @@ class DragWindow {
         
         nextTick(() => {
             WinManagement.upSetWindowIndex(this.system,this.id)//新窗口在顶部
-            this.isCreated = true;
         })
     }
 
-    show(option?: Partial<option>) {// 调用show之后，注册窗口，展示窗口
-        if (!this.isCreated && !this.windowInfo?.ifDestory) {// 如果没有被创建，并且没被销毁
-            this.id=WinManagement.getWinid(this.system);//在窗口是第一次注册时，获取一个唯一id
-        }
-        this.register(Object.assign(this.option, option))//注册
+    show() {// 调用show之后，注册窗口，展示窗口
+        WinManagement.createWindow(this.system,this.id)
+        this.showWindow();// 显示窗口
         this.afterRegister()//注册之后
+    }
+    hide() {// 隐藏窗口
+        WinManagement.hideWindow(this.system,this.id)
+    }
+    destroy() {// 销毁窗口
+        WinManagement.destroyWindow(this.system,this.id)
     }
 }
 

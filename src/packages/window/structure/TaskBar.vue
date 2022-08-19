@@ -15,7 +15,7 @@
             <div class="bar_search">在这里输入你要搜索的内容</div>
             <div
                 class="baritem"
-                :class="{ showwin: item.ifShow, topwin: item.iftop && item.ifShow }"
+                :class="{ showwin: item.isVisible, topwin: item.istop && item.isVisible }"
                 v-for="item in winlist"
                 :key="item.id"
                 @click="barClick(item)"
@@ -64,8 +64,8 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { inject, ref } from "vue";
-import type { WindowInfo } from "@/packages/window/libs/DWM/index"
+import { computed, inject, ref } from "vue";
+import type { WindowInfo, windowInfoMapInter } from "@/packages/window/libs/DWM/index"
 
 import MagnetVue from "@structure/Magnet.vue";
 import NetworkVue from "@structure/taskbarIcon/network.vue";
@@ -89,10 +89,19 @@ if (appconfig.start_menu_logo == "default") {
 }
 
 
-let winlist =system.State.windowInfoMap
-
+// let winlist =system.State.windowInfoMap
+let winlist =computed(()=>{
+    let Obj:windowInfoMapInter = {}
+    Object.keys(system.State.windowInfoMap).forEach((key)=>{
+        if(system.State.windowInfoMap[key].isCreate){
+            Obj[key] = system.State.windowInfoMap[key]
+            // system.State.windowInfoMap[key].isCreate = false
+        }
+    })
+    return Obj
+})
 function barClick(item: WindowInfo) {
-    if (item.ifShow) {
+    if (item.isVisible) {
         system.DWM.upSetWindowIndex(item.id)
     } else {
         system.DWM.showWindow(item.id)
@@ -113,17 +122,17 @@ function changeMagnetShow() {
     ifMagnetShow.value = !ifMagnetShow.value
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
-    if (item.ifShow) {
+    if (item.isVisible) {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', click: () => { system.DWM.destoryWindow(item.id) } },
+                { name: '关闭', click: () => { system.DWM.destroyWindow(item.id) } },
                 { name: '最小化', click: () => { system.DWM.hideWindow(item.id) } }
             ]
         )
     } else {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', click: () => { system.DWM.destoryWindow(item.id) } },
+                { name: '关闭', click: () => { system.DWM.destroyWindow(item.id) } },
                 { name: '显示', click: () => { system.DWM.showWindow(item.id) } }
             ]
         )
@@ -132,7 +141,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo) {
-    system.DWM.destoryWindow(item.id)
+    system.DWM.destroyWindow(item.id)
 }
 // //定期更换截图
 // setInterval(() => {

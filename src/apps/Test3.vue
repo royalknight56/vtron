@@ -45,7 +45,6 @@ window.open=<any>function(e:any) {
 let after = system.DragWindow({
     title:'test',
     icon,
-    buttons:[],
     content:TestLoadafterVue})
 setTimeout(()=>{
     after.show()

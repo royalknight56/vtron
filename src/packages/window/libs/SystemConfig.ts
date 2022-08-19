@@ -24,7 +24,7 @@ type partialOption=Partial<typeof defaultOption>
 
 class SystemConfig{
     config:typeof defaultOption;
-    system:System;
+    private system:System;
     constructor(system:System){
         this.config = reactive({...defaultOption})
         this.system = system

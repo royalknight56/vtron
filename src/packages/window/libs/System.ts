@@ -14,7 +14,7 @@ import {
 import type {appInfo} from "@state/type";
 import {DragWindowFactory} from "@libs/DragWindow"
 import { defaultOption } from '@libs/option'
-import { SystemConfig,OptionType,partialOption } from "@/packages/window/libs/appconfig";
+import { SystemConfig,OptionType,partialOption } from "@/packages/window/libs/SystemConfig";
 
 class System {
   id:string;

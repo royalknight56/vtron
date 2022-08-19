@@ -5,10 +5,6 @@ import { reactive } from "vue";
 
 import { System } from '@libs/System';
 
-function addEventListener(system:System,id: string, name: string, func: Function) {
-  system.State.windowInfoMap[id].windowEventMap[name] = func
-}
-
 function upSetWindowIndex(system:System,id: string): number {
   for (let key in system.State.windowInfoMap) {
       system.State.windowInfoMap[key].istop = false
@@ -48,7 +44,6 @@ function emit(system:System,ev: string, ...args: any) {
   system.State.eventMap[ev]?.(...args)
 }
 export {
-  addEventListener,
   upSetWindowIndex,
   hideWindow,
   showWindow,

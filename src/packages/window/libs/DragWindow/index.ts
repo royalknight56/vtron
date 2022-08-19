@@ -89,7 +89,10 @@ class DragWindow {
         })
     }
 
-    show() {// 调用show之后，注册窗口，展示窗口
+    show(option?: Partial<option>) {// 调用show之后，注册窗口，展示窗口
+        if (option) {
+            this.option = Object.assign(this.option, option)
+        }
         WinManagement.createWindow(this.system,this.id)
         this.showWindow();// 显示窗口
         this.afterRegister()//注册之后

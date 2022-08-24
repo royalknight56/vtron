@@ -1,0 +1,6 @@
+function initResizeListener(){
+
+}
+export {
+    initResizeListener
+}

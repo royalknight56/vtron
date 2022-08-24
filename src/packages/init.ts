@@ -1,14 +1,15 @@
 /*
  * @Author: Royal
- * @LastEditTime: 2022-06-01 10:07:50
+ * @LastEditTime: 2022-07-14 19:20:39
  * @Description: 启动时操作
  */
-import { SystemState } from '@libs/SystemState';
+// import { Power } from '@libs/Power';
 import {initListener} from "@state/listener";
+import {System} from '@libs/System'
 
-function globalInit() {
-  SystemState.getInstance().openPower();
-  initListener()
+function globalInit(system:System) {
+  system.Power.openPower()
+  initListener(system)
 }
 export {
   globalInit

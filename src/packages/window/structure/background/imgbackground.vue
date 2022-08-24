@@ -12,7 +12,12 @@
 
 </template>
 <script lang="ts" setup>
-import { appconfig } from "@/packages/appconfig";
+import { inject } from 'vue';
+import {System} from '@libs/System'
+
+let system =<System>inject('system');
+const appconfig = system.SystemConfig.config
+
 </script>
 <style scoped>
 @import '../../../main.css';

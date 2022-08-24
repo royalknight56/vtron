@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-04-28 19:22:25
+ * @LastEditTime: 2022-07-15 11:09:04
  * @Description: 磁贴
  * @FilePath: /myindex/src/components/window/Magnet.vue
   Need CodeReview 
@@ -39,36 +39,33 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { appList } from "@state/index";
 import type {appInfo} from "@state/type"
-import { SystemState } from "@libs/SystemState";
-
-import { MenuCtrl } from "@libs/MenuCtrl";
 import { UnwrapNestedRefs } from "@vue/reactivity";
-import { DragWindow } from "@/packages/window/libs/DragWindow"
 import { openSetting } from "@builtin/callSystemWins"
-import { onMounted, ref,defineEmits } from "vue";
+import { onMounted, ref,defineEmits, inject } from "vue";
+import {System} from '@libs/System'
+
+let system = <System>inject('system')
 // import systemSetVue from "../system/systemSet.vue"
 function closeClice(e: MouseEvent) {
     // console.log(e.offsetX, e.offsetY)
-    MenuCtrl.getInstance().callMenu(e,
+    system.ContextMenu.callMenu(e,
         [
-            { name: '关机', func: () => { console.log("关机"); SystemState.getInstance().closePower() } },
-            // { name: '锁定', func: () => { SystemState.getInstance().lockScreen() } },
-            { name: '重启', func: () => { console.log("重启"); SystemState.getInstance().restartPower() } }
+            { name: '关机', click: () => { console.log("关机"); system.Power.closePower() } },
+            { name: '重启', click: () => { console.log("重启"); system.Power.restartPower() } }
 
         ]
     )
 }
 
-let mangList = appList
+let mangList = system.State.appList
 
 function manclick(item: UnwrapNestedRefs<appInfo>) {
     item.window.show()
 }
 
 function openset() {
-    openSetting()
+    openSetting(system)
 }
 let mright = ref()
 let mrightborder = ref()

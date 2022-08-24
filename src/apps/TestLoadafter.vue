@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-04-27 16:39:20
+ * @LastEditTime: 2022-07-14 16:46:47
  * @Description: 
  * @FilePath: /myindex/src/components/apps/TestLoadafter.vue
 -->
@@ -16,10 +16,10 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref } from "vue";
-import { DWM } from "../packages/window/libs/DWM/index";
+import { system } from "../systeminit";
 
 let winId = <string>inject('windowId')
-DWM.getInstance().addEventListener(winId,'resize',()=>{ console.log('resize')})
+system.DWM.getWindow(winId).addWindowEventListener('onResizing',()=>{ console.log('resize')})
 
 let urlinput = ref('')
 let urlsrc = ref('')

@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-06 15:21:46
+ * @LastEditTime: 2022-07-15 11:10:16
  * @Description: 
  * @FilePath: /myindex/src/components/window/libs/WindowTmp.vue
  Need CodeReview 
@@ -11,7 +11,7 @@
     :style="customerStyle"
     @touchstart.passive="onFocus"
     @mousedown="onFocus"
-    :class="{ topwin: iftop, maxwin: isMaximize }"
+    :class="{ topwin: istop, maxwin: isMaximize }"
     ref="$win_outer"
   >
     <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
@@ -58,20 +58,15 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {  provide, ref, watch } from "vue";
-
+import {  inject, provide, ref, watch } from "vue";
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
-
-import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index";
 import type { WindowInfo } from "@/packages/window/libs/DWM/index";
-import { MenuCtrl } from "@libs/MenuCtrl";
-
 import { DragElement } from "@libs/Dom/DragElement";
 import { ScaleElement } from "@libs/Dom/ScaleElement";
 import Statebar from "@libs/WindowTemplate/statebarButton.vue";
 import WindowInner from "@libs/WindowTemplate/windowInner.vue";
-
+import {System} from '@libs/System'
 let props = defineProps({
   id: {
     type: String,
@@ -87,26 +82,31 @@ let props = defineProps({
     },
   },
 });
-let winID = props.id;
-let wininfo = PrivateDWM.getInstance().getWindow(winID);
 
+let system = <System>inject('system')
+let winID = props.id;
+let DWM = system.DWM;
+
+
+let DragWindowItem = DWM.getWindow(winID);
+let wininfo = DragWindowItem.windowInfo;
 const componentKey = ref<Number>(1);
 function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);
 }
 function closeWindow(): void {
-  PrivateDWM.getInstance().destoryWindow(winID);
+  DragWindowItem.destroy()
 }
 function hideWindow() {
-  PrivateDWM.getInstance().hideWindow(winID);
+  DragWindowItem.hide()
 }
 function maxWindow() {
   if(isScaleAble.value) {
-    PrivateDWM.getInstance().maxWindow(winID);
+    DragWindowItem.maximize()
   }
 }
 function predown() {
-  PrivateDWM.getInstance().upSetWindowIndex(winID);
+  DragWindowItem.moveTop()
 }
 type buttonEvent = 'flush'|'close'|'min'|'max'
 const buttonEventFunc = {
@@ -119,17 +119,17 @@ function handelButtonEvent(event:buttonEvent){
   buttonEventFunc[event]();
 }
 function uperRightClick(e: MouseEvent) {
-  MenuCtrl.getInstance().callMenu(e, [
+  system.ContextMenu.callMenu(e, [
     {
       name: "关闭",
-      func: () => {
-        PrivateDWM.getInstance().destoryWindow(winID);
+      click: () => {
+        DragWindowItem.destroy()
       },
     },
     {
       name: "最小化",
-      func: () => {
-        PrivateDWM.getInstance().hideWindow(winID);
+      click: () => {
+        DragWindowItem.hide()
       },
     },
   ]);
@@ -138,7 +138,7 @@ function uperRightClick(e: MouseEvent) {
 let customerStyle = ref<any>({});
 
 function onFocus(e: MouseEvent | TouchEvent): void {
-  PrivateDWM.getInstance().upSetWindowIndex(winID);
+  DragWindowItem.moveTop()
   if (isMaximize.value) {
     if (e instanceof MouseEvent) {
       e.preventDefault();
@@ -147,7 +147,7 @@ function onFocus(e: MouseEvent | TouchEvent): void {
   }
 }
 
-let iftop = computed(() => wininfo.iftop);
+let istop = computed(() => wininfo.istop);
 let isMaximize = computed(() => wininfo.isMaximize);
 
 let winWidth = ref(wininfo.width);
@@ -167,7 +167,7 @@ onMounted(() => {
       return wininfo.zindex;
     }),
     display: computed(() => {
-      if (wininfo.ifShow) {
+      if (wininfo.isVisible) {
         return "";
       } else {
         return "none";

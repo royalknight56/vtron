@@ -1,15 +1,19 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-06-02 15:14:20
+ * @LastEditTime: 2022-07-14 18:39:55
  * @Description: 
 -->
 <template>
   <span class="segoicon SEGOEUIMDL charging">{{ iconDisplay }}</span>
 </template>
 <script setup lang="ts">
-import { sysInfo } from "@state/index";
+// import { sysInfo } from "@state/index";
+import { defineProps } from 'vue';
+import { PropType } from 'vue';
+
 
 import { reactive, ref, watch } from "vue";
+let props = defineProps(['sysInfo'])
 let charMap = {
   noC: {
     0: `\uE850`,
@@ -38,14 +42,14 @@ let charMap = {
 }
 let iconDisplay = ref(`\uE850`);
 watch([
-  () => sysInfo.isCharging,
-  () => sysInfo.chargeLevel,
+  () => props.sysInfo.isCharging,
+  () => props.sysInfo.chargeLevel,
 ], (val) => {
-  if (sysInfo.chargeLevel == 1) {
+  if (props.sysInfo.chargeLevel == 1) {
     iconDisplay.value = charMap[`noC`][9];
   } else {
-    let level = Math.floor(sysInfo.chargeLevel * 10);
-    iconDisplay.value = (charMap[sysInfo.isCharging ? `isC` : `noC`] as any)[level];
+    let level = Math.floor(props.sysInfo.chargeLevel * 10);
+    iconDisplay.value = (charMap[props.sysInfo.isCharging ? `isC` : `noC`] as any)[level];
   }
 })
 

@@ -11,7 +11,7 @@
     :style="customerStyle"
     @touchstart.passive="onFocus"
     @mousedown="onFocus"
-    :class="{ topwin: iftop, maxwin: isMaximize }"
+    :class="{ topwin: istop, maxwin: isMaximize }"
     ref="$win_outer"
   >
     <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
@@ -85,26 +85,28 @@ let props = defineProps({
 
 let system = <System>inject('system')
 let winID = props.id;
-let privateDWM = system.DWM.privateDWM;
-let wininfo = privateDWM.getWindow(winID);
+let DWM = system.DWM;
 
+
+let DragWindowItem = DWM.getWindow(winID);
+let wininfo = DragWindowItem.windowInfo;
 const componentKey = ref<Number>(1);
 function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);
 }
 function closeWindow(): void {
-  privateDWM.destoryWindow(winID);
+  DragWindowItem.destroy()
 }
 function hideWindow() {
-  privateDWM.hideWindow(winID);
+  DragWindowItem.hide()
 }
 function maxWindow() {
   if(isScaleAble.value) {
-    privateDWM.maxWindow(winID);
+    DragWindowItem.maximize()
   }
 }
 function predown() {
-  privateDWM.upSetWindowIndex(winID);
+  DragWindowItem.moveTop()
 }
 type buttonEvent = 'flush'|'close'|'min'|'max'
 const buttonEventFunc = {
@@ -121,13 +123,13 @@ function uperRightClick(e: MouseEvent) {
     {
       name: "关闭",
       click: () => {
-        privateDWM.destoryWindow(winID);
+        DragWindowItem.destroy()
       },
     },
     {
       name: "最小化",
       click: () => {
-        privateDWM.hideWindow(winID);
+        DragWindowItem.hide()
       },
     },
   ]);
@@ -136,7 +138,7 @@ function uperRightClick(e: MouseEvent) {
 let customerStyle = ref<any>({});
 
 function onFocus(e: MouseEvent | TouchEvent): void {
-  privateDWM.upSetWindowIndex(winID);
+  DragWindowItem.moveTop()
   if (isMaximize.value) {
     if (e instanceof MouseEvent) {
       e.preventDefault();
@@ -145,7 +147,7 @@ function onFocus(e: MouseEvent | TouchEvent): void {
   }
 }
 
-let iftop = computed(() => wininfo.iftop);
+let istop = computed(() => wininfo.istop);
 let isMaximize = computed(() => wininfo.isMaximize);
 
 let winWidth = ref(wininfo.width);
@@ -165,7 +167,7 @@ onMounted(() => {
       return wininfo.zindex;
     }),
     display: computed(() => {
-      if (wininfo.ifShow) {
+      if (wininfo.isVisible) {
         return "";
       } else {
         return "none";

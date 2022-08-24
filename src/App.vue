@@ -14,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-
 import brow from "./assets/浏览器.png"
 import Test3 from "./apps/Test3.vue"
 import Browser from "./apps/Browser.vue"
@@ -30,9 +29,7 @@ import {system,system2} from "./systeminit"
 // import computer from "./assets/computer.ico"
 let p1 = system;
 let p2 = system2;
-setInterval(()=>{
-  
-},1000)
+
 onMounted(() => {
   system.ClearDesktop();
 

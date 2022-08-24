@@ -10,8 +10,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { appconfig } from "@/packages/appconfig";
-import { Power } from "@libs/Power";
 import BlackScreen from '@structure/status/black.vue';
 import BlueScreen from '@structure/status/blue.vue';
 import {System} from '@libs/System'

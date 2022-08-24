@@ -16,8 +16,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { storeConfig, setConfig, clearStoreConfig, appconfig } from '@/packages/appconfig'
-let localVersion = ref('0.2.7')
+let localVersion = ref('0.3.0')
 let remoteVersion = ref('0.0.0')
 
 function getRemoteVersion() {

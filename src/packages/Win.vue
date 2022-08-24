@@ -13,7 +13,7 @@
     <StatusVue></StatusVue>
     <AlertVue></AlertVue>
     <WindowsGroup></WindowsGroup>
-    <LockScreenVue></LockScreenVue>
+    <!-- <LockScreenVue></LockScreenVue> -->
   </div>
 </template>
   
@@ -27,7 +27,7 @@ import Desktop from '@structure/Desktop.vue';
 import BackgroundVue from '@structure/background/index.vue';
 import StatusVue from '@structure/status/index.vue';
 import WindowsGroup from '@structure/WindowsGroup.vue';
-import LockScreenVue from '@structure/LockScreen.vue';
+// import LockScreenVue from '@structure/LockScreen.vue';
 import AlertVue from '@structure/Alert.vue';
 
 import { globalInit } from './init'

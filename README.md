@@ -142,7 +142,7 @@ createApp(App).use(win10).mount('#app')
         |   |-- DWM             // 窗口管理中心
         |   |   |-- DWM.ts
         |   |   |-- index.ts
-        |   |   |-- PrivateDWM.ts
+        |   |   |-- WinManagement.ts
         |   |   |-- type.ts
         |   |-- WindowTemplate  // 窗口模板
         |       |-- getCom.ts

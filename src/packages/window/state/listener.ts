@@ -6,7 +6,7 @@
 // import {sysInfo} from "@state/index";
 
 import {System} from '@libs/System'
-
+import {initResizeListener} from "@state/systemEvent/resize"
 
 function initListener(system:System){
   let sysInfo = system.State.sysInfo

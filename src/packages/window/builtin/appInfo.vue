@@ -61,9 +61,9 @@ import {System} from '@libs/System'
 let id =<string>inject('windowId')
 let system = <System>inject('system');
 
-let windowInfo = system.DWM.privateDWM.getWindow(id )
+let windowInfo = system.DWM.getWindow(id ).windowInfo
 function closeWindow(){
-    system.DWM.privateDWM.destoryWindow(id )
+    system.DWM.getWindow(id ).destroy()
 }
 </script>
 <style>

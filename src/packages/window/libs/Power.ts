@@ -6,7 +6,6 @@
  * Need CodeReview 
  */
 import { reactive } from "vue";
-import {appconfig } from "@/packages/appconfig";
 import {System} from '@libs/System'
 
 interface stateCtrl{
@@ -26,9 +25,8 @@ interface loginInfo{
 }
 
 class Power {
-    private static instance: Power;
     state: stateCtrl;
-    system:System
+    private system:System
     constructor(system:System) {
         this.system = system;
         this.state = reactive({
@@ -55,7 +53,7 @@ class Power {
         },1000)
     }
     openPower(){
-        if(appconfig.start_time==0){
+        if(this.system.SystemConfig.config.start_time==0){
             this.state.screen='common'
         }else{
             this.state.screen='close'
@@ -63,10 +61,10 @@ class Power {
 
         setTimeout(()=>{
             this.state.screen='blue'
-        },appconfig.start_time/2)
+        },this.system.SystemConfig.config.start_time/2)
         setTimeout(()=>{
             this.state.screen='common'
-        },appconfig.start_time)
+        },this.system.SystemConfig.config.start_time)
     }
     restartPower(){
         // this.state.screen='blue'

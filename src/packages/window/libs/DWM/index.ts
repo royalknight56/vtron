@@ -6,5 +6,4 @@
  * Need CodeReview 
  */
 export {DWM} from "@libs/DWM/DWM";
-export {PrivateDWM} from "@libs/DWM/PrivateDWM";
 export * from "@libs/DWM/type"

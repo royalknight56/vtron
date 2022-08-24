@@ -4,47 +4,27 @@
  * @Description: 
  */
 
-import { PrivateDWM} from '@libs/DWM/PrivateDWM';
+import * as  WinManagement from '@libs/DWM/WindowManage';
+
 import type { windowInfoMapInter,eventMapInter,WindowInfo } from "@libs/DWM/type";
+import { DragWindow } from "@libs/DragWindow";
 import {System} from '@libs/System'
 class DWM{
-    // private static instance: DWM;
-    system:System;
-    privateDWM :PrivateDWM
+    private system:System;
     constructor(system:System) {
         this.system = system
-        this.privateDWM =new PrivateDWM(this.system)
     }
-    getWindow(id: string): WindowInfo {
-        return this.privateDWM.getWindow(id)
-    }
-    addEventListener(id: string, name: string, func: Function) {
-        return this.privateDWM.addEventListener(id,name,func)
-    }
-    upSetWindowIndex(id: string){
-        return this.privateDWM.upSetWindowIndex(id)
-    }
-    hideWindow(id: string) {
-        return this.privateDWM.hideWindow(id)
-    }
-    showWindow(id: string) {
-        return this.privateDWM.showWindow(id)
-    }
-    destoryWindow(id: string) {
-        return this.privateDWM.destoryWindow(id)
-    }
-    maxWindow(id: string) {
-        return this.privateDWM.maxWindow(id)
+    getWindow(id: string): DragWindow {
+        return WinManagement.getWindow(this.system,id)
     }
     on(ev: string, func: Function) {
-        return this.privateDWM.on(ev,func)
+        return WinManagement.on(this.system,ev,func)
     }
     emit(ev: string, ...args: any) {
-        return this.privateDWM.emit(ev,...args)
+        return WinManagement.emit(this.system,ev,...args)
     }
 
 }
 export {
-    DWM,
-    PrivateDWM,
+    DWM
 }

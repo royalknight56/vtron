@@ -15,7 +15,7 @@
             <div class="bar_search">在这里输入你要搜索的内容</div>
             <div
                 class="baritem"
-                :class="{ showwin: item.ifShow, topwin: item.iftop && item.ifShow }"
+                :class="{ showwin: item.isVisible, topwin: item.istop && item.isVisible }"
                 v-for="item in winlist"
                 :key="item.id"
                 @click="barClick(item)"
@@ -64,18 +64,19 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { inject, ref } from "vue";
-import type { WindowInfo } from "@/packages/window/libs/DWM/index"
+import { computed, inject, ref } from "vue";
+import type { WindowInfo, windowInfoMapInter } from "@/packages/window/libs/DWM/index"
 
 import MagnetVue from "@structure/Magnet.vue";
 import NetworkVue from "@structure/taskbarIcon/network.vue";
 import ChargingVue from "@structure/taskbarIcon/charging.vue";
 
 import winimg from "../../../assets/win.png"
-import { appconfig } from "@/packages/appconfig";
+
 
 import {System} from '@libs/System'
 let system = <System>inject('system')
+const appconfig = system.SystemConfig.config
 
 let sysInfo = system.State.sysInfo
 let ContextMenu = system.ContextMenu
@@ -88,14 +89,23 @@ if (appconfig.start_menu_logo == "default") {
 }
 
 
-let winlist =system.State.windowInfoMap
-
+// let winlist =system.State.windowInfoMap
+let winlist =computed(()=>{
+    let Obj:windowInfoMapInter = {}
+    Object.keys(system.State.windowInfoMap).forEach((key)=>{
+        if(system.State.windowInfoMap[key].windowInfo.isCreate){
+            Obj[key] = system.State.windowInfoMap[key].windowInfo
+            // system.State.windowInfoMap[key].isCreate = false
+        }
+    })
+    return Obj
+})
 function barClick(item: WindowInfo) {
-    if (item.ifShow) {
-        system.DWM.privateDWM.upSetWindowIndex(item.id)
+    if (item.isVisible) {
+        system.DWM.getWindow(item.id).moveTop()
     } else {
-        system.DWM.privateDWM.showWindow(item.id)
-        system.DWM.privateDWM.upSetWindowIndex(item.id)
+        system.DWM.getWindow(item.id).show()
+        system.DWM.getWindow(item.id).moveTop()
     }
 }
 
@@ -112,18 +122,18 @@ function changeMagnetShow() {
     ifMagnetShow.value = !ifMagnetShow.value
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
-    if (item.ifShow) {
+    if (item.isVisible) {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', click: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
-                { name: '最小化', click: () => { system.DWM.privateDWM.hideWindow(item.id) } }
+                { name: '关闭', click: () => { system.DWM.getWindow(item.id).destroy() } },
+                { name: '最小化', click: () => { system.DWM.getWindow(item.id).hide() } }
             ]
         )
     } else {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', click: () => { system.DWM.privateDWM.destoryWindow(item.id) } },
-                { name: '显示', click: () => { system.DWM.privateDWM.showWindow(item.id) } }
+                { name: '关闭', click: () => { system.DWM.getWindow(item.id).destroy() } },
+                { name: '显示', click: () => { system.DWM.getWindow(item.id).show() } }
             ]
         )
     }
@@ -131,7 +141,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo) {
-    system.DWM.privateDWM.destoryWindow(item.id)
+    system.DWM.getWindow(item.id).destroy()
 }
 // //定期更换截图
 // setInterval(() => {

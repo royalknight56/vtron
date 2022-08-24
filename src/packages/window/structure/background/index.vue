@@ -10,14 +10,12 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { appconfig } from "@/packages/appconfig";
 import defaultBackground from "@structure/background/default.vue";
 import imgBackground from "@structure/background/imgbackground.vue";
-
-import {System} from '@libs/System'
 import { inject } from "vue";
+import {System} from '@libs/System'
 let system =<System>inject('system');
-
+const appconfig = system.SystemConfig.config
 function backgroundRightClick(e: MouseEvent) {
     system.ContextMenu.callMenu(e,
         [

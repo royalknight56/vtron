@@ -40,7 +40,7 @@
 </template>
 <script lang="ts" setup>
 import type {appInfo} from "@state/type"
-import { UnwrapNestedRefs } from "@vue/reactivity";
+import { UnwrapNestedRefs } from "vue";
 import { openSetting } from "@builtin/callSystemWins"
 import { onMounted, ref,defineEmits, inject } from "vue";
 import {System} from '@libs/System'

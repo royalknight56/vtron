@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { UnwrapNestedRefs } from "@vue/reactivity";
+import { UnwrapNestedRefs } from "vue";
 import { inject, reactive } from "vue";
 // import { appList } from "@state/index";
 import type { appInfo } from "@state/type"

@@ -24,7 +24,7 @@ import app_vscode from "./apps/app_vscode.vue"
 
 import Mycom from "./apps/MyComputer.vue"
 // import { DragWindow } from "./packages/window/libs/DragWindow";
-import { onMounted, reactive, ref } from "@vue/runtime-core";
+import { onMounted, reactive, ref } from "vue";
 import {system,system2} from "./systeminit"
 // import computer from "./assets/computer.ico"
 let p1 = system;
@@ -32,7 +32,6 @@ let p2 = system2;
 
 onMounted(() => {
   system.ClearDesktop();
-
   system2.ClearDesktop();
   system2.AddToDesktop({
     name: '浏览器',

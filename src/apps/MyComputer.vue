@@ -105,7 +105,7 @@
 <script lang="ts" setup>
 
 import { ref, reactive, computed, onMounted } from "vue";
-import type { UnwrapNestedRefs } from "@vue/reactivity";
+import type { UnwrapNestedRefs } from "vue";
 import folderimg from "../assets/newFolder.ico"
 interface Folder {
     name: string,

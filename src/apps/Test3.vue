@@ -17,7 +17,6 @@
 <script lang="ts" setup>
 import { ref,useAttrs,getCurrentInstance } from "vue";
 // import { DragWindow } from "../packages/window/libs/DragWindow";
-import { DragWindow } from "../plug";
 import { system } from "../systeminit";
 
 import icon from "../assets/浏览器.png"

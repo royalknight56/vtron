@@ -6,7 +6,6 @@
 
 import * as  WinManagement from '@libs/DWM/WindowManage';
 
-import type { windowInfoMapInter,eventMapInter,WindowInfo } from "@libs/DWM/type";
 import { DragWindow } from "@libs/DragWindow";
 import {System} from '@libs/System'
 class DWM{

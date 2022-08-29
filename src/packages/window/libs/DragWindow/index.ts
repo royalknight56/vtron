@@ -125,14 +125,44 @@ class DragWindow {
     minimize() {// 最小化窗口
         this.windowInfo.isVisible = false;
     }
+    restore() {// 恢复窗口
+        this.windowInfo.isVisible = true;
+    }
     isMaximized() {// 是否最大化
         return this.windowInfo.isMaximize
     }
     maximize() {// 最大化窗口
         this.windowInfo.isMaximize = true;
     }
+    unmaximize() {// 取消最大化窗口
+        this.windowInfo.isMaximize = false;
+    }
     moveTop(){
         WinManagement.upSetWindowIndex(this.system,this.id)
+    }
+    isNormal(){
+        return !this.isMaximized() && !this.isMinimized()
+    }
+    setSize(width: number, height: number) {// 设置窗口大小
+        this.windowInfo.width = width;
+        this.windowInfo.height = height;
+        this.makeWindowNotOverSize();
+    }
+    getSize() {// 获取窗口大小
+        return {
+            width: this.windowInfo.width,
+            height: this.windowInfo.height
+        }
+    }
+    setPosition(x: number, y: number) {// 设置窗口位置
+        this.windowInfo.x = x;
+        this.windowInfo.y = y;
+    }
+    getPosition() {// 获取窗口位置
+        return {
+            x: this.windowInfo.x,
+            y: this.windowInfo.y
+        }
     }
 }
 

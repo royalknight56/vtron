@@ -9,61 +9,62 @@
 import { defineConfig } from 'vite';
 import path from 'path';
 import vue from '@vitejs/plugin-vue'
-import typescript from '@rollup/plugin-typescript';
-import ttypescript from 'ttypescript'
+import dts from "vite-plugin-dts"
+import { visualizer } from 'rollup-plugin-visualizer';
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [vue()],
-    resolve: {
-        alias: [
-            {
-                find: "@",
-                replacement: path.resolve(__dirname, 'src')
-              },
-              {
-                find: "@structure",
-                replacement: path.resolve(__dirname, 'src/packages/window/structure')
-              },
-              {
-                find: "@builtin",
-                replacement: path.resolve(__dirname, 'src/packages/window/builtin')
-              },
-              {
-                find: "@state",
-                replacement: path.resolve(__dirname, 'src/packages/window/state')
-              },
-              {
-                find: "@libs",
-                replacement: path.resolve(__dirname, 'src/packages/window/libs')
-              }
-            ],
-        dedupe: ['vue']
+  plugins: [vue(), dts(),visualizer()],
+  resolve: {
+    alias: [
+      {
+        find: "@",
+        replacement: path.resolve(__dirname, 'src')
+      },
+      {
+        find: "@structure",
+        replacement: path.resolve(__dirname, 'src/packages/window/structure')
+      },
+      {
+        find: "@builtin",
+        replacement: path.resolve(__dirname, 'src/packages/window/builtin')
+      },
+      {
+        find: "@state",
+        replacement: path.resolve(__dirname, 'src/packages/window/state')
+      },
+      {
+        find: "@libs",
+        replacement: path.resolve(__dirname, 'src/packages/window/libs')
+      }
+    ],
+    dedupe: ['vue']
+  },
+  build: {
+    // target:
+    target: ["es2019"],
+    outDir: "./distlib",
+    lib: {
+      formats: ["es","umd"],
+      entry: path.resolve(__dirname, 'src/plug.ts'),
+      name: 'Win10',
+      fileName: (format) => {
+        return format === 'es' ? 'wui.mjs' : 'wui.umd.js'
+      }
     },
-    build: {
-        // target:
-        target:"es2019",
-        outDir: "./distlib",
-        lib: {
-            formats: ["es"],
-            entry: path.resolve(__dirname, 'src/plug.ts'),
-            name: 'Win10',
-            fileName: (format) => `plug.js`
-        },
-        rollupOptions: {
-            plugins:[
-              typescript({ 
-                typescript: ttypescript,
-              })],
-            // 确保外部化处理那些你不想打包进库的依赖
-            external: ['vue','element-plus'],
-            output: {
-                // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
-                globals: {
-                    vue: 'Vue'
-                },
-
-            },
-            //   inlineDynamicImports: true//blog
+    rollupOptions: {
+      plugins: [
+      ],
+      // make sure to externalize deps that shouldn't be bundled
+      // into your library
+      external: ['vue'],
+      output: {
+        // Provide global variables to use in the UMD build
+        // for externalized deps
+        globals: {
+          vue: 'Vue'
         }
+      }
+      //   inlineDynamicImports: true//blog
     }
+  }
 })

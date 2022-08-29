@@ -102,7 +102,11 @@ function hideWindow() {
 }
 function maxWindow() {
   if(isScaleAble.value) {
-    DragWindowItem.maximize()
+    if(DragWindowItem.isMaximized()) {
+      DragWindowItem.unmaximize()
+    } else {
+      DragWindowItem.maximize()
+    }
   }
 }
 function predown() {

@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-14 10:58:39
+ * @LastEditTime: 2022-07-14 17:30:30
  * @Description: 
 -->
 <template>
@@ -30,7 +30,6 @@
 <script lang="ts" setup>
 
 import { inject, ref, defineComponent } from 'vue';
-import { PrivateDWM } from '@/packages/window/libs/DWM/index';
 
 import WinSelect from '@builtin/winComponent/WinSelect.vue'
 import systemset from '@builtin/setApps/SetSystemset.vue'
@@ -45,32 +44,34 @@ import e771 from '../../../assets/icon/e771.png'//个性化
 import e895 from '../../../assets/icon/e895.png'//更新
 import { DragWindow } from '@/packages/window/libs/DragWindow';
 
+import {System} from '@libs/System'
 
 let id = <string>inject('windowId')
+let system = <System>inject('system')
 
-let windowInfo = PrivateDWM.getInstance().getWindow(id)
 
 let setMap: {
     [key: string]: DragWindow
 } = {}
+let windowInfo = system.getWindow(id).windowInfo
 function openSet(content: ReturnType<typeof defineComponent>, title: string) {
     if (content) {
         if (setMap[title]) {
             setMap[title].show({
-                x:PrivateDWM.getInstance().getWindow(id).x,
-                y:PrivateDWM.getInstance().getWindow(id).y,
-                height:PrivateDWM.getInstance().getWindow(id).height,
-                width:PrivateDWM.getInstance().getWindow(id).width,
+                x:windowInfo.x,
+                y:windowInfo.y,
+                height:windowInfo.height,
+                width:windowInfo.width,
             })
         } else {
-            setMap[title] = new DragWindow({
+            setMap[title] = system.DragWindow({
                 content: content,
                 title:'系统',
-                x:PrivateDWM.getInstance().getWindow(id).x,
-                y:PrivateDWM.getInstance().getWindow(id).y,
+                x:windowInfo.x,
+                y:windowInfo.y,
 
-                height:PrivateDWM.getInstance().getWindow(id).height,
-                width:PrivateDWM.getInstance().getWindow(id).width,
+                height:windowInfo.height,
+                width:windowInfo.width,
 
             })
             setMap[title].show()

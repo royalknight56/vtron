@@ -1,27 +1,26 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "strict": true,
-    "jsx": "preserve",
+    // "jsx": "preserve",
     "sourceMap": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "lib": ["esnext", "dom"],
+    // "esModuleInterop": true,
+    "lib": ["ESNext", "dom"],
     "skipLibCheck": true,
-
     "declaration": true,
     "declarationDir": "distlib",
     "typeRoots": ["./types","./node_modules/@types"],
+    "baseUrl": ".",
     "paths":{
-      "@/*": ["./src/*"],
-      "@structure/*": ["./src/packages/window/structure/*"],
-      "@builtin/*": ["./src/packages/window/builtin/*"],
-      "@state/*": ["./src/packages/window/state/*"],
-      "@libs/*": ["./src/packages/window/libs/*"],
+      "@/*": ["src/*"],
+      "@structure/*": ["src/packages/window/structure/*"],
+      "@builtin/*": ["src/packages/window/builtin/*"],
+      "@state/*": ["src/packages/window/state/*"],
+      "@libs/*": ["src/packages/window/libs/*"],
      },
-
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

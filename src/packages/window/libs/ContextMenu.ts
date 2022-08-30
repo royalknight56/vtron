@@ -1,41 +1,36 @@
 import { reactive, ref, Ref, } from "vue";
-import { UnwrapNestedRefs } from "@vue/reactivity";
-
+import { UnwrapNestedRefs } from "vue";
+import {System} from '@libs/System';
 
 /*
  * @Author: Royal
- * @LastEditTime: 2022-03-03 16:32:42
+ * @LastEditTime: 2022-07-15 10:52:16
  * @Description: 右键菜单控制
- * @FilePath: /myindex/src/components/window/libs/MenuCtrl.ts
+ * @FilePath: /myindex/src/components/window/libs/ContextMenu.ts
  * Need CodeReview 
  */
 interface menuItem {
     name: string,
-    func: Function
+    click: Function
 }
-class MenuCtrl {
-    private static instance: MenuCtrl;
-
+class ContextMenu {
     x: Ref<number>;
     y: Ref<number>;
     menuList: UnwrapNestedRefs<Array<menuItem>>;
     ifShow: Ref<boolean>;
     ifTopDown: Ref<boolean>;
-    private constructor() {
+    private system:System;
+    constructor(system:System) {
+        this.system = system;
         this.menuList = reactive([]);
         this.ifShow = ref(false);
         this.x = ref(0);
         this.y = ref(0);
         this.ifTopDown = ref(true)
     }
-    static getInstance() {
-        if (this.instance == undefined) {
-            this.instance = new MenuCtrl()
-        }
-        return this.instance
-    }
+
     private getPosToOuterTop(el: HTMLElement): number {
-        if (el.id == 'win10id') {
+        if (el.id == this.system.id) {
             return 0;
         }
         let _this = this;
@@ -47,7 +42,7 @@ class MenuCtrl {
         
     }
     private getPosToOuterLeft(el: HTMLElement): number {
-        if (el.id == 'win10id') {
+        if (el.id == this.system.id) {
             return 0;
         }
         let _this = this;
@@ -74,11 +69,11 @@ class MenuCtrl {
         this.y.value = this.getPosToOuterTop(e.target as HTMLElement)+ e.offsetY;
         this.ifShow.value = true
         this.menuList.splice(0, this.menuList.length);
-        this.menuList.push(...list)
+        this.menuList.push(...list);
     }
 }
 
 export {
-    MenuCtrl,
+    ContextMenu,
     menuItem
 }

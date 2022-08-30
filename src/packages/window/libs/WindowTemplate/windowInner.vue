@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-07-06 15:35:21
+ * @LastEditTime: 2022-07-15 11:10:34
  * @Description: 
 -->
 <template>
@@ -22,31 +22,40 @@
     </template>
 </template>
 <script lang="ts" setup>
-import { defineAsyncComponent, defineComponent, onMounted, ref, shallowRef, toRaw } from 'vue';
-import {fetchComponent} from "@libs/WindowTemplate/getCom";
-import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index";
+import { defineAsyncComponent, defineComponent, inject, onMounted, ref, shallowRef, toRaw } from 'vue';
+import  {Ref,PropType} from 'vue'
+// import {fetchComponent} from "@libs/WindowTemplate/getCom";
 import LoaddingVue from '@libs/WindowTemplate/defaultInner/loadding.vue';
 import ErrorVue from '@libs/WindowTemplate/defaultInner/error.vue';
+import {System} from '@libs/System'
+let props = defineProps({
+  componentKey:{
+    type:Number as PropType<Number>,
+    required:true
+  },
+  id:{
+    type:String,
+    required:true
+  }
+})
 
-let props = defineProps([
-  'componentKey',
-  'id',
-])
+let system = <System>inject('system')
+
 let winID = props.id;
-let wininfo = PrivateDWM.getInstance().getWindow(winID);
+let wininfo = system.getWindow(winID).windowInfo;
 let componentType = ref('loadding')
 let compileCom = shallowRef({}) as any;
 
 onMounted(()=>{
   
   if(wininfo.isSFC){
-    fetchComponent(wininfo.content).then(res=>{
-      compileCom.value = res
-      componentType.value ='sfc'
-    }).catch(err=>{
-      componentType.value ='error'
-      console.log(err)
-    })
+    // fetchComponent(wininfo.content).then(res=>{
+    //   compileCom.value = res
+    //   componentType.value ='sfc'
+    // }).catch(err=>{
+    //   componentType.value ='error'
+    //   console.log(err)
+    // })
   }else if(typeof wininfo.content === 'object') {
     componentType.value= 'vue'
     compileCom.value = toRaw(wininfo.content)

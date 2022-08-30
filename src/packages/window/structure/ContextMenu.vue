@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-04-26 15:41:03
+ * @LastEditTime: 2022-07-15 10:53:07
  * @Description: 
  * @FilePath: /myindex/src/components/window/MenuList.vue
   Need CodeReview 
@@ -11,25 +11,25 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, reactive, ref } from "vue";
-import { MenuCtrl } from "@libs/MenuCtrl";
-import type {menuItem}from "@libs/MenuCtrl";
+import { computed, inject, reactive, ref } from "vue";
+import type {menuItem}from "@libs/ContextMenu";
 
-let IPC = MenuCtrl.getInstance()
+import {System} from '@libs/System'
 
-let IPClist = computed(() => {
-    return MenuCtrl.getInstance().menuList
-})
+let system = <System>inject('system')
+
+let IPC = system.ContextMenu
+
 
 let cusStyle = ref<any>({
 })
-cusStyle.value.left = computed(() => MenuCtrl.getInstance().x.value + 'px')
-cusStyle.value.top = computed(() => MenuCtrl.getInstance().y.value + 'px')
+cusStyle.value.left = computed(() => system.ContextMenu.x.value + 'px')
+cusStyle.value.top = computed(() => system.ContextMenu.y.value + 'px')
 
-cusStyle.value.visibility = computed(() => MenuCtrl.getInstance().ifShow.value?"visible":"hidden" )
+cusStyle.value.visibility = computed(() => system.ContextMenu.ifShow.value?"visible":"hidden" )
 
 function callFunc(item:menuItem) {
-    item.func()
+    item.click()
 }
 </script>
 <style scoped>

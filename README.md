@@ -129,9 +129,9 @@ createApp(App).use(win10).mount('#app')
         |       |-- WinSelect.vue
         |-- libs        // 主要依赖
         |   |-- GlobalOps.ts
-        |   |-- MenuCtrl.ts
+        |   |-- ContextMenu.ts
         |   |-- Notify.ts
-        |   |-- SystemState.ts
+        |   |-- Power.ts
         |   |-- WindowTmp.vue
         |   |-- Dom             // Dom操作
         |   |   |-- DragElement.ts
@@ -142,7 +142,7 @@ createApp(App).use(win10).mount('#app')
         |   |-- DWM             // 窗口管理中心
         |   |   |-- DWM.ts
         |   |   |-- index.ts
-        |   |   |-- PrivateDWM.ts
+        |   |   |-- WinManagement.ts
         |   |   |-- type.ts
         |   |-- WindowTemplate  // 窗口模板
         |       |-- getCom.ts

@@ -6,39 +6,51 @@
 -->
 <template>
   <div class="outer">
-    <Win10></Win10>
+    <Win10 :system="p1"></Win10>
+  </div>
+  <div class="outer">
+    <Win10 :system="p2"></Win10>
   </div>
 </template>
 
 <script setup lang="ts">
-
 import brow from "./assets/浏览器.png"
 import Test3 from "./apps/Test3.vue"
 import Browser from "./apps/Browser.vue"
 import TestButton from "./apps/TestButton.vue"
 import app_vscode from "./apps/app_vscode.vue"
 
-import { AddToDesktop, ClearDesktop } from "./plug";
+// import { AddToDesktop, ClearDesktop } from "./plug";
 
 import Mycom from "./apps/MyComputer.vue"
-import { DragWindow } from "./packages/window/libs/DragWindow";
-import { onMounted } from "@vue/runtime-core";
-
+// import { DragWindow } from "./packages/window/libs/DragWindow";
+import { onMounted, reactive, ref } from "vue";
+import {system,system2} from "./systeminit"
 // import computer from "./assets/computer.ico"
-onMounted(() => {
-  ClearDesktop();
+let p1 = system;
+let p2 = system2;
 
-  AddToDesktop({
+onMounted(() => {
+  system.ClearDesktop();
+  system2.ClearDesktop();
+  system2.AddToDesktop({
+    name: '浏览器',
+    window: system2.DragWindow({
+      content: 'https://v3.cn.vuejs.org/api/global-api.html#h'
+    })
+  });
+
+  system.AddToDesktop({
     name: '浏览器1',
-    window: new DragWindow({
+    window: system.DragWindow({
       isScalable: false,
       content: Test3
     })
   });
-  AddToDesktop({
+  system.AddToDesktop({
     name: '我的电脑',
     icon: brow,
-    window: new DragWindow(
+    window: system.DragWindow(
       {
         title: '浏览器',
         icon: brow,
@@ -47,24 +59,23 @@ onMounted(() => {
         content: Mycom
       })
   });
-
-  AddToDesktop({
+  system.AddToDesktop({
     name: 'Vue浏览器',
-    window: new DragWindow({
+    window: system.DragWindow({
       isSFC: true,
       content: 'http://localhost:3002/app'
     })
   });
-  AddToDesktop({
+  system.AddToDesktop({
     name: '浏览器',
-    window: new DragWindow({
+    window: system.DragWindow({
       content: 'https://v3.cn.vuejs.org/api/global-api.html#h'
     })
   });
-  AddToDesktop({
+  system.AddToDesktop({
     name: '浏览器',
     icon: brow,
-    window: new DragWindow(
+    window: system.DragWindow(
       {
         title: '浏览器',
         icon: brow,
@@ -73,7 +84,7 @@ onMounted(() => {
         content: Browser
       })
   });
-  let testVue = new DragWindow(
+  let testVue = system.DragWindow(
     {
       title: '测试按钮',
       icon: brow,
@@ -81,18 +92,16 @@ onMounted(() => {
       height: 200,
       content: TestButton
     })
-  AddToDesktop({
+  system.AddToDesktop({
     name: '测试按钮',
     icon: brow,
     window: testVue
   });
 
-
-
-  AddToDesktop({
+  system.AddToDesktop({
     name: 'vscode',
     icon: brow,
-    window: new DragWindow(
+    window: system.DragWindow(
       {
         title: 'vscode',
         icon: brow,
@@ -110,7 +119,7 @@ onMounted(() => {
   position: relative;
   top: 0px;
   width: 100vw;
-  height: 100vh;
+  height: 50vh;
 }
 </style>
 <style>

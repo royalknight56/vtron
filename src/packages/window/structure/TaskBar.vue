@@ -1,6 +1,6 @@
 <!--
  * @Author: Royal
- * @LastEditTime: 2022-06-02 15:13:53
+ * @LastEditTime: 2022-07-15 11:08:48
  * @Description: 
  * @FilePath: /myindex/src/components/window/TaskBar.vue
   Need CodeReview 
@@ -15,7 +15,7 @@
             <div class="bar_search">在这里输入你要搜索的内容</div>
             <div
                 class="baritem"
-                :class="{ showwin: item.ifShow, topwin: item.iftop && item.ifShow }"
+                :class="{ showwin: item.isVisible, topwin: item.istop && item.isVisible }"
                 v-for="item in winlist"
                 :key="item.id"
                 @click="barClick(item)"
@@ -36,16 +36,16 @@
                 <!-- {{ item.title }} -->
             </div>
         </div>
-        <MagnetVue v-if="ifMagnetShow" @changevis="changeMagnetShow"></MagnetVue>
+        <MagnetVue v-if="ifMagnetShow"  @changevis="changeMagnetShow"></MagnetVue>
         <div class="bar_right">
             <div class="right_item">
                 <span class="segoicon SEGOEUIMDL"> &#xE010;</span>
             </div>
             <div class="right_item">
-                <ChargingVue></ChargingVue>
+                <ChargingVue :sysInfo="sysInfo"></ChargingVue>
             </div>
             <div class="right_item">
-                <NetworkVue></NetworkVue>
+                <NetworkVue :sysInfo="sysInfo"></NetworkVue>
             </div>
             <div class="date_time">
                 <div class="date_time_text">
@@ -64,23 +64,22 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
-import type { WindowInfo } from "@/packages/window/libs/DWM/index"
-import { DWM, PrivateDWM } from "@/packages/window/libs/DWM/index"
-import { MenuCtrl } from "@libs/MenuCtrl"
-import { SystemState } from "@libs/SystemState";
+import { computed, inject, ref } from "vue";
+import type { WindowInfo, windowInfoMapInter } from "@/packages/window/libs/DWM/index"
+
 import MagnetVue from "@structure/Magnet.vue";
 import NetworkVue from "@structure/taskbarIcon/network.vue";
 import ChargingVue from "@structure/taskbarIcon/charging.vue";
 
 import winimg from "../../../assets/win.png"
-import { appconfig } from "@/packages/appconfig";
 
-import {windowInfoMap,sysInfo} from "@state/index";
-// {title:title,width,height,ctx:ctx}
 
-// let winlist = state.windowInfoMap
+import {System} from '@libs/System'
+let system = <System>inject('system')
+const appconfig = system.SystemConfig.config
 
+let sysInfo = system.State.sysInfo
+let ContextMenu = system.ContextMenu
 //设置winlogo
 let winlogo = ref(winimg);
 if (appconfig.start_menu_logo == "default") {
@@ -90,14 +89,23 @@ if (appconfig.start_menu_logo == "default") {
 }
 
 
-let winlist = windowInfoMap
-
+// let winlist =system.State.windowInfoMap
+let winlist =computed(()=>{
+    let Obj:windowInfoMapInter = {}
+    Object.keys(system.State.windowInfoMap).forEach((key)=>{
+        if(system.State.windowInfoMap[key].windowInfo.isCreate){
+            Obj[key] = system.State.windowInfoMap[key].windowInfo
+            // system.State.windowInfoMap[key].isCreate = false
+        }
+    })
+    return Obj
+})
 function barClick(item: WindowInfo) {
-    if (item.ifShow) {
-        PrivateDWM.getInstance().upSetWindowIndex(item.id)
+    if (item.isVisible) {
+        system.getWindow(item.id).moveTop()
     } else {
-        PrivateDWM.getInstance().showWindow(item.id)
-        PrivateDWM.getInstance().upSetWindowIndex(item.id)
+        system.getWindow(item.id).show()
+        system.getWindow(item.id).moveTop()
     }
 }
 
@@ -114,18 +122,18 @@ function changeMagnetShow() {
     ifMagnetShow.value = !ifMagnetShow.value
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
-    if (item.ifShow) {
-        MenuCtrl.getInstance().callMenu(e,
+    if (item.isVisible) {
+        ContextMenu.callMenu(e,
             [
-                { name: '关闭', func: () => { PrivateDWM.getInstance().destoryWindow(item.id) } },
-                { name: '最小化', func: () => { PrivateDWM.getInstance().hideWindow(item.id) } }
+                { name: '关闭', click: () => { system.getWindow(item.id).destroy() } },
+                { name: '最小化', click: () => { system.getWindow(item.id).hide() } }
             ]
         )
     } else {
-        MenuCtrl.getInstance().callMenu(e,
+        ContextMenu.callMenu(e,
             [
-                { name: '关闭', func: () => { PrivateDWM.getInstance().destoryWindow(item.id) } },
-                { name: '显示', func: () => { PrivateDWM.getInstance().showWindow(item.id) } }
+                { name: '关闭', click: () => { system.getWindow(item.id).destroy() } },
+                { name: '显示', click: () => { system.getWindow(item.id).show() } }
             ]
         )
     }
@@ -133,7 +141,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo) {
-    PrivateDWM.getInstance().destoryWindow(item.id)
+    system.getWindow(item.id).destroy()
 }
 // //定期更换截图
 // setInterval(() => {

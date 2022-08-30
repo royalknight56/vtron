@@ -50,19 +50,20 @@ setTimeout(()=>{
 },1000)
 setTimeout(()=>{
     // after.hide()
+    after.center()
 },2000)
 
 setTimeout(()=>{
-    after.maximize()
+    after.setPosition(0,0)
 },3000)
 setTimeout(()=>{
-    after.minimize()
+    console.log(after.isNormal())
+    console.log(after.getPosition())
 },4000)
 setTimeout(()=>{
     after.destroy()
 },10000)
-// after.show()
-// after.addWindowEventListener('onResizing',(ev)=>{ console.log(ev.x,ev.y) }) 
+
 </script>
 <style>
 iframe {

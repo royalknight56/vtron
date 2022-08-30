@@ -164,6 +164,9 @@ class DragWindow {
             y: this.windowInfo.y
         }
     }
+    center(){
+        this.setPosition((this.system.State.sysInfo.width-this.windowInfo.width)/2,(this.system.State.sysInfo.height-this.windowInfo.height)/2)
+    }
 }
 
 function DragWindowFactory(system:System){

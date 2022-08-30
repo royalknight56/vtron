@@ -14,7 +14,7 @@
             </span>
         </div>
     </div>
-    <div  id="logoW">
+    <div v-if="system.SystemConfig.config.if_logo_show" id="logoW">
         <div id="logo">
             <div class="win" id="win1"></div>
             <div class="win" id="win2"></div>
@@ -34,6 +34,9 @@
     
 </template>
 <script lang="ts" setup>
+import {System} from '@libs/System'
+import { inject } from "vue";
+let system = <System>inject('system')
 </script>
 <style scoped>
 @import '../../../main.css';

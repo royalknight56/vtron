@@ -22,20 +22,23 @@ class System {
   Power: Power;
   Notify: Notify;
   ContextMenu: ContextMenu;
-  DWM: DWM;
+  private DWM: DWM;
+  getWindow:DWM["getWindow"]
   State: State;
   DragWindow:ReturnType<typeof DragWindowFactory>
   constructor(option:partialOption) {
+    // generate id
     this.id='win10'+Math.random().toString(36).substr(2, 9);
+    // init Config
     this.SystemConfig=new SystemConfig(this)
     this.SystemConfig.initConfig(option)
+    // register system
     this.Power =new Power(this);
     this.Notify = new Notify(this);
     this.ContextMenu =new ContextMenu(this);
     this.DWM = new DWM(this);
-    
-    ({...this.State} = stateInit())
-
+    this.getWindow = this.DWM.getWindow.bind(this.DWM);
+    ({...this.State} = stateInit());
     this.DragWindow=DragWindowFactory(this)
   }
   ClearDesktop() {

@@ -85,10 +85,8 @@ let props = defineProps({
 
 let system = <System>inject('system')
 let winID = props.id;
-let DWM = system.DWM;
 
-
-let DragWindowItem = DWM.getWindow(winID);
+let DragWindowItem = system.getWindow(winID);
 let wininfo = DragWindowItem.windowInfo;
 const componentKey = ref<Number>(1);
 function flushWindow(): void {

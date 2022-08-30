@@ -1,6 +1,6 @@
 import { System } from '@libs/System';
 function addEventListener(system:System,id: string, name: string, func: Function) {
-  system.DWM.getWindow(id).windowInfo.windowEventMap[name] = func
+  system.getWindow(id).windowInfo.windowEventMap[name] = func
 }
 
 function on(system:System,ev: string, func: Function) {

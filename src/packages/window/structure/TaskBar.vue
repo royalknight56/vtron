@@ -102,10 +102,10 @@ let winlist =computed(()=>{
 })
 function barClick(item: WindowInfo) {
     if (item.isVisible) {
-        system.DWM.getWindow(item.id).moveTop()
+        system.getWindow(item.id).moveTop()
     } else {
-        system.DWM.getWindow(item.id).show()
-        system.DWM.getWindow(item.id).moveTop()
+        system.getWindow(item.id).show()
+        system.getWindow(item.id).moveTop()
     }
 }
 
@@ -125,15 +125,15 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.isVisible) {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', click: () => { system.DWM.getWindow(item.id).destroy() } },
-                { name: '最小化', click: () => { system.DWM.getWindow(item.id).hide() } }
+                { name: '关闭', click: () => { system.getWindow(item.id).destroy() } },
+                { name: '最小化', click: () => { system.getWindow(item.id).hide() } }
             ]
         )
     } else {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', click: () => { system.DWM.getWindow(item.id).destroy() } },
-                { name: '显示', click: () => { system.DWM.getWindow(item.id).show() } }
+                { name: '关闭', click: () => { system.getWindow(item.id).destroy() } },
+                { name: '显示', click: () => { system.getWindow(item.id).show() } }
             ]
         )
     }
@@ -141,7 +141,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo) {
-    system.DWM.getWindow(item.id).destroy()
+    system.getWindow(item.id).destroy()
 }
 // //定期更换截图
 // setInterval(() => {

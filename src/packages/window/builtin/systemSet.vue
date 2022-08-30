@@ -53,7 +53,7 @@ let system = <System>inject('system')
 let setMap: {
     [key: string]: DragWindow
 } = {}
-let windowInfo = system.DWM.getWindow(id).windowInfo
+let windowInfo = system.getWindow(id).windowInfo
 function openSet(content: ReturnType<typeof defineComponent>, title: string) {
     if (content) {
         if (setMap[title]) {

@@ -61,7 +61,7 @@
 import {  inject, provide, ref, watch } from "vue";
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
-import type { WindowInfo } from "@/packages/window/libs/DWM/index";
+import { WindowInfo } from "@libs/DragWindow/type";
 import { DragElement } from "@libs/Dom/DragElement";
 import { ScaleElement } from "@libs/Dom/ScaleElement";
 import Statebar from "@libs/WindowTemplate/statebarButton.vue";

@@ -62,7 +62,6 @@ onMounted(() => {
   system.AddToDesktop({
     name: 'Vue浏览器',
     window: system.DragWindow({
-      isSFC: true,
       content: 'http://localhost:3002/app'
     })
   });

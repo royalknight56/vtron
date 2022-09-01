@@ -10,39 +10,39 @@ import {
   State,
   stateInit
 } from "@state/index";
-import type {appInfo} from "@state/type";
-import {DragWindowFactory,DragWindow} from "@libs/DragWindow"
+import type { appInfo } from "@state/type";
+import { DragWindowFactory, DragWindow } from "@libs/DragWindow"
 import { defaultOption } from '@libs/option'
-import { SystemConfig,OptionType,partialOption } from "@/packages/window/libs/SystemConfig";
+import { SystemConfig, OptionType, partialOption } from "@/packages/window/libs/SystemConfig";
 
 class System {
-  id:string;
-  SystemConfig:SystemConfig;
+  id: string;
+  SystemConfig: SystemConfig;
   Power: Power;
   Notify: Notify;
   ContextMenu: ContextMenu;
   State: State;
-  DragWindow:ReturnType<typeof DragWindowFactory>
-  constructor(option:partialOption) {
+  DragWindow: ReturnType<typeof DragWindowFactory>
+  constructor(option: partialOption) {
     // generate id
-    this.id='win10'+Math.random().toString(36).substr(2, 9);
+    this.id = 'win10' + Math.random().toString(36).substr(2, 9);
     // init Config
-    this.SystemConfig=new SystemConfig(this)
+    this.SystemConfig = new SystemConfig(this)
     this.SystemConfig.initConfig(option)
     // register system
-    this.Power =new Power(this);
+    this.Power = new Power(this);
     this.Notify = new Notify(this);
-    this.ContextMenu =new ContextMenu(this);
-    ({...this.State} = stateInit());
-    this.DragWindow=DragWindowFactory(this)
+    this.ContextMenu = new ContextMenu(this);
+    ({ ...this.State } = stateInit());
+    this.DragWindow = DragWindowFactory(this)
   }
-  getWindow(id: string): DragWindow{
+  getWindow(id: string): DragWindow {
     return this.State.windowInfoMap[id]
   }
-  ClearPlace(place:'appList'|'startupList'|'magnet'){
+  ClearPlace(place: 'appList' | 'startupList' | 'magnet') {
     this.State[place].splice(0, this.State[place].length)
   }
-  AddToPlace(place:'appList'|'startupList'|'magnet',app:appInfo){
+  AddToPlace(place: 'appList' | 'startupList' | 'magnet', app: appInfo) {
     this.State[place].push(Object.assign({
       name: defaultOption.untitle,
       icon: defaultOption.icon,
@@ -51,20 +51,20 @@ class System {
   ClearDesktop() {
     this.ClearPlace('appList');
   }
-  AddToDesktop(app:appInfo) {
-    this.AddToPlace('appList',app);
+  AddToDesktop(app: appInfo) {
+    this.AddToPlace('appList', app);
   }
   ClearStartupList() {
     this.ClearPlace('startupList');
   }
-  AddToStartupList(app:appInfo) {
-    this.AddToPlace('startupList',app);
+  AddToStartupList(app: appInfo) {
+    this.AddToPlace('startupList', app);
   }
   ClearMagnet() {
     this.ClearPlace('magnet');
   }
-  AddToMagnet(app:appInfo) {
-    this.AddToPlace('magnet',app);
+  AddToMagnet(app: appInfo) {
+    this.AddToPlace('magnet', app);
   }
 }
 export { System };

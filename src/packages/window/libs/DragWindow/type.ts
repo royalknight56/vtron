@@ -3,8 +3,9 @@
  * @LastEditTime: 2022-07-13 09:58:55
  * @Description: 
  */
-import {DefineComponent} from 'vue'
-type WindowButton = 'flush'|'close'|'min'|'max'
+import { DefineComponent } from 'vue';
+import { DragWindow } from "@libs/DragWindow";
+type WindowButton = 'flush' | 'close' | 'min' | 'max'
 interface baseOption {
     props?: any,
     x?: number,
@@ -15,18 +16,29 @@ interface baseOption {
     icon?: string,
     isScalable?: boolean,
     buttons?: WindowButton[],    // 右上角按钮
+    content: DefineComponent<{}, {}, any> | string,
 }
-interface OptionSFC extends baseOption {
-    content: string,
-    isSFC?: true,//是否为vue SFC 链接
-}
-interface OptionNoSFC extends baseOption {
-    content: DefineComponent<{}, {}, any>,
-    isSFC?: false,//是否为vue SFC 链接
-}
-type option = OptionNoSFC|OptionSFC;
 
-type OptionAll = OptionNoSFC;
+type OptionAll = baseOption;
+
+
+interface BuiltinPorps {
+    //内建属性
+    id: string,
+    wid: number,
+    zindex: number,
+    isVisible: boolean,
+    istop: boolean,
+    isMaximize: boolean,
+    isCreate: boolean,
+    windowEventMap: {
+        [index: string]: Function
+    },
+}
+interface WindowInfoTemp extends BuiltinPorps, OptionAll {
+}
+
+type WindowInfo = Required<WindowInfoTemp>
 
 interface EvMap {
     onDraging: { x: number, y: number, ifdrag: boolean }
@@ -35,11 +47,22 @@ interface EvMap {
 type EvMapFunction = {
     [K in keyof EvMap]?: (ev: EvMap[K]) => void
 };
+
+
 export {
-  option,
-  OptionAll,
-  OptionSFC,
-  OptionNoSFC,
-  EvMap,
-  EvMapFunction
+    WindowInfoTemp,
+    WindowInfo,
+    OptionAll,
+    EvMap,
+    EvMapFunction
+}
+
+export interface DragWindowMapInter {
+    [index: string]: DragWindow
+}
+export interface windowInfoMapInter {
+    [index: string]: WindowInfo
+}
+export interface eventMapInter {
+    [index: string]: Function
 }

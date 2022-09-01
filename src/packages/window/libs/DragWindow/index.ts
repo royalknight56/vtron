@@ -6,8 +6,8 @@
  * Need CodeReview 
  */
 import { defineComponent, nextTick, reactive } from "vue";
-import { WindowInfo } from "@/packages/window/libs/DWM/index"
-import { EvMap, EvMapFunction, option, OptionAll, OptionSFC, OptionNoSFC, } from "./type";
+import { WindowInfo } from "@libs/DragWindow/type";
+import { EvMap, EvMapFunction, OptionAll, } from "./type";
 import { System } from '@libs/System'
 import { defaultOption } from '@libs/option'
 // import * as  WinManagement from '@libs/DWM/WindowManage';
@@ -16,11 +16,11 @@ class DragWindow {
     evMap: EvMapFunction
     readonly windowInfo: WindowInfo
 
-    private option: Required<option>
+    private option: Required<OptionAll>
     id: string
     private system: System
 
-    constructor(option: option, system: System) {
+    constructor(option: OptionAll, system: System) {
         this.system = system
 
         this.evMap = {};
@@ -95,7 +95,7 @@ class DragWindow {
         })
     }
 
-    show(option?: Partial<option>) {// 调用show之后，注册窗口，展示窗口
+    show(option?: Partial<OptionAll>) {// 调用show之后，注册窗口，展示窗口
         if (option) {
             this.option = Object.assign(this.option, option)
         }
@@ -172,7 +172,7 @@ class DragWindow {
 }
 
 function DragWindowFactory(system: System) {
-    return (option: option) => {
+    return (option:OptionAll) => {
         return new DragWindow(option, system)
     }
 

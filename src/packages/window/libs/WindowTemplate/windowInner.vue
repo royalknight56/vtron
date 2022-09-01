@@ -24,7 +24,6 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, defineComponent, inject, onMounted, ref, shallowRef, toRaw } from 'vue';
 import  {Ref,PropType} from 'vue'
-// import {fetchComponent} from "@libs/WindowTemplate/getCom";
 import LoaddingVue from '@libs/WindowTemplate/defaultInner/loadding.vue';
 import ErrorVue from '@libs/WindowTemplate/defaultInner/error.vue';
 import {System} from '@libs/System'
@@ -48,15 +47,7 @@ let compileCom = shallowRef({}) as any;
 
 onMounted(()=>{
   
-  if(wininfo.isSFC){
-    // fetchComponent(wininfo.content).then(res=>{
-    //   compileCom.value = res
-    //   componentType.value ='sfc'
-    // }).catch(err=>{
-    //   componentType.value ='error'
-    //   console.log(err)
-    // })
-  }else if(typeof wininfo.content === 'object') {
+  if(typeof wininfo.content === 'object') {
     componentType.value= 'vue'
     compileCom.value = toRaw(wininfo.content)
   }else{

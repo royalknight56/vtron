@@ -6,13 +6,12 @@
 import { Power } from "@libs/Power";
 import { Notify } from "@libs/Notify";
 import { ContextMenu } from "@libs/ContextMenu";
-import { DWM } from "@libs/DWM"
 import {
   State,
   stateInit
 } from "@state/index";
 import type {appInfo} from "@state/type";
-import {DragWindowFactory} from "@libs/DragWindow"
+import {DragWindowFactory,DragWindow} from "@libs/DragWindow"
 import { defaultOption } from '@libs/option'
 import { SystemConfig,OptionType,partialOption } from "@/packages/window/libs/SystemConfig";
 
@@ -22,8 +21,6 @@ class System {
   Power: Power;
   Notify: Notify;
   ContextMenu: ContextMenu;
-  private DWM: DWM;
-  getWindow:DWM["getWindow"]
   State: State;
   DragWindow:ReturnType<typeof DragWindowFactory>
   constructor(option:partialOption) {
@@ -36,10 +33,11 @@ class System {
     this.Power =new Power(this);
     this.Notify = new Notify(this);
     this.ContextMenu =new ContextMenu(this);
-    this.DWM = new DWM(this);
-    this.getWindow = this.DWM.getWindow.bind(this.DWM);
     ({...this.State} = stateInit());
     this.DragWindow=DragWindowFactory(this)
+  }
+  getWindow(id: string): DragWindow{
+    return this.State.windowInfoMap[id]
   }
   ClearPlace(place:'appList'|'startupList'|'magnet'){
     this.State[place].splice(0, this.State[place].length)

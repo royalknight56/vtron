@@ -7,12 +7,10 @@
  */
 import { defineComponent, nextTick, reactive } from "vue";
 import { WindowInfo } from "@/packages/window/libs/DWM/index"
-import {EvMap,EvMapFunction,option,OptionAll,OptionSFC,OptionNoSFC,} from "./type";
+import { EvMap, EvMapFunction, option, OptionAll, OptionSFC, OptionNoSFC, } from "./type";
 import { System } from '@libs/System'
 import { defaultOption } from '@libs/option'
-
-// import * as  WinManagement from '@libs/DWM/WinManagement';
-import * as  WinManagement from '@libs/DWM/WindowManage';
+// import * as  WinManagement from '@libs/DWM/WindowManage';
 
 class DragWindow {
     evMap: EvMapFunction
@@ -22,9 +20,8 @@ class DragWindow {
     id: string
     private system: System
 
-    constructor(option: option,system:System) {
+    constructor(option: option, system: System) {
         this.system = system
-        
 
         this.evMap = {};
         this.option = Object.assign({
@@ -36,12 +33,12 @@ class DragWindow {
             icon: defaultOption.icon,
             isScalable: true,
             isSFC: false,
-            buttons:['close','min','max'],
-            title:defaultOption.untitle
+            buttons: ['close', 'min', 'max'],
+            title: defaultOption.untitle
         }, option)
-        this.id = WinManagement.getWinid(this.system);
-        this.windowInfo =  reactive({
-            id: this.id ,
+        this.id = system.id + system.State.winnum;
+        this.windowInfo = reactive({
+            id: this.id,
             wid: system.State.winnum,
             zindex: 0,
             isVisible: true,
@@ -51,7 +48,10 @@ class DragWindow {
             ...this.option,
             windowEventMap: {}
         });
-        this.register(this)//注册;
+
+        system.State.windowInfoMap[this.id] = this;
+        system.State.zIndexIdArray.push(this.id) // 层级数组中压入id
+        system.State.winnum++;
     }
     private getWinInner() {
         let dom = document.getElementById(this.system.id);
@@ -68,17 +68,11 @@ class DragWindow {
         }
 
     }
-    addWindowEventListener(event: 'onDraging', callback: (x: number, y: number, ifdrag: boolean)=>void) : void;
-    addWindowEventListener(event: 'onResizing', callback: (x: number, y: number)=>void) : void;
+    addWindowEventListener(event: 'onDraging', callback: (x: number, y: number, ifdrag: boolean) => void): void;
+    addWindowEventListener(event: 'onResizing', callback: (x: number, y: number) => void): void;
 
-    addWindowEventListener(event:keyof EvMap, callback:any) : any {
+    addWindowEventListener(event: keyof EvMap, callback: any): any {
         this.evMap[event] = callback;
-    }
-    private register(dragWindow:DragWindow) {
-        WinManagement.registerWindow(this.system,this.id, dragWindow);//在IPC中注册，传递windowInfo
-    }
-    private showWindow() {// 显示窗口
-        WinManagement.showWindow(this.system,this.id)
     }
     private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
         if (this.windowInfo) {
@@ -94,11 +88,10 @@ class DragWindow {
             }
         }
     }
-    private afterRegister(){// 注册之后的操作
+    private afterRegister() {// 注册之后的操作
         this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
-        
         nextTick(() => {
-            WinManagement.upSetWindowIndex(this.system,this.id)//新窗口在顶部
+            this.moveTop()//新窗口在顶部
         })
     }
 
@@ -106,21 +99,19 @@ class DragWindow {
         if (option) {
             this.option = Object.assign(this.option, option)
         }
-        // console.log(this)
-        WinManagement.createWindow(this.system,this.id)
-        // console.log(this)
-        this.showWindow();// 显示窗口
-        // console.log(this)
+        this.windowInfo.isCreate = true
+        this.windowInfo.isVisible = true// 显示窗口
         this.afterRegister()//注册之后
     }
     hide() {// 隐藏窗口
-        WinManagement.hideWindow(this.system,this.id)
+        this.windowInfo.isVisible = false
     }
     destroy() {// 销毁窗口
-        WinManagement.destroyWindow(this.system,this.id)
+        this.windowInfo.isCreate = false
+        this.windowInfo.windowEventMap['destroy']?.()
     }
     isMinimized() {// 是否最小化
-        return this.windowInfo.isVisible?false:true
+        return this.windowInfo.isVisible ? false : true
     }
     minimize() {// 最小化窗口
         this.windowInfo.isVisible = false;
@@ -137,10 +128,21 @@ class DragWindow {
     unmaximize() {// 取消最大化窗口
         this.windowInfo.isMaximize = false;
     }
-    moveTop(){
-        WinManagement.upSetWindowIndex(this.system,this.id)
+    moveTop() {
+        for (let key in this.system.State.windowInfoMap) {
+            this.system.State.windowInfoMap[key].windowInfo.istop = false
+        }
+        this.windowInfo.istop = true
+
+        let ind = this.system.State.zIndexIdArray.indexOf(this.id);
+        this.system.State.zIndexIdArray.splice(ind, 1);
+        this.system.State.zIndexIdArray.push(this.id);
+        for (let i = 0; i < this.system.State.zIndexIdArray.length; i++) {
+            this.system.State.windowInfoMap[this.system.State.zIndexIdArray[i]].windowInfo.zindex = i + 10
+        }
+        return this.system.State.zIndexIdArray.length
     }
-    isNormal(){
+    isNormal() {
         return !this.isMaximized() && !this.isMinimized()
     }
     setSize(width: number, height: number) {// 设置窗口大小
@@ -164,16 +166,16 @@ class DragWindow {
             y: this.windowInfo.y
         }
     }
-    center(){
-        this.setPosition((this.system.State.sysInfo.width-this.windowInfo.width)/2,(this.system.State.sysInfo.height-this.windowInfo.height)/2)
+    center() {
+        this.setPosition((this.system.State.sysInfo.width - this.windowInfo.width) / 2, (this.system.State.sysInfo.height - this.windowInfo.height) / 2)
     }
 }
 
-function DragWindowFactory(system:System){
-    return (option:option) => {
-        return new DragWindow(option,system)
+function DragWindowFactory(system: System) {
+    return (option: option) => {
+        return new DragWindow(option, system)
     }
-    
+
 }
 export {
     DragWindow,

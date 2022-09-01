@@ -38,7 +38,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { WindowInfo } from "@/packages/window/libs/DWM/index";
 let emits = defineEmits(['buttonEvent'])
 const props = defineProps([
   'wininfo',

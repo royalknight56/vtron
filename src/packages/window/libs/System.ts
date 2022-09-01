@@ -41,14 +41,32 @@ class System {
     ({...this.State} = stateInit());
     this.DragWindow=DragWindowFactory(this)
   }
-  ClearDesktop() {
-    this.State.appList.splice(0, this.State.appList.length)
+  ClearPlace(place:'appList'|'startupList'|'magnet'){
+    this.State[place].splice(0, this.State[place].length)
   }
-  AddToDesktop(app:appInfo) {
-    this.State.appList.push(Object.assign({
+  AddToPlace(place:'appList'|'startupList'|'magnet',app:appInfo){
+    this.State[place].push(Object.assign({
       name: defaultOption.untitle,
       icon: defaultOption.icon,
     }, app))
+  }
+  ClearDesktop() {
+    this.ClearPlace('appList');
+  }
+  AddToDesktop(app:appInfo) {
+    this.AddToPlace('appList',app);
+  }
+  ClearStartupList() {
+    this.ClearPlace('startupList');
+  }
+  AddToStartupList(app:appInfo) {
+    this.AddToPlace('startupList',app);
+  }
+  ClearMagnet() {
+    this.ClearPlace('magnet');
+  }
+  AddToMagnet(app:appInfo) {
+    this.AddToPlace('magnet',app);
   }
 }
 export { System };

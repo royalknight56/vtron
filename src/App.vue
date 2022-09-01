@@ -97,7 +97,6 @@ onMounted(() => {
     icon: brow,
     window: testVue
   });
-
   system.AddToDesktop({
     name: 'vscode',
     icon: brow,
@@ -109,6 +108,48 @@ onMounted(() => {
         height: 500,
         content: app_vscode
       })
+  });
+
+
+  system.AddToStartupList({
+    name: '测试按钮',
+    icon: brow,
+    window: testVue
+  });
+  system.AddToStartupList({
+    name: '测试按钮',
+    icon: brow,
+    window: testVue
+  });
+
+  system.AddToMagnet({
+    name: '测试按钮',
+    icon: brow,
+    window: testVue
+  });system.AddToMagnet({
+    name: '测试按钮',
+    icon: brow,
+    window: testVue
+  });system.AddToMagnet({
+    name: '测试按钮',
+    icon: brow,
+    window: testVue
+  });system.AddToMagnet({
+    name: '测试按钮',
+    icon: brow,
+    window: testVue
+  });system.AddToMagnet({
+    name: '测试按钮',
+    icon: brow,
+    window: testVue
+  });system.AddToMagnet({
+    name: '测试按钮',
+    icon: brow,
+    window: testVue
+  });system.AddToMagnet({
+    name: '测试按钮',
+    icon: brow,
+    window: testVue
   });
 })
 

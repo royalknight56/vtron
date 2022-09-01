@@ -36,7 +36,7 @@
                 <!-- {{ item.title }} -->
             </div>
         </div>
-        <MagnetVue v-if="ifMagnetShow"  @changevis="changeMagnetShow"></MagnetVue>
+        <StartMenuVue v-if="ifMagnetShow"  @changevis="changeMagnetShow"></StartMenuVue>
         <div class="bar_right">
             <div class="right_item">
                 <span class="segoicon SEGOEUIMDL"> &#xE010;</span>
@@ -67,7 +67,7 @@
 import { computed, inject, ref } from "vue";
 import type { WindowInfo, windowInfoMapInter } from "@/packages/window/libs/DWM/index"
 
-import MagnetVue from "@structure/Magnet.vue";
+import StartMenuVue from "@structure/StartMenu.vue";
 import NetworkVue from "@structure/taskbarIcon/network.vue";
 import ChargingVue from "@structure/taskbarIcon/charging.vue";
 

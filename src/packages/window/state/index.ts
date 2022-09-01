@@ -11,6 +11,9 @@ import type { Notify, appInfo } from "@state/type"
 function stateInit() {
   let appList: Array<Required<appInfo>> = shallowReactive([])
   let windowInfoMap: DragWindowMapInter = reactive({})// 所有窗口信息
+  let startupList: Array<appInfo> = shallowReactive([])// 启动菜单列表
+  let magnet: Array<appInfo> = shallowReactive([])// 启动菜单磁贴
+
   let NotificationMap: UnwrapNestedRefs<{ [key: string]: Notify }> = reactive({})//提示信息
   let sysInfo = reactive({
     connection: 0,
@@ -25,6 +28,8 @@ function stateInit() {
   return {
     appList,
     windowInfoMap,
+    startupList,
+    magnet,
     NotificationMap,
     sysInfo,
     zIndexIdArray,

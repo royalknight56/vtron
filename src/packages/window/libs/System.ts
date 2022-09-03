@@ -12,7 +12,7 @@ import {
 } from "@state/index";
 import type { appInfo } from "@state/type";
 import { DragWindowFactory, DragWindow } from "@libs/DragWindow"
-import { defaultOption } from '@libs/option'
+import { defaultWindowOption } from '@libs/option'
 import { SystemConfig, OptionType, partialOption } from "@/packages/window/libs/SystemConfig";
 
 class System {
@@ -44,8 +44,8 @@ class System {
   }
   AddToPlace(place: 'appList' | 'startupList' | 'magnet', app: appInfo) {
     this.State[place].push(Object.assign({
-      name: defaultOption.untitle,
-      icon: defaultOption.icon,
+      name: defaultWindowOption.title,
+      icon: defaultWindowOption.icon,
     }, app))
   }
   ClearDesktop() {

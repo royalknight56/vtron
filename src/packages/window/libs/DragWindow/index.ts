@@ -9,7 +9,7 @@ import { defineComponent, nextTick, reactive } from "vue";
 import { WindowInfo } from "@libs/DragWindow/type";
 import { EvMap, EvMapFunction, OptionAll, } from "./type";
 import { System } from '@libs/System'
-import { defaultOption } from '@libs/option'
+import { defaultWindowOption } from '@libs/option'
 // import * as  WinManagement from '@libs/DWM/WindowManage';
 
 class DragWindow {
@@ -24,18 +24,7 @@ class DragWindow {
         this.system = system
 
         this.evMap = {};
-        this.option = Object.assign({
-            x: 0,
-            y: 0,
-            width: 400,
-            height: 400,
-            props: {},
-            icon: defaultOption.icon,
-            isScalable: true,
-            isSFC: false,
-            buttons: ['close', 'min', 'max'],
-            title: defaultOption.untitle
-        }, option)
+        this.option = Object.assign({...defaultWindowOption}, option)
         this.id = system.id + system.State.winnum;
         this.windowInfo = reactive({
             id: this.id,

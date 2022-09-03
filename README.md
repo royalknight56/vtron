@@ -67,9 +67,25 @@ createApp(App).use(win10).mount('#app')
 
 
 3. 在页面中引入Win10租组件
- 
-```html
-<Win10></Win10>
+
+首先，我们需要创建一个system对象，这个对象管理着系统的所有状态信息。
+
+一般来说，我们创建另一个文件，存放system对象
+```ts
+// system.ts
+import { System } from "vue3-win10";
+let system = new System({});
+export {
+  system
+}
+```
+
+```vue
+// App.vue
+<Win10 :system="system"></Win10>
+<script setup>
+import { system } from './system'
+</script>
 ```
 
 此步骤之后，run dev已经可以看到win10启动了
@@ -80,7 +96,7 @@ createApp(App).use(win10).mount('#app')
 
 ```html
   <div class="outer">
-    <Win10></Win10>
+    <Win10 :system="system"></Win10>
   </div>
 ```
 定义outer样式
@@ -104,76 +120,3 @@ createApp(App).use(win10).mount('#app')
 
 ![](https://komarev.com/ghpvc/?username=royalknight56&color=blue)
 
-
-
-# 目录
-```
-|-- packages
-    |-- appconfig.ts  // APP的配置
-    |-- init.ts       // 初始化过程
-    |-- main.css      // 全局css
-    |-- Win.vue       // Win10组件
-    |-- window        // Win10逻辑
-        |-- builtin     // 内建的页面，设置等
-        |   |-- appInfo.vue
-        |   |-- callSystemWins.ts
-        |   |-- systemSet.vue
-        |   |-- setApps
-        |   |   |-- setStyle.scss
-        |   |   |-- SetSystemset.vue
-        |   |   |-- SetVersion.vue
-        |   |-- winComponent
-        |       |-- WinButton.vue
-        |       |-- WinCheckBox.vue
-        |       |-- WinRadio.vue
-        |       |-- WinSelect.vue
-        |-- libs        // 主要依赖
-        |   |-- GlobalOps.ts
-        |   |-- ContextMenu.ts
-        |   |-- Notify.ts
-        |   |-- Power.ts
-        |   |-- WindowTmp.vue
-        |   |-- Dom             // Dom操作
-        |   |   |-- DragElement.ts
-        |   |   |-- ScaleElement.ts
-        |   |-- DragWindow      // 窗口
-        |   |   |-- index.ts
-        |   |   |-- option.ts
-        |   |-- DWM             // 窗口管理中心
-        |   |   |-- DWM.ts
-        |   |   |-- index.ts
-        |   |   |-- WinManagement.ts
-        |   |   |-- type.ts
-        |   |-- WindowTemplate  // 窗口模板
-        |       |-- getCom.ts
-        |       |-- statebarButton.vue
-        |       |-- windowInner.vue
-        |       |-- defaultInner
-        |           |-- error.vue
-        |           |-- loadding.vue
-        |-- state       // 集中状态管理
-        |   |-- index.ts
-        |   |-- listener.ts
-        |   |-- type.ts
-        |-- structure   // Win所必需的结构
-            |-- Alert.vue
-            |-- ContextMenu.vue
-            |-- Desktop.vue
-            |-- DragWindow.vue
-            |-- LockScreen.vue
-            |-- Magnet.vue
-            |-- TaskBar.vue
-            |-- WindowsGroup.vue
-            |-- background
-            |   |-- default.vue
-            |   |-- imgbackground.vue
-            |   |-- index.vue
-            |-- status
-            |   |-- black.vue
-            |   |-- blue.vue
-            |   |-- index.vue
-            |-- taskbarIcon
-                |-- charging.vue
-                |-- network.vue
-
-```

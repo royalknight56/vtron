@@ -8,9 +8,9 @@
   <div class="outer">
     <Win10 :system="p1"></Win10>
   </div>
-  <div class="outer">
+  <!-- <div class="outer">
     <Win10 :system="p2"></Win10>
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
@@ -159,7 +159,7 @@ onMounted(() => {
   position: relative;
   top: 0px;
   width: 100vw;
-  height: 50vh;
+  height: 100vh;
 }
 </style>
 <style>

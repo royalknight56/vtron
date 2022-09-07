@@ -35,7 +35,7 @@
 import { inject, provide, ref, watch } from "vue";
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
-import { WindowInfo } from "@/packages/window/libs/DragWindow/option";
+import { WindowInfo,defaultWinInfo } from "@/packages/window/libs/DragWindow/option";
 import { DragElement } from "@libs/Dom/DragElement";
 import { ScaleElement } from "@libs/Dom/ScaleElement";
 import Statebar from "@libs/WindowTemplate/statebarButton.vue";
@@ -59,30 +59,34 @@ let props = defineProps({
 
 let system = <System>inject('system')
 let winID = props.id;
+// 传递windowid
+provide("windowId", winID);
 
 let DragWindowItem = system.getWindow(winID);
-let wininfo = DragWindowItem.windowInfo;
+
+let wininfo = DragWindowItem?.windowInfo || {...defaultWinInfo};
+
 const componentKey = ref<Number>(1);
 function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);
 }
 function closeWindow(): void {
-  DragWindowItem.destroy()
+  DragWindowItem?.destroy()
 }
 function hideWindow() {
-  DragWindowItem.hide()
+  DragWindowItem?.hide()
 }
 function maxWindow() {
   if (isScaleAble.value) {
-    if (DragWindowItem.isMaximized()) {
-      DragWindowItem.unmaximize()
+    if (DragWindowItem?.isMaximized()) {
+      DragWindowItem?.unmaximize()
     } else {
-      DragWindowItem.maximize()
+      DragWindowItem?.maximize()
     }
   }
 }
 function predown() {
-  DragWindowItem.moveTop()
+  DragWindowItem?.moveTop()
 }
 type buttonEvent = 'flush' | 'close' | 'min' | 'max'
 const buttonEventFunc = {
@@ -99,13 +103,13 @@ function uperRightClick(e: MouseEvent) {
     {
       name: "关闭",
       click: () => {
-        DragWindowItem.destroy()
+        DragWindowItem?.destroy()
       },
     },
     {
       name: "最小化",
       click: () => {
-        DragWindowItem.hide()
+        DragWindowItem?.hide()
       },
     },
   ]);
@@ -114,7 +118,7 @@ function uperRightClick(e: MouseEvent) {
 let customerStyle = ref<any>({});
 
 function onFocus(e: MouseEvent | TouchEvent): void {
-  DragWindowItem.moveTop()
+  DragWindowItem?.moveTop()
   if (isMaximize.value) {
     if (e instanceof MouseEvent) {
       e.preventDefault();
@@ -151,8 +155,6 @@ onMounted(() => {
     }),
   };
 });
-// 传递windowid
-provide("windowId", winID);
 
 /*
 挂载拖动事件
@@ -170,7 +172,7 @@ onMounted(() => {
         dragAble.canDrag = true;
       }
     }
-  );
+  ); 
   dragAble.onDrag((x, y) => {
     if (!wininfo.isMaximize) {
       wininfo.x = x;
@@ -184,7 +186,7 @@ onMounted(() => {
 */
 let isScaleAble = ref(wininfo.isScalable);
 let resizemode = ref("null");
-let scaleAble:ScaleElement;
+let scaleAble: ScaleElement;
 onMounted(() => {
   scaleAble = new ScaleElement(resizemode, winWidth, winHeight);
   scaleAble.onResize((width: number, height: number) => {
@@ -193,8 +195,8 @@ onMounted(() => {
   });
 })
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
-    scaleAble?.startScale(e, dire);
-  }
+  scaleAble?.startScale(e, dire);
+}
 
 </script>
 <style>

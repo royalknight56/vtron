@@ -36,7 +36,10 @@ class System {
     ({ ...this.State } = stateInit());
     this.DragWindow = DragWindowFactory(this)
   }
-  getWindow(id: string): DragWindow {
+  getWindow(id: string): DragWindow|undefined {
+    if(!this.State.windowInfoMap[id]){
+      return 
+    }
     return this.State.windowInfoMap[id]
   }
   ClearPlace(place: 'appList' | 'startupList' | 'magnet') {

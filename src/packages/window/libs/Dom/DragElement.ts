@@ -29,14 +29,12 @@ class DragObj implements DragObjInter {
     onMoving(offsetX: number, offsetY: number) {
         this.posX = this.posStartX + offsetX - this.startX;
         this.posY = this.posStartY + offsetY - this.startY;
-
-        // this.notify(this.posX, this.posY)
     }
-    startMove(startX: number, startY: number) {
+    startMove(startX: number, startY: number, posX: number, posY: number) {
         this.startX = startX;
         this.startY = startY;
-        this.posStartX = this.posX;
-        this.posStartY = this.posY;
+        this.posStartX = posX;
+        this.posStartY = posY;
     }
     onDrag(fun: (a0: number, a1: number) => void) {
         this.notify = fun;
@@ -64,17 +62,15 @@ class DragElement extends DragObj {
     mountDomEvent(element: any) {
         this.el = element;
         this.ifDraging = false;
-        // element.style.left = this.posX + 'px';
-        // element.style.top = this.posY + 'px'
         element.addEventListener('mousedown', (ev: any) => {
             if (this.canDrag) {
-                this.startMove(ev.pageX, ev.pageY);
+                this.startMove(ev.pageX, ev.pageY, this.el.offsetLeft, this.el.offsetTop);
                 this.ifDraging = true;
             }
         })
         element.addEventListener("touchstart", (ev: TouchEvent) => {
             if (this.canDrag) {
-                this.startMove(ev.touches[0].pageX, ev.touches[0].pageY);
+                this.startMove(ev.touches[0].pageX, ev.touches[0].pageY, this.el.offsetLeft, this.el.offsetTop);
                 this.ifDraging = true;
             }
         }, {

@@ -42,10 +42,12 @@ let testVue = system.DragWindow(
     // buttons:[],
     content: TestButton
   })
-testVue.show()
+testVue.show().setPosition(100, 100)
 onMounted(() => {
   
-
+  setTimeout(()=>{
+    testVue.setPosition(100, 200)
+  },3000)
   system.ClearDesktop();
   system2.ClearDesktop();
   system2.AddToDesktop({
@@ -54,7 +56,12 @@ onMounted(() => {
       content: 'https://v3.cn.vuejs.org/api/global-api.html#h'
     })
   });
-
+  system.AddToDesktop({
+    name: 'Local',
+    window: system.DragWindow({
+      content: 'http://localhost:3000/'
+    })
+  });
   system.AddToDesktop({
     name: '浏览器1',
     window: system.DragWindow({

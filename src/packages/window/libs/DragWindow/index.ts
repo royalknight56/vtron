@@ -20,7 +20,7 @@ class DragWindow {
     private option: Required<BaseOption>
     id: string
     private system: System
-
+    [index:string]:any
     constructor(option: Partial<BaseOption>, system: System) {
         this.system = system
         this.id = system.id + system.State.winnum;

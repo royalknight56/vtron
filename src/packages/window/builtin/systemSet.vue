@@ -49,9 +49,9 @@ let system = <System>inject('system')
 let setMap: {
     [key: string]: DragWindow
 } = {}
-let windowInfo = system.getWindow(id).windowInfo
+let windowInfo = system.getWindow(id)?.windowInfo
 function openSet(content: ReturnType<typeof defineComponent>, title: string) {
-    if (content) {
+    if (content&&windowInfo) {
         if (setMap[title]) {
             setMap[title].show().setPosition(windowInfo.x, windowInfo.y,).setSize(windowInfo.height, windowInfo.width
             )
@@ -64,13 +64,10 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
 
                 height: windowInfo.height,
                 width: windowInfo.width,
-
             })
             setMap[title].show()
         }
-
     }
-
 }
 let setList = [
     // {

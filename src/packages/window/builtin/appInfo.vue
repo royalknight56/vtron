@@ -61,9 +61,9 @@ import {System} from '@libs/System'
 let id =<string>inject('windowId')
 let system = <System>inject('system');
 
-let windowInfo = system.getWindow(id ).windowInfo
+let windowInfo = system.getWindow(id)?.windowInfo
 function closeWindow(){
-    system.getWindow(id ).destroy()
+    system.getWindow(id)?.destroy()
 }
 </script>
 <style>

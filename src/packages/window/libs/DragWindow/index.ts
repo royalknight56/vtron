@@ -9,39 +9,31 @@ import { defineComponent, nextTick, reactive } from "vue";
 import { WindowInfo } from "@libs/DragWindow/type";
 import { EvMap, EvMapFunction, OptionAll, } from "./type";
 import { System } from '@libs/System'
-import { defaultWindowOption } from '@libs/option'
+import { defaultWindowOption,defaultWinInfo } from '@libs/option'
 // import * as  WinManagement from '@libs/DWM/WindowManage';
 
 class DragWindow {
-    evMap: EvMapFunction
-    readonly windowInfo: WindowInfo
-
+    windowInfo: WindowInfo
     private option: Required<OptionAll>
     id: string
     private system: System
 
     constructor(option: OptionAll, system: System) {
         this.system = system
-
-        this.evMap = {};
-        this.option = Object.assign({...defaultWindowOption}, option)
         this.id = system.id + system.State.winnum;
-        this.windowInfo = reactive({
-            id: this.id,
-            wid: system.State.winnum,
-            zindex: 0,
-            isVisible: true,
-            istop: false,
-            isMaximize: false,
-            isCreate: false,
-            ...this.option,
-            windowEventMap: {}
-        });
+
+        this.option = {...defaultWindowOption}
+        this.option = Object.assign({...defaultWindowOption}, option)
+        this.windowInfo = reactive(Object.assign({...defaultWinInfo}, this.option))
+        
+        this.windowInfo.id = this.id
+        this.windowInfo.wid = this.system.State.winnum
 
         system.State.windowInfoMap[this.id] = this;
         system.State.zIndexIdArray.push(this.id) // 层级数组中压入id
         system.State.winnum++;
     }
+
     private getWinInner() {
         let dom = document.getElementById(this.system.id);
         if (dom) {
@@ -56,12 +48,6 @@ class DragWindow {
             }
         }
 
-    }
-    addWindowEventListener(event: 'onDraging', callback: (x: number, y: number, ifdrag: boolean) => void): void;
-    addWindowEventListener(event: 'onResizing', callback: (x: number, y: number) => void): void;
-
-    addWindowEventListener(event: keyof EvMap, callback: any): any {
-        this.evMap[event] = callback;
     }
     private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
         if (this.windowInfo) {
@@ -83,13 +69,12 @@ class DragWindow {
             this.moveTop()//新窗口在顶部
         })
     }
-
-    show(option?: Partial<OptionAll>) {// 调用show之后，注册窗口，展示窗口
-        if (option) {
-            this.option = Object.assign(this.option, option)
-        }
+    getWinid() {// 获取窗口id
+    }
+    show(callData?:WindowInfo["callData"]) {// 调用show之后，注册窗口，展示窗口
         this.windowInfo.isCreate = true
         this.windowInfo.isVisible = true// 显示窗口
+        this.windowInfo.callData = callData||this.windowInfo.callData
         this.afterRegister()//注册之后
     }
     hide() {// 隐藏窗口

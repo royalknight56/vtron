@@ -19,8 +19,6 @@ import { inject, ref } from "vue";
 import { system } from "../systeminit";
 
 let winId = <string>inject('windowId')
-system.getWindow(winId).addWindowEventListener('onResizing',()=>{ console.log('resize')})
-
 let urlinput = ref('')
 let urlsrc = ref('')
 function urlkey(e:KeyboardEvent) {

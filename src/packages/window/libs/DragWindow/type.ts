@@ -15,6 +15,7 @@ interface baseOption {
     title?: string,
     icon?: string,
     isScalable?: boolean,
+    frame?: boolean,// 是否显示边框
     buttons?: WindowButton[],    // 右上角按钮
     content: DefineComponent<{}, {}, any> | string,
 }
@@ -31,6 +32,9 @@ interface BuiltinPorps {
     istop: boolean,
     isMaximize: boolean,
     isCreate: boolean,
+    callData: {
+        callFrom: string,
+    },
     windowEventMap: {
         [index: string]: Function
     },

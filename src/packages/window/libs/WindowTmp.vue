@@ -6,14 +6,8 @@
  Need CodeReview 
 -->
 <template>
-  <div
-    class="wintmp_outer dragwin"
-    :style="customerStyle"
-    @touchstart.passive="onFocus"
-    @mousedown="onFocus"
-    :class="{ topwin: istop, maxwin: isMaximize }"
-    ref="$win_outer"
-  >
+  <div class="wintmp_outer dragwin" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus"
+    :class="{ topwin: istop, maxwin: isMaximize, noframes:!wininfo.frame }" ref="$win_outer">
     <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
       <div class="wintmp_left">
         <div class="wintmp_logo">
@@ -21,44 +15,23 @@
         </div>
         <div class="wintmp_title">{{ ctx.title }}</div>
       </div>
-      <Statebar 
-      @buttonEvent="handelButtonEvent"
-      :isMaximize="isMaximize"
-      :isScaleAble="isScaleAble"
-      :wininfo="wininfo"
-      ></Statebar>
+      <Statebar @buttonEvent="handelButtonEvent" :isMaximize="isMaximize" :isScaleAble="isScaleAble" :wininfo="wininfo">
+      </Statebar>
     </div>
-    <div
-      class="wintmp_main"
-      :class="{ resizeing: resizemode != 'null' }"
-      @mousedown.stop="predown"
-      @touchstart.stop.passive="predown"
-    >
-    <WindowInner :id="winID" :componentKey="componentKey"></WindowInner>
+    <div class="wintmp_main" :class="{ resizeing: resizemode != 'null' }" @mousedown.stop="predown"
+      @touchstart.stop.passive="predown">
+      <WindowInner :id="winID" :componentKey="componentKey"></WindowInner>
     </div>
-    <div
-      class="right_border"
-      v-if="isScaleAble"
-      @mousedown.stop.prevent="startScale($event, 'r')"
-      @touchstart.stop.passive="startScale($event, 'r')"
-    ></div>
-    <div
-      class="bottom_border"
-      v-if="isScaleAble"
-      @mousedown.stop.prevent="startScale($event, 'b')"
-      @touchstart.stop.passive="startScale($event, 'b')"
-    ></div>
-    <div
-      class="right_bottom_border"
-      v-if="isScaleAble"
-      draggable="false"
-      @mousedown.stop.prevent="startScale($event, 'rb')"
-      @touchstart.stop.passive="startScale($event, 'rb')"
-    ></div>
+    <div class="right_border" v-if="isScaleAble" @mousedown.stop.prevent="startScale($event, 'r')"
+      @touchstart.stop.passive="startScale($event, 'r')"></div>
+    <div class="bottom_border" v-if="isScaleAble" @mousedown.stop.prevent="startScale($event, 'b')"
+      @touchstart.stop.passive="startScale($event, 'b')"></div>
+    <div class="right_bottom_border" v-if="isScaleAble" draggable="false"
+      @mousedown.stop.prevent="startScale($event, 'rb')" @touchstart.stop.passive="startScale($event, 'rb')"></div>
   </div>
 </template>
 <script lang="ts" setup>
-import {  inject, provide, ref, watch } from "vue";
+import { inject, provide, ref, watch } from "vue";
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
 import { WindowInfo } from "@libs/DragWindow/type";
@@ -66,7 +39,7 @@ import { DragElement } from "@libs/Dom/DragElement";
 import { ScaleElement } from "@libs/Dom/ScaleElement";
 import Statebar from "@libs/WindowTemplate/statebarButton.vue";
 import WindowInner from "@libs/WindowTemplate/windowInner.vue";
-import {System} from '@libs/System'
+import { System } from '@libs/System'
 let props = defineProps({
   id: {
     type: String,
@@ -99,8 +72,8 @@ function hideWindow() {
   DragWindowItem.hide()
 }
 function maxWindow() {
-  if(isScaleAble.value) {
-    if(DragWindowItem.isMaximized()) {
+  if (isScaleAble.value) {
+    if (DragWindowItem.isMaximized()) {
       DragWindowItem.unmaximize()
     } else {
       DragWindowItem.maximize()
@@ -110,14 +83,14 @@ function maxWindow() {
 function predown() {
   DragWindowItem.moveTop()
 }
-type buttonEvent = 'flush'|'close'|'min'|'max'
+type buttonEvent = 'flush' | 'close' | 'min' | 'max'
 const buttonEventFunc = {
   close: closeWindow,
   min: hideWindow,
   max: maxWindow,
   flush: flushWindow,
 };
-function handelButtonEvent(event:buttonEvent){
+function handelButtonEvent(event: buttonEvent) {
   buttonEventFunc[event]();
 }
 function uperRightClick(e: MouseEvent) {
@@ -145,7 +118,7 @@ function onFocus(e: MouseEvent | TouchEvent): void {
     if (e instanceof MouseEvent) {
       e.preventDefault();
       e.stopPropagation();
-    } 
+    }
   }
 }
 
@@ -227,8 +200,9 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   height: 100%;
 }
 </style>
-<style scoped>
+<style scoped lang="scss">
 @import "@/packages/main.css";
+
 .wintmp_outer {
   position: absolute;
   padding: 0;
@@ -253,15 +227,18 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
     0 7px 19px rgb(0 0 0 / 58%);
   padding: 0px;
 }
+
 .topwin {
   border: 1px solid #0078d7;
   box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
     0 7px 19px rgb(0 0 0 / 90%);
 }
+
 .icon {
   width: 12px;
   height: 12px;
 }
+
 .maxwin {
   position: absolute;
   left: 0 !important;
@@ -270,7 +247,22 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   height: calc(100% - 38px) !important;
   transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
 }
-
+.noframes{
+  .wintmp_uper{
+    display: none;
+  }
+  border: none;
+  box-shadow: none;
+  .right_border{
+    display: none;
+  }
+  .bottom_border{
+    display: none;
+  }
+  .right_bottom_border{
+    display: none;
+  }
+}
 .wintmp_uper {
   flex-shrink: 0;
   position: relative;
@@ -285,12 +277,14 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   color: rgb(51, 51, 51);
   overflow: hidden;
 }
+
 .wintmp_left {
   display: flex;
   text-align: center;
   /* justify-content: center; */
   align-items: center;
 }
+
 .wintmp_title {
   padding: 0 10px;
   color: black;
@@ -300,13 +294,16 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   display: inline;
   padding: 0 10px;
 }
+
 .wintmp_logo {
   height: 24px;
   width: 30px;
 }
+
 .wintmp_logo img {
   width: 18px;
 }
+
 .wintmp_main {
   position: relative;
   width: 100%;
@@ -315,6 +312,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   overflow: hidden;
   contain: content;
 }
+
 .right_border {
   cursor: ew-resize;
   position: absolute;
@@ -323,6 +321,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   width: 16px;
   height: calc(100% - 4px);
 }
+
 .bottom_border {
   cursor: ns-resize;
   position: absolute;
@@ -331,6 +330,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   width: calc(100% - 4px);
   height: 16px;
 }
+
 .right_bottom_border {
   cursor: nwse-resize;
   position: absolute;
@@ -340,6 +340,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   width: 16px;
   height: 16px;
 }
+
 .resizeing {
   user-select: none;
   pointer-events: none;

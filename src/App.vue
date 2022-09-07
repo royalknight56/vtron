@@ -89,8 +89,10 @@ onMounted(() => {
       icon: brow,
       width: 200,
       height: 200,
+      frame:false,
       content: TestButton
     })
+  testVue.show()
   system.AddToDesktop({
     name: '测试按钮',
     icon: brow,

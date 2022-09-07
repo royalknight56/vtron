@@ -30,9 +30,7 @@ import { system, system2 } from "./systeminit"
 let p1 = system;
 let p2 = system2;
 
-
-onMounted(() => {
-  let testVue = system.DragWindow(
+let testVue = system.DragWindow(
   {
     title: '测试按钮',
     icon: brow,
@@ -40,11 +38,14 @@ onMounted(() => {
     height: 200,
     frame: true,
     transparent: true,
-    center: true,
+    // center: true,
     // buttons:[],
     content: TestButton
   })
 testVue.show()
+onMounted(() => {
+  
+
   system.ClearDesktop();
   system2.ClearDesktop();
   system2.AddToDesktop({

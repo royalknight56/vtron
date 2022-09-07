@@ -12,7 +12,7 @@ import {
 } from "@/packages/window/libs/DragWindow/option"
 
 import { System } from '@libs/System'
-import { defaultWindowOption,defaultWinInfo } from '@/packages/window/libs/DragWindow/option'
+import { defaultWindowOption, defaultWinInfo } from '@/packages/window/libs/DragWindow/option'
 // import * as  WinManagement from '@libs/DWM/WindowManage';
 
 class DragWindow {
@@ -21,14 +21,13 @@ class DragWindow {
     id: string
     private system: System
 
-    constructor(option:Partial<BaseOption>, system: System) {
+    constructor(option: Partial<BaseOption>, system: System) {
         this.system = system
         this.id = system.id + system.State.winnum;
 
-        this.option = {...defaultWindowOption}
-        this.option = Object.assign({...defaultWindowOption}, option)
-        this.windowInfo = reactive(Object.assign({...defaultWinInfo}, this.option))
-        
+        this.option = { ...defaultWindowOption }
+        this.option = Object.assign({ ...defaultWindowOption }, option)
+        this.windowInfo = reactive(Object.assign({ ...defaultWinInfo }, this.option))
         this.windowInfo.id = this.id
         this.windowInfo.wid = this.system.State.winnum
 
@@ -38,25 +37,19 @@ class DragWindow {
     }
 
     private getWinInner() {
-        let dom = document.getElementById(this.system.id);
-        if (dom) {
-            return {
-                width: dom.clientWidth,
-                height: dom.clientHeight
-            }
-        } else {
-            return {
-                width: 0,
-                height: 0
-            }
+        return {
+            width: this.system.State.sysInfo.width,
+            height: this.system.State.sysInfo.height
         }
-
     }
     private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
         if (this.windowInfo) {
             if (this.windowInfo.isScalable) {//只有可缩放窗口
                 let { x, y, width, height } = this.windowInfo;
                 let { width: winWidth, height: winHeight } = this.getWinInner();//获取窗口大小
+                if (winWidth == 0 && winHeight == 0) {
+                    return
+                }
                 if (x + width > winWidth) {
                     this.windowInfo.width = winWidth - x;
                 }
@@ -68,7 +61,7 @@ class DragWindow {
     }
     private afterRegister() {// 注册之后的操作
         this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
-        if(this.windowInfo.center){
+        if (this.windowInfo.center) {
             this.center()
         }
         nextTick(() => {
@@ -77,10 +70,10 @@ class DragWindow {
     }
     getWinid() {// 获取窗口id
     }
-    show(callData?:WindowInfo["callData"]) {// 调用show之后，注册窗口，展示窗口
+    show(callData?: WindowInfo["callData"]) {// 调用show之后，注册窗口，展示窗口
         this.windowInfo.isCreate = true
         this.windowInfo.isVisible = true// 显示窗口
-        this.windowInfo.callData = callData||this.windowInfo.callData
+        this.windowInfo.callData = callData || this.windowInfo.callData;
         this.afterRegister()//注册之后
         return this
     }
@@ -158,9 +151,9 @@ class DragWindow {
         return this
     }
 }
-type ConstructorParams<T extends new (...args: any[]) => any> = T extends new (opt:infer A,...args: any[]) => any ? A : never;
+type ConstructorParams<T extends new (...args: any[]) => any> = T extends new (opt: infer A, ...args: any[]) => any ? A : never;
 function DragWindowFactory(system: System) {
-    return (option:ConstructorParams<typeof DragWindow>) => {
+    return (option: ConstructorParams<typeof DragWindow>) => {
         return new DragWindow(option, system)
     }
 

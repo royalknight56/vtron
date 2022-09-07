@@ -7,7 +7,8 @@
 -->
 <template>
   <div class="wintmp_outer dragwin" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus"
-    :class="{ topwin: istop, maxwin: isMaximize, noframes:!wininfo.frame,transparent:wininfo.transparent }" ref="$win_outer">
+    :class="{ topwin: istop, maxwin: isMaximize, noframes: !wininfo.frame, transparent: wininfo.transparent }"
+    ref="$win_outer">
     <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
       <div class="wintmp_left">
         <div class="wintmp_logo">
@@ -133,8 +134,8 @@ let winHeight = ref(wininfo.height);
  */
 onMounted(() => {
   customerStyle.value = {
-    width: computed(() => winWidth.value + "px"),
-    height: computed(() => winHeight.value + "px"),
+    width: computed(() => wininfo.width + "px"),
+    height: computed(() => wininfo.height + "px"),
     left: computed(() => wininfo.x + "px"),
     top: computed(() => wininfo.y + "px"),
 
@@ -183,15 +184,18 @@ onMounted(() => {
 */
 let isScaleAble = ref(wininfo.isScalable);
 let resizemode = ref("null");
-let scaleAble = new ScaleElement(resizemode, winWidth, winHeight);
-
-scaleAble.onResize((width: number, height: number) => {
-  wininfo.width = width || wininfo.width;
-  wininfo.height = height || wininfo.height;
-});
+let scaleAble:ScaleElement;
+onMounted(() => {
+  scaleAble = new ScaleElement(resizemode, winWidth, winHeight);
+  scaleAble.onResize((width: number, height: number) => {
+    wininfo.width = width || wininfo.width;
+    wininfo.height = height || wininfo.height;
+  });
+})
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
-  scaleAble?.startScale(e, dire);
-}
+    scaleAble?.startScale(e, dire);
+  }
+
 </script>
 <style>
 .dragwin {
@@ -247,32 +251,41 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   height: calc(100% - 38px) !important;
   transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
 }
-.noframes{
-  .wintmp_uper{
+
+.noframes {
+  .wintmp_uper {
     display: none;
   }
+
   border: none;
   box-shadow: none;
-  .right_border{
+
+  .right_border {
     display: none;
   }
-  .bottom_border{
+
+  .bottom_border {
     display: none;
   }
-  .right_bottom_border{
+
+  .right_bottom_border {
     display: none;
   }
 }
-.transparent{
+
+.transparent {
   background-color: transparent;
-  .wintmp_main{
+
+  .wintmp_main {
     background-color: transparent;
   }
-  .wintmp_uper{
+
+  .wintmp_uper {
     background-color: rgba(255, 255, 255, 0.774);
 
   }
 }
+
 .wintmp_uper {
   flex-shrink: 0;
   position: relative;

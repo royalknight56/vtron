@@ -6,7 +6,7 @@
   Need CodeReview 
 -->
 <template>
-    <div class="winitem" v-for="item in windowCreacted" :key="item.id">
+    <div class="winitem"  v-if="isMount" v-for="item in windowCreacted" :key="item.id">
         <teleport :to="'#'+system.id">
             <WindowTmpVue :id="item.id" :ref="'ref' + item.id"></WindowTmpVue>
         </teleport>
@@ -16,12 +16,16 @@
 import WindowTmpVue from "@libs/WindowTmp.vue";
 
 import {System} from '@libs/System'
-import { computed, inject } from "vue";
+import { computed, inject, onMounted, ref } from "vue";
 import { windowInfoMapInter } from "@libs/DragWindow/option";
 import { DragWindow } from "@libs/DragWindow";
 
 let system = <System>inject('system')
 
+let isMount = ref(false)
+onMounted(()=>{
+    isMount.value = true
+})
 let windowCreacted =computed(()=>{
     let Obj:windowInfoMapInter={};
     Object.keys(system.State.windowInfoMap).forEach((key)=>{

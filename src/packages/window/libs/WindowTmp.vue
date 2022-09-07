@@ -7,7 +7,7 @@
 -->
 <template>
   <div class="wintmp_outer dragwin" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus"
-    :class="{ topwin: istop, maxwin: isMaximize, noframes:!wininfo.frame }" ref="$win_outer">
+    :class="{ topwin: istop, maxwin: isMaximize, noframes:!wininfo.frame,transparent:wininfo.transparent }" ref="$win_outer">
     <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
       <div class="wintmp_left">
         <div class="wintmp_logo">
@@ -34,7 +34,7 @@
 import { inject, provide, ref, watch } from "vue";
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
-import { WindowInfo } from "@libs/DragWindow/type";
+import { WindowInfo } from "@/packages/window/libs/DragWindow/option";
 import { DragElement } from "@libs/Dom/DragElement";
 import { ScaleElement } from "@libs/Dom/ScaleElement";
 import Statebar from "@libs/WindowTemplate/statebarButton.vue";
@@ -261,6 +261,16 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   }
   .right_bottom_border{
     display: none;
+  }
+}
+.transparent{
+  background-color: transparent;
+  .wintmp_main{
+    background-color: transparent;
+  }
+  .wintmp_uper{
+    background-color: rgba(255, 255, 255, 0.774);
+
   }
 }
 .wintmp_uper {

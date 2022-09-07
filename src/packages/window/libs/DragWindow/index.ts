@@ -6,19 +6,22 @@
  * Need CodeReview 
  */
 import { defineComponent, nextTick, reactive } from "vue";
-import { WindowInfo } from "@libs/DragWindow/type";
-import { EvMap, EvMapFunction, OptionAll, } from "./type";
+import {
+    BaseOption,
+    WindowInfo,
+} from "@/packages/window/libs/DragWindow/option"
+
 import { System } from '@libs/System'
-import { defaultWindowOption,defaultWinInfo } from '@libs/option'
+import { defaultWindowOption,defaultWinInfo } from '@/packages/window/libs/DragWindow/option'
 // import * as  WinManagement from '@libs/DWM/WindowManage';
 
 class DragWindow {
     windowInfo: WindowInfo
-    private option: Required<OptionAll>
+    private option: Required<BaseOption>
     id: string
     private system: System
 
-    constructor(option: OptionAll, system: System) {
+    constructor(option:Partial<BaseOption>, system: System) {
         this.system = system
         this.id = system.id + system.State.winnum;
 
@@ -65,6 +68,9 @@ class DragWindow {
     }
     private afterRegister() {// 注册之后的操作
         this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
+        if(this.windowInfo.center){
+            this.center()
+        }
         nextTick(() => {
             this.moveTop()//新窗口在顶部
         })
@@ -76,31 +82,36 @@ class DragWindow {
         this.windowInfo.isVisible = true// 显示窗口
         this.windowInfo.callData = callData||this.windowInfo.callData
         this.afterRegister()//注册之后
+        return this
     }
     hide() {// 隐藏窗口
         this.windowInfo.isVisible = false
+        return this
     }
     destroy() {// 销毁窗口
         this.windowInfo.isCreate = false
-        this.windowInfo.windowEventMap['destroy']?.()
     }
     isMinimized() {// 是否最小化
         return this.windowInfo.isVisible ? false : true
     }
     minimize() {// 最小化窗口
         this.windowInfo.isVisible = false;
+        return this
     }
     restore() {// 恢复窗口
         this.windowInfo.isVisible = true;
+        return this
     }
     isMaximized() {// 是否最大化
         return this.windowInfo.isMaximize
     }
     maximize() {// 最大化窗口
         this.windowInfo.isMaximize = true;
+        return this
     }
     unmaximize() {// 取消最大化窗口
         this.windowInfo.isMaximize = false;
+        return this
     }
     moveTop() {
         for (let key in this.system.State.windowInfoMap) {
@@ -114,7 +125,7 @@ class DragWindow {
         for (let i = 0; i < this.system.State.zIndexIdArray.length; i++) {
             this.system.State.windowInfoMap[this.system.State.zIndexIdArray[i]].windowInfo.zindex = i + 10
         }
-        return this.system.State.zIndexIdArray.length
+        return this
     }
     isNormal() {
         return !this.isMaximized() && !this.isMinimized()
@@ -123,6 +134,7 @@ class DragWindow {
         this.windowInfo.width = width;
         this.windowInfo.height = height;
         this.makeWindowNotOverSize();
+        return this
     }
     getSize() {// 获取窗口大小
         return {
@@ -133,6 +145,7 @@ class DragWindow {
     setPosition(x: number, y: number) {// 设置窗口位置
         this.windowInfo.x = x;
         this.windowInfo.y = y;
+        return this
     }
     getPosition() {// 获取窗口位置
         return {
@@ -142,11 +155,12 @@ class DragWindow {
     }
     center() {
         this.setPosition((this.system.State.sysInfo.width - this.windowInfo.width) / 2, (this.system.State.sysInfo.height - this.windowInfo.height) / 2)
+        return this
     }
 }
-
+type ConstructorParams<T extends new (...args: any[]) => any> = T extends new (opt:infer A,...args: any[]) => any ? A : never;
 function DragWindowFactory(system: System) {
-    return (option:OptionAll) => {
+    return (option:ConstructorParams<typeof DragWindow>) => {
         return new DragWindow(option, system)
     }
 

@@ -17,7 +17,7 @@ import WindowTmpVue from "@libs/WindowTmp.vue";
 
 import {System} from '@libs/System'
 import { computed, inject } from "vue";
-import { windowInfoMapInter } from "@libs/DragWindow/type";
+import { windowInfoMapInter } from "@libs/DragWindow/option";
 import { DragWindow } from "@libs/DragWindow";
 
 let system = <System>inject('system')

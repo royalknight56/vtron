@@ -12,7 +12,7 @@ import {
 } from "@state/index";
 import type { appInfo } from "@state/type";
 import { DragWindowFactory, DragWindow } from "@libs/DragWindow"
-import { defaultWindowOption } from '@libs/option'
+import { defaultWindowOption } from '@/packages/window/libs/DragWindow/option'
 import { SystemConfig, OptionType, partialOption } from "@/packages/window/libs/SystemConfig";
 
 class System {

@@ -25,12 +25,26 @@ import app_vscode from "./apps/app_vscode.vue"
 import Mycom from "./apps/MyComputer.vue"
 // import { DragWindow } from "./packages/window/libs/DragWindow";
 import { onMounted, reactive, ref } from "vue";
-import {system,system2} from "./systeminit"
+import { system, system2 } from "./systeminit"
 // import computer from "./assets/computer.ico"
 let p1 = system;
 let p2 = system2;
 
+
 onMounted(() => {
+  let testVue = system.DragWindow(
+  {
+    title: '测试按钮',
+    icon: brow,
+    width: 200,
+    height: 200,
+    frame: true,
+    transparent: true,
+    center: true,
+    // buttons:[],
+    content: TestButton
+  })
+testVue.show()
   system.ClearDesktop();
   system2.ClearDesktop();
   system2.AddToDesktop({
@@ -83,16 +97,7 @@ onMounted(() => {
         content: Browser
       })
   });
-  let testVue = system.DragWindow(
-    {
-      title: '测试按钮',
-      icon: brow,
-      width: 200,
-      height: 200,
-      frame:false,
-      content: TestButton
-    })
-  testVue.show()
+
   system.AddToDesktop({
     name: '测试按钮',
     icon: brow,
@@ -127,27 +132,27 @@ onMounted(() => {
     name: '测试按钮',
     icon: brow,
     window: testVue
-  });system.AddToMagnet({
+  }); system.AddToMagnet({
     name: '测试按钮',
     icon: brow,
     window: testVue
-  });system.AddToMagnet({
+  }); system.AddToMagnet({
     name: '测试按钮',
     icon: brow,
     window: testVue
-  });system.AddToMagnet({
+  }); system.AddToMagnet({
     name: '测试按钮',
     icon: brow,
     window: testVue
-  });system.AddToMagnet({
+  }); system.AddToMagnet({
     name: '测试按钮',
     icon: brow,
     window: testVue
-  });system.AddToMagnet({
+  }); system.AddToMagnet({
     name: '测试按钮',
     icon: brow,
     window: testVue
-  });system.AddToMagnet({
+  }); system.AddToMagnet({
     name: '测试按钮',
     icon: brow,
     window: testVue

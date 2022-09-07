@@ -65,7 +65,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, inject, ref } from "vue";
-import type { WindowInfo, windowInfoMapInter } from "@libs/DragWindow/type"
+import type { WindowInfo, windowInfoMapInter } from "@/packages/window/libs/DragWindow/option"
 
 import StartMenuVue from "@structure/StartMenu.vue";
 import NetworkVue from "@structure/taskbarIcon/network.vue";

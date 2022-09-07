@@ -38,9 +38,9 @@
         </div>
         <StartMenuVue v-if="ifMagnetShow"  @changevis="changeMagnetShow"></StartMenuVue>
         <div class="bar_right">
-            <div class="right_item">
+            <!-- <div class="right_item">
                 <span class="segoicon SEGOEUIMDL"> &#xE010;</span>
-            </div>
+            </div> -->
             <div class="right_item">
                 <ChargingVue :sysInfo="sysInfo"></ChargingVue>
             </div>

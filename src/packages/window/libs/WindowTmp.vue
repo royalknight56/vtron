@@ -12,9 +12,9 @@
     <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
       <div class="wintmp_left">
         <div class="wintmp_logo">
-          <img draggable="false" :src="ctx.icon" />
+          <img draggable="false" :src="wininfo.icon" />
         </div>
-        <div class="wintmp_title">{{ ctx.title }}</div>
+        <div class="wintmp_title">{{ wininfo.title }}</div>
       </div>
       <Statebar @buttonEvent="handelButtonEvent" :isMaximize="isMaximize" :isScaleAble="isScaleAble" :wininfo="wininfo">
       </Statebar>
@@ -45,16 +45,7 @@ let props = defineProps({
   id: {
     type: String,
     required: true,
-  },
-  ctx: {
-    type: Object as PropType<WindowInfo>,
-    default: {
-      app: {
-        unmount: () => { },
-      }, //创建的app
-      content: {}, //组件vue
-    },
-  },
+  }
 });
 
 let system = <System>inject('system')

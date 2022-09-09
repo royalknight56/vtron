@@ -291,7 +291,9 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   left: 0 !important;
   top: 0 !important;
   width: 100% !important;
-  height: calc(100% - 38px) !important;
+  height: 100% !important;
+  z-index: 105  !important;
+  border: none;
   .wintmp_uper {
     display: none;
   }

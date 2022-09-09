@@ -47,7 +47,10 @@ onMounted(() => {
   
   setTimeout(()=>{
     testVue.setPosition(100, 200).setFullScreen(true)
-  },3000)
+  },1000)
+  setTimeout(()=>{
+    testVue.setFullScreen(false)
+  },2000)
   system.ClearDesktop();
   system2.ClearDesktop();
   system2.AddToDesktop({

@@ -9,6 +9,7 @@ import { defineComponent, nextTick, reactive } from "vue";
 import {
     BaseOption,
     WindowInfo,
+    WindowStatusEnum,
 } from "@/packages/window/libs/DragWindow/option"
 
 import { System } from '@libs/System'
@@ -83,6 +84,7 @@ class DragWindow {
     }
     destroy() {// 销毁窗口
         this.windowInfo.isCreate = false
+        this.windowInfo.status = WindowStatusEnum.close
     }
     isMinimized() {// 是否最小化
         return this.windowInfo.isVisible ? false : true
@@ -100,10 +102,12 @@ class DragWindow {
     }
     maximize() {// 最大化窗口
         this.windowInfo.isMaximize = true;
+        this.windowInfo.status = WindowStatusEnum.max
         return this
     }
     unmaximize() {// 取消最大化窗口
         this.windowInfo.isMaximize = false;
+        this.windowInfo.status = WindowStatusEnum.normal
         return this
     }
     moveTop() {
@@ -149,6 +153,14 @@ class DragWindow {
     center() {
         this.setPosition((this.system.State.sysInfo.width - this.windowInfo.width) / 2, (this.system.State.sysInfo.height - this.windowInfo.height) / 2)
         return this
+    }
+    setFullScreen(isFull: boolean) {// 设置全屏
+        this.windowInfo.fullscreen = isFull;
+        if(isFull){
+            this.windowInfo.status = WindowStatusEnum.fullscreen
+        }else{
+            this.windowInfo.status = WindowStatusEnum.normal
+        }
     }
 }
 type ConstructorParams<T extends new (...args: any[]) => any> = T extends new (opt: infer A, ...args: any[]) => any ? A : never;

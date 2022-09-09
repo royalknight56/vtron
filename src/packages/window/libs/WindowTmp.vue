@@ -6,9 +6,10 @@
  Need CodeReview 
 -->
 <template>
-  <div class="wintmp_outer dragwin" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus"
-    :class="{ topwin: istop, maxwin: isMaximize, noframes: !wininfo.frame, transparent: wininfo.transparent }"
-    ref="$win_outer">
+  <div class="wintmp_outer dragwin" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus" :class="{
+    topwin: istop,
+    noframes: !wininfo.frame, transparent: wininfo.transparent
+  }, DragWindowItem?.windowInfo.status" ref="$win_outer">
     <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
       <div class="wintmp_left">
         <div class="wintmp_logo">
@@ -35,7 +36,7 @@
 import { inject, provide, ref, watch } from "vue";
 import { onMounted, computed } from "vue";
 import type { PropType } from "vue";
-import { WindowInfo,defaultWinInfo } from "@/packages/window/libs/DragWindow/option";
+import { WindowInfo, defaultWinInfo } from "@/packages/window/libs/DragWindow/option";
 import { DragElement } from "@libs/Dom/DragElement";
 import { ScaleElement } from "@libs/Dom/ScaleElement";
 import Statebar from "@libs/WindowTemplate/statebarButton.vue";
@@ -55,8 +56,8 @@ provide("windowId", winID);
 
 let DragWindowItem = system.getWindow(winID);
 
-let wininfo = DragWindowItem?.windowInfo || {...defaultWinInfo};
-
+let wininfo = DragWindowItem?.windowInfo || { ...defaultWinInfo };
+let winStatus = DragWindowItem?.windowInfo.status;
 const componentKey = ref<Number>(1);
 function flushWindow(): void {
   componentKey.value = Math.round(Math.random() * 10000);
@@ -163,7 +164,7 @@ onMounted(() => {
         dragAble.canDrag = true;
       }
     }
-  ); 
+  );
   dragAble.onDrag((x, y) => {
     if (!wininfo.isMaximize) {
       wininfo.x = x;
@@ -206,23 +207,63 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   margin: 0;
   left: 0;
   top: 0;
-  display: block;
   width: 100px;
   height: 100px;
   background-color: rgb(255, 255, 255);
-
-  /* border: 1px solid rgb(194, 194, 194); */
-  border: 2px solid rgb(194, 194, 194);
-
+  border: 1px solid #0078d7;
   display: flex;
   flex-direction: column;
-  /**/
-  border: #0078d7;
-  border-width: 1px;
-  border-style: solid;
   box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
     0 7px 19px rgb(0 0 0 / 58%);
-  padding: 0px;
+
+  .wintmp_uper {
+    cursor: default;
+    user-select: none;
+    flex-shrink: 0;
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    font-weight: 100;
+    color: rgb(51, 51, 51);
+    overflow: hidden;
+
+    .wintmp_left {
+      display: flex;
+      text-align: center;
+      /* justify-content: center; */
+      align-items: center;
+
+      .wintmp_title {
+        padding: 0 10px;
+        color: black;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        font-weight: 400;
+        font-size: 12px;
+        display: inline;
+        padding: 0 10px;
+      }
+
+      .wintmp_logo {
+        height: 24px;
+        width: 30px;
+
+        img {
+          width: 18px;
+        }
+      }
+    }
+  }
+  .wintmp_main {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+    contain: content;
+  }
+
 }
 
 .topwin {
@@ -236,13 +277,24 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   height: 12px;
 }
 
-.maxwin {
+.max {
   position: absolute;
   left: 0 !important;
   top: 0 !important;
   width: 100% !important;
   height: calc(100% - 38px) !important;
   transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
+}
+
+.fullscreen {
+  position: absolute;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: calc(100% - 38px) !important;
+  .wintmp_uper {
+    display: none;
+  }
 }
 
 .noframes {
@@ -277,56 +329,6 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
     background-color: rgba(255, 255, 255, 0.774);
 
   }
-}
-
-.wintmp_uper {
-  flex-shrink: 0;
-  position: relative;
-  cursor: default;
-  user-select: none;
-  top: 0;
-  width: 100%;
-  height: 30px;
-  line-height: 30px;
-  font-weight: 100;
-  /* background-color: rgba(255, 255, 255, 0.774); */
-  color: rgb(51, 51, 51);
-  overflow: hidden;
-}
-
-.wintmp_left {
-  display: flex;
-  text-align: center;
-  /* justify-content: center; */
-  align-items: center;
-}
-
-.wintmp_title {
-  padding: 0 10px;
-  color: black;
-  font-family: "Segoe UI", Tahoma, sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  display: inline;
-  padding: 0 10px;
-}
-
-.wintmp_logo {
-  height: 24px;
-  width: 30px;
-}
-
-.wintmp_logo img {
-  width: 18px;
-}
-
-.wintmp_main {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-color: rgb(255, 255, 255);
-  overflow: hidden;
-  contain: content;
 }
 
 .right_border {

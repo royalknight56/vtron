@@ -14,7 +14,7 @@ import type { appInfo } from "@state/type";
 import { DragWindowFactory, DragWindow } from "@libs/DragWindow"
 import { defaultWindowOption } from '@libs/option'
 import { SystemConfig, OptionType, partialOption } from "@/packages/window/libs/SystemConfig";
-
+import Eventer from "@libs/Event";
 class System {
   id: string;
   SystemConfig: SystemConfig;
@@ -23,6 +23,7 @@ class System {
   ContextMenu: ContextMenu;
   State: State;
   DragWindow: ReturnType<typeof DragWindowFactory>
+  Eventer = new Eventer()
   constructor(option: partialOption) {
     // generate id
     this.id = 'win10' + Math.random().toString(36).substr(2, 9);

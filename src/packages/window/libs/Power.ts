@@ -80,26 +80,26 @@ class Power {
             this.openPower()
         },4000)
     }
-    lockScreen(){
-        this.state.islock=true
-        for(let key in this.state.lockEvent){
-            this.state.lockEvent[key]()
-        }
+    // lockScreen(){
+    //     this.state.islock=true
+    //     for(let key in this.state.lockEvent){
+    //         this.state.lockEvent[key]()
+    //     }
         
-    }
-    unlockScreen(username:string,password:string){
-        this.state.islock=false;
-        for(let key in this.state.unlockEvent){
-            this.state.unlockEvent[key]({username,password})
-        }
-    }
-    notifyUnlock(username:string,password:string){
-        for(let key in this.state.unlockEvent){
-            if(key !='hide'){
-                this.state.unlockEvent[key]({username,password})
-            }
-        }
-    }
+    // }
+    // unlockScreen(username:string,password:string){
+    //     this.state.islock=false;
+    //     for(let key in this.state.unlockEvent){
+    //         this.state.unlockEvent[key]({username,password})
+    //     }
+    // }
+    // notifyUnlock(username:string,password:string){
+    //     for(let key in this.state.unlockEvent){
+    //         if(key !='hide'){
+    //             this.state.unlockEvent[key]({username,password})
+    //         }
+    //     }
+    // }
 }
 export {
     Power

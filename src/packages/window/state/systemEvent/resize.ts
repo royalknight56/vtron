@@ -7,6 +7,7 @@ function initResizeListener(system:System){
     system.State.sysInfo.width = $sys?.clientWidth||0
     system.State.sysInfo.height = $sys?.clientHeight||0
     window?.addEventListener("resize",()=>{
+        system.Eventer.emit('resize',$sys?.clientWidth||0,$sys?.clientHeight||0)
         system.State.sysInfo.width = $sys?.clientWidth||0
         system.State.sysInfo.height = $sys?.clientHeight||0
     })

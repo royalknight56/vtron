@@ -54,13 +54,14 @@
                     {{ date_day }}
                 </div>
             </div>
-            <div class="right_item">
+            <div  @click="changeNotifShow" class="right_item">
                 <span class="segoicon SEGOEUIMDL"> &#xE91C;</span>
             </div>
             <div class="right_close_win">
 
             </div>
         </div>
+        <!-- <NotificationsVue v-if="ifNotifShow"></NotificationsVue> -->
     </div>
 </template>
 <script lang="ts" setup>
@@ -68,6 +69,8 @@ import { computed, inject, ref } from "vue";
 import type { WindowInfo, windowInfoMapInter } from "@libs/DragWindow/type"
 
 import StartMenuVue from "@structure/StartMenu.vue";
+import NotificationsVue from "@structure/Notifications.vue";
+
 import NetworkVue from "@structure/taskbarIcon/network.vue";
 import ChargingVue from "@structure/taskbarIcon/charging.vue";
 
@@ -120,6 +123,11 @@ function barFirskClick(e: MouseEvent) {
 }
 function changeMagnetShow() {
     ifMagnetShow.value = !ifMagnetShow.value
+}
+
+let ifNotifShow = ref(false);
+function changeNotifShow(){
+    ifNotifShow.value = !ifNotifShow.value
 }
 function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.isVisible) {

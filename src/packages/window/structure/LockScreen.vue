@@ -23,7 +23,7 @@ system.Power.mountUnlockEvent('hide', () => {
     }, 500)
 })
 if (appconfig.login == null) {
-    system.Power.unlockScreen('', '')
+    // system.Power.unlockScreen('', '')
 }
 function loginSuccess(){
     lockClassName.value = 'screen-hidean'
@@ -45,11 +45,11 @@ function onLogin() {
         }else{
             console.log('等待确认')
             alertMsg.value = '等待确认'
-            system.Power.notifyUnlock(appconfig.login.user_name, userPassword.value)
+            // system.Power.notifyUnlock(appconfig.login.user_name, userPassword.value)
         }
 
     } else {
-        system.Power.unlockScreen('', '')
+        // system.Power.unlockScreen('', '')
     }
 
 }

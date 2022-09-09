@@ -12,7 +12,7 @@ import {
 } from "@state/index";
 import type { appInfo } from "@state/type";
 import { DragWindowFactory, DragWindow } from "@libs/DragWindow"
-import { defaultWindowOption } from '@libs/option'
+import { defaultWindowOption } from '@/packages/window/libs/DragWindow/option'
 import { SystemConfig, OptionType, partialOption } from "@/packages/window/libs/SystemConfig";
 import Eventer from "@libs/Event";
 class System {
@@ -37,7 +37,10 @@ class System {
     ({ ...this.State } = stateInit());
     this.DragWindow = DragWindowFactory(this)
   }
-  getWindow(id: string): DragWindow {
+  getWindow(id: string): DragWindow|undefined {
+    if(!this.State.windowInfoMap[id]){
+      return 
+    }
     return this.State.windowInfoMap[id]
   }
   ClearPlace(place: 'appList' | 'startupList' | 'magnet') {

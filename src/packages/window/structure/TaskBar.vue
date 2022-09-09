@@ -38,9 +38,9 @@
         </div>
         <StartMenuVue v-if="ifMagnetShow"  @changevis="changeMagnetShow"></StartMenuVue>
         <div class="bar_right">
-            <div class="right_item">
+            <!-- <div class="right_item">
                 <span class="segoicon SEGOEUIMDL"> &#xE010;</span>
-            </div>
+            </div> -->
             <div class="right_item">
                 <ChargingVue :sysInfo="sysInfo"></ChargingVue>
             </div>
@@ -66,7 +66,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, inject, ref } from "vue";
-import type { WindowInfo, windowInfoMapInter } from "@libs/DragWindow/type"
+import type { WindowInfo, windowInfoMapInter } from "@/packages/window/libs/DragWindow/option"
 
 import StartMenuVue from "@structure/StartMenu.vue";
 import NotificationsVue from "@structure/Notifications.vue";
@@ -105,10 +105,10 @@ let winlist =computed(()=>{
 })
 function barClick(item: WindowInfo) {
     if (item.isVisible) {
-        system.getWindow(item.id).moveTop()
+        system.getWindow(item.id)?.moveTop()
     } else {
-        system.getWindow(item.id).show()
-        system.getWindow(item.id).moveTop()
+        system.getWindow(item.id)?.show()
+        system.getWindow(item.id)?.moveTop()
     }
 }
 
@@ -133,15 +133,15 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
     if (item.isVisible) {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', click: () => { system.getWindow(item.id).destroy() } },
-                { name: '最小化', click: () => { system.getWindow(item.id).hide() } }
+                { name: '关闭', click: () => { system.getWindow(item.id)?.destroy() } },
+                { name: '最小化', click: () => { system.getWindow(item.id)?.hide() } }
             ]
         )
     } else {
         ContextMenu.callMenu(e,
             [
-                { name: '关闭', click: () => { system.getWindow(item.id).destroy() } },
-                { name: '显示', click: () => { system.getWindow(item.id).show() } }
+                { name: '关闭', click: () => { system.getWindow(item.id)?.destroy() } },
+                { name: '显示', click: () => { system.getWindow(item.id)?.show() } }
             ]
         )
     }
@@ -149,7 +149,7 @@ function rightClick(e: MouseEvent, item: WindowInfo) {
 }
 
 function closeButtonClicked(item: WindowInfo) {
-    system.getWindow(item.id).destroy()
+    system.getWindow(item.id)?.destroy()
 }
 // //定期更换截图
 // setInterval(() => {

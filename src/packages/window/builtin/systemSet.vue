@@ -10,11 +10,7 @@
         </div>
         <div class="outer_main">
             <div class="main_uper">
-                <div
-                    class="set_item"
-                    v-for="item in setList"
-                    @click="openSet(item.content, item.title)"
-                >
+                <div class="set_item" v-for="item in setList" @click="openSet(item.content, item.title)">
                     <div class="set_item-img">
                         <img class="set_item-img-img" :src="item.icon" />
                     </div>
@@ -44,7 +40,7 @@ import e771 from '../../../assets/icon/e771.png'//个性化
 import e895 from '../../../assets/icon/e895.png'//更新
 import { DragWindow } from '@/packages/window/libs/DragWindow';
 
-import {System} from '@libs/System'
+import { System } from '@libs/System'
 
 let id = <string>inject('windowId')
 let system = <System>inject('system')
@@ -53,32 +49,25 @@ let system = <System>inject('system')
 let setMap: {
     [key: string]: DragWindow
 } = {}
-let windowInfo = system.getWindow(id).windowInfo
+let windowInfo = system.getWindow(id)?.windowInfo
 function openSet(content: ReturnType<typeof defineComponent>, title: string) {
-    if (content) {
+    if (content&&windowInfo) {
         if (setMap[title]) {
-            setMap[title].show({
-                x:windowInfo.x,
-                y:windowInfo.y,
-                height:windowInfo.height,
-                width:windowInfo.width,
-            })
+            setMap[title].show().setPosition(windowInfo.x, windowInfo.y,).setSize(windowInfo.height, windowInfo.width
+            )
         } else {
             setMap[title] = system.DragWindow({
                 content: content,
-                title:'系统',
-                x:windowInfo.x,
-                y:windowInfo.y,
+                title: '系统',
+                x: windowInfo.x,
+                y: windowInfo.y,
 
-                height:windowInfo.height,
-                width:windowInfo.width,
-
+                height: windowInfo.height,
+                width: windowInfo.width,
             })
             setMap[title].show()
         }
-
     }
-
 }
 let setList = [
     // {
@@ -113,6 +102,7 @@ let setList = [
 
 <style lang="scss" scoped>
 @import "@/packages/main.css";
+
 .outer {
     display: flex;
     flex-direction: column;
@@ -122,6 +112,7 @@ let setList = [
     user-select: none;
     /* background-color: rgb(241, 241, 241); */
 }
+
 .outer_main {
     height: 100%;
     /* width: 100%; */
@@ -132,6 +123,7 @@ let setList = [
     flex-direction: column;
     align-items: center;
 }
+
 .main_uper {
     display: flex;
     flex-direction: row;
@@ -143,6 +135,7 @@ let setList = [
 
     /* border-bottom: 1px solid #999999; */
 }
+
 .set_item {
     margin: 10px 20px;
     padding: 2px 8px 10px 2px;
@@ -150,26 +143,32 @@ let setList = [
     display: flex;
     align-items: center;
     border: 2px solid #99999900;
+
     .set_item-img {
         width: 30px;
         margin: 10px 16px;
+
         img {
             width: 100%;
         }
     }
-    .set_item-right {
-    }
+
+    .set_item-right {}
+
     .set_item-title {
         padding: 4px 0px;
     }
+
     .set_item-desc {
         font-size: 10px;
         color: #999999;
     }
 }
+
 .set_item:hover {
     border: 2px solid #9999998a;
 }
+
 .uper_tab {
     /* width: 90%; */
     margin: 10px 10px -1px 10px;
@@ -178,6 +177,7 @@ let setList = [
     z-index: 1;
     display: flex;
 }
+
 .tab {
     text-align: center;
     width: 100%;
@@ -188,6 +188,7 @@ let setList = [
     /* border: 1px solid #d9d9d9; */
     border-bottom: none;
 }
+
 .tab_unactive {
     text-align: center;
     width: 40px;
@@ -196,6 +197,7 @@ let setList = [
     border: 1px solid #d9d9d9;
     /* border-bottom:none; */
 }
+
 .bottom {
     flex-shrink: 0;
     display: flex;
@@ -206,6 +208,7 @@ let setList = [
     margin: 6px auto;
     // background-color: #f0f0f0;
 }
+
 .bottom_button {
     width: 80px;
     height: 26px;
@@ -218,10 +221,12 @@ let setList = [
     box-sizing: border-box;
     margin: 0 0 0 10px;
 }
+
 .bottom_button:first-child {
     border: 1px solid #0078d7;
     box-shadow: 0 0 0px 1px #0078d7 inset;
 }
+
 .bottom_button:hover {
     border: 1px solid #0078d7;
     background-color: #e5f1fb;

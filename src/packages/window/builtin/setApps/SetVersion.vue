@@ -16,7 +16,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
-let localVersion = ref('0.3.4')
+let localVersion = ref('0.3.5')
 let remoteVersion = ref('0.0.0')
 
 function getRemoteVersion() {

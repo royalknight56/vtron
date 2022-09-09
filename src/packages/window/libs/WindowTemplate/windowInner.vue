@@ -4,56 +4,67 @@
  * @Description: 
 -->
 <template>
-    <template v-if="componentType=='loadding'">
-      <LoaddingVue></LoaddingVue>
-    </template>
-    <template v-else-if="componentType=='error'">
-      <ErrorVue></ErrorVue>
-    </template>
-    <template v-else-if="componentType=='url'">
-      <iframe :src="compileCom"></iframe>
-    </template>
-    
-    <template v-else-if="componentType=='sfc'">
-      <component :is="compileCom" :key="componentKey"></component>
-    </template>
-    <template v-else>
-      <component :is="compileCom" :key="componentKey"></component>
-    </template>
+  <template v-if="componentType == 'loadding'">
+    <LoaddingVue></LoaddingVue>
+  </template>
+  <template v-else-if="componentType == 'error'">
+    <ErrorVue></ErrorVue>
+  </template>
+  <template v-else-if="componentType == 'url'">
+    <iframe ref="iframeref" :src="compileCom"></iframe>
+  </template>
+
+  <template v-else-if="componentType == 'sfc'">
+    <component :is="compileCom" :key="componentKey"></component>
+  </template>
+  <template v-else>
+    <component :is="compileCom" :key="componentKey"></component>
+  </template>
 </template>
 <script lang="ts" setup>
-import { defineAsyncComponent, defineComponent, inject, onMounted, ref, shallowRef, toRaw } from 'vue';
-import  {Ref,PropType} from 'vue'
+import { defineAsyncComponent, defineComponent, inject, nextTick, onMounted, ref, shallowRef, toRaw } from 'vue';
+import { Ref, PropType } from 'vue'
 import LoaddingVue from '@libs/WindowTemplate/defaultInner/loadding.vue';
 import ErrorVue from '@libs/WindowTemplate/defaultInner/error.vue';
-import {System} from '@libs/System'
+import { System } from '@libs/System'
+// import { nextTick } from 'process';
 let props = defineProps({
-  componentKey:{
-    type:Number as PropType<Number>,
-    required:true
+  componentKey: {
+    type: Number as PropType<Number>,
+    required: true
   },
-  id:{
-    type:String,
-    required:true
+  id: {
+    type: String,
+    required: true
   }
 })
 
 let system = <System>inject('system')
 
 let winID = props.id;
-let wininfo = system.getWindow(winID).windowInfo;
+let wininfo = system.getWindow(winID)?.windowInfo;
 let componentType = ref('loadding')
 let compileCom = shallowRef({}) as any;
 
-onMounted(()=>{
-  
-  if(typeof wininfo.content === 'object') {
-    componentType.value= 'vue'
-    compileCom.value = toRaw(wininfo.content)
-  }else{
-    componentType.value = 'url'
-    compileCom.value =toRaw(wininfo.content)
+let iframeref = ref()
+
+onMounted(() => {
+  if(!wininfo){
+    return
   }
+  if (typeof wininfo.content === 'object') {
+    componentType.value = 'vue'
+    compileCom.value = toRaw(wininfo.content)
+  } else {
+    componentType.value = 'url'
+    compileCom.value = toRaw(wininfo.content);
+    nextTick(() => {
+      iframeref.value.onload =function(){
+        iframeref.value?.contentWindow.postMessage({ action: 'init',  id: winID }, '*')
+      }
+    })
+  }
+
 })
 
 </script>

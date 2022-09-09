@@ -7,6 +7,7 @@
     <div class="outer">
         <button @click="test()">Test</button>
         <div class="testdiv">TEST</div>
+        <div class="testright"></div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -25,5 +26,13 @@ function test(){
     position: fixed;
     bottom: 0;
     right: 0i
+}
+.testright{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100px;
+    height: 100px;
+    background-color: red;
 }
 </style>

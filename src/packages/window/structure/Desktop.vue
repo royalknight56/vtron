@@ -107,7 +107,7 @@ function moveCheck(ev: MouseEvent) {
 }
 // let deskList: UnwrapNestedRefs<Array<appInfo>> = appList;
 function openApp(item: UnwrapNestedRefs<appInfo>) {
-    item.window.show();
+    item.window.show({callFrom:"desktop"});
 }
 
 function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {

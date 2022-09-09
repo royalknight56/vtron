@@ -69,10 +69,10 @@ function emitButtonEvent(event:string) {
   text-align: center;
   transition: all 0.1s;
 
-  background: #ffffff;
+  /* background: #ffffff; */
   font-family: "Segoe UI", Tahoma, sans-serif;
   font-size: 12px;
-  border: 2px solid white;
+  /* border: 2px solid white; */
   padding: 0px 4px;
   transition: 0.1s;
 }

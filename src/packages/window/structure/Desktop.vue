@@ -7,17 +7,20 @@
 -->
 <template>
     <div class="desk_outer" @mouseup="onDragEnd">
-        <div class="desk_item" v-for="(item, index) in appList" @dblclick="openApp(item)" :ref="(el) => {
+        <div class="desk_item" v-for="(item, index) in appList" 
+        @keyup.enter.native="openApp(item)"
+        @dblclick="openApp(item)" :ref="(el) => {
             iconPos[index].dom = el as HTMLElement;
         }" @contextmenu.prevent="rightClick(item, $event)" @mousedown="onDragStart(index, $event)"
             @mousemove="onDragMove(index, $event)" :style="{
                 left: iconPos[index].x + 'px',
                 top: iconPos[index].y + 'px',
                 zIndex: iconPos[index].isDrag ? 100 : 0
-            }">
+            }"
+            :tabIndex="index+1"
+            >
             <div class="item_img">
-                <img class="item_img-img" draggable="false"
-                    :src="item.icon" />
+                <img class="item_img-img" draggable="false" :alt="item.name" :src="item.icon" />
             </div>
             <div class="item_name">{{ item.name }}</div>
         </div>
@@ -30,7 +33,7 @@ import { inject, reactive } from "vue";
 // import { appList } from "@state/index";
 import type { appInfo } from "@state/type"
 import { openInfo } from "@builtin/callSystemWins";
-import {System} from '@libs/System'
+import { System } from '@libs/System'
 let system = <System>inject('system')
 
 const MAX_ICON_COUNT = 99
@@ -107,7 +110,7 @@ function moveCheck(ev: MouseEvent) {
 }
 // let deskList: UnwrapNestedRefs<Array<appInfo>> = appList;
 function openApp(item: UnwrapNestedRefs<appInfo>) {
-    item.window.show({callFrom:"desktop"});
+    item.window.show({ callFrom: "desktop" });
 }
 
 function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
@@ -116,7 +119,7 @@ function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
             { name: '打开(O)', click: () => { item.window.show(); } },
             {
                 name: '属性(R)', click: () => {
-                    openInfo(system,{
+                    openInfo(system, {
                         item,
                     })
                 }

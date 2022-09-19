@@ -70,6 +70,7 @@ class DragWindow {
         })
     }
     getWinid() {// 获取窗口id
+        return this.windowInfo.id
     }
     show(callData?: WindowInfo["callData"]) {// 调用show之后，注册窗口，展示窗口
         this.windowInfo.isCreate = true

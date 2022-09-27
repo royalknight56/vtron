@@ -6,6 +6,8 @@
 <template>
     <div class="background-outer" @contextmenu.prevent="backgroundRightClick">
         <defaultBackground v-if="appconfig.backimg === 'default'"></defaultBackground>
+        <div v-else-if="judgeIsHashColor(appconfig.backimg)"
+        :style="{background: appconfig.backimg}" class="colorbackground-outer"></div>
         <imgBackground v-else></imgBackground>
     </div>
 </template>
@@ -15,7 +17,11 @@ import imgBackground from "@structure/background/imgbackground.vue";
 import { inject } from "vue";
 import {System} from '@libs/System'
 let system =<System>inject('system');
-const appconfig = system.SystemConfig.config
+const appconfig = system.SystemConfig.config;
+function judgeIsHashColor(str:string){
+    let reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+    return reg.test(str);
+}
 function backgroundRightClick(e: MouseEvent) {
     system.ContextMenu.callMenu(e,
         [
@@ -24,3 +30,13 @@ function backgroundRightClick(e: MouseEvent) {
     )
 }
 </script>
+<style scoped>
+.colorbackground-outer{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+}
+</style>

@@ -10,8 +10,9 @@ import logoimg from "./assets/logo.png"
 let system = new System({
   if_logo_show: false,
   start_time: 0,
-  backimg: backimg,
-  start_menu_logo:logoimg
+  backimg: "#00FFFF",
+  // start_menu_logo:logoimg,
+  alert_before_unload:true,
   // login: {
   //   user_name: 'AdDD',
   //   user_password:'123'
@@ -22,6 +23,8 @@ let system2 = new System({
   if_logo_show: false,
   start_time: 1100,
   backimg: backimg,
+  alert_before_unload:true,
+
   // login: {
   //   user_name: 'AdDD',
   //   user_password:'123'

@@ -147,7 +147,7 @@ onMounted(() => {
       })
   });
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 30; i++) {
     system.AddToStartupList({
       name: '测试按钮',
       icon: brow,

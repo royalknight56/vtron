@@ -159,7 +159,7 @@ function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
     background-color: rgba(119, 119, 119, 0);
     color: rgb(220, 220, 220);
     /* text-shadow: 2px 2px 3px #000000; */
-    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.814), -1px -1px 1px rgba(0, 0, 0, 0.728);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.814), -1px -1px 1px rgba(0, 0, 0, 0.728);
     /* -webkit-text-stroke: 1px #000000; */
     border: 1px solid rgba(0, 0, 0, 0);
 }

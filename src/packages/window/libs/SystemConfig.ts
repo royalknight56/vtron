@@ -17,6 +17,7 @@ const defaultOption = {
     if_logo_show:true,
     start_menu_logo:'default',
     backimg:'default',
+    alert_before_unload:false,
     login:<loginOption|null>null
 }
 type OptionType = typeof defaultOption

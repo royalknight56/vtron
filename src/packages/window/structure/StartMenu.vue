@@ -1,6 +1,6 @@
 <template>
-  <div class="magnet" @click.stop='judgeClickTarget'>
-    <div class="m_left">
+  <div class="magnet" :class="{closeing:iscloseing}" @click.stop='judgeClickTarget'>
+    <div ref="mleft" class="m_left">
       <div class="left_list_item" @click.stop="closeClice">
         <svg draggable="false" class="icon" viewBox="0 0 1024 1024">
           <path
@@ -17,18 +17,22 @@
       </div>
     </div>
     <div class="m_middle">
-      <StartupList></StartupList>
+      <StartupList ref="mmiddle"></StartupList>
     </div>
-    <div ref="mright" class="m_right">
-      <div class="right_item" v-for="item in mangList" @click="manclick(item)">
-        <div class="right_item_img">
-          <img draggable="false" :src="item.icon" />
+    <div class="m_right">
+      <div ref="mright" class="m_right_inner">
+        <div class="right_item_tab">应用</div>
+        <div class="right_item" v-for="item in mangList" @click="manclick(item)">
+          <div class="right_item_img">
+            <img draggable="false" :src="item.icon" />
+          </div>
+          <div class="right_item_text">{{ item.name }}</div>
         </div>
-        <div class="right_item_text">{{ item.name }}</div>
       </div>
-    </div>
-    <div ref="mrightborder" class="m_right m_right_border">
-      <div class="right_border_item" v-for="item in mangList"></div>
+      <div ref="mrightborder" class="m_right_inner m_right_inner_border">
+        <div class="right_item_tab">应用</div>
+        <div class="right_border_item" v-for="item in mangList"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -64,6 +68,8 @@ function openset() {
   openSetting(system)
 }
 let mright = ref()
+let mleft = ref()
+let mmiddle = ref()
 let mrightborder = ref()
 
 onMounted(() => {
@@ -75,6 +81,7 @@ onMounted(() => {
     mrightborder.value.style.webkitMaskPosition = `${x - bounding.x - 80}px ${y - bounding.y - 80}px`;
   });
 })
+
 let emits = defineEmits({
   "changevis": () => {
     return {
@@ -82,17 +89,30 @@ let emits = defineEmits({
     }
   }
 })
+const iscloseing = ref(false)
+function startClose(){
+  iscloseing.value = true;
+  setTimeout(() => {
+    emits("changevis")
+  }, 190);
+  // emits("changevis")
+}
+// 控制开始菜单是否关闭
 function judgeClickTarget(ev: MouseEvent) {
+
   if (ev.target === mright.value) {
     return true
-  } else {
-    //submit
-    emits("changevis")
+  } else if (ev.target === mleft.value) {
+    return true
+  } else if (ev.target === mmiddle.value) {
+    return true
+  }else{
+    startClose()
   }
 }
 
 </script>
-<style scoped>
+<style lang="scss" scoped>
 @import "../../main.css";
 
 .magnet {
@@ -103,9 +123,43 @@ function judgeClickTarget(ev: MouseEvent) {
   height: 400px;
   z-index: -1;
   animation: manshow 0.2s;
+  transition: all 0.3s;
   backdrop-filter: saturate(180%) blur(20px) brightness(60%);
   /* background-color: rgba(0, 0, 0, 0.322); */
   background-color: #ffffffb7;
+  .m_left {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.247);
+    display: flex;
+    flex-direction: column-reverse;
+    transition: all 0.2s;
+    transition-delay: 0s;
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .m_left:hover {
+    width: 200px;
+    transition-delay: 0.5s;
+    background-color: #e3e3e3;
+  }
+}
+.closeing{
+  animation: manclose 0.2s;
+}
+@keyframes manclose {
+  0% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(10%);
+    opacity: 0;
+  }
 }
 
 /* 适配火狐无背景模糊 */
@@ -126,27 +180,6 @@ function judgeClickTarget(ev: MouseEvent) {
     transform: translateY(0%);
     opacity: 1;
   }
-}
-
-.m_left {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 50px;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.247);
-  display: flex;
-  flex-direction: column-reverse;
-  transition: all 0.2s;
-  transition-delay: 0s;
-  overflow: hidden;
-  z-index: 2;
-}
-
-.m_left:hover {
-  width: 200px;
-  transition-delay: 0.5s;
-  background-color: #e3e3e3;
 }
 
 .left_list_item {
@@ -184,29 +217,30 @@ function judgeClickTarget(ev: MouseEvent) {
   left: 50px;
 }
 
-.m_right {
+.m_right{
+  height: 100%;
+  overflow: auto;
   position: absolute;
   left: 210px;
-  /* padding-top: 10px; */
   bottom: 0;
   height: 100%;
   width: 450px;
   z-index: -1;
+}
+.m_right_inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  
   display: flex;
   justify-content: start;
   align-items: start;
   align-content: flex-start;
-
   flex-wrap: wrap;
-  /* justify-items: center; */
-  /* align-content: space-between; */
-  /* grid-template-columns: 100px 100px 100px 100px; */
-  /* grid-template-rows: 100px 100px 100px 100px; */
   grid-gap: 7px;
-  /* background-color: wheat; */
+
   animation: mrightan 0.3s;
-  /* animation-delay: 0.3s; */
-  overflow: auto;
+
 }
 
 @keyframes mrightan {
@@ -220,7 +254,7 @@ function judgeClickTarget(ev: MouseEvent) {
 }
 
 
-.m_right_border {
+.m_right_inner_border {
   overflow: auto;
   visibility: hidden;
   pointer-events: none;
@@ -241,10 +275,13 @@ function judgeClickTarget(ev: MouseEvent) {
   border: 2px solid rgba(255, 255, 255, 0.705);
 }
 
-.m_right:hover+.m_right_border {
+.m_right_inner:hover+.m_right_inner_border {
   visibility: visible;
 }
-
+.right_item_tab{
+  padding-top: 10px;
+  width: 100%;
+}
 .right_item {
   width: 100px;
   height: 100px;

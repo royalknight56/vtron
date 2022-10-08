@@ -4,13 +4,16 @@
  * @Description: 
 -->
 <template>
-  <template v-if="componentType == 'loadding'">
+  <template v-if="loadState == 'loading'">
     <LoaddingVue></LoaddingVue>
   </template>
-  <template v-else-if="componentType == 'error'">
+  <template v-else-if="loadState == 'error'">
     <ErrorVue></ErrorVue>
   </template>
-  <template v-else-if="componentType == 'url'">
+  <template v-else-if="loadState == 'success'">
+    <!-- <ErrorVue></ErrorVue> -->
+  </template>
+  <template v-if="componentType == 'url'">
     <iframe ref="iframeref" :src="compileCom"></iframe>
   </template>
 
@@ -43,7 +46,9 @@ let system = <System>inject('system')
 
 let winID = props.id;
 let wininfo = system.getWindow(winID)?.windowInfo;
-let componentType = ref('loadding')
+let componentType = ref('url');
+const loadState = ref('loading');
+
 let compileCom = shallowRef({}) as any;
 
 let iframeref = ref()
@@ -55,11 +60,13 @@ onMounted(() => {
   if (typeof wininfo.content === 'object') {
     componentType.value = 'vue'
     compileCom.value = toRaw(wininfo.content)
+    loadState.value = 'success'
   } else {
     componentType.value = 'url'
     compileCom.value = toRaw(wininfo.content);
     nextTick(() => {
       iframeref.value.onload =function(){
+        loadState.value = 'success'
         iframeref.value?.contentWindow.postMessage({ action: 'init',  id: winID }, '*')
       }
     })

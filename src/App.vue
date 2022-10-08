@@ -65,11 +65,11 @@ onMounted(() => {
       content: 'http://localhost:3000/'
     })
   });
-
+  // https://cn.bing.com/
   system.AddToDesktop({
     name: 'Baidu',
     window: system.DragWindow({
-      content: 'https://www.google.com.hk/'
+      content: 'https://cn.bing.com/'
     })
   });
 

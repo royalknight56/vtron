@@ -1,6 +1,6 @@
 {
   "name": "vue3-win10",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "files": [
     "distlib",
     "distlib/*.css"

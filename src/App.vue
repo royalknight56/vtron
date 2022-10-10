@@ -44,13 +44,13 @@ let testVue = system.DragWindow(
   })
 testVue.show().setPosition(100, 100)
 onMounted(() => {
-  
-  setTimeout(()=>{
-    testVue.setPosition(100, 200).setFullScreen(true)
-  },1000)
-  setTimeout(()=>{
-    testVue.setFullScreen(false)
-  },2000)
+
+  // setTimeout(() => {
+  //   testVue.setPosition(100, 200).setFullScreen(true)
+  // }, 1000)
+  // setTimeout(() => {
+  //   testVue.setFullScreen(false)
+  // }, 2000)
   system.ClearDesktop();
   system2.ClearDesktop();
   system2.AddToDesktop({
@@ -65,11 +65,11 @@ onMounted(() => {
       content: 'http://localhost:3000/'
     })
   });
-
+  // https://cn.bing.com/
   system.AddToDesktop({
     name: 'Baidu',
     window: system.DragWindow({
-      content: 'https://www.google.com.hk/'
+      content: 'https://cn.bing.com/'
     })
   });
 
@@ -147,47 +147,21 @@ onMounted(() => {
       })
   });
 
+  for (let i = 0; i < 30; i++) {
+    system.AddToStartupList({
+      name: '测试按钮',
+      icon: brow,
+      window: testVue
+    });
+  }
+  for (let i = 0; i < 30; i++) {
+    system.AddToMagnet({
+      name: '测试按钮',
+      icon: brow,
+      window: testVue
+    });
+  }
 
-  system.AddToStartupList({
-    name: '测试按钮',
-    icon: brow,
-    window: testVue
-  });
-  system.AddToStartupList({
-    name: '测试按钮',
-    icon: brow,
-    window: testVue
-  });
-
-  system.AddToMagnet({
-    name: '测试按钮',
-    icon: brow,
-    window: testVue
-  }); system.AddToMagnet({
-    name: '测试按钮',
-    icon: brow,
-    window: testVue
-  }); system.AddToMagnet({
-    name: '测试按钮',
-    icon: brow,
-    window: testVue
-  }); system.AddToMagnet({
-    name: '测试按钮',
-    icon: brow,
-    window: testVue
-  }); system.AddToMagnet({
-    name: '测试按钮',
-    icon: brow,
-    window: testVue
-  }); system.AddToMagnet({
-    name: '测试按钮',
-    icon: brow,
-    window: testVue
-  }); system.AddToMagnet({
-    name: '测试按钮',
-    icon: brow,
-    window: testVue
-  });
 })
 
 

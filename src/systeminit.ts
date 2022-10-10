@@ -12,7 +12,7 @@ let system = new System({
   start_time: 0,
   backimg: "#00FFFF",
   // start_menu_logo:logoimg,
-  alert_before_unload:true,
+  // alert_before_unload:true,
   // login: {
   //   user_name: 'AdDD',
   //   user_password:'123'

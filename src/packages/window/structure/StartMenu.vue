@@ -1,6 +1,6 @@
 <template>
-  <div class="magnet" @click.stop='judgeClickTarget'>
-    <div class="m_left">
+  <div class="magnet" :class="{ closeing: iscloseing }" @click.stop='judgeClickTarget'>
+    <div ref="mleft" class="m_left">
       <div class="left_list_item" @click.stop="closeClice">
         <svg draggable="false" class="icon" viewBox="0 0 1024 1024">
           <path
@@ -17,18 +17,22 @@
       </div>
     </div>
     <div class="m_middle">
-      <StartupList></StartupList>
+      <StartupList ref="mmiddle"></StartupList>
     </div>
-    <div ref="mright" class="m_right">
-      <div class="right_item" v-for="item in mangList" @click="manclick(item)">
-        <div class="right_item_img">
-          <img draggable="false" :src="item.icon" />
+    <div class="m_right">
+      <div ref="mright" class="m_right_inner">
+        <div class="right_item_tab">应用</div>
+        <div class="right_item" v-for="item in mangList" @click="manclick(item)">
+          <div class="right_item_img">
+            <img draggable="false" :src="item.icon" />
+          </div>
+          <div class="right_item_text">{{ item.name }}</div>
         </div>
-        <div class="right_item_text">{{ item.name }}</div>
       </div>
-    </div>
-    <div ref="mrightborder" class="m_right m_right_border">
-      <div class="right_border_item" v-for="item in mangList"></div>
+      <div ref="mrightborder" class="m_right_inner m_right_inner_border">
+        <div class="right_item_tab">应用</div>
+        <div class="right_border_item" v-for="item in mangList"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -64,6 +68,8 @@ function openset() {
   openSetting(system)
 }
 let mright = ref()
+let mleft = ref()
+let mmiddle = ref()
 let mrightborder = ref()
 
 onMounted(() => {
@@ -75,6 +81,7 @@ onMounted(() => {
     mrightborder.value.style.webkitMaskPosition = `${x - bounding.x - 80}px ${y - bounding.y - 80}px`;
   });
 })
+
 let emits = defineEmits({
   "changevis": () => {
     return {
@@ -82,30 +89,203 @@ let emits = defineEmits({
     }
   }
 })
+const iscloseing = ref(false)
+function startClose() {
+  iscloseing.value = true;
+  setTimeout(() => {
+    emits("changevis")
+  }, 190);
+  // emits("changevis")
+}
+// 控制开始菜单是否关闭
 function judgeClickTarget(ev: MouseEvent) {
+
   if (ev.target === mright.value) {
     return true
+  } else if (ev.target === mleft.value) {
+    return true
+  } else if (ev.target === mmiddle.value) {
+    return true
   } else {
-    //submit
-    emits("changevis")
+    startClose()
   }
 }
 
 </script>
-<style scoped>
+<style lang="scss" scoped>
 @import "../../main.css";
+$left_width: 50px;
+$middle_width: 150px;
+$right_width: 450px;
+$icon_size: 100px;
+$magnet_height: 400px;
 
 .magnet {
   position: absolute;
   left: 0;
   bottom: var(--bar-height);
-  width: 660px;
-  height: 400px;
+  width: $left_width + $middle_width + $right_width +10px;
+  height: $magnet_height;
   z-index: -1;
   animation: manshow 0.2s;
+  transition: all 0.3s;
   backdrop-filter: saturate(180%) blur(20px) brightness(60%);
-  /* background-color: rgba(0, 0, 0, 0.322); */
   background-color: #ffffffb7;
+
+  .m_left {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: $left_width;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.247);
+    display: flex;
+    flex-direction: column-reverse;
+    transition: all 0.2s;
+    transition-delay: 0s;
+    overflow: hidden;
+    z-index: 2;
+
+    .left_list_item {
+      transition: all 0.2s;
+      color: rgb(32, 32, 32);
+      font-size: small;
+      display: flex;
+      flex-shrink: 0;
+      user-select: none;
+
+      .item_text {
+        flex-shrink: 0;
+        line-height: 40px;
+        width: 100%;
+      }
+
+      svg {
+        flex-shrink: 0;
+        width: 30px;
+        height: 18px;
+        padding: 12px;
+      }
+
+    }
+
+    .left_list_item:hover {
+      background-color: rgba(255, 255, 255, 0.267);
+    }
+  }
+
+  .m_left:hover {
+    width: 200px;
+    transition-delay: 0.5s;
+    background-color: #e3e3e3;
+  }
+
+  .m_middle {
+    width: $middle_width;
+    height: 100%;
+    position: absolute;
+    left: $left_width;
+  }
+
+  .m_right {
+    position: absolute;
+    left: $left_width+$middle_width+10px;
+    bottom: 0;
+    width: $right_width;
+    height: 100%;
+    z-index: -1;
+    overflow: auto;
+    .m_right_inner {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      align-content: flex-start;
+      flex-wrap: wrap;
+      grid-gap: 7px;
+      animation: mrightan 0.3s;
+
+      .right_item_tab {
+        padding-top: 10px;
+        width: 100%;
+      }
+
+      .right_item {
+        width: $icon_size;
+        height: $icon_size;
+        background-color: rgba(255, 255, 255, 0.349);
+        line-height: $icon_size;
+        text-align: center;
+        position: relative;
+        color: rgb(27, 27, 27);
+        border: 2px solid rgba(255, 255, 255, 0);
+
+        .right_item_img {
+          width: 100%;
+          height: 33%;
+        }
+
+        .right_item_text {
+          font-size: small;
+          height: 10%;
+        }
+
+        img {
+          width: 60%;
+          padding: 5px;
+        }
+      }
+
+      .right_item:hover {
+        border: 2px solid rgba(255, 255, 255, 0.325);
+      }
+
+    }
+
+    .m_right_inner:hover+.m_right_inner_border {
+      visibility: visible;
+    }
+
+    .m_right_inner_border {
+      overflow: auto;
+      visibility: hidden;
+      pointer-events: none;
+      -webkit-mask-image: radial-gradient(circle at center,
+          white 0%,
+          transparent 80px);
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-size: 160px 160px;
+
+      .right_border_item {
+        width: $icon_size;
+        height: $icon_size;
+        line-height: $icon_size;
+        text-align: center;
+        position: relative;
+        color: rgb(27, 27, 27);
+        border: 2px solid rgba(255, 255, 255, 0.705);
+      }
+    }
+
+  }
+}
+
+.closeing {
+  animation: manclose 0.2s;
+}
+
+@keyframes manclose {
+  0% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(10%);
+    opacity: 0;
+  }
 }
 
 /* 适配火狐无背景模糊 */
@@ -128,86 +308,6 @@ function judgeClickTarget(ev: MouseEvent) {
   }
 }
 
-.m_left {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 50px;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.247);
-  display: flex;
-  flex-direction: column-reverse;
-  transition: all 0.2s;
-  transition-delay: 0s;
-  overflow: hidden;
-  z-index: 2;
-}
-
-.m_left:hover {
-  width: 200px;
-  transition-delay: 0.5s;
-  background-color: #e3e3e3;
-}
-
-.left_list_item {
-  transition: all 0.2s;
-  color: rgb(32, 32, 32);
-  /* text-align: center; */
-  font-size: small;
-  display: flex;
-  flex-shrink: 0;
-  user-select: none;
-}
-
-.left_list_item:hover {
-  background-color: rgba(255, 255, 255, 0.267);
-}
-
-.left_list_item .item_text {
-  flex-shrink: 0;
-  line-height: 40px;
-  width: 100%;
-}
-
-.left_list_item svg {
-  flex-shrink: 0;
-  width: 30px;
-  height: 18px;
-  /* filter: invert(100%); */
-  padding: 12px;
-}
-
-.m_middle {
-  width: 150px;
-  height: 100%;
-  position: absolute;
-  left: 50px;
-}
-
-.m_right {
-  position: absolute;
-  left: 210px;
-  /* padding-top: 10px; */
-  bottom: 0;
-  height: 100%;
-  width: 450px;
-  z-index: -1;
-  display: flex;
-  justify-content: start;
-  align-items: start;
-  align-content: flex-start;
-
-  flex-wrap: wrap;
-  /* justify-items: center; */
-  /* align-content: space-between; */
-  /* grid-template-columns: 100px 100px 100px 100px; */
-  /* grid-template-rows: 100px 100px 100px 100px; */
-  grid-gap: 7px;
-  /* background-color: wheat; */
-  animation: mrightan 0.3s;
-  /* animation-delay: 0.3s; */
-  overflow: auto;
-}
 
 @keyframes mrightan {
   0% {
@@ -217,62 +317,5 @@ function judgeClickTarget(ev: MouseEvent) {
   100% {
     transform: translateY(0%);
   }
-}
-
-
-.m_right_border {
-  overflow: auto;
-  visibility: hidden;
-  pointer-events: none;
-  -webkit-mask-image: radial-gradient(circle at center,
-      white 0%,
-      transparent 80px);
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: 160px 160px;
-}
-
-.right_border_item {
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-  position: relative;
-  color: rgb(27, 27, 27);
-  border: 2px solid rgba(255, 255, 255, 0.705);
-}
-
-.m_right:hover+.m_right_border {
-  visibility: visible;
-}
-
-.right_item {
-  width: 100px;
-  height: 100px;
-  background-color: rgba(255, 255, 255, 0.349);
-  line-height: 100px;
-  text-align: center;
-  position: relative;
-  color: rgb(27, 27, 27);
-  border: 2px solid rgba(255, 255, 255, 0);
-}
-
-.right_item:hover {
-  /* background-color: rgba(224, 224, 224, 0.349); */
-  border: 2px solid rgba(255, 255, 255, 0.325);
-}
-
-.right_item_img {
-  width: 100%;
-  height: 33%;
-}
-
-.right_item img {
-  width: 60%;
-  padding: 5px;
-}
-
-.right_item_text {
-  font-size: small;
-  height: 10%;
 }
 </style>

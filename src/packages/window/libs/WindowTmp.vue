@@ -210,7 +210,7 @@ let isScaleAble = ref(wininfo.isScalable);
 let resizemode = ref("null");
 let scaleAble: ScaleElement;
 onMounted(() => {
-  scaleAble = new ScaleElement(resizemode, winWidth, winHeight, winX, winY);
+  scaleAble = new ScaleElement(resizemode, winWidth, winHeight, wininfo.x, wininfo.y);
   scaleAble.onResize((width: number, height: number, x: number, y: number) => {
     wininfo.width = width || wininfo.width;
     wininfo.height = height || wininfo.height;
@@ -219,7 +219,7 @@ onMounted(() => {
   });
 })
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
-  scaleAble?.startScale(e, dire);
+  scaleAble?.startScale(e, dire, wininfo.x, wininfo.y);
 }
 
 </script>

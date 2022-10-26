@@ -45,12 +45,12 @@ let testVue = system.DragWindow(
 testVue.show().setPosition(100, 100)
 onMounted(() => {
 
-  // setTimeout(() => {
-  //   testVue.setPosition(100, 200).setFullScreen(true)
-  // }, 1000)
-  // setTimeout(() => {
-  //   testVue.setFullScreen(false)
-  // }, 2000)
+  setTimeout(() => {
+    testVue.setPosition(100, 200).setFullScreen(true)
+  }, 1000)
+  setTimeout(() => {
+    testVue.setFullScreen(false)
+  }, 2000)
   system.ClearDesktop();
   system2.ClearDesktop();
   system2.AddToDesktop({
@@ -93,9 +93,9 @@ onMounted(() => {
       })
   });
   system.AddToDesktop({
-    name: 'Vue浏览器',
+    name: '咕噜Todo',
     window: system.DragWindow({
-      content: 'http://localhost:3002/app'
+      content: 'https://groupgroupgroup.group/#/login/%2Fmyplan'
     })
   });
   system.AddToDesktop({

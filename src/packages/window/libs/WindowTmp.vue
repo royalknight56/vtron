@@ -24,12 +24,28 @@
       @touchstart.stop.passive="predown">
       <WindowInner :id="winID" :componentKey="componentKey"></WindowInner>
     </div>
-    <div class="right_border" v-if="isScaleAble" @mousedown.stop.prevent="startScale($event, 'r')"
-      @touchstart.stop.passive="startScale($event, 'r')"></div>
-    <div class="bottom_border" v-if="isScaleAble" @mousedown.stop.prevent="startScale($event, 'b')"
-      @touchstart.stop.passive="startScale($event, 'b')"></div>
-    <div class="right_bottom_border" v-if="isScaleAble" draggable="false"
-      @mousedown.stop.prevent="startScale($event, 'rb')" @touchstart.stop.passive="startScale($event, 'rb')"></div>
+    <div class="right_border win_drag_border" :class="{ isChoseMode: resizemode == 'r' }" v-if="isScaleAble"
+      @mousedown.stop.prevent="startScale($event, 'r')" @touchstart.stop.passive="startScale($event, 'r')"></div>
+    <div class="bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'b' }" v-if="isScaleAble"
+      @mousedown.stop.prevent="startScale($event, 'b')" @touchstart.stop.passive="startScale($event, 'b')"></div>
+    <div class="left_border win_drag_border" :class="{ isChoseMode: resizemode == 'l' }" v-if="isScaleAble"
+      @mousedown.stop.prevent="startScale($event, 'l')" @touchstart.stop.passive="startScale($event, 'l')"></div>
+    <div class="top_border win_drag_border" :class="{ isChoseMode: resizemode == 't' }" v-if="isScaleAble"
+      @mousedown.stop.prevent="startScale($event, 't')" @touchstart.stop.passive="startScale($event, 't')"></div>
+    <div class="right_bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'rb' }" v-if="isScaleAble"
+      draggable="false" @mousedown.stop.prevent="startScale($event, 'rb')"
+      @touchstart.stop.passive="startScale($event, 'rb')"></div>
+    <div class="left_bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'lb' }" v-if="isScaleAble"
+      draggable="false" @mousedown.stop.prevent="startScale($event, 'lb')"
+      @touchstart.stop.passive="startScale($event, 'lb')"></div>
+    <div class="left_top_border win_drag_border" :class="{ isChoseMode: resizemode == 'lt' }" v-if="isScaleAble"
+      draggable="false" @mousedown.stop.prevent="startScale($event, 'lt')"
+      @touchstart.stop.passive="startScale($event, 'lt')"></div>
+    <div class="right_top_border win_drag_border" :class="{ isChoseMode: resizemode == 'rt' }" v-if="isScaleAble"
+      draggable="false" @mousedown.stop.prevent="startScale($event, 'rt')"
+      @touchstart.stop.passive="startScale($event, 'rt')"></div>
+
+
   </div>
 </template>
 <script lang="ts" setup>
@@ -124,6 +140,8 @@ let isMaximize = computed(() => wininfo.isMaximize);
 
 let winWidth = ref(wininfo.width);
 let winHeight = ref(wininfo.height);
+let winX = ref(wininfo.x);
+let winY = ref(wininfo.y);
 
 /*
  *计算样式
@@ -146,6 +164,18 @@ onMounted(() => {
       }
     }),
   };
+  watch(
+    () => wininfo.x,
+    (newVal, oldVal) => {
+      winX.value = newVal;
+    }
+  );
+  watch(
+    () => wininfo.y,
+    (newVal, oldVal) => {
+      winY.value = newVal;
+    }
+  );
 });
 
 /*
@@ -180,10 +210,12 @@ let isScaleAble = ref(wininfo.isScalable);
 let resizemode = ref("null");
 let scaleAble: ScaleElement;
 onMounted(() => {
-  scaleAble = new ScaleElement(resizemode, winWidth, winHeight);
-  scaleAble.onResize((width: number, height: number) => {
+  scaleAble = new ScaleElement(resizemode, winWidth, winHeight, winX, winY);
+  scaleAble.onResize((width: number, height: number, x: number, y: number) => {
     wininfo.width = width || wininfo.width;
     wininfo.height = height || wininfo.height;
+    wininfo.x = x || wininfo.x;
+    wininfo.y = y || wininfo.y;
   });
 })
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
@@ -255,6 +287,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
       }
     }
   }
+
   .wintmp_main {
     position: relative;
     width: 100%;
@@ -292,8 +325,9 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   top: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  z-index: 105  !important;
+  z-index: 105 !important;
   border: none;
+
   .wintmp_uper {
     display: none;
   }
@@ -307,15 +341,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   border: none;
   box-shadow: none;
 
-  .right_border {
-    display: none;
-  }
-
-  .bottom_border {
-    display: none;
-  }
-
-  .right_bottom_border {
+  .win_drag_border {
     display: none;
   }
 }
@@ -333,34 +359,77 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   }
 }
 
+.win_drag_border {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0);
+}
+
 .right_border {
   cursor: ew-resize;
-  position: absolute;
   right: -12px;
-  background-color: rgba(0, 0, 0, 0);
   width: 16px;
   height: calc(100% - 4px);
 }
 
 .bottom_border {
   cursor: ns-resize;
-  position: absolute;
   bottom: -12px;
-  background-color: rgba(0, 0, 0, 0);
   width: calc(100% - 4px);
+  height: 16px;
+}
+
+.left_border {
+  cursor: ew-resize;
+  left: -12px;
+  width: 16px;
+  height: calc(100% - 4px);
+}
+
+.top_border {
+  cursor: ns-resize;
+  top: -12px;
+  width: calc(100% - 4px);
+  height: 16px;
+}
+
+.left_top_border {
+  cursor: nwse-resize;
+  left: -12px;
+  top: -12px;
+  width: 16px;
+  height: 16px;
+}
+
+.right_top_border {
+  cursor: nesw-resize;
+  right: -12px;
+  top: -12px;
+  width: 16px;
+  height: 16px;
+}
+
+.left_bottom_border {
+  cursor: nesw-resize;
+  left: -12px;
+  bottom: -12px;
+  width: 16px;
   height: 16px;
 }
 
 .right_bottom_border {
   cursor: nwse-resize;
-  position: absolute;
   right: -12px;
   bottom: -12px;
-  background-color: rgba(0, 0, 0, 0);
   width: 16px;
   height: 16px;
 }
-
+.isChoseMode{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
 .resizeing {
   user-select: none;
   pointer-events: none;

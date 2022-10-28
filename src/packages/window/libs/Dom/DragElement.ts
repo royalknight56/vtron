@@ -63,6 +63,7 @@ class DragElement extends DragObj {
         this.el = element;
         this.ifDraging = false;
         element.addEventListener('mousedown', (ev: any) => {
+            console.log(this.canDrag)
             if (this.canDrag) {
                 this.startMove(ev.pageX, ev.pageY, this.el.offsetLeft, this.el.offsetTop);
                 this.ifDraging = true;

@@ -42,15 +42,15 @@ class ScaleElement {
 
     }
     mount() {
-        document.addEventListener("touchmove", (e)=>{
+        document.addEventListener("touchmove", (e) => {
             this.moveListener(e);
-            document.addEventListener("touchend",()=>{
+            document.addEventListener("touchend", () => {
                 this.resizemode.value = 'null'
             })
         })
-        document.addEventListener("mousemove", (e)=>{
+        document.addEventListener("mousemove", (e) => {
             this.moveListener(e);
-            document.addEventListener("mouseup",()=>{
+            document.addEventListener("mouseup", () => {
                 this.resizemode.value = 'null'
             })
         })
@@ -105,34 +105,45 @@ class ScaleElement {
         }
         if (this.resizemode.value === 'null') {
             return
-        } else if (this.resizemode.value === 'r') {
-            this.winWidth.value = Math.max(this.winStartX + pageX - this.mosStartX, this.MIN_WIDTH);
-            this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY)
-        } else if (this.resizemode.value === 'b') {
-            this.winHeight.value = Math.max(this.winStartY + pageY - this.mosStartY, this.MIN_HEIGHT);
-            this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY)
-        } else if (this.resizemode.value === 'rb') {
-            this.winWidth.value = Math.max(this.winStartX + pageX - this.mosStartX, this.MIN_WIDTH);
-            this.winHeight.value = Math.max(this.winStartY + pageY - this.mosStartY, this.MIN_HEIGHT);
-            this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY);
-        } else if (this.resizemode.value === 'l') {// 需改变位置的缩放方向
-            this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
-            this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY);
-        } else if (this.resizemode.value === 't') {
-            this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
-            this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY + (pageY - this.mosStartY))
-        } else if (this.resizemode.value === 'lt') {
-            this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
-            this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
-            this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY + (pageY - this.mosStartY))
-        } else if (this.resizemode.value === 'lb') {
-            this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
-            this.winHeight.value = Math.max(this.winStartY + pageY - this.mosStartY, this.MIN_HEIGHT);
-            this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY)
-        } else if (this.resizemode.value === 'rt') {
-            this.winWidth.value = Math.max(this.winStartX + pageX - this.mosStartX, this.MIN_WIDTH);
-            this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
-            this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY + (pageY - this.mosStartY))
+        } else {
+
+            if (this.resizemode.value === 'r') {
+                this.winWidth.value = Math.max(this.winStartX + pageX - this.mosStartX, this.MIN_WIDTH);
+                this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY)
+            } else if (this.resizemode.value === 'b') {
+                this.winHeight.value = Math.max(this.winStartY + pageY - this.mosStartY, this.MIN_HEIGHT);
+                this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY)
+            } else if (this.resizemode.value === 'rb') {
+                this.winWidth.value = Math.max(this.winStartX + pageX - this.mosStartX, this.MIN_WIDTH);
+                this.winHeight.value = Math.max(this.winStartY + pageY - this.mosStartY, this.MIN_HEIGHT);
+                this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY);
+            } else if (this.resizemode.value === 'l') {// 需改变位置的缩放方向
+                this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
+                this.notify(this.winWidth.value, this.winHeight.value, Math.min(this.posStartX + (pageX - this.mosStartX), this.posStartX), this.posStartY);
+                // this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY + (pageY - this.mosStartY))
+
+            } else if (this.resizemode.value === 't') {
+                this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
+                this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, Math.min(this.posStartY + (pageY - this.mosStartY), this.posStartY));
+                // this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY + (pageY - this.mosStartY))
+
+            } else if (this.resizemode.value === 'lt') {
+                this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
+                this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
+                this.notify(this.winWidth.value, this.winHeight.value, Math.min(this.posStartX + (pageX - this.mosStartX), this.posStartX),  Math.min(this.posStartY + (pageY - this.mosStartY), this.posStartY))
+            } else if (this.resizemode.value === 'lb') {
+                this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
+                this.winHeight.value = Math.max(this.winStartY + pageY - this.mosStartY, this.MIN_HEIGHT);
+                this.notify(this.winWidth.value, this.winHeight.value, Math.min(this.posStartX + (pageX - this.mosStartX), this.posStartX), this.posStartY)
+                // this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY + (pageY - this.mosStartY))
+
+            } else if (this.resizemode.value === 'rt') {
+                this.winWidth.value = Math.max(this.winStartX + pageX - this.mosStartX, this.MIN_WIDTH);
+                this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
+                this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, Math.min(this.posStartY + (pageY - this.mosStartY), this.posStartY))
+                // this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY + (pageY - this.mosStartY))
+
+            }
         }
     }
 

@@ -120,12 +120,10 @@ class ScaleElement {
             } else if (this.resizemode.value === 'l') {// 需改变位置的缩放方向
                 this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
                 this.notify(this.winWidth.value, this.winHeight.value, Math.min(this.posStartX + (pageX - this.mosStartX), this.posStartX), this.posStartY);
-                // this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY + (pageY - this.mosStartY))
 
             } else if (this.resizemode.value === 't') {
                 this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
                 this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, Math.min(this.posStartY + (pageY - this.mosStartY), this.posStartY));
-                // this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY + (pageY - this.mosStartY))
 
             } else if (this.resizemode.value === 'lt') {
                 this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
@@ -135,13 +133,11 @@ class ScaleElement {
                 this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
                 this.winHeight.value = Math.max(this.winStartY + pageY - this.mosStartY, this.MIN_HEIGHT);
                 this.notify(this.winWidth.value, this.winHeight.value, Math.min(this.posStartX + (pageX - this.mosStartX), this.posStartX), this.posStartY)
-                // this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY + (pageY - this.mosStartY))
 
             } else if (this.resizemode.value === 'rt') {
                 this.winWidth.value = Math.max(this.winStartX + pageX - this.mosStartX, this.MIN_WIDTH);
                 this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
                 this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, Math.min(this.posStartY + (pageY - this.mosStartY), this.posStartY))
-                // this.notify(this.winWidth.value, this.winHeight.value, this.posStartX + (pageX - this.mosStartX), this.posStartY + (pageY - this.mosStartY))
 
             }
         }

@@ -20,18 +20,14 @@ class Notify {
     setTimeout(() => {
       this.hideNotification(id);
     }, 3000)
-    emitEvents(this.system,
-      ["new_notify", "notify","system"],
-      { type: "new_notify", id: id, title: title, messages: messages });
+    emitEvents(this.system,"new.notify",{id: id, title: title, messages: messages });
   }
   hideNotification(id: string) {//关闭通知
     this.system.State.NotificationMap[id].isHidden = true;
     setTimeout(() => {
       delete this.system.State.NotificationMap[id];
-    }, 400)
-    emitEvents(this.system,
-      ["close_notify", "notify","system"],
-      { type: "new_notify", id: id});
+    }, 400);
+    emitEvents(this.system,"close.notify",{id: id});
   }
   notify(title: string, messages: string) {
     this.showNotification(title, messages);

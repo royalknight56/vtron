@@ -39,6 +39,7 @@ let NotificationMap = system.State.NotificationMap
     right: 10px;
     bottom: 40px;
     color: aliceblue;
+    z-index: 999;
 }
 .alert {
     position: relative;

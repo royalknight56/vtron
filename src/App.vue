@@ -19,7 +19,7 @@ import Test3 from "./apps/Test3.vue"
 import Browser from "./apps/Browser.vue"
 import TestButton from "./apps/TestButton.vue"
 import app_vscode from "./apps/app_vscode.vue"
-
+import APIVue from "./apps/API.vue"
 // import { AddToDesktop, ClearDesktop } from "./plug";
 
 import Mycom from "./apps/MyComputer.vue"
@@ -42,15 +42,15 @@ let testVue = system.DragWindow(
     // buttons:[],
     content: TestButton
   })
-testVue.show().setPosition(100, 100)
+
 onMounted(() => {
 
-  setTimeout(() => {
-    testVue.setPosition(100, 200).setFullScreen(true)
-  }, 1000)
-  setTimeout(() => {
-    testVue.setFullScreen(false)
-  }, 2000)
+  // setTimeout(() => {
+  //   testVue.setPosition(100, 200).setFullScreen(true)
+  // }, 1000)
+  // setTimeout(() => {
+  //   testVue.setFullScreen(false)
+  // }, 2000)
   system.ClearDesktop();
   system2.ClearDesktop();
   system2.AddToDesktop({
@@ -72,6 +72,14 @@ onMounted(() => {
       content: 'https://cn.bing.com/'
     })
   });
+  let apiwin = system.DragWindow({
+      content: APIVue
+    })
+  system.AddToDesktop({
+    name: 'APIVue',
+    window: apiwin
+  });
+  apiwin.show().setPosition(100, 100)
 
   system.AddToDesktop({
     name: '浏览器1',

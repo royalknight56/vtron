@@ -138,11 +138,6 @@ function onFocus(e: MouseEvent | TouchEvent): void {
 let istop = computed(() => wininfo.istop);
 let isMaximize = computed(() => wininfo.isMaximize);
 
-let winWidth = ref(wininfo.width);
-let winHeight = ref(wininfo.height);
-let winX = ref(wininfo.x);
-let winY = ref(wininfo.y);
-
 /*
  *计算样式
  */
@@ -164,18 +159,8 @@ onMounted(() => {
       }
     }),
   };
-  watch(
-    () => wininfo.x,
-    (newVal, oldVal) => {
-      winX.value = newVal;
-    }
-  );
-  watch(
-    () => wininfo.y,
-    (newVal, oldVal) => {
-      winY.value = newVal;
-    }
-  );
+
+
 });
 
 /*
@@ -183,8 +168,7 @@ onMounted(() => {
 */
 let $win_outer = ref(null);
 onMounted(() => {
-  let dragAble = new DragElement(wininfo.x, wininfo.y);
-  dragAble.mountDomEvent($win_outer.value);
+  let dragAble = new DragElement($win_outer.value,wininfo.x, wininfo.y);
   watch(
     () => wininfo.isMaximize,
     (n, o) => {
@@ -210,7 +194,7 @@ let isScaleAble = ref(wininfo.isScalable);
 let resizemode = ref("null");
 let scaleAble: ScaleElement;
 onMounted(() => {
-  scaleAble = new ScaleElement(resizemode, winWidth, winHeight, wininfo.x, wininfo.y);
+  scaleAble = new ScaleElement(resizemode, wininfo.width, wininfo.height, wininfo.x, wininfo.y);
   scaleAble.onResize((width: number, height: number, x: number, y: number) => {
     wininfo.width = width || wininfo.width;
     wininfo.height = height || wininfo.height;
@@ -219,7 +203,7 @@ onMounted(() => {
   });
 })
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
-  scaleAble?.startScale(e, dire, wininfo.x, wininfo.y);
+  scaleAble?.startScale(e, dire, wininfo.x, wininfo.y, wininfo.width, wininfo.height);
 }
 
 </script>
@@ -423,13 +407,15 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   width: 16px;
   height: 16px;
 }
-.isChoseMode{
+
+.isChoseMode {
   width: 100vw;
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
 }
+
 .resizeing {
   user-select: none;
   pointer-events: none;

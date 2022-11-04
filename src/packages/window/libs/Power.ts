@@ -7,6 +7,7 @@
  */
 import { reactive } from "vue";
 import {System} from '@libs/System'
+import { emitEvents } from '@/packages/window/utils/index';
 
 interface stateCtrl{
     screen:"common"|"blue"|"close",
@@ -48,58 +49,38 @@ class Power {
     }
     closePower(){
         this.state.screen='blue'
+        emitEvents(this.system,"start.close.power");
         setTimeout(()=>{
             this.state.screen='close'
+            emitEvents(this.system,"over.close.power");
+
         },1000)
     }
     openPower(){
+        emitEvents(this.system,"start.open.power");
         if(this.system.SystemConfig.config.start_time==0){
             this.state.screen='common'
+            emitEvents(this.system,"over.open.power");
         }else{
             this.state.screen='close'
+            setTimeout(()=>{
+                this.state.screen='blue'
+            },this.system.SystemConfig.config.start_time/2)
+            setTimeout(()=>{
+                this.state.screen='common'
+                emitEvents(this.system,"over.open.power");
+            },this.system.SystemConfig.config.start_time)
         }
 
-        setTimeout(()=>{
-            this.state.screen='blue'
-        },this.system.SystemConfig.config.start_time/2)
-        setTimeout(()=>{
-            this.state.screen='common'
-        },this.system.SystemConfig.config.start_time)
+        
     }
     restartPower(){
-        // this.state.screen='blue'
-        setTimeout(()=>{
-            this.state.screen='blue'
-        },400)
-
-        setTimeout(()=>{
-            this.state.screen='close'
-        },3000)
-
+        emitEvents(this.system,"start.restart.power");
+        this.closePower();
         setTimeout(()=>{
             this.openPower()
         },4000)
     }
-    // lockScreen(){
-    //     this.state.islock=true
-    //     for(let key in this.state.lockEvent){
-    //         this.state.lockEvent[key]()
-    //     }
-        
-    // }
-    // unlockScreen(username:string,password:string){
-    //     this.state.islock=false;
-    //     for(let key in this.state.unlockEvent){
-    //         this.state.unlockEvent[key]({username,password})
-    //     }
-    // }
-    // notifyUnlock(username:string,password:string){
-    //     for(let key in this.state.unlockEvent){
-    //         if(key !='hide'){
-    //             this.state.unlockEvent[key]({username,password})
-    //         }
-    //     }
-    // }
 }
 export {
     Power

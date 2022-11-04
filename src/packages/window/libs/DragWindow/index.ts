@@ -85,6 +85,7 @@ class DragWindow {
     }
     destroy() {// 销毁窗口
         this.windowInfo.isCreate = false
+        this.windowInfo.isMaximize = false;
         this.windowInfo.status = WindowStatusEnum.close
     }
     isMinimized() {// 是否最小化

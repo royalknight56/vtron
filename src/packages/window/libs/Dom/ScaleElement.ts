@@ -4,15 +4,16 @@
  * @return {*}
  */
 import { Ref } from "vue";
-
+function isResize(mode: string, direction: string) {
+    return mode.indexOf(direction) > -1
+}
 class ScaleElement {
     resizemode: Ref<string>
-    winWidth: Ref<number>
-    winHeight: Ref<number>
+
     // winX: number
     // winY: number
-    winStartX: number
-    winStartY: number
+    winStartWidth: number
+    winStartHeight: number
     mosStartX: number
     mosStartY: number
     posStartX: number
@@ -22,16 +23,15 @@ class ScaleElement {
     MIN_WIDTH = 200
     MIN_HEIGHT = 100
 
-    constructor(resizemode: Ref, winWidth: Ref, winHeight: Ref, winX: number, winY: number) {
+    constructor(resizemode: Ref, winWidth: number, winHeight: number, winX: number, winY: number) {
         this.resizemode = resizemode;
-        this.winWidth = winWidth;
-        this.winHeight = winHeight;
+
         // this.winX = winX
         // this.winY = winY
         this.resizeEvent = () => { };
 
-        this.winStartX = 0;
-        this.winStartY = 0;
+        this.winStartWidth = winWidth;
+        this.winStartHeight = winHeight;
         this.mosStartX = 0;
         this.mosStartY = 0;
         this.posStartX = winX;
@@ -54,17 +54,8 @@ class ScaleElement {
                 this.resizemode.value = 'null'
             })
         })
-        // document.addEventListener('mousemove', this.moveListener.bind(this))
-
-        // document.addEventListener("mouseup", () => {
-        //     this.resizemode.value = 'null'
-        // })
-        // document.addEventListener("touchend", () => {
-        //     this.resizemode.value = 'null'
-        // })
-
     }
-    startScale(e: MouseEvent | TouchEvent, dire: string, x: number, y: number) {
+    startScale(e: MouseEvent | TouchEvent, dire: string, x: number, y: number, width: number, height: number) {
         this.resizemode.value = dire
         if (e instanceof MouseEvent) {
             this.mosStartX = e.pageX
@@ -73,8 +64,8 @@ class ScaleElement {
             this.mosStartX = e.touches[0].pageX
             this.mosStartY = e.touches[0].pageY
         }
-        this.winStartX = this.winWidth.value
-        this.winStartY = this.winHeight.value
+        this.winStartWidth = width
+        this.winStartHeight = height
         this.posStartX = x
         this.posStartY = y
     }
@@ -106,40 +97,26 @@ class ScaleElement {
         if (this.resizemode.value === 'null') {
             return
         } else {
-
-            if (this.resizemode.value === 'r') {
-                this.winWidth.value = Math.max(this.winStartX + pageX - this.mosStartX, this.MIN_WIDTH);
-                this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY)
-            } else if (this.resizemode.value === 'b') {
-                this.winHeight.value = Math.max(this.winStartY + pageY - this.mosStartY, this.MIN_HEIGHT);
-                this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY)
-            } else if (this.resizemode.value === 'rb') {
-                this.winWidth.value = Math.max(this.winStartX + pageX - this.mosStartX, this.MIN_WIDTH);
-                this.winHeight.value = Math.max(this.winStartY + pageY - this.mosStartY, this.MIN_HEIGHT);
-                this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, this.posStartY);
-            } else if (this.resizemode.value === 'l') {// 需改变位置的缩放方向
-                this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
-                this.notify(this.winWidth.value, this.winHeight.value, Math.min(this.posStartX + (pageX - this.mosStartX), this.posStartX), this.posStartY);
-
-            } else if (this.resizemode.value === 't') {
-                this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
-                this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, Math.min(this.posStartY + (pageY - this.mosStartY), this.posStartY));
-
-            } else if (this.resizemode.value === 'lt') {
-                this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
-                this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
-                this.notify(this.winWidth.value, this.winHeight.value, Math.min(this.posStartX + (pageX - this.mosStartX), this.posStartX),  Math.min(this.posStartY + (pageY - this.mosStartY), this.posStartY))
-            } else if (this.resizemode.value === 'lb') {
-                this.winWidth.value = Math.max(this.winStartX - pageX + this.mosStartX, this.MIN_WIDTH);
-                this.winHeight.value = Math.max(this.winStartY + pageY - this.mosStartY, this.MIN_HEIGHT);
-                this.notify(this.winWidth.value, this.winHeight.value, Math.min(this.posStartX + (pageX - this.mosStartX), this.posStartX), this.posStartY)
-
-            } else if (this.resizemode.value === 'rt') {
-                this.winWidth.value = Math.max(this.winStartX + pageX - this.mosStartX, this.MIN_WIDTH);
-                this.winHeight.value = Math.max(this.winStartY - pageY + this.mosStartY, this.MIN_HEIGHT);
-                this.notify(this.winWidth.value, this.winHeight.value, this.posStartX, Math.min(this.posStartY + (pageY - this.mosStartY), this.posStartY))
-
+            let afterWidth = this.winStartWidth ;
+            let afterHeight = this.winStartHeight;
+            let afterX = this.posStartX;
+            let afterY = this.posStartY;
+            if (isResize(this.resizemode.value, 'r')) {
+                afterWidth = Math.max(this.winStartWidth + pageX - this.mosStartX, this.MIN_WIDTH);
             }
+            if (isResize(this.resizemode.value, 'l')) {
+                afterWidth = Math.max(this.winStartWidth - pageX + this.mosStartX, this.MIN_WIDTH);
+                afterX = Math.min(this.posStartX + (pageX - this.mosStartX), (this.posStartX + (this.winStartWidth - this.MIN_WIDTH)));
+            }
+            if (isResize(this.resizemode.value, 'b')) {
+                afterHeight = Math.max(this.winStartHeight + pageY - this.mosStartY, this.MIN_HEIGHT)
+            }
+            if (isResize(this.resizemode.value, 't')) {
+                afterHeight = Math.max(this.winStartHeight - pageY + this.mosStartY, this.MIN_HEIGHT)
+                afterY = Math.min(this.posStartY + (pageY - this.mosStartY), (this.posStartY + (this.winStartHeight - this.MIN_HEIGHT)))
+            }
+            this.notify(afterWidth, afterHeight, afterX, afterY);
+            return;
         }
     }
 

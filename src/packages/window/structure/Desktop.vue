@@ -33,7 +33,9 @@ import { inject, reactive } from "vue";
 // import { appList } from "@state/index";
 import type { appInfo } from "@state/type"
 import { openInfo } from "@builtin/callSystemWins";
-import { System } from '@libs/System'
+import { System } from '@libs/System';
+import { emitEvents } from '@/packages/window/utils/index';
+
 let system = <System>inject('system')
 
 const MAX_ICON_COUNT = 99
@@ -108,8 +110,8 @@ function moveCheck(ev: MouseEvent) {
         onDragEnd()
     }
 }
-// let deskList: UnwrapNestedRefs<Array<appInfo>> = appList;
 function openApp(item: UnwrapNestedRefs<appInfo>) {
+    emitEvents(system,"open.app.desktop");
     item.window.show({ callFrom: "desktop" });
 }
 

@@ -10,8 +10,6 @@ function isResize(mode: string, direction: string) {
 class ScaleElement {
     resizemode: Ref<string>
 
-    // winX: number
-    // winY: number
     winStartWidth: number
     winStartHeight: number
     mosStartX: number
@@ -19,15 +17,15 @@ class ScaleElement {
     posStartX: number
     posStartY: number
     resizeEvent: Function
-
+    resizeDirection: {
+        x: string,
+        y: string
+    }
     MIN_WIDTH = 200
     MIN_HEIGHT = 100
 
     constructor(resizemode: Ref, winWidth: number, winHeight: number, winX: number, winY: number) {
         this.resizemode = resizemode;
-
-        // this.winX = winX
-        // this.winY = winY
         this.resizeEvent = () => { };
 
         this.winStartWidth = winWidth;
@@ -36,27 +34,31 @@ class ScaleElement {
         this.mosStartY = 0;
         this.posStartX = winX;
         this.posStartY = winY;
-
-        this.mount()
-
-
+        this.resizeDirection = {
+            x: 'null',
+            y: 'null'
+        }
     }
     mount() {
-        document.addEventListener("touchmove", (e) => {
-            this.moveListener(e);
-            document.addEventListener("touchend", () => {
-                this.resizemode.value = 'null'
-            })
-        })
-        document.addEventListener("mousemove", (e) => {
-            this.moveListener(e);
-            document.addEventListener("mouseup", () => {
-                this.resizemode.value = 'null'
-            })
-        })
+        let _this = this
+        function moveEnd() {
+            _this.resizemode.value = 'null'
+            document.body.removeEventListener('mousemove', moveStart);
+            document.body.removeEventListener('mouseup', moveEnd);
+        }
+        function moveStart(e: TouchEvent | MouseEvent) {
+            _this.moveListener(e);
+            document.addEventListener("touchend", moveEnd, { once: true });
+            document.addEventListener("mouseup", moveEnd, { once: true })
+        }
+        document.body.addEventListener("touchmove", moveStart, { passive: false })
+        document.body.addEventListener("mousemove", moveStart, { passive: false })
     }
     startScale(e: MouseEvent | TouchEvent, dire: string, x: number, y: number, width: number, height: number) {
         this.resizemode.value = dire
+        this.resizeDirection.x = isResize(dire, 'l') ? 'l' : isResize(dire, 'r') ? 'r' : 'null';
+        this.resizeDirection.y = isResize(dire, 't') ? 't' : isResize(dire, 'b') ? 'b' : 'null';
+
         if (e instanceof MouseEvent) {
             this.mosStartX = e.pageX
             this.mosStartY = e.pageY
@@ -68,6 +70,8 @@ class ScaleElement {
         this.winStartHeight = height
         this.posStartX = x
         this.posStartY = y
+        this.mount();
+
     }
     onResize(fun: (a0: number, a1: number, x: number, y: number) => void) {
         this.resizeEvent = fun
@@ -97,21 +101,19 @@ class ScaleElement {
         if (this.resizemode.value === 'null') {
             return
         } else {
-            let afterWidth = this.winStartWidth ;
+            let afterWidth = this.winStartWidth;
             let afterHeight = this.winStartHeight;
             let afterX = this.posStartX;
             let afterY = this.posStartY;
-            if (isResize(this.resizemode.value, 'r')) {
+            if (this.resizeDirection.x === 'r') {
                 afterWidth = Math.max(this.winStartWidth + pageX - this.mosStartX, this.MIN_WIDTH);
-            }
-            if (isResize(this.resizemode.value, 'l')) {
+            } else if (this.resizeDirection.x === 'l') {
                 afterWidth = Math.max(this.winStartWidth - pageX + this.mosStartX, this.MIN_WIDTH);
                 afterX = Math.min(this.posStartX + (pageX - this.mosStartX), (this.posStartX + (this.winStartWidth - this.MIN_WIDTH)));
             }
-            if (isResize(this.resizemode.value, 'b')) {
+            if (this.resizeDirection.y === 'b') {
                 afterHeight = Math.max(this.winStartHeight + pageY - this.mosStartY, this.MIN_HEIGHT)
-            }
-            if (isResize(this.resizemode.value, 't')) {
+            } else if (this.resizeDirection.y === 't') {
                 afterHeight = Math.max(this.winStartHeight - pageY + this.mosStartY, this.MIN_HEIGHT)
                 afterY = Math.min(this.posStartY + (pageY - this.mosStartY), (this.posStartY + (this.winStartHeight - this.MIN_HEIGHT)))
             }

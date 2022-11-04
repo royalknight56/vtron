@@ -45,10 +45,11 @@ class DragElement extends DragObj {
     ifDraging: boolean;
     canDrag: boolean;
     el: any
-    constructor(x: number, y: number) {
+    constructor(element: any,x: number, y: number) {
         super(x, y);
         this.ifDraging = false;
         this.canDrag = true;
+        this.mountDomEvent(element);
     }
     private sorption(posX: number, posY: number) {//使得窗口贴边吸附
         if (posX < 10 && posX > -10) {

@@ -138,11 +138,6 @@ function onFocus(e: MouseEvent | TouchEvent): void {
 let istop = computed(() => wininfo.istop);
 let isMaximize = computed(() => wininfo.isMaximize);
 
-// let winWidth = ref(wininfo.width);
-// let winHeight = ref(wininfo.height);
-let winX = ref(wininfo.x);
-let winY = ref(wininfo.y);
-
 /*
  *计算样式
  */
@@ -164,18 +159,8 @@ onMounted(() => {
       }
     }),
   };
-  watch(
-    () => wininfo.x,
-    (newVal, oldVal) => {
-      winX.value = newVal;
-    }
-  );
-  watch(
-    () => wininfo.y,
-    (newVal, oldVal) => {
-      winY.value = newVal;
-    }
-  );
+
+
 });
 
 /*
@@ -183,8 +168,7 @@ onMounted(() => {
 */
 let $win_outer = ref(null);
 onMounted(() => {
-  let dragAble = new DragElement(wininfo.x, wininfo.y);
-  dragAble.mountDomEvent($win_outer.value);
+  let dragAble = new DragElement($win_outer.value,wininfo.x, wininfo.y);
   watch(
     () => wininfo.isMaximize,
     (n, o) => {

@@ -4,7 +4,9 @@
  * @Description: 
 -->
 <template>
-  <span class="segoicon SEGOEUIMDL charging">{{ iconDisplay }}</span>
+  <div class="right_item">
+    <span class="segoicon SEGOEUIMDL charging">{{ iconDisplay }}</span>
+  </div>
 </template>
 <script setup lang="ts">
 // import { sysInfo } from "@state/index";

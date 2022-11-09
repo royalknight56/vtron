@@ -27,8 +27,8 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, defineComponent, inject, nextTick, onMounted, ref, shallowRef, toRaw } from 'vue';
 import { Ref, PropType } from 'vue'
-import LoaddingVue from '@libs/WindowTemplate/defaultInner/loadding.vue';
-import ErrorVue from '@libs/WindowTemplate/defaultInner/error.vue';
+import LoaddingVue from '@/packages/window/structure/windowContent/defaultContent/loadding.vue';
+import ErrorVue from '@/packages/window/structure/windowContent/defaultContent/error.vue';
 import { System } from '@libs/System'
 // import { nextTick } from 'process';
 let props = defineProps({

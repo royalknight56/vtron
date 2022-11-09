@@ -13,7 +13,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import WindowTmpVue from "@libs/WindowTmp.vue";
+import WindowTmpVue from "@/packages/window/structure/WindowTemplate.vue";
 
 import {System} from '@libs/System'
 import { computed, inject, onMounted, ref } from "vue";

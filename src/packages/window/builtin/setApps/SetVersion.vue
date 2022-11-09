@@ -10,7 +10,7 @@
             ：{{ remoteVersion }}
         </div>
         <div class="set_item">
-            <button @click="getRemoteVersion">检查更新</button>
+            <button v-if="updateButtonShow" @click="getRemoteVersion">检查更新</button>
         </div>
     </div>
 </template>
@@ -18,18 +18,16 @@
 import { ref } from 'vue';
 let localVersion = ref('0.4.0')
 let remoteVersion = ref('0.0.0')
-
+let updateButtonShow = ref(true)
 function getRemoteVersion() {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://api.npms.io/v2/package/vue3-win10');
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if (xhr.status == 200) {
-
                 let data = JSON.parse(xhr.responseText)
-                // console.log(data.collected.metadata.version)
                 remoteVersion.value = data.collected.metadata.version
-                // version.value = data.tag_name
+                updateButtonShow.value = false
             }
         }
     }

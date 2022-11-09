@@ -168,7 +168,7 @@ onMounted(() => {
 */
 let $win_outer = ref(null);
 onMounted(() => {
-  let dragAble = new DragElement($win_outer.value,wininfo.x, wininfo.y);
+  let dragAble = new DragElement($win_outer.value, wininfo.x, wininfo.y);
   watch(
     () => wininfo.isMaximize,
     (n, o) => {

@@ -9,11 +9,7 @@
   </div>
 </template>
 <script setup lang="ts">
-// import { sysInfo } from "@state/index";
 import { defineProps } from 'vue';
-import { PropType } from 'vue';
-
-
 import { reactive, ref, watch } from "vue";
 let props = defineProps(['sysInfo'])
 let charMap = {
@@ -59,7 +55,4 @@ watch([
 <style scoped>
 @import "@/packages/main.css";
 
-.charging {
-  width: 100px;
-}
 </style>

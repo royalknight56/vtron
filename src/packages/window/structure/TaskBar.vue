@@ -21,17 +21,15 @@
             <div class="right_item">
                 <NetworkVue :sysInfo="sysInfo"></NetworkVue>
             </div>
-            <div class="date_time">
-                <div class="date_time_text">
-                    {{ date_time }}
-                    <br />
-                    {{ date_day }}
+            <div class="right_item">
+                <DateTimeVue></DateTimeVue>
+            </div>
+            <div class="right_item">
+                <NotifyiconVue></NotifyiconVue>
+            </div>
+            <div class="right_item">
+                <div class="right_close_win">
                 </div>
-            </div>
-            <div @click="changeNotifShow" class="right_item">
-                <span class="segoicon SEGOEUIMDL"> &#xE91C;</span>
-            </div>
-            <div class="right_close_win">
             </div>
         </div>
     </div>
@@ -44,6 +42,8 @@ import NetworkVue from "@structure/taskbarIcon/network.vue";
 import ChargingVue from "@structure/taskbarIcon/charging.vue";
 import StartmenuButtonVue from "@structure/taskbarIcon/startmenuButton.vue";
 import AppiconVue from "./taskbarIcon/appicon.vue";
+import DateTimeVue from "./taskbarIcon/dateTime.vue";
+import NotifyiconVue from "./taskbarIcon/notifyicon.vue";
 
 import { System } from '@libs/System'
 let system = <System>inject('system')
@@ -60,21 +60,7 @@ let winlist = computed(() => {
     return Obj
 })
 
-let ifNotifShow = ref(false);
-function changeNotifShow() {
-    ifNotifShow.value = !ifNotifShow.value
-}
 
-// 设置时间日期
-let date_day = ref('')
-let date_time = ref('')
-date_time.value = new Date().toLocaleTimeString()
-date_day.value = new Date().toLocaleDateString()
-setInterval(() => {
-    let newDate = new Date()
-    date_time.value = newDate.getHours().toString().padStart(2, '0') + ':' + newDate.getMinutes().toString().padStart(2, '0')
-    date_day.value = new Date().toLocaleDateString()
-}, 400)
 </script>
 <style scoped>
 @import "../../main.css";
@@ -104,11 +90,12 @@ setInterval(() => {
 .bar_right {
     height: var(--bar-height);
     display: flex;
+    align-items: center;
 }
 
 .right_item {
-    margin: 0 3px;
-    width: calc(var(--bar-height) * 4/7);
+    height: 100%;
+    padding: 0 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -118,48 +105,14 @@ setInterval(() => {
     background-color: #e5eaf2;
 }
 
-.segoicon {
-    font-size: calc(var(--bar-height) * 2/5);
-}
-
 .right_item img {
     width: 50%;
 }
 
 .right_close_win {
-    width: 4px;
+    width: 1px;
+    height: 100%;
     border-left: 1px solid rgba(0, 0, 0, 0.219);
 }
 
-
-
-.showwin {
-    background-color: rgba(255, 255, 255, 0);
-    border-bottom: 3px solid rgba(255, 255, 255, 0.712);
-}
-
-.topwin {
-    background-color: rgba(255, 255, 255, 0.37);
-    /* border: 1px solid rgb(87, 147, 182); */
-}
-
-.topwin:hover {
-    background-color: rgba(255, 255, 255, 0.438);
-}
-
-.date_time {
-    justify-self: flex-end;
-    height: 100%;
-}
-
-.date_time_text {
-    text-align: center;
-    font-size: 12px;
-    display: inline-block;
-    transform: scale(0.8);
-}
-
-.date_time:hover {
-    background-color: #e5eaf2;
-}
 </style>

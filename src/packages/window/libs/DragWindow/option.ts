@@ -28,7 +28,7 @@ let defaultWindowOption = {
   y: 0,
   width: 400,
   height: 400,
-  props: {},
+  props: {} as any,
   isScalable: true,
   frame: true,
   transparent: false,

@@ -86,9 +86,9 @@
             </div>
         </div>
     </div>
-    <div class="desk_outer" ref="compu">
+    <div class="desk-outer" ref="compu">
         <div
-            class="desk_item"
+            class="desk-item"
             v-for="(item , index) in currentList"
             @dragstart="startDrag($event, item)"
             @drop="folderDrop($event, item,index)"
@@ -210,7 +210,7 @@ function openFile(folder: Folder) {
         // currentList.push(...folder.children)
     } else {
         if (folder.type == 'image') {
-            console.log(folder.name)
+            // console.log(folder.name)
         }
     }
 }
@@ -259,8 +259,8 @@ function startDrag(ev: DragEvent, item: Folder) {
 function folderDrop(ev: DragEvent, item: Folder,index:number) {
     let fromInfo = JSON.parse(ev?.dataTransfer?.getData('frominfo') || '{}')
     let fromId = ev?.dataTransfer?.getData('fromid')
-    console.log(fromInfo)
-    console.log(item)
+    // console.log(fromInfo)
+    // console.log(item)
     if(fromInfo.id == item.id){
         return;
     }
@@ -368,7 +368,7 @@ function end_input() {
 }
 </script>
 <style scoped>
-.desk_outer {
+.desk-outer {
     height: 100%;
     width: 100%;
     display: flex;
@@ -377,7 +377,7 @@ function end_input() {
     flex-wrap: wrap;
 }
 
-.desk_item {
+.desk-item {
     position: relative;
     cursor: default;
     /* user-select: none; */
@@ -391,7 +391,7 @@ function end_input() {
     /* text-shadow: 0px 0px 3px #000000; */
     border: 1px solid rgba(0, 0, 0, 0);
 }
-.desk_item:hover {
+.desk-item:hover {
     border: 1px solid rgba(255, 255, 255, 0.521);
 
     background-color: rgba(255, 255, 255, 0.281);

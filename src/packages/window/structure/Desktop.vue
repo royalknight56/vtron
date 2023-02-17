@@ -6,23 +6,26 @@
   Need CodeReview 
 -->
 <template>
-    <div class="desk_outer" @mouseup="onDragEnd">
-        <div class="desk_item" v-for="(item, index) in appList" 
-        @keyup.enter.native="openApp(item)"
-        @dblclick="openApp(item)" :ref="(el) => {
-            iconPos[index].dom = el as HTMLElement;
-        }" @contextmenu.prevent="rightClick(item, $event)" @mousedown="onDragStart(index, $event)"
-            @mousemove="onDragMove(index, $event)" :style="{
+    <div class="desk-outer" @mouseup="onDragEnd">
+        <div class="desk-item" v-for="(item, index) in appList" 
+            @keyup.enter.native="openApp(item)"
+            @dblclick="openApp(item)" 
+            :ref="(el) => {
+                iconPos[index].dom = el as HTMLElement;
+            }" 
+            @contextmenu.prevent="rightClick(item, $event)" 
+            @mousedown="onDragStart(index, $event)"
+            @mousemove="onDragMove(index, $event)" 
+            :style="{
                 left: iconPos[index].x + 'px',
                 top: iconPos[index].y + 'px',
                 zIndex: iconPos[index].isDrag ? 100 : 0
-            }"
-            :tabIndex="index+1"
-            >
-            <div class="item_img">
-                <img class="item_img-img" draggable="false" :alt="item.name" :src="item.icon" />
+            }" 
+            :tabIndex="index + 1">
+            <div class="desk-icon">
+                <img class="desk-item_img" draggable="false" :alt="item.name" :src="item.icon" />
             </div>
-            <div class="item_name">{{ item.name }}</div>
+            <div class="desk-item_name">{{ item.name }}</div>
         </div>
     </div>
 </template>
@@ -30,7 +33,6 @@
 <script lang="ts" setup>
 import { UnwrapNestedRefs } from "vue";
 import { inject, reactive } from "vue";
-// import { appList } from "@state/index";
 import type { appInfo } from "@state/type"
 import { openInfo } from "@builtin/callSystemWins";
 import { System } from '@libs/System';
@@ -74,7 +76,6 @@ function onDragStart(i: number, ev: MouseEvent) {
     iconPos[i].posCurrentY = iconPos[i].y;
 }
 function onDragMove(i: number, ev: MouseEvent) {
-    // console.log('dragmove', ev.clientX, ev.clientY)
     if (iconPos[i].isDrag) {
         iconPos[i].x = ev.pageX - iconPos[i].startX + iconPos[i].posCurrentX
         iconPos[i].y = ev.pageY - iconPos[i].startY + iconPos[i].posCurrentY
@@ -96,7 +97,6 @@ function onDragEndCheck(item: posItem) {
     }
 }
 function onDragEnd() {
-    // console.log('dragend', ev.clientX, ev.clientY)
     if (currentMoveIcon >= 0) {
         iconPos[currentMoveIcon].isDrag = false
         onDragEndCheck(iconPos[currentMoveIcon])
@@ -111,7 +111,7 @@ function moveCheck(ev: MouseEvent) {
     }
 }
 function openApp(item: UnwrapNestedRefs<appInfo>) {
-    emitEvents(system,"open.app.desktop");
+    emitEvents(system, "open.app.desktop");
     item.window.show({ callFrom: "desktop" });
 }
 
@@ -134,7 +134,7 @@ function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
 <style scoped>
 @import '../../main.css';
 
-.desk_outer {
+.desk-outer {
     height: calc(100% - 30px);
     width: min-content;
     display: flex;
@@ -147,7 +147,7 @@ function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
     position: relative;
 }
 
-.desk_item {
+.desk-item {
     position: relative;
     cursor: default;
     user-select: none;
@@ -166,13 +166,13 @@ function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
     border: 1px solid rgba(0, 0, 0, 0);
 }
 
-.desk_item:hover {
+.desk-item:hover {
     border: 1px solid rgba(255, 255, 255, 0.521);
 
     background-color: rgba(255, 255, 255, 0.281);
 }
 
-.item_img {
+.desk-icon {
     width: 60px;
     height: 60px;
     overflow: hidden;
@@ -180,16 +180,16 @@ function rightClick(item: UnwrapNestedRefs<appInfo>, e: MouseEvent) {
     text-align: center;
 }
 
-.item_img img {
+.desk-icon img {
     width: 100%;
     height: 100%;
 }
 
-.item_img-img {
+.desk-item_img {
     margin: 0 auto;
 }
 
-.item_name {
+.desk-item_name {
     margin-top: 2px;
     text-align: center;
     font-size: 13px;

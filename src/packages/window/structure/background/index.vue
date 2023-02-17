@@ -4,10 +4,10 @@
  * @Description: 
 -->
 <template>
-    <div class="background-outer" @contextmenu.prevent="backgroundRightClick">
+    <div class="background-outer" @contextmenu.prevent="backgroundRightClick" @mousedown="backgroundLeftClick">
         <defaultBackground v-if="appconfig.backimg === 'default'"></defaultBackground>
-        <div v-else-if="judgeIsHashColor(appconfig.backimg)"
-        :style="{background: appconfig.backimg}" class="colorbackground-outer"></div>
+        <div v-else-if="judgeIsHashColor(appconfig.backimg)" :style="{ background: appconfig.backimg }"
+            class="colorbackground-outer"></div>
         <imgBackground v-else></imgBackground>
     </div>
 </template>
@@ -15,10 +15,11 @@
 import defaultBackground from "@structure/background/default.vue";
 import imgBackground from "@structure/background/imgbackground.vue";
 import { inject } from "vue";
-import {System} from '@libs/System'
-let system =<System>inject('system');
+import { System } from '@libs/System'
+import { emitEvents } from "../../utils";
+let system = <System>inject('system');
 const appconfig = system.SystemConfig.config;
-function judgeIsHashColor(str:string){
+function judgeIsHashColor(str: string) {
     let reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
     return reg.test(str);
 }
@@ -29,9 +30,12 @@ function backgroundRightClick(e: MouseEvent) {
         ]
     )
 }
+function backgroundLeftClick(e: MouseEvent) {
+    emitEvents(system, 'leftclick.background', e)
+}
 </script>
 <style scoped>
-.colorbackground-outer{
+.colorbackground-outer {
     position: absolute;
     left: 0;
     top: 0;

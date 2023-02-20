@@ -12,7 +12,11 @@
 Vue3 仿Win10 UI 框架
 
 </div>
+<div align="center">
 
+此项目近期将进行重构，但0.X会继续维护
+
+</div>
 <div align="center">
 
 <a href="http://v3w10.myim.online" target="_blank">文档</a>|<a href="http://v3w10.myim.online" target="_blank">官网</a>|<a href="http://myim.online" target="_blank">样例</a>

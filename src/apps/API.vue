@@ -4,17 +4,18 @@
   height:{{win.windowInfo.height}}
   x:{{win.windowInfo.x}}
   y:{{win.windowInfo.y}}
-  <!-- {{win.windowInfo}} -->
-
-
 </div>
-  <div v-for="item in functionArray">
-    <button @click="item.call">{{ item.name }}</button>
+  <div class="button-group">
+    <WinBotton v-for="item in functionArray" @click="item.call">{{ item.name }}</WinBotton>
   </div>
 </template>
 <script lang="ts" setup>
 import InfoVue from "./TestButton.vue";
 import { system } from "../systeminit";
+import { WinCheckBox } from "../plug";
+import { WinBotton } from "../plug";
+
+
 let win = system.DragWindow({
         width: 200,
         height: 100,
@@ -54,4 +55,8 @@ let functionArray = [
 ]
 </script>
 <style scoped>
+.button-group{
+  display: flex;
+  flex-direction: column;
+}
 </style>

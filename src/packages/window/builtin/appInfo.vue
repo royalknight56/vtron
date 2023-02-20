@@ -13,8 +13,8 @@
         </div>
         <div class="outer_main">
             <div class="main_uper">
-                <img draggable="false" class="app_icon" :src="windowInfo.props.icon" />
-                <div class="app_name">{{ windowInfo.props.name }}</div>
+                <img draggable="false" class="app_icon" :src="windowInfo?.props.icon" />
+                <div class="app_name">{{ windowInfo?.props.name }}</div>
             </div>
             <div class="main_card">
                 <table class="app_info">
@@ -24,7 +24,7 @@
                     </tr>
                     <tr>
                         <td>描述:</td>
-                        <td>{{ windowInfo.props.name }}</td>
+                        <td>{{ windowInfo?.props.name }}</td>
                     </tr>
                 </table>
             </div>
@@ -62,6 +62,7 @@ let id =<string>inject('windowId')
 let system = <System>inject('system');
 
 let windowInfo = system.getWindow(id)?.windowInfo
+
 function closeWindow(){
     system.getWindow(id)?.destroy()
 }

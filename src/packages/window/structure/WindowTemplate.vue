@@ -55,8 +55,8 @@ import type { PropType } from "vue";
 import { WindowInfo, defaultWinInfo } from "@/packages/window/libs/DragWindow/option";
 import { DragElement } from "@libs/Dom/DragElement";
 import { ScaleElement } from "@libs/Dom/ScaleElement";
-import Statebar from "@libs/WindowTemplate/statebarButton.vue";
-import WindowInner from "@libs/WindowTemplate/windowInner.vue";
+import Statebar from "@/packages/window/structure/windowContent/statebarButton.vue";
+import WindowInner from "@/packages/window/structure/windowContent/windowInner.vue";
 import { System } from '@libs/System'
 let props = defineProps({
   id: {
@@ -168,7 +168,7 @@ onMounted(() => {
 */
 let $win_outer = ref(null);
 onMounted(() => {
-  let dragAble = new DragElement($win_outer.value,wininfo.x, wininfo.y);
+  let dragAble = new DragElement($win_outer.value, wininfo.x, wininfo.y);
   watch(
     () => wininfo.isMaximize,
     (n, o) => {

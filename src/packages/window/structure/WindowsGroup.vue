@@ -6,16 +6,19 @@
   Need CodeReview 
 -->
 <template>
-    <div class="winitem"  v-if="isMount" v-for="item in windowCreacted" :key="item.id">
-        <teleport :to="'#'+system.id">
-            <WindowTmpVue :id="item.id" :ref="'ref' + item.id"></WindowTmpVue>
-        </teleport>
-    </div>
+    <template v-if="isMount" v-for="item in windowCreacted"  :key="item.id">
+        <div class="winitem" >
+            <teleport :to="'#' + system.id">
+                <WindowTmpVue :id="item.id" :ref="'ref' + item.id"></WindowTmpVue>
+            </teleport>
+        </div>
+    </template>
+
 </template>
 <script setup lang="ts">
-import WindowTmpVue from "@libs/WindowTmp.vue";
+import WindowTmpVue from "@/packages/window/structure/WindowTemplate.vue";
 
-import {System} from '@libs/System'
+import { System } from '@libs/System'
 import { computed, inject, onMounted, ref } from "vue";
 import { windowInfoMapInter } from "@libs/DragWindow/option";
 import { DragWindow } from "@libs/DragWindow";
@@ -23,13 +26,13 @@ import { DragWindow } from "@libs/DragWindow";
 let system = <System>inject('system')
 
 let isMount = ref(false)
-onMounted(()=>{
+onMounted(() => {
     isMount.value = true
 })
-let windowCreacted =computed(()=>{
-    let Obj:windowInfoMapInter={};
-    Object.keys(system.State.windowInfoMap).forEach((key)=>{
-        if(system.State.windowInfoMap[key].windowInfo.isCreate){
+let windowCreacted = computed(() => {
+    let Obj: windowInfoMapInter = {};
+    Object.keys(system.State.windowInfoMap).forEach((key) => {
+        if (system.State.windowInfoMap[key].windowInfo.isCreate) {
             Obj[key] = system.State.windowInfoMap[key].windowInfo
         }
     })
@@ -39,6 +42,7 @@ let windowCreacted =computed(()=>{
 </script>
 <style scoped>
 @import '../../main.css';
+
 .winitem {
     position: relative;
     z-index: 2;

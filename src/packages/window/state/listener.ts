@@ -5,7 +5,6 @@
  */
 import { System } from '@libs/System'
 import { initBatteryListener } from "@state/systemEvent/battery"
-
 import { initResizeListener } from "@state/systemEvent/resize"
 import { initIframeListener } from "@state/systemEvent/iframe"
 

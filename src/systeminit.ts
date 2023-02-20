@@ -10,7 +10,7 @@ import logoimg from "./assets/logo.png"
 let system = new System({
   if_logo_show: false,
   start_time: 0,
-  backimg: "#00FFFF",
+  backimg: "#747474",
   // start_menu_logo:logoimg,
   // alert_before_unload:true,
   // login: {

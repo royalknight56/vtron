@@ -21,6 +21,8 @@
     transition: all 0.2s;
     box-sizing: border-box;
     margin: 0 0 0 10px;
+    user-select: none;
+    cursor: pointer;
 }
 .bottom_button:first-child {
     border: 1px solid #0078d7;

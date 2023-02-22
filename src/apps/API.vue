@@ -12,8 +12,8 @@
 <script lang="ts" setup>
 import InfoVue from "./TestButton.vue";
 import { system } from "../systeminit";
-import { WinCheckBox } from "../plug";
-import { WinBotton } from "../plug";
+// import { WinCheckBox } from "../packages/plugages/plug";
+import { WinBotton } from "../packages/plugages/plug";
 
 
 let win = system.DragWindow({

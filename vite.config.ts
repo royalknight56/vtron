@@ -13,10 +13,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
-      "@structure": path.resolve(__dirname, "src/packages/window/structure"),
-      "@builtin": path.resolve(__dirname, "src/packages/window/builtin"),
-      "@state": path.resolve(__dirname, "src/packages/window/state"),
-      "@libs": path.resolve(__dirname, "src/packages/window/libs"),
+      "@packages": path.resolve(__dirname, "src/packages"),
     },
   },
 })

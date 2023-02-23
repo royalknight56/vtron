@@ -21,20 +21,8 @@ export default defineConfig({
         replacement: path.resolve(__dirname, 'src')
       },
       {
-        find: "@structure",
-        replacement: path.resolve(__dirname, 'src/packages/window/structure')
-      },
-      {
-        find: "@builtin",
-        replacement: path.resolve(__dirname, 'src/packages/window/builtin')
-      },
-      {
-        find: "@state",
-        replacement: path.resolve(__dirname, 'src/packages/window/state')
-      },
-      {
-        find: "@libs",
-        replacement: path.resolve(__dirname, 'src/packages/window/libs')
+        find: "@packages",
+        replacement: path.resolve(__dirname, 'src/packages/')
       }
     ],
     dedupe: ['vue']

@@ -1,7 +1,7 @@
 import { initRootState } from "@/packages/feature/state/Root";
 import { SystemStateEnum } from "@/packages/type/enum"
 import { watch } from "vue";
-import { initEventer, Eventer } from "../event/EventHook";
+import { initEventer, Eventer,initEventListener } from "@packages/feature/event";
 // import { RootState, SystemOptions } from "@/packages/type/type";
 let GLOBAL_SYSTEM: System | null = null;
 /**
@@ -44,6 +44,7 @@ class System {
         /**
          * 过程：激活屏幕，桥接事件。
          */
+        initEventListener();
         this._ready?.(this);
         this._rootState.system.state = SystemStateEnum.opening;
         setTimeout(() => {

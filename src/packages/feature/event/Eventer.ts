@@ -20,7 +20,7 @@ class Eventer {
     once(type: string, handler: Function) {
         return this.on(type, handler, true);
     }
-    emit(type: string, ...args: any[]) {
+    emit(type: string,source:string, ...args: any[]) {
         let i = 0;
         while (i < (this.events.get(type) || []).length) { // 这里每次都从 this.events 去动态读取，方中途被变更
             const handlers: HandlerInfo[] = this.events.get(type) || [];
@@ -30,7 +30,7 @@ class Eventer {
                 handlers.splice(i--, 1);
             }
             i++;
-            handler(...args); // 这里 this 就交给传入的 handler 来保证了
+            handler(source,...args); // 这里 this 就交给传入的 handler 来保证了
         }
     }
     off(type?: string, handler?: Function): void {

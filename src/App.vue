@@ -11,10 +11,10 @@
 </template>
 
 <script setup lang="ts">
-// import brow from "./assets/浏览器.png"
+import brow from "./assets/浏览器.png"
 // import Test3 from "./apps/Test3.vue"
 // import Browser from "./apps/Browser.vue"
-// import TestButton from "./apps/TestButton.vue"
+import TestButton from "./apps/TestButton.vue"
 // import app_vscode from "./apps/app_vscode.vue"
 // import APIVue from "./apps/API.vue"
 // import Mycom from "./apps/MyComputer.vue"
@@ -23,8 +23,15 @@ import { onMounted, reactive, ref } from "vue";
 import { System } from "./packages/plug";
 
 onMounted(() => {
-  let system = new System({}).whenReady().then((res)=>{
-    });
+  new System({}).whenReady().then((system) => {
+    for (let i = 0; i < 30; i++) {
+      system.addApp({
+        name: '测试按钮',
+        icon: brow,
+        window: TestButton
+      });
+    }
+  });
   // for (let i = 0; i < 30; i++) {
   //   system.AddToStartupList({
   //     name: '测试按钮',

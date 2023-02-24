@@ -5,6 +5,10 @@ import { reactive, ref, UnwrapNestedRefs, watch } from "vue";
 const rootState:UnwrapNestedRefs<RootState> = reactive({
     system: {
         state:SystemStateEnum.close,
+        apps:[],
+        windowInfoMap:{},
+        zIndexIdArray:[],
+        winnum:0
     }
 })
 function initRootState(options:SystemOptions){

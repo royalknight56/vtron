@@ -72,8 +72,8 @@ class System {
     /**
      * @description: 添加应用
      */
-    addApp() {
-
+    addApp(options:WinApp) {
+        this._rootState.system.apps.push(options);
     }
     /**
      * @description: 移除应用

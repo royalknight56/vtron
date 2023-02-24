@@ -1,12 +1,8 @@
 <template>
-    <div class="background" @click="backgroundClick">
+    <div class="background">
     </div>
 </template>
 <script lang="ts" setup>
-import { emitEvent, mountEvent } from "@packages/feature/event";
-function backgroundClick(e: MouseEvent) {
-    emitEvent('desktop.background.leftClick', e);
-}
 
 </script>
 <style lang="scss" scoped>

@@ -12,10 +12,10 @@
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import { system } from "../systeminit";
+// import { system } from "../systeminit";
 function test(){
     // console.log('test') 
-    system.Notify.notify('test',"testtest")
+    // system.Notify.notify('test',"testtest")
 }
 </script>
 <style>

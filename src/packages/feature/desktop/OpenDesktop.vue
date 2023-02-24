@@ -1,14 +1,22 @@
 <template>
     <div class="desktop">
-        <div class="userarea">
-            <DesktopBackground></DesktopBackground>
+        <div class="userarea"  @click="backgroundClick">
+            <DeskItem class="userarea-upper zhighher"></DeskItem>
+            <DesktopBackground class="userarea-upper"></DesktopBackground>
         </div>
-        <Taskbar></Taskbar>
+        <div class="bottom">
+            <Taskbar></Taskbar>
+        </div>
     </div>
 </template>
 <script lang="ts" setup>
+import DeskItem from '../appIcon/DeskItem.vue';
 import Taskbar from '../taskbar/Taskbar.vue';
 import DesktopBackground from './components/DesktopBackground.vue';
+import { emitEvent, mountEvent } from "@packages/feature/event";
+function backgroundClick(e: MouseEvent) {
+    emitEvent('desktop.background.leftClick', e);
+}
 
 </script>
 <style lang="scss" scoped>
@@ -18,10 +26,17 @@ import DesktopBackground from './components/DesktopBackground.vue';
     display: flex;
     flex-direction: column;
     flex-grow: 0;
-
+    .zhighher{
+        z-index: 2;
+    }
     .userarea {
         flex: 1;
-        // background-color: #3a98ce;
+        position: relative;
+        .userarea-upper{
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
     }
 }
 </style>

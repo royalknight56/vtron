@@ -10,5 +10,6 @@
     width: var(--startmenu-width);
     height: var(--startmenu-height);
     background-color: #20dbe5;
+    z-index: 90;
 }
 </style>

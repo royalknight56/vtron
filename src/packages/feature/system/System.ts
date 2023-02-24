@@ -46,7 +46,7 @@ class System {
          */
         initEventListener();
         this._ready?.(this);
-        this._rootState.system.state = SystemStateEnum.opening;
+        this._rootState.system.state = SystemStateEnum.open;
         setTimeout(() => {
             this._rootState.system.state = SystemStateEnum.open;
         }, 1000);

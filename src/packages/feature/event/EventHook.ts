@@ -8,19 +8,25 @@ function useEventer() {
 }
 function emitEvent(event: string, data?: any) {
     let eventArray = event.split(".");
-    eventArray.unshift("system")
     eventArray.forEach((item, index) => {
         let tempEvent = eventArray.slice(0, index + 1).join(".");
-        eventer.emit(tempEvent,event,data);
+        eventer.emit(tempEvent, event, data);
     });
+    eventer.emit('system', event, data);
 }
-function mountEvent(event: string, callback: Function) {
+function mountEvent(event: string, callback: (source: string, data: any) => void) {
     return eventer.on(event, callback);
+}
+function redirectEvent(source:string,target:string) {
+    mountEvent(source,(source:string,data:any)=>{
+        emitEvent(target,data);
+    });
 }
 export {
     Eventer,
     initEventer,
     useEventer,
     emitEvent,
-    mountEvent
+    mountEvent,
+    redirectEvent
 }

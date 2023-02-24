@@ -23,10 +23,8 @@ import { onMounted, reactive, ref } from "vue";
 import { System } from "./packages/plug";
 
 onMounted(() => {
-  setTimeout(() => {
-    let system = new System({}).whenReady().then((res)=>{
+  let system = new System({}).whenReady().then((res)=>{
     });
-  }, 1000);
   // for (let i = 0; i < 30; i++) {
   //   system.AddToStartupList({
   //     name: '测试按钮',

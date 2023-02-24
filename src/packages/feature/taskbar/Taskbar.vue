@@ -5,7 +5,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import StartMenu from './barUnit/StartMenu.vue';
+import StartMenu from './barUnit/StartMenuIcon.vue';
 import AppIcon from './barUnit/AppIcon.vue';
 
 </script>

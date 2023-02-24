@@ -1,9 +1,14 @@
-import { mountEvent } from "./EventHook";
+import { mountEvent,redirectEvent } from "./EventHook";
 
 function initEventListener() {
     mountEvent("system", (source:string,e:any) => {
-        console.log("system",source,e);
+
     });
+    redirectEvent("taskbar.startmenu.leftClick","startmenu.changeVisible");
+    redirectEvent("desktop.background.leftClick","startmenu.hidden");
+    // mountEvent("taskbar.startmenu.leftClick", (source:string,e:any) => {
+
+    // });
 }
 export {
     initEventListener

@@ -1,12 +1,15 @@
 <template>
     <div class="desktop">
-        <div class="userarea"></div>
+        <div class="userarea">
+            <DesktopBackground></DesktopBackground>
+        </div>
         <Taskbar></Taskbar>
     </div>
-
 </template>
 <script lang="ts" setup>
 import Taskbar from '../taskbar/Taskbar.vue';
+import DesktopBackground from './components/DesktopBackground.vue';
+
 </script>
 <style lang="scss" scoped>
 .desktop {
@@ -18,7 +21,7 @@ import Taskbar from '../taskbar/Taskbar.vue';
 
     .userarea {
         flex: 1;
-        background-color: #3a98ce;
+        // background-color: #3a98ce;
     }
 }
 </style>

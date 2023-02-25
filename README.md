@@ -14,7 +14,7 @@ Vue3 仿Win10 UI 框架
 </div>
 <div align="center">
 
-此项目近期将进行重构，但0.X会继续维护
+此项目在dev-next进行重构，但0.X会继续维护
 
 </div>
 <div align="center">

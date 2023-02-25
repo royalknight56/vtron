@@ -3,6 +3,7 @@
         <div class="userarea"  @click="backgroundClick">
             <DeskItem class="userarea-upper zhighher"></DeskItem>
             <DesktopBackground class="userarea-upper"></DesktopBackground>
+            <WindowGroup></WindowGroup>
         </div>
         <div class="bottom">
             <Taskbar></Taskbar>
@@ -14,6 +15,7 @@ import DeskItem from '../appIcon/DeskItem.vue';
 import Taskbar from '../taskbar/Taskbar.vue';
 import DesktopBackground from './components/DesktopBackground.vue';
 import { emitEvent, mountEvent } from "@packages/feature/event";
+import WindowGroup from '../window/WindowGroup.vue';
 function backgroundClick(e: MouseEvent) {
     emitEvent('desktop.background.leftClick', e);
 }

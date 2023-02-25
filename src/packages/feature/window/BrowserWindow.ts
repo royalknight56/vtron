@@ -1,31 +1,36 @@
 import { defineComponent, nextTick, reactive } from "vue";
-
-// import { defaultWindowOption, defaultWinInfo } from '@/packages/window/libs/DragWindow/option'
 import { useRootState } from "../state/Root";
-
-class BrowserWindow implements BrowserWindowModel{
-    windowInfo: Partial<BrowserWindowConstructorOptions>
-    private option: Partial<BrowserWindowConstructorOptions>
+// import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
+// implements BrowserWindowModel
+class BrowserWindow {
+    windowInfo: Partial<{}>
+    private _option: Partial<{}>
     id: number
     [index:string]:any
-    private _rootState =useRootState()
 
-    constructor(option: Partial<BrowserWindowConstructorOptions>) {
-        this.id = this._rootState.system.winnum;
-
-        // this.option = { ...defaultWindowOption }
-        // this.option = Object.assign({ ...defaultWindowOption }, option)
-        // this.windowInfo = reactive(Object.assign({ ...defaultWinInfo }, this.option))
-        this.option = { ...option }
-        this.windowInfo =  option
-        // this.windowInfo.id = this.id
-        // this.windowInfo.wid = this.system.State.winnum
-
-        this._rootState.system.windowInfoMap[this.id] = this;
-        this._rootState.system.zIndexIdArray.push(this.id) // 层级数组中压入id
-        this._rootState.system.winnum++;
+    constructor(option?: Partial<{}>,parent?:BrowserWindow) {
+        this._option = option || {};
+        let rootState = useRootState();
+        this.id = rootState.system.winnum;
+        rootState.system.winnum++;
+        this.windowInfo = reactive({
+            id: this.id,
+            title: this.option.title || "新窗口",
+            width: this.option.width || 800,
+            height: this.option.height || 600,
+        });
+        rootState.system.windowTree.addChild(this);
     }
-
+    moveTop() {// 窗口置顶
+        let rootState = useRootState();
+        let tree = rootState.system.windowTree;
+        let node = tree.findNode(this);
+        if (node) {
+            tree.removeChild(node);
+            tree.addChild(this);
+        }
+    }
+    /*
     private getWinInner() {
         return {
             width: this.system.State.sysInfo.width,
@@ -153,6 +158,7 @@ class BrowserWindow implements BrowserWindowModel{
             this.windowInfo.status = WindowStatusEnum.normal
         }
     }
+    */
 }
 export {
     BrowserWindow

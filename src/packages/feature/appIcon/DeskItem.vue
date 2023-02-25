@@ -1,6 +1,6 @@
 <template>
     <div class="desk-group">
-        <div class="desk-item" v-for="item in appList" :key="item.name">
+        <div @click="openapp" class="desk-item" v-for="item in appList" :key="item.name">
 
         </div>
     </div>
@@ -8,8 +8,12 @@
 </template>
 <script lang="ts" setup>
 import { useRootState } from '../state/Root';
+import { BrowserWindow } from '../window/BrowserWindow';
 let rootState = useRootState();
 let appList = rootState.system.apps;
+function openapp(){
+    new BrowserWindow({})
+}
 </script>
 <style lang="scss" scoped>
 .desk-group {

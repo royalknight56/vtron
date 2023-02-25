@@ -1,4 +1,4 @@
-declare interface BrowserWindowConstructorOptions {
+export interface BrowserWindowConstructorOptions {
     /**
      * Window's width in pixels. Default is `800`.
      */
@@ -293,7 +293,7 @@ declare interface BrowserWindowConstructorOptions {
     titleBarOverlay?: (TitleBarOverlay) | (boolean);
   }
 
-declare interface BrowserWindowModel{
+  export interface BrowserWindowModel{
     /**
      * BrowserWindow
      */

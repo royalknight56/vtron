@@ -1,6 +1,7 @@
 import { initRootState } from "@/packages/feature/state/Root";
 import { SystemStateEnum } from "@/packages/type/enum"
 import { watch } from "vue";
+import { RootState, SystemOptions,WinApp } from "@/packages/type/type";
 import { initEventer, Eventer,initEventListener } from "@packages/feature/event";
 // import { RootState, SystemOptions } from "@/packages/type/type";
 let GLOBAL_SYSTEM: System | null = null;
@@ -34,7 +35,7 @@ class System {
     /**
      * @description: 获取系统配置
      */
-    private initRootState(options?: SystemOptions) {
+    private initRootState(options?: SystemOptions): RootState {
         return initRootState(this._options);
     }
     /**

@@ -1,4 +1,4 @@
-declare interface NotificationConstructorOptions {
+export interface NotificationConstructorOptions {
     /**
      * A title for the notification, which will be shown at the top of the notification
      * window when it is shown.

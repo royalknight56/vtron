@@ -34,6 +34,7 @@ function backgroundClick(e: MouseEvent) {
     .userarea {
         flex: 1;
         position: relative;
+        overflow: hidden;
         .userarea-upper{
             position: absolute;
             top: 0;

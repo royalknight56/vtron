@@ -12,7 +12,7 @@ export interface WinApp {
     name?:string;
     icon?:string;
     url?:string;
-    window?: DefineComponent
+    window?: BrowserWindow
 }
 export type RootState =UnwrapNestedRefs<{
     system: {

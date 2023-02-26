@@ -21,14 +21,17 @@ import TestButton from "./apps/TestButton.vue"
 
 import { onMounted, reactive, ref } from "vue";
 import { System } from "./packages/plug";
+import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
 
 onMounted(() => {
   new System({}).whenReady().then((system) => {
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 3; i++) {
       system.addApp({
         name: '测试按钮',
         icon: brow,
-        window: TestButton
+        window: new BrowserWindow({
+          content:TestButton
+        })
       });
     }
   });

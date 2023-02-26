@@ -1,6 +1,6 @@
 <template>
     <div class="desk-group">
-        <div @click="openapp" class="desk-item" v-for="item in appList" :key="item.name">
+        <div @click="openapp(item)" class="desk-item" v-for="item in appList" :key="item.name">
 
         </div>
     </div>
@@ -9,10 +9,12 @@
 <script lang="ts" setup>
 import { useRootState } from '../state/Root';
 import { BrowserWindow } from '../window/BrowserWindow';
+import { WinApp } from '@/packages/type/type';
+import { UnwrapNestedRefs } from 'vue';
 let rootState = useRootState();
 let appList = rootState.system.apps;
-function openapp(){
-    new BrowserWindow({})
+function openapp(item:UnwrapNestedRefs<WinApp>){
+    item.window?.show();
 }
 </script>
 <style lang="scss" scoped>

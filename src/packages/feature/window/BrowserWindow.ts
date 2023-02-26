@@ -1,25 +1,49 @@
-import { defineComponent, nextTick, reactive } from "vue";
+import { defineComponent, nextTick, reactive, DefineComponent, markRaw } from "vue";
 import { useRootState } from "../state/Root";
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
 // implements BrowserWindowModel
+interface BrowserWindowConstructorOptions {
+    title?: string
+    content?: ReturnType<typeof defineComponent>
+}
+interface WindowInfo {
+    title: string
+    width: number
+    height: number
+    x: number
+    y: number
+    resizable: boolean
+    isMaximize: boolean
+    istop: boolean
+    isCreated: boolean
+}
 class BrowserWindow {
-    windowInfo: Partial<{}>
-    private _option: Partial<{}>
+    windowInfo: WindowInfo
+    private _option: Partial<BrowserWindowConstructorOptions>
     id: number
-    [index:string]:any
+    content?: DefineComponent
+    [index: string]: any
 
-    constructor(option?: Partial<{}>,parent?:BrowserWindow) {
+    constructor(option?: Partial<BrowserWindowConstructorOptions>, parent?: BrowserWindow) {
         this._option = option || {};
+        this.content = markRaw(this._option.content);
         let rootState = useRootState();
         this.id = rootState.system.winnum;
         rootState.system.winnum++;
-        this.windowInfo = reactive({
-            id: this.id,
-            title: this.option.title || "新窗口",
-            width: this.option.width || 800,
-            height: this.option.height || 600,
-        });
+
+        this.windowInfo = reactive(Object.assign({}, {
+            title: "新窗口",
+            width: 800,
+            height: 600,
+            x: 0,
+            y: 0,
+            resizable: true,
+            isMaximize: false,
+            istop: false,
+            isCreated: false,
+        }, this._option));
         rootState.system.windowTree.addChild(this);
+        console.log(this.windowInfo)
     }
     moveTop() {// 窗口置顶
         let rootState = useRootState();
@@ -29,6 +53,10 @@ class BrowserWindow {
             tree.removeChild(node);
             tree.addChild(this);
         }
+    }
+    show(){
+        this.windowInfo.isCreated = true;
+        this.moveTop();
     }
     /*
     private getWinInner() {

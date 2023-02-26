@@ -10,7 +10,11 @@
     topwin: istop,
     noframes: !browserWindow.frame, transparent: browserWindow.transparent
   }" -->
-  <div class="wintmp_outer dragwin topwin" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus" 
+  <div class="wintmp_outer dragwin"
+  :class="{
+    topwin: istop,
+  }"
+   :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus" 
    ref="$win_outer">
     <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
       <div class="wintmp_left">
@@ -19,31 +23,32 @@
         </div>
         <div class="wintmp_title">{{ browserWindow.title }}</div>
       </div>
-      <!-- <Statebar @buttonEvent="handelButtonEvent" :isMaximize="isMaximize" :isScaleAble="isScaleAble" :wininfo="wininfo">
+      <!-- <Statebar @buttonEvent="handelButtonEvent" :isMaximize="isMaximize" :resizable="resizable" :wininfo="wininfo">
       </Statebar> -->
     </div>
     <div class="wintmp_main" :class="{ resizeing: resizemode != 'null' }" @mousedown.stop="predown"
       @touchstart.stop.passive="predown">
+      <component :is="browserWindow.content" :key="componentKey"></component>
       <!-- <WindowInner :id="winID" :componentKey="componentKey"></WindowInner> -->
     </div>
-    <div class="right_border win_drag_border" :class="{ isChoseMode: resizemode == 'r' }" v-if="isScaleAble"
+    <div class="right_border win_drag_border" :class="{ isChoseMode: resizemode == 'r' }" v-if="resizable"
       @mousedown.stop.prevent="startScale($event, 'r')" @touchstart.stop.passive="startScale($event, 'r')"></div>
-    <div class="bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'b' }" v-if="isScaleAble"
+    <div class="bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'b' }" v-if="resizable"
       @mousedown.stop.prevent="startScale($event, 'b')" @touchstart.stop.passive="startScale($event, 'b')"></div>
-    <div class="left_border win_drag_border" :class="{ isChoseMode: resizemode == 'l' }" v-if="isScaleAble"
+    <div class="left_border win_drag_border" :class="{ isChoseMode: resizemode == 'l' }" v-if="resizable"
       @mousedown.stop.prevent="startScale($event, 'l')" @touchstart.stop.passive="startScale($event, 'l')"></div>
-    <div class="top_border win_drag_border" :class="{ isChoseMode: resizemode == 't' }" v-if="isScaleAble"
+    <div class="top_border win_drag_border" :class="{ isChoseMode: resizemode == 't' }" v-if="resizable"
       @mousedown.stop.prevent="startScale($event, 't')" @touchstart.stop.passive="startScale($event, 't')"></div>
-    <div class="right_bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'rb' }" v-if="isScaleAble"
+    <div class="right_bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'rb' }" v-if="resizable"
       draggable="false" @mousedown.stop.prevent="startScale($event, 'rb')"
       @touchstart.stop.passive="startScale($event, 'rb')"></div>
-    <div class="left_bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'lb' }" v-if="isScaleAble"
+    <div class="left_bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'lb' }" v-if="resizable"
       draggable="false" @mousedown.stop.prevent="startScale($event, 'lb')"
       @touchstart.stop.passive="startScale($event, 'lb')"></div>
-    <div class="left_top_border win_drag_border" :class="{ isChoseMode: resizemode == 'lt' }" v-if="isScaleAble"
+    <div class="left_top_border win_drag_border" :class="{ isChoseMode: resizemode == 'lt' }" v-if="resizable"
       draggable="false" @mousedown.stop.prevent="startScale($event, 'lt')"
       @touchstart.stop.passive="startScale($event, 'lt')"></div>
-    <div class="right_top_border win_drag_border" :class="{ isChoseMode: resizemode == 'rt' }" v-if="isScaleAble"
+    <div class="right_top_border win_drag_border" :class="{ isChoseMode: resizemode == 'rt' }" v-if="resizable"
       draggable="false" @mousedown.stop.prevent="startScale($event, 'rt')"
       @touchstart.stop.passive="startScale($event, 'rt')"></div>
 
@@ -66,6 +71,7 @@ let props = defineProps<{
 }>()
 
 let browserWindow = props.browserWindow;
+let windowInfo = browserWindow.windowInfo;
 // 传递windowid
 provide("browserWindow", browserWindow);
 
@@ -83,7 +89,7 @@ function hideWindow() {
   browserWindow?.hide()
 }
 function maxWindow() {
-  if (isScaleAble.value) {
+  if (resizable.value) {
     if (browserWindow?.isMaximized()) {
       browserWindow?.unmaximize()
     } else {
@@ -133,18 +139,18 @@ function onFocus(e: MouseEvent | TouchEvent): void {
   }
 }
 
-let istop = computed(() => browserWindow.istop);
-let isMaximize = computed(() => browserWindow.isMaximize);
+let istop = computed(() => windowInfo.istop);
+let isMaximize = computed(() => windowInfo.isMaximize);
 
 /*
  *计算样式
  */
 onMounted(() => {
   customerStyle.value = {
-    width: computed(() => browserWindow.width + "px"),
-    height: computed(() => browserWindow.height + "px"),
-    left: computed(() => browserWindow.x + "px"),
-    top: computed(() => browserWindow.y + "px"),
+    width: computed(() => windowInfo.width + "px"),
+    height: computed(() => windowInfo.height + "px"),
+    left: computed(() => windowInfo.x + "px"),
+    top: computed(() => windowInfo.y + "px"),
 
     zIndex: computed(() => {
       // TODO:
@@ -169,9 +175,9 @@ onMounted(() => {
 */
 let $win_outer = ref(null);
 onMounted(() => {
-  let dragAble = new DragElement($win_outer.value, browserWindow.x, browserWindow.y);
+  let dragAble = new DragElement($win_outer.value, windowInfo.x, windowInfo.y);
   watch(
-    () => browserWindow.isMaximize,
+    () => windowInfo.isMaximize,
     (n, o) => {
       if (n) {
         dragAble.canDrag = false;
@@ -181,9 +187,9 @@ onMounted(() => {
     }
   );
   dragAble.onDrag((x, y) => {
-    if (!browserWindow.isMaximize) {
-      browserWindow.x = x;
-      browserWindow.y = y;
+    if (!windowInfo.isMaximize) {
+      windowInfo.x = x;
+      windowInfo.y = y;
     }
   });
 });
@@ -191,20 +197,20 @@ onMounted(() => {
 /*
 挂载缩放事件
 */
-let isScaleAble = ref(browserWindow.isScalable);
+let resizable = ref(windowInfo.resizable);
 let resizemode = ref("null");
 let scaleAble: ScaleElement;
 onMounted(() => {
-  scaleAble = new ScaleElement(resizemode, browserWindow.width, browserWindow.height, browserWindow.x, browserWindow.y);
+  scaleAble = new ScaleElement(resizemode, windowInfo.width, windowInfo.height, windowInfo.x, browserWindow.y);
   scaleAble.onResize((width: number, height: number, x: number, y: number) => {
-    browserWindow.width = width || browserWindow.width;
-    browserWindow.height = height || browserWindow.height;
-    browserWindow.x = x || browserWindow.x;
-    browserWindow.y = y || browserWindow.y;
+    windowInfo.width = width || windowInfo.width;
+    windowInfo.height = height || windowInfo.height;
+    windowInfo.x = x || windowInfo.x;
+    windowInfo.y = y || windowInfo.y;
   });
 })
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
-  scaleAble?.startScale(e, dire, browserWindow.x, browserWindow.y, browserWindow.width, browserWindow.height);
+  scaleAble?.startScale(e, dire, windowInfo.x, windowInfo.y, windowInfo.width, windowInfo.height);
 }
 
 </script>

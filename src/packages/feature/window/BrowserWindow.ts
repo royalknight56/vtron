@@ -56,6 +56,7 @@ class BrowserWindow {
     }
     show(){
         this.windowInfo.isCreated = true;
+        this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         this.moveTop();
     }
     maximize() {// 最大化窗口
@@ -71,18 +72,20 @@ class BrowserWindow {
         // TODO:
         this.windowInfo.isCreated = false;
     }
-    /*
+
     private getWinInner() {
+        // TODO: 获取的是系统的大小
         return {
-            width: this.system.State.sysInfo.width,
-            height: this.system.State.sysInfo.height
+            width: this.windowInfo.width,
+            height: this.windowInfo.height
         }
     }
     private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
         if (this.windowInfo) {
-            if (this.windowInfo.isScalable) {//只有可缩放窗口
+            if (this.windowInfo.resizable) {//只有可缩放窗口
                 let { x, y, width, height } = this.windowInfo;
                 let { width: winWidth, height: winHeight } = this.getWinInner();//获取窗口大小
+
                 if (winWidth == 0 && winHeight == 0) {
                     return
                 }
@@ -95,6 +98,7 @@ class BrowserWindow {
             }
         }
     }
+    /*
     private afterRegister() {// 注册之后的操作
         this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         if (this.windowInfo.center) {

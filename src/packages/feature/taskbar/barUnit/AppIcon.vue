@@ -1,14 +1,22 @@
 <template>
-    <div class="appicon">
+    <div class="appicon" @contextmenu.prevent="handleRightClick">
         <img :src="windowNode.windowInfo.icon" />
     </div>
 </template>
 <script lang="ts" setup>
 import { UnwrapNestedRefs } from 'vue';
+import { emitEvent } from '../../event';
 import { BrowserWindow } from '../../window/BrowserWindow';
-defineProps<{
+let props = defineProps<{
     windowNode:UnwrapNestedRefs<BrowserWindow>;
-}>()
+}>();
+function handleRightClick(){
+    emitEvent('contextMenu.show', {
+        x: 0,
+        y: 0,
+        windowNode: props.windowNode
+    });
+}
 </script>
 <style lang="scss" scoped>
 .appicon{

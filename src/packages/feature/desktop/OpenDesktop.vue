@@ -8,6 +8,7 @@
         <div class="bottom">
             <Taskbar></Taskbar>
         </div>
+        <ContextMenu></ContextMenu>
     </div>
 </template>
 <script lang="ts" setup>
@@ -16,6 +17,7 @@ import Taskbar from '../taskbar/Taskbar.vue';
 import DesktopBackground from './components/DesktopBackground.vue';
 import { emitEvent, mountEvent } from "@packages/feature/event";
 import WindowGroup from '../window/WindowGroup.vue';
+import ContextMenu from '../contextMenu/ContextMenu.vue';
 function backgroundDown(e: MouseEvent) {
     emitEvent('desktop.background.leftClick', e);
 }

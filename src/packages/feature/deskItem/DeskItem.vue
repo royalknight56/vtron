@@ -1,0 +1,50 @@
+<template>
+    <div class="desk-group">
+        <div @dblclick="openapp(item)" class="desk-item" v-for="item in appList" :key="item.name">
+            <img class="desk-item_img" :src="item.icon" alt="">
+            <span class="desk-item_title">{{ item.name }}</span>
+        </div>
+    </div>
+
+</template>
+<script lang="ts" setup>
+import { useRootState } from '../state/Root';
+import { BrowserWindow } from '../window/BrowserWindow';
+import { WinApp } from '@packages/type/type';
+import { UnwrapNestedRefs } from 'vue';
+let rootState = useRootState();
+let appList = rootState.system.apps;
+function openapp(item: UnwrapNestedRefs<WinApp>) {
+    item.window?.show();
+}
+</script>
+<style lang="scss" scoped>
+.desk-group {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 100%;
+
+    .desk-item {
+        width: var(--desk-item-size);
+        height: var(--desk-item-size);
+        // background-color: #e58220;
+        margin: 6px;
+        // padding: 10px;
+
+        .desk-item_img {
+            width: 60%;
+            height: 60%;
+            margin: 4px auto;
+        }
+
+        .desk-item_title {
+            display: block;
+            text-align: center;
+        }
+    }
+    .desk-item:hover{
+        background-color: #e58220;
+    }
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
     <div class="desktop">
-        <div class="userarea"  @click="backgroundClick">
+        <div class="userarea"  @mousedown="backgroundDown">
             <DeskItem class="userarea-upper zhighher"></DeskItem>
             <DesktopBackground class="userarea-upper"></DesktopBackground>
             <WindowGroup></WindowGroup>
@@ -11,12 +11,12 @@
     </div>
 </template>
 <script lang="ts" setup>
-import DeskItem from '../appIcon/DeskItem.vue';
+import DeskItem from '../deskItem/DeskItem.vue';
 import Taskbar from '../taskbar/Taskbar.vue';
 import DesktopBackground from './components/DesktopBackground.vue';
 import { emitEvent, mountEvent } from "@packages/feature/event";
 import WindowGroup from '../window/WindowGroup.vue';
-function backgroundClick(e: MouseEvent) {
+function backgroundDown(e: MouseEvent) {
     emitEvent('desktop.background.leftClick', e);
 }
 

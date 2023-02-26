@@ -61,6 +61,9 @@ class BrowserWindow {
     maximize() {// 最大化窗口
         this.windowInfo.isMaximize = true;
     }
+    unmaximize() {// 取消最大化窗口
+        this.windowInfo.isMaximize = false;
+    }
     minimize(){// 最小化窗口
         this.windowInfo.isCreated = false;
     }

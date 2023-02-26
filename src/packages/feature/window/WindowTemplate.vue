@@ -12,8 +12,9 @@
   }" -->
   <div class="wintmp_outer dragwin" :class="{
     topwin: istop,
+    max: windowInfo.isMaximize,
   }" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus" ref="$win_outer">
-    <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
+    <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
       <MenuBar :browser-window="browserWindow"></MenuBar>
     </div>
     <div class="wintmp_main" :class="{ resizeing: resizemode != 'null' }" @mousedown.stop="predown"
@@ -68,37 +69,13 @@ provide("browserWindow", browserWindow);
 
 let winStatus = browserWindow.id;
 const componentKey = ref<Number>(1);
-function flushWindow(): void {
-  componentKey.value = Math.round(Math.random() * 10000);
-}
-function closeWindow(): void {
-  browserWindow?.destroy()
-}
-function hideWindow() {
-  browserWindow?.hide()
-}
-function maxWindow() {
-  if (resizable.value) {
-    if (browserWindow?.isMaximized()) {
-      browserWindow?.unmaximize()
-    } else {
-      browserWindow?.maximize()
-    }
-  }
-}
+
+
 function predown() {
   browserWindow.moveTop();
 }
-type buttonEvent = 'flush' | 'close' | 'min' | 'max'
-const buttonEventFunc = {
-  close: closeWindow,
-  min: hideWindow,
-  max: maxWindow,
-  flush: flushWindow,
-};
-function handelButtonEvent(event: buttonEvent) {
-  buttonEventFunc[event]();
-}
+
+
 function uperRightClick(e: MouseEvent) {
   // system.ContextMenu.callMenu(e, [
   //   {
@@ -144,7 +121,7 @@ onMounted(() => {
     zIndex: computed(() => {
       // TODO:
       // return browserWindow.zindex;
-      return 434;
+      return 3;
 
     }),
     // display: computed(() => {
@@ -190,7 +167,7 @@ let resizable = ref(windowInfo.resizable);
 let resizemode = ref("null");
 let scaleAble: ScaleElement;
 onMounted(() => {
-  scaleAble = new ScaleElement(resizemode, windowInfo.width, windowInfo.height, windowInfo.x, browserWindow.y);
+  scaleAble = new ScaleElement(resizemode, windowInfo.width, windowInfo.height, windowInfo.x, windowInfo.y);
   scaleAble.onResize((width: number, height: number, x: number, y: number) => {
     windowInfo.width = width || windowInfo.width;
     windowInfo.height = height || windowInfo.height;
@@ -211,7 +188,6 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 }
 </style>
 <style scoped lang="scss">
-
 .wintmp_outer {
   position: absolute;
   padding: 0;
@@ -254,7 +230,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   left: 0 !important;
   top: 0 !important;
   width: 100% !important;
-  height: calc(100% - 38px) !important;
+  height: 100% !important;
   transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
 }
 

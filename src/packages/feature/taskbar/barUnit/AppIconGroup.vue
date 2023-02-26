@@ -1,7 +1,7 @@
 <template>
     <div class="appicon-group">
         <template v-for="node in treeRoot.children" :key="node.value?.id">
-            <AppIcon v-if="node.value.windowInfo.isCreated" :windowNode="node" />
+            <AppIcon v-if="node.value.windowInfo.isCreated" :windowNode="node.value" />
         </template>
     </div>
 </template>

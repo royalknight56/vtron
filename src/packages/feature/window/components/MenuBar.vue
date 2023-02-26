@@ -1,5 +1,5 @@
 <template>
-  <div class="menubar">
+  <div class="menubar" @dblclick="handleEvent('max')">
     <div class="menubar-left">
       <div class="menubar-logo">
         <img draggable="false" :src="browserWindow.windowInfo.icon" />
@@ -12,12 +12,14 @@
           <path d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z" />
         </svg>
       </div>
-      <div class="menubar-item" @click="handleEvent('max')">
-        <svg v-if="browserWindow.windowInfo.isMaximize" class="menubar-icon" viewBox="0 0 1024 1024">
+      <div v-if="browserWindow.windowInfo.isMaximize" class="menubar-item" @click="handleEvent('max')">
+        <svg class="menubar-icon" viewBox="0 0 1024 1024">
           <path
             d="M959.72 0H294.216a63.96 63.96 0 0 0-63.96 63.96v127.92H64.28A63.96 63.96 0 0 0 0.32 255.84V959.4a63.96 63.96 0 0 0 63.96 63.96h703.56a63.96 63.96 0 0 0 63.96-63.96V792.465h127.92a63.96 63.96 0 0 0 63.96-63.96V63.96A63.96 63.96 0 0 0 959.72 0zM767.84 728.505V959.4H64.28V255.84h703.56z m189.322 0H831.8V255.84a63.96 63.96 0 0 0-63.96-63.96H294.216V63.96H959.72z" />
         </svg>
-        <svg v-else class="menubar-icon" viewBox="0 0 1024 1024">
+      </div>
+      <div v-else class="menubar-item" @click="handleEvent('max')">
+        <svg class="menubar-icon" viewBox="0 0 1024 1024">
           <path
             d="M926.45937303 97.54062697v828.2973677H97.54062697V97.54062697h828.91874606m4.97102697-77.6722963h-838.8608c-39.7682157 0-72.07989097 32.31167525-72.07989097 72.07989096v839.48217837c0 39.7682157 32.31167525 72.07989097 72.07989097 72.07989097h839.48217837c39.7682157 0 72.07989097-32.31167525 72.07989096-72.07989097v-838.8608c0-40.38959408-32.31167525-72.70126933-72.70126933-72.70126933 0.62137837 0 0 0 0 0z" />
         </svg>
@@ -39,12 +41,17 @@ let props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
 }>();
 function handleEvent(event: string) {
+  console.log(event)
   switch (event) {
     case 'min':
       props.browserWindow.minimize();
       break;
     case 'max':
-      props.browserWindow.maximize();
+      if(props.browserWindow.windowInfo.isMaximize) {
+        props.browserWindow.unmaximize();
+      } else {
+        props.browserWindow.maximize();
+      }
       break;
     case 'close':
       props.browserWindow.close();
@@ -109,6 +116,7 @@ function handleEvent(event: string) {
       display: inline;
       padding: 0 10px;
       cursor: pointer;
+
       .menubar-icon {
         width: var(--menu-bar-button-size);
         height: var(--menu-bar-button-size);

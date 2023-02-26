@@ -6,7 +6,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { useRootState } from '../state/Root';
+import { useRootState } from '@packages/feature/state/Root';
 import { Tree } from "@packages/util/Tree"
 import WindowNode from './WindowNode.vue';
 

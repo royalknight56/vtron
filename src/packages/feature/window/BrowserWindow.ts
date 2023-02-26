@@ -3,8 +3,9 @@ import { useRootState } from "../state/Root";
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
 // implements BrowserWindowModel
 interface BrowserWindowConstructorOptions {
-    title?: string
-    content?: ReturnType<typeof defineComponent>
+    title: string
+    content: ReturnType<typeof defineComponent>,
+    icon: string
 }
 interface WindowInfo {
     title: string
@@ -16,14 +17,13 @@ interface WindowInfo {
     isMaximize: boolean
     istop: boolean
     isCreated: boolean
+    icon: string
 }
 class BrowserWindow {
     windowInfo: WindowInfo
     private _option: Partial<BrowserWindowConstructorOptions>
     id: number
     content?: DefineComponent
-    [index: string]: any
-
     constructor(option?: Partial<BrowserWindowConstructorOptions>, parent?: BrowserWindow) {
         this._option = option || {};
         this.content = markRaw(this._option.content);
@@ -41,9 +41,9 @@ class BrowserWindow {
             isMaximize: false,
             istop: false,
             isCreated: false,
+            icon: ""
         }, this._option));
         rootState.system.windowTree.addChild(this);
-        console.log(this.windowInfo)
     }
     moveTop() {// 窗口置顶
         let rootState = useRootState();
@@ -57,6 +57,16 @@ class BrowserWindow {
     show(){
         this.windowInfo.isCreated = true;
         this.moveTop();
+    }
+    maximize() {// 最大化窗口
+        this.windowInfo.isMaximize = true;
+    }
+    minimize(){// 最小化窗口
+        this.windowInfo.isCreated = false;
+    }
+    close(){// 关闭窗口
+        // TODO:
+        this.windowInfo.isCreated = false;
     }
     /*
     private getWinInner() {

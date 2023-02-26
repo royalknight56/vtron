@@ -10,21 +10,11 @@
     topwin: istop,
     noframes: !browserWindow.frame, transparent: browserWindow.transparent
   }" -->
-  <div class="wintmp_outer dragwin"
-  :class="{
+  <div class="wintmp_outer dragwin" :class="{
     topwin: istop,
-  }"
-   :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus" 
-   ref="$win_outer">
+  }" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus" ref="$win_outer">
     <div class="wintmp_uper" @dblclick="maxWindow()" @contextmenu.prevent="uperRightClick">
-      <div class="wintmp_left">
-        <div class="wintmp_logo">
-          <img draggable="false" :src="browserWindow.icon" />
-        </div>
-        <div class="wintmp_title">{{ browserWindow.title }}</div>
-      </div>
-      <!-- <Statebar @buttonEvent="handelButtonEvent" :isMaximize="isMaximize" :resizable="resizable" :wininfo="wininfo">
-      </Statebar> -->
+      <MenuBar :browser-window="browserWindow"></MenuBar>
     </div>
     <div class="wintmp_main" :class="{ resizeing: resizemode != 'null' }" @mousedown.stop="predown"
       @touchstart.stop.passive="predown">
@@ -57,7 +47,7 @@
 </template>
 <script lang="ts" setup>
 import { inject, provide, ref, watch } from "vue";
-import { onMounted, computed,UnwrapNestedRefs } from "vue";
+import { onMounted, computed, UnwrapNestedRefs } from "vue";
 // import type { PropType } from "vue";
 //   import { WindowInfo, defaultWinInfo } from "@/packages/window/libs/DragWindow/option";
 import { DragElement } from "@packages/feature/window/dom/DragElement";
@@ -65,17 +55,16 @@ import { ScaleElement } from "@packages/feature/window/dom/ScaleElement";
 // import Statebar from "@/packages/window/structure/windowContent/statebarButton.vue";
 // import WindowInner from "@/packages/window/structure/windowContent/windowInner.vue";
 import { BrowserWindow } from '@packages/feature/window/BrowserWindow';
+import MenuBar from "./components/MenuBar.vue";
 
 let props = defineProps<{
-    browserWindow: UnwrapNestedRefs<BrowserWindow>
+  browserWindow: UnwrapNestedRefs<BrowserWindow>
 }>()
 
 let browserWindow = props.browserWindow;
 let windowInfo = browserWindow.windowInfo;
 // 传递windowid
 provide("browserWindow", browserWindow);
-
-console.log(browserWindow)
 
 let winStatus = browserWindow.id;
 const componentKey = ref<Number>(1);
@@ -222,7 +211,6 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 }
 </style>
 <style scoped lang="scss">
-@import "@/packages/main.css";
 
 .wintmp_outer {
   position: absolute;
@@ -238,46 +226,6 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   flex-direction: column;
   box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
     0 7px 19px rgb(0 0 0 / 58%);
-
-  .wintmp_uper {
-    cursor: default;
-    user-select: none;
-    flex-shrink: 0;
-    position: relative;
-    top: 0;
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
-    font-weight: 100;
-    color: rgb(51, 51, 51);
-    overflow: hidden;
-
-    .wintmp_left {
-      display: flex;
-      text-align: center;
-      /* justify-content: center; */
-      align-items: center;
-
-      .wintmp_title {
-        padding: 0 10px;
-        color: black;
-        font-family: "Segoe UI", Tahoma, sans-serif;
-        font-weight: 400;
-        font-size: 12px;
-        display: inline;
-        padding: 0 10px;
-      }
-
-      .wintmp_logo {
-        height: 24px;
-        width: 30px;
-
-        img {
-          width: 18px;
-        }
-      }
-    }
-  }
 
   .wintmp_main {
     position: relative;

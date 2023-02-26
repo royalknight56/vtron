@@ -30,7 +30,8 @@ onMounted(() => {
         name: '测试按钮',
         icon: brow,
         window: new BrowserWindow({
-          content:TestButton
+          content:TestButton,
+          icon: brow,
         })
       });
     }

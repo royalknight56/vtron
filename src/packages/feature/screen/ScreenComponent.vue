@@ -1,5 +1,5 @@
 <template>
-    <div class="screen">
+    <div class="screen" @contextmenu.prevent="">
         <template v-if="rootState.system.state==SystemStateEnum.close">
             <CloseDesktop></CloseDesktop>
         </template>
@@ -24,7 +24,9 @@ let rootState = useRootState();
 <style lang="scss" scoped>
 @import "@/packages/root.scss";
 .screen{
+    position: relative;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 </style>

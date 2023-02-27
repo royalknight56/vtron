@@ -28,10 +28,8 @@ function openapp(item: UnwrapNestedRefs<WinApp>) {
     .desk-item {
         width: var(--desk-item-size);
         height: var(--desk-item-size);
-        // background-color: #e58220;
+        font-size: var(--ui-font-size);
         margin: 6px;
-        // padding: 10px;
-
         .desk-item_img {
             width: 60%;
             height: 60%;
@@ -44,7 +42,7 @@ function openapp(item: UnwrapNestedRefs<WinApp>) {
         }
     }
     .desk-item:hover{
-        background-color: #e58220;
+        background-color: #3bdbff4c;
     }
 }
 </style>

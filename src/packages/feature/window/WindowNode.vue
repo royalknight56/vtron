@@ -1,8 +1,11 @@
 <template>
     <div class="window-node">
-        <div class="window-self" v-if="windowNode.value.windowInfo.isCreated">
-            <WindowTemplate :browserWindow="windowNode.value"></WindowTemplate>
-        </div>
+        <Transition name="window-animate">
+            <div class="window-self" v-if="windowNode.value.windowInfo.isCreated">
+                <WindowTemplate :browserWindow="windowNode.value"></WindowTemplate>
+            </div>
+        </Transition>
+
         <div class="window-children">
             <WindowNode v-for="node in windowNode.children" :key="node.value?.id" :windowNode="node" />
         </div>
@@ -21,5 +24,14 @@ let props = defineProps<{
 
 </script>
 <style lang="scss" scoped>
+.window-animate-enter-active,
+.window-animate-leave-active {
+    transition: all 0.1s ease;
+}
+.window-animate-enter-from,
+.window-animate-leave-to{
+    opacity: 0;
+}
+
 
 </style>

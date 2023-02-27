@@ -13,7 +13,7 @@ import AppIconGroup from '@packages/feature/taskbar/barUnit/AppIconGroup.vue';
 .taskbar{
     width: 100%;
     height:var(--bar-height);
-    background-color: #000;
+    background-color: var(--color-gray);
     display: flex;
 }
 </style>

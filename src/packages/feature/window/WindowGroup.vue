@@ -14,5 +14,8 @@ let rootState = useRootState();
 rootState.system.windowTree;
 </script>
 <style lang="scss" scoped>
-
+.window-node{
+    position: relative;
+    z-index: 3;
+}
 </style>

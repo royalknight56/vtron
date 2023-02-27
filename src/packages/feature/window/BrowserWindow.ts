@@ -74,10 +74,10 @@ class BrowserWindow {
     }
 
     private getWinInner() {
-        // TODO: 获取的是系统的大小
+        let rootState = useRootState();
         return {
-            width: this.windowInfo.width,
-            height: this.windowInfo.height
+            width: rootState.system.info.screenWidth,
+            height: rootState.system.info.screenHeight
         }
     }
     private makeWindowNotOverSize() {// 使窗口不超过屏幕大小

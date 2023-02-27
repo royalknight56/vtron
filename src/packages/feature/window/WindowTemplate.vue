@@ -57,6 +57,7 @@ import { ScaleElement } from "@packages/feature/window/dom/ScaleElement";
 // import WindowInner from "@/packages/window/structure/windowContent/windowInner.vue";
 import { BrowserWindow } from '@packages/feature/window/BrowserWindow';
 import MenuBar from "./components/MenuBar.vue";
+import { emitEvent } from "../event";
 
 let props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>
@@ -73,6 +74,7 @@ const componentKey = ref<Number>(1);
 
 function predown() {
   browserWindow.moveTop();
+  emitEvent("window.content.click", browserWindow);
 }
 
 

@@ -1,6 +1,6 @@
 <template>
     <div class="desktop">
-        <div class="userarea"  @mousedown="backgroundDown">
+        <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown.left="backgroundDown">
             <DeskItem class="userarea-upper zhighher"></DeskItem>
             <DesktopBackground class="userarea-upper"></DesktopBackground>
             <WindowGroup></WindowGroup>
@@ -21,7 +21,24 @@ import ContextMenu from '../contextMenu/ContextMenu.vue';
 function backgroundDown(e: MouseEvent) {
     emitEvent('desktop.background.leftClick', e);
 }
-
+function handleRightClick(e: MouseEvent) {
+    e.preventDefault();
+    emitEvent('desktop.background.rightClick', {
+        mouse: e,
+        menuList: [
+            {
+                name: '新建',
+                click: () => {
+                }
+            },
+            {
+                name: '粘贴',
+                click: () => {
+                }
+            }
+        ]
+    });
+}
 </script>
 <style lang="scss" scoped>
 .desktop {
@@ -30,14 +47,17 @@ function backgroundDown(e: MouseEvent) {
     display: flex;
     flex-direction: column;
     flex-grow: 0;
-    .zhighher{
+
+    .zhighher {
         z-index: 2;
     }
+
     .userarea {
         flex: 1;
         position: relative;
         overflow: hidden;
-        .userarea-upper{
+
+        .userarea-upper {
             position: absolute;
             top: 0;
             left: 0;

@@ -1,5 +1,5 @@
 <template>
-  <div class="menubar" @dblclick="handleEvent('max')">
+  <div class="menubar" @dblclick="handleEvent('max')" @contextmenu.stop="handleRightClick">
     <div class="menubar-left">
       <div class="menubar-logo">
         <img draggable="false" :src="browserWindow.windowInfo.icon" />
@@ -37,17 +37,17 @@
 <script lang="ts" setup>
 import { BrowserWindow } from '../BrowserWindow';
 import { UnwrapNestedRefs } from 'vue';
+import { emitEvent } from '../../event';
 let props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
 }>();
 function handleEvent(event: string) {
-  console.log(event)
   switch (event) {
     case 'min':
       props.browserWindow.minimize();
       break;
     case 'max':
-      if(props.browserWindow.windowInfo.isMaximize) {
+      if (props.browserWindow.windowInfo.isMaximize) {
         props.browserWindow.unmaximize();
       } else {
         props.browserWindow.maximize();
@@ -57,6 +57,13 @@ function handleEvent(event: string) {
       props.browserWindow.close();
       break;
   }
+}
+function handleRightClick(e: MouseEvent) {
+  e.preventDefault();
+  emitEvent('window.menubar.rightclick', {
+    mouse: e,
+    window: props.browserWindow
+  })
 }
 </script>
 <style lang="scss" scoped>

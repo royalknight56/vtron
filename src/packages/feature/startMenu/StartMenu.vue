@@ -9,7 +9,7 @@
     --startmenu-height: 400px;
     width: var(--startmenu-width);
     height: var(--startmenu-height);
-    background-color: #20dbe5;
+    background-color: var(--color-gray);
     z-index: 90;
 }
 </style>

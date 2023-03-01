@@ -14,12 +14,21 @@ function emitEvent(event: string, data?: any) {
     });
     eventer.emit('system', event, data);
 }
-function mountEvent(event: string, callback: (source: string, data: any) => void) {
-    return eventer.on(event, callback);
+function mountEvent(event: string[], callback: (source: string, data: any) => void): void
+function mountEvent(event: string, callback: (source: string, data: any) => void): void
+function mountEvent(event: string | string[], callback: (source: string, data: any) => void): void {
+    if (Array.isArray(event)) {
+        event.forEach((item) => {
+            mountEvent(item, callback);
+        });
+        return;
+    } else {
+        eventer.on(event, callback);
+    }
 }
-function redirectEvent(source:string,target:string) {
-    mountEvent(source,(source:string,data:any)=>{
-        emitEvent(target,data);
+function redirectEvent(source: string, target: string) {
+    mountEvent(source, (source: string, data: any) => {
+        emitEvent(target, data);
     });
 }
 export {

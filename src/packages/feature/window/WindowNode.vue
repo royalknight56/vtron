@@ -1,15 +1,8 @@
 <template>
-    <div class="window-node">
-        <Transition name="window-animate">
-            <div class="window-self" v-if="windowNode.value.windowInfo.isCreated">
-                <WindowTemplate :browserWindow="windowNode.value"></WindowTemplate>
-            </div>
-        </Transition>
-
-        <div class="window-children">
-            <WindowNode v-for="node in windowNode.children" :key="node.value?.id" :windowNode="node" />
-        </div>
-    </div>
+    <Transition name="window-animate">
+        <WindowTemplate v-if="windowNode.value.windowInfo.isCreated" :browserWindow="windowNode.value"></WindowTemplate>
+    </Transition>
+    <WindowNode v-for="node in windowNode.children" :key="node.value?.id" :windowNode="node" />
 </template>
 <script lang="ts" setup>
 import { Tree } from '@/packages/util/Tree';
@@ -28,10 +21,9 @@ let props = defineProps<{
 .window-animate-leave-active {
     transition: all 0.1s ease;
 }
+
 .window-animate-enter-from,
-.window-animate-leave-to{
+.window-animate-leave-to {
     opacity: 0;
 }
-
-
 </style>

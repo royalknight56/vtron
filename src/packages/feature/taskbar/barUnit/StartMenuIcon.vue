@@ -1,12 +1,13 @@
 <template>
     <div class="startmenuicon" @click.stop="emitClick">
-
+        <img class="startmenuicon-img" :src="winimg">
     </div>
     <Transition name="startmenu">
         <StartMenu v-if="isStartmenuShow" class="startmenu"></StartMenu>
     </Transition>
 </template>
 <script lang="ts" setup>
+import winimg from "@/assets/win.png"
 import WinLogo from "@/packages/components/WinLogo.vue";
 import { emitEvent, mountEvent } from "@packages/feature/event";
 import { ref } from "vue";
@@ -25,9 +26,18 @@ function emitClick(e: MouseEvent) {
 </script>           
 <style lang="scss" scoped>
 .startmenuicon {
-    width: var(--bar-height);
+    width: calc(var(--bar-height) * 1.5);
     height: var(--bar-height);
     background-color: var(--color-gray);
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.startmenuicon-img {
+    // width: 50%;
+    height: 50%;
 }
 
 .startmenu {
@@ -38,19 +48,26 @@ function emitClick(e: MouseEvent) {
 
 .startmenuicon:hover {
     background-color: var(--color-gray-hover);
+
+    .startmenuicon-img {
+        opacity: 0.5;
+    }
+
 }
 
-.startmenu-enter-active{
+.startmenu-enter-active {
     transition: all 0.3s ease;
 }
+
 .startmenu-leave-active {
     transition: all 0.05s;
 }
 
-.startmenu-enter-from{
+.startmenu-enter-from {
     transform: translateY(50px);
     opacity: 0;
 }
+
 .startmenu-leave-to {
     transform: translateY(350px);
     opacity: 0;

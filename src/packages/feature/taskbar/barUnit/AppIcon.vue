@@ -10,11 +10,31 @@ import { BrowserWindow } from '../../window/BrowserWindow';
 let props = defineProps<{
     windowNode:UnwrapNestedRefs<BrowserWindow>;
 }>();
-function handleRightClick(){
+function handleRightClick(e:MouseEvent){
     emitEvent('contextMenu.show', {
         x: 0,
         y: 0,
-        windowNode: props.windowNode
+        mouse: e,
+        menuList: [
+            {
+                name: '关闭',
+                click: () => {
+                    props.windowNode.close();
+                }
+            },
+            {
+                name: '最小化',
+                click: () => {
+                    props.windowNode.minimize();
+                }
+            },
+            {
+                name: '最大化',
+                click: () => {
+                    props.windowNode.maximize();
+                }
+            }
+        ]
     });
 }
 </script>
@@ -22,13 +42,15 @@ function handleRightClick(){
 .appicon{
     width: var(--bar-height);
     height: var(--bar-height);
-    background-color: #2de520;
     display: flex;
     justify-content: center;
     align-items: center;
     img{
-        width: 80%;
-        height: 80%;
+        width: 60%;
+        height: 60%;
     }
+}
+.appicon:hover{
+    background-color: var(--color-gray-hover);
 }
 </style>

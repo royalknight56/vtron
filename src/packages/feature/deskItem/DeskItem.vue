@@ -24,6 +24,7 @@ function openapp(item: UnwrapNestedRefs<WinApp>) {
     flex-direction: column;
     flex-wrap: wrap;
     height: 100%;
+    user-select: none;
 
     .desk-item {
         width: var(--desk-item-size);

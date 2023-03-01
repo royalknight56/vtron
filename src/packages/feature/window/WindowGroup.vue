@@ -1,9 +1,5 @@
 <template>
-    <div class="window-node">
-        <div class="window-children">
-            <WindowNode v-for="node in rootState.system.windowTree.children" :key="node.value?.id" :windowNode="node" />
-        </div>
-    </div>
+    <WindowNode v-for="node in rootState.system.windowTree.children" :key="node.value?.id" :windowNode="node" />
 </template>
 <script lang="ts" setup>
 import { useRootState } from '@packages/feature/state/Root';

@@ -19,6 +19,7 @@ export type RootState =UnwrapNestedRefs<{
         state:SystemStateEnum;
         apps:WinApp[];
         windowTree:Tree<BrowserWindow>,
+        windowOrder:Array<BrowserWindow>,
         winnum:number;
         info:{
             screenWidth:number;

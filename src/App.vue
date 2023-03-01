@@ -17,7 +17,7 @@ import brow from "./assets/浏览器.png"
 import TestButton from "./apps/TestButton.vue"
 // import app_vscode from "./apps/app_vscode.vue"
 // import APIVue from "./apps/API.vue"
-// import Mycom from "./apps/MyComputer.vue"
+import Mycom from "./apps/MyComputer.vue"
 
 import { onMounted, reactive, ref } from "vue";
 import { System } from "./packages/plug";
@@ -25,12 +25,20 @@ import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
 
 onMounted(() => {
   new System({}).whenReady().then((system) => {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
       system.addApp({
         name: '测试按钮',
         icon: brow,
         window: new BrowserWindow({
           content:TestButton,
+          icon: brow,
+        })
+      });
+      system.addApp({
+        name: 'Mycom',
+        icon: brow,
+        window: new BrowserWindow({
+          content:Mycom,
           icon: brow,
         })
       });

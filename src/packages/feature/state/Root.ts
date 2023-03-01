@@ -9,6 +9,7 @@ const rootState:RootState = reactive({
         state:SystemStateEnum.close,
         apps:[],
         windowTree:new Tree<BrowserWindow>(),
+        windowOrder:Array<BrowserWindow>(),
         winnum:0,
         info:{
             screenWidth:window?.innerWidth||0,

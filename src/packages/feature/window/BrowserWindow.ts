@@ -2,6 +2,12 @@ import { defineComponent, nextTick, reactive, DefineComponent, markRaw } from "v
 import { useRootState } from "../state/Root";
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
 // implements BrowserWindowModel
+const enum WindowStateEnum {
+    normal = 'normal',
+    minimize = 'minimize',
+    maximize = 'maximize',
+    fullscreen = 'fullscreen'
+}
 interface BrowserWindowConstructorOptions {
     title: string
     content: ReturnType<typeof defineComponent>,
@@ -14,14 +20,18 @@ interface WindowInfo {
     x: number
     y: number
     resizable: boolean
-    isMaximize: boolean
+    state: WindowStateEnum
     istop: boolean
+    zindex: number
     isCreated: boolean
     icon: string
 }
 class BrowserWindow {
     windowInfo: WindowInfo
     private _option: Partial<BrowserWindowConstructorOptions>
+    private _builtin: {
+        previousState: WindowStateEnum
+    }
     id: number
     content?: DefineComponent
     constructor(option?: Partial<BrowserWindowConstructorOptions>, parent?: BrowserWindow) {
@@ -38,12 +48,20 @@ class BrowserWindow {
             x: 0,
             y: 0,
             resizable: true,
-            isMaximize: false,
+            state: WindowStateEnum.normal,
             istop: false,
+            zindex: 0,
             isCreated: false,
             icon: ""
         }, this._option));
         rootState.system.windowTree.addChild(this);
+        rootState.system.windowOrder.push(this);
+
+        this.windowInfo.zindex = rootState.system.windowTree.findIndex(this);
+        this._builtin = {
+            previousState: this.windowInfo.state
+        }
+
     }
     moveTop() {// 窗口置顶
         let rootState = useRootState();
@@ -53,26 +71,40 @@ class BrowserWindow {
             tree.removeChild(node);
             tree.addChild(this);
         }
+        this.windowInfo.zindex =10 + useRootState().system.windowTree.findIndex(this);
     }
-    show(){
+    show() {
         this.windowInfo.isCreated = true;
+        this.windowInfo.zindex =10 + useRootState().system.windowTree.findIndex(this);
         this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         this.moveTop();
     }
     maximize() {// 最大化窗口
-        this.windowInfo.isMaximize = true;
+        this._setState(WindowStateEnum.maximize);
     }
     unmaximize() {// 取消最大化窗口
-        this.windowInfo.isMaximize = false;
+        this._setState(WindowStateEnum.normal);
     }
-    minimize(){// 最小化窗口
-        this.windowInfo.isCreated = false;
+    minimize() {// 最小化窗口
+        this._setState(WindowStateEnum.minimize);
     }
-    close(){// 关闭窗口
+    /**
+     * Restores the window from minimized state to its previous state.
+     */
+    restore() {
+        this.windowInfo.state = this._builtin.previousState;
+    }
+    close() {// 关闭窗口
         // TODO:
         this.windowInfo.isCreated = false;
+        useRootState().system.windowOrder.splice(useRootState().system.windowOrder.findIndex((val)=>{
+            return val.id == this.id;
+        }), 1);
     }
-
+    private _setState(state: WindowStateEnum) {
+        this._builtin.previousState = this.windowInfo.state;
+        this.windowInfo.state = state;
+    }
     private getWinInner() {
         let rootState = useRootState();
         return {
@@ -206,5 +238,6 @@ class BrowserWindow {
     */
 }
 export {
-    BrowserWindow
+    BrowserWindow,
+    WindowStateEnum
 }

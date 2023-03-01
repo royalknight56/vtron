@@ -12,7 +12,9 @@
   }" -->
   <div class="wintmp_outer dragwin" :class="{
     topwin: istop,
-    max: windowInfo.isMaximize,
+    max: windowInfo.state == WindowStateEnum.maximize,
+    min: windowInfo.state == WindowStateEnum.minimize,
+    fullscreen: windowInfo.state == WindowStateEnum.fullscreen,
   }" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus" ref="$win_outer">
     <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
       <MenuBar :browser-window="browserWindow"></MenuBar>
@@ -49,6 +51,8 @@
 <script lang="ts" setup>
 import { inject, provide, ref, watch } from "vue";
 import { onMounted, computed, UnwrapNestedRefs } from "vue";
+import { WindowStateEnum } from "./BrowserWindow";
+
 // import type { PropType } from "vue";
 //   import { WindowInfo, defaultWinInfo } from "@/packages/window/libs/DragWindow/option";
 import { DragElement } from "@packages/feature/window/dom/DragElement";
@@ -99,7 +103,7 @@ let customerStyle = ref<any>({});
 
 function onFocus(e: MouseEvent | TouchEvent): void {
   browserWindow?.moveTop()
-  if (isMaximize.value) {
+  if (windowInfo.state === WindowStateEnum.maximize) {
     if (e instanceof MouseEvent) {
       e.preventDefault();
       e.stopPropagation();
@@ -108,7 +112,6 @@ function onFocus(e: MouseEvent | TouchEvent): void {
 }
 
 let istop = computed(() => windowInfo.istop);
-let isMaximize = computed(() => windowInfo.isMaximize);
 
 /*
  *计算样式
@@ -123,7 +126,7 @@ onMounted(() => {
     zIndex: computed(() => {
       // TODO:
       // return browserWindow.zindex;
-      return 3;
+      return windowInfo.zindex;
 
     }),
     // display: computed(() => {
@@ -145,7 +148,7 @@ let $win_outer = ref(null);
 onMounted(() => {
   let dragAble = new DragElement($win_outer.value, windowInfo.x, windowInfo.y);
   watch(
-    () => windowInfo.isMaximize,
+    () => windowInfo.state === WindowStateEnum.maximize,
     (n, o) => {
       if (n) {
         dragAble.canDrag = false;
@@ -155,7 +158,7 @@ onMounted(() => {
     }
   );
   dragAble.onDrag((x, y) => {
-    if (!windowInfo.isMaximize) {
+    if (windowInfo.state !== WindowStateEnum.maximize) {
       windowInfo.x = x;
       windowInfo.y = y;
     }
@@ -234,6 +237,10 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   width: 100% !important;
   height: 100% !important;
   transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
+}
+
+.min {
+  display: none;
 }
 
 .fullscreen {

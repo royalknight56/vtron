@@ -1,6 +1,6 @@
 <template>
-    <div class="appicon" @contextmenu.prevent="handleRightClick">
-        <img :src="windowNode.windowInfo.icon" />
+    <div class="appicon" @contextmenu.prevent="handleRightClick" @click="handleClick">
+        <img draggable="false" :src="windowNode.windowInfo.icon" />
     </div>
 </template>
 <script lang="ts" setup>
@@ -37,6 +37,13 @@ function handleRightClick(e:MouseEvent){
         ]
     });
 }
+function handleClick(){
+    console.log(props.windowNode.id);
+    props.windowNode.moveTop();
+    if(props.windowNode.windowInfo.state === 'minimize'){
+        props.windowNode.restore();
+    }
+}
 </script>
 <style lang="scss" scoped>
 .appicon{
@@ -46,6 +53,7 @@ function handleRightClick(e:MouseEvent){
     justify-content: center;
     align-items: center;
     img{
+        user-select: none;
         width: 60%;
         height: 60%;
     }

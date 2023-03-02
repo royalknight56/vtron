@@ -8,15 +8,20 @@
 
 </template>
 <script lang="ts" setup>
-import { useRootState } from '../state/Root';
-import { BrowserWindow } from '../window/BrowserWindow';
-import { WinApp } from '@packages/type/type';
-import { UnwrapNestedRefs } from 'vue';
-let rootState = useRootState();
-let appList = rootState.system.apps;
-function openapp(item: UnwrapNestedRefs<WinApp>) {
-    item.window?.show();
-}
+
+import { useAppOpen } from '@/packages/hook/useAppOpen';
+
+const { openapp, appList } = useAppOpen('apps');
+
+// import { useRootState } from '../state/Root';
+// import { BrowserWindow } from '../window/BrowserWindow';
+// import { WinApp } from '@packages/type/type';
+// import { UnwrapNestedRefs } from 'vue';
+// let rootState = useRootState();
+// let appList = rootState.system.apps;
+// function openapp(item: UnwrapNestedRefs<WinApp>) {
+//     item.window?.show();
+// }
 </script>
 <style lang="scss" scoped>
 .desk-group {

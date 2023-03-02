@@ -22,13 +22,23 @@ class Tree<T>{
         }
         return undefined;
     }
+    // findIndex(value: T,filter:(value:T)=>boolean): number {
+    //     if(filter&&filter(value)===false) return -1;
+    //     if (this.value === value) return 0;
+    //     let index = 0;
+    //     for (let child of this.children) {
+    //         index++;
+    //         const node = child.findIndex(value,filter);
+    //         if (node !== -1) return index + node;
+    //     }
+    //     return -1;
+    // }
     findIndex(value: T): number {
-        if (this.value === value) return 0;
+        // nth children index
         let index = 0;
         for (let child of this.children) {
+            if (child.value === value) return index;
             index++;
-            const node = child.findIndex(value);
-            if (node !== -1) return index + node;
         }
         return -1;
     }

@@ -76,6 +76,12 @@ class System {
     addApp(options:WinApp) {
         this._rootState.system.apps.push(options);
     }
+    addMagnet(options:WinApp) {
+        this._rootState.system.magnet.push(options);
+    }
+    addMenuList(options:WinApp) {
+        this._rootState.system.menulist.push(options);
+    }
     /**
      * @description: 移除应用
      */

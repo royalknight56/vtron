@@ -17,7 +17,9 @@ export interface WinApp {
 export type RootState =UnwrapNestedRefs<{
     system: {
         state:SystemStateEnum;
-        apps:WinApp[];
+        apps:Array<WinApp>;
+        magnet:Array<WinApp>;
+        menulist:Array<WinApp>;
         windowTree:Tree<BrowserWindow>,
         windowOrder:Array<BrowserWindow>,
         winnum:number;

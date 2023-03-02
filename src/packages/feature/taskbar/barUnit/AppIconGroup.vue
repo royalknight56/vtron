@@ -20,6 +20,8 @@ let treeRoot = rootState.system.windowOrder;
     overflow-x: auto;
     overflow: hidden;
     scrollbar-width: none;
+    z-index: 41;
+    background-color: inherit;
     &::-webkit-scrollbar {
         display: none;
     }

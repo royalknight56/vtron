@@ -8,6 +8,9 @@ const rootState:RootState = reactive({
     system: {
         state:SystemStateEnum.close,
         apps:[],
+        // 磁贴:magnet
+        magnet:[],
+        menulist:[],
         windowTree:new Tree<BrowserWindow>(),
         windowOrder:Array<BrowserWindow>(),
         winnum:0,

@@ -81,6 +81,7 @@ function handleRightClick(e: MouseEvent) {
   overflow: hidden;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   .menubar-left {
     display: flex;
@@ -101,6 +102,9 @@ function handleRightClick(e: MouseEvent) {
     .menubar-logo {
       height: 24px;
       width: 30px;
+      align-items: center;
+      display: flex;
+      justify-content: center;
 
       img {
         width: 18px;

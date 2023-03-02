@@ -6,10 +6,6 @@
  Need CodeReview 
 -->
 <template>
-  <!-- :class="{
-    topwin: istop,
-    noframes: !browserWindow.frame, transparent: browserWindow.transparent
-  }" -->
   <div class="wintmp_outer dragwin" :class="{
     topwin: istop,
     max: windowInfo.state == WindowStateEnum.maximize,
@@ -57,7 +53,6 @@ import { WindowStateEnum } from "./BrowserWindow";
 //   import { WindowInfo, defaultWinInfo } from "@/packages/window/libs/DragWindow/option";
 import { DragElement } from "@packages/feature/window/dom/DragElement";
 import { ScaleElement } from "@packages/feature/window/dom/ScaleElement";
-// import Statebar from "@/packages/window/structure/windowContent/statebarButton.vue";
 // import WindowInner from "@/packages/window/structure/windowContent/windowInner.vue";
 import { BrowserWindow } from '@packages/feature/window/BrowserWindow';
 import MenuBar from "./components/MenuBar.vue";
@@ -125,17 +120,8 @@ onMounted(() => {
 
     zIndex: computed(() => {
       // TODO:
-      // return browserWindow.zindex;
       return windowInfo.zindex;
-
     }),
-    // display: computed(() => {
-    //   if (browserWindow.isVisible) {
-    //     return "";
-    //   } else {
-    //     return "none";
-    //   }
-    // }),
   };
 
 

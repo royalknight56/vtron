@@ -26,7 +26,7 @@ function emitClick(e: MouseEvent) {
 </script>           
 <style lang="scss" scoped>
 .startmenuicon {
-    width: calc(var(--bar-height) * 1.5);
+    width:var(--startmenu-icon-width);
     height: var(--bar-height);
     background-color: var(--color-gray);
     user-select: none;
@@ -56,7 +56,7 @@ function emitClick(e: MouseEvent) {
 }
 
 .startmenu-enter-active {
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .startmenu-leave-active {

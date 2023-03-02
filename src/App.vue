@@ -25,7 +25,7 @@ import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
 
 onMounted(() => {
   new System({}).whenReady().then((system) => {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 50; i++) {
       system.addApp({
         name: '测试按钮',
         icon: brow,
@@ -42,6 +42,23 @@ onMounted(() => {
           icon: brow,
         })
       });
+      system.addMagnet({
+        name: '测试Magnet',
+        icon: brow,
+        window: new BrowserWindow({
+          content:TestButton,
+          icon: brow,
+        })
+      });
+      system.addMenuList({
+        name: '测试MenuList',
+        icon: brow,
+        window: new BrowserWindow({
+          content:TestButton,
+          icon: brow,
+        })
+      });
+
     }
   });
   // for (let i = 0; i < 30; i++) {

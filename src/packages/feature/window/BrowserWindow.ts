@@ -1,5 +1,6 @@
 import { defineComponent, nextTick, reactive, DefineComponent, markRaw } from "vue";
 import { useRootState } from "../state/Root";
+import { Tree } from "@packages/util/Tree";
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
 // implements BrowserWindowModel
 const enum WindowStateEnum {
@@ -54,12 +55,9 @@ class BrowserWindow {
             isCreated: false,
             icon: ""
         }, this._option));
-        rootState.system.windowTree.addChild(this);
-        rootState.system.windowOrder.push(this);
 
-        this.windowInfo.zindex = rootState.system.windowTree.findIndex(this);
         this._builtin = {
-            previousState: this.windowInfo.state
+            previousState: this.windowInfo.state,
         }
 
     }
@@ -71,13 +69,29 @@ class BrowserWindow {
             tree.removeChild(node);
             tree.addChild(this);
         }
-        this.windowInfo.zindex =10 + useRootState().system.windowTree.findIndex(this);
+        this._setZindex();
+        const topWin = useRootState().system.topWindow;
+        useRootState().system.topWindow = this;
+        topWin?._setZindex();
     }
     show() {
-        this.windowInfo.isCreated = true;
-        this.windowInfo.zindex =10 + useRootState().system.windowTree.findIndex(this);
-        this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
+        if (!this.windowInfo.isCreated) {
+            let rootState = useRootState();
+            rootState.system.windowTree.addChild(this);
+            rootState.system.windowOrder.push(this);
+            this.windowInfo.isCreated = true;
+        }
+        this._setZindex();
+        this._makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         this.moveTop();
+    }
+    close() {// 关闭窗口
+        this.windowInfo.isCreated = false;
+        let rootState = useRootState();
+        rootState.system.windowOrder.splice(rootState.system.windowOrder.findIndex((val) => {
+            return val === this;
+        }), 1);
+        rootState.system.windowTree.removeNode(this);
     }
     maximize() {// 最大化窗口
         this._setState(WindowStateEnum.maximize);
@@ -88,35 +102,35 @@ class BrowserWindow {
     minimize() {// 最小化窗口
         this._setState(WindowStateEnum.minimize);
     }
+    isVisible() {// 判断窗口是否可见
+        return this.windowInfo.isCreated;
+    }
     /**
      * Restores the window from minimized state to its previous state.
      */
     restore() {
         this.windowInfo.state = this._builtin.previousState;
     }
-    close() {// 关闭窗口
-        // TODO:
-        this.windowInfo.isCreated = false;
-        useRootState().system.windowOrder.splice(useRootState().system.windowOrder.findIndex((val)=>{
-            return val.id == this.id;
-        }), 1);
+    _setZindex() {
+        this.windowInfo.zindex = 20 + useRootState().system.windowTree.findIndex(this,
+            (val: Tree<BrowserWindow>) => { return val.value.isVisible() });
     }
     private _setState(state: WindowStateEnum) {
         this._builtin.previousState = this.windowInfo.state;
         this.windowInfo.state = state;
     }
-    private getWinInner() {
+    private _getWinInner() {
         let rootState = useRootState();
         return {
             width: rootState.system.info.screenWidth,
             height: rootState.system.info.screenHeight
         }
     }
-    private makeWindowNotOverSize() {// 使窗口不超过屏幕大小
+    private _makeWindowNotOverSize() {// 使窗口不超过屏幕大小
         if (this.windowInfo) {
             if (this.windowInfo.resizable) {//只有可缩放窗口
                 let { x, y, width, height } = this.windowInfo;
-                let { width: winWidth, height: winHeight } = this.getWinInner();//获取窗口大小
+                let { width: winWidth, height: winHeight } = this._getWinInner();//获取窗口大小
 
                 if (winWidth == 0 && winHeight == 0) {
                     return
@@ -132,7 +146,7 @@ class BrowserWindow {
     }
     /*
     private afterRegister() {// 注册之后的操作
-        this.makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
+        this._makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         if (this.windowInfo.center) {
             this.center()
         }
@@ -203,7 +217,7 @@ class BrowserWindow {
     setSize(width: number, height: number) {// 设置窗口大小
         this.windowInfo.width = width;
         this.windowInfo.height = height;
-        this.makeWindowNotOverSize();
+        this._makeWindowNotOverSize();
         return this
     }
     getSize() {// 获取窗口大小

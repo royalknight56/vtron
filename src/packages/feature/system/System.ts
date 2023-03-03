@@ -95,6 +95,12 @@ class System {
             this._ready?.(this);
         })
     }
+    shutdown() {
+        this._rootState.system.state = SystemStateEnum.close;
+    }
+    reboot() {
+        this._rootState.system.state = SystemStateEnum.open;
+    }
 }
 function useSystem() {
     return GLOBAL_SYSTEM;

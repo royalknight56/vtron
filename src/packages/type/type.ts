@@ -23,6 +23,7 @@ export type RootState =UnwrapNestedRefs<{
         windowTree:Tree<BrowserWindow>,
         windowOrder:Array<BrowserWindow>,
         winnum:number;
+        topWindow:BrowserWindow|undefined;
         info:{
             screenWidth:number;
             screenHeight:number;

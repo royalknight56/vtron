@@ -12,6 +12,8 @@
 
 <script setup lang="ts">
 import brow from "./assets/浏览器.png"
+import testicon from "./assets/终端.png"
+
 // import Test3 from "./apps/Test3.vue"
 // import Browser from "./apps/Browser.vue"
 import TestButton from "./apps/TestButton.vue"
@@ -28,10 +30,10 @@ onMounted(() => {
     for (let i = 0; i < 50; i++) {
       system.addApp({
         name: '测试按钮',
-        icon: brow,
+        icon: testicon,
         window: new BrowserWindow({
           content:TestButton,
-          icon: brow,
+          icon: testicon,
         })
       });
       system.addApp({
@@ -44,10 +46,10 @@ onMounted(() => {
       });
       system.addMagnet({
         name: '测试Magnet',
-        icon: brow,
+        icon: testicon,
         window: new BrowserWindow({
           content:TestButton,
-          icon: brow,
+          icon: testicon,
         })
       });
       system.addMenuList({

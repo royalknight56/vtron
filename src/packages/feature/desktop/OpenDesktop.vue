@@ -47,6 +47,7 @@ function handleRightClick(e: MouseEvent) {
     display: flex;
     flex-direction: column;
     flex-grow: 0;
+    overflow: hidden;
 
     .zhighher {
         z-index: 2;

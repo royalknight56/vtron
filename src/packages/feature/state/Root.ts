@@ -13,6 +13,7 @@ const rootState:RootState = reactive({
         menulist:[],
         windowTree:new Tree<BrowserWindow>(),
         windowOrder:Array<BrowserWindow>(),
+        topWindow:undefined,
         winnum:0,
         info:{
             screenWidth:window?.innerWidth||0,

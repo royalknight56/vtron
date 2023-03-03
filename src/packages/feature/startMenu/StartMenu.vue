@@ -1,5 +1,5 @@
 <template>
-    <div class="startmenu">
+    <div class="startmenu" @click="handleClick">
         <div class="startmenu-item">
             <StartOption></StartOption>
         </div>
@@ -12,10 +12,13 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { emitEvent } from '../event';
 import Magnet from './components/Magnet.vue';
 import MenuList from './components/MenuList.vue';
 import StartOption from './components/StartOption.vue';
-
+function handleClick(e: MouseEvent) {
+    emitEvent('startMenu.click', e)
+}
 </script>
 <style lang="scss" scoped>
 .startmenu {

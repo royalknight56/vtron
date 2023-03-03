@@ -37,7 +37,7 @@ function emitClick(e: MouseEvent) {
 
 .startmenuicon-img {
     // width: 50%;
-    height: 50%;
+    height: 40%;
 }
 
 .startmenu {

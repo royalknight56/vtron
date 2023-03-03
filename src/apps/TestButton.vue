@@ -6,7 +6,7 @@
 <template>
     <div class="outer">
         <button @click="test()">Test</button>
-        <div class="testdiv">TEST</div>
+        <div class="screen">TEST</div>
         <div class="testright"></div>
     </div>
 </template>
@@ -22,7 +22,7 @@ function test(){
 
 </style>
 <style scoped>
-.testdiv{
+.screen{
     position: fixed;
     bottom: 0;
     right: 0i

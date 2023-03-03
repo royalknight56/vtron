@@ -33,6 +33,8 @@ const eventTranslateMap: {
     "window.content.click": ["startmenu.hidden", "contextMenu.hidden"],
     "startMenu.close.click": ["contextMenu.show"],
     'startMenu.click': ['contextMenu.hidden'],
+    'magnet.item.click': ['contextMenu.hidden', 'startmenu.hidden'],
+    'menulist.item.click': ['contextMenu.hidden', 'startmenu.hidden'],
 }
 function eventTransitCenter() {
     for (let key in eventTranslateMap) {

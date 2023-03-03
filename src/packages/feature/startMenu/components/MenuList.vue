@@ -1,6 +1,6 @@
 <template>
     <div class="magnet-group scroll-bar">
-        <div @dblclick="openapp(item)" class="magnet-item" v-for="item in appList" :key="item.name">
+        <div @click.stop="handle(item)" class="magnet-item" v-for="item in appList" :key="item.name">
             <img class="magnet-item_img" :src="item.icon" alt="">
             <span class="magnet-item_title">{{ item.name }}</span>
         </div>
@@ -8,8 +8,13 @@
 </template>
 <script lang="ts" setup>
 import { useAppOpen } from '@/packages/hook/useAppOpen';
+import { emitEvent } from '../../event';
 
 const { openapp, appList } = useAppOpen('menulist');
+function handle(item: any) {
+    emitEvent('menulist.item.click', item);
+    openapp(item);
+}
 </script>
 <style lang="scss" scoped>
 @import "@packages/assets/main.scss";

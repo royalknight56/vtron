@@ -33,10 +33,10 @@ export default defineConfig({
     outDir: "./distlib",
     lib: {
       formats: ["es","umd"],
-      entry: path.resolve(__dirname, 'src/plug.ts'),
+      entry: path.resolve(__dirname, 'src/packages/plug.ts'),
       name: 'Win10',
       fileName: (format) => {
-        return format === 'es' ? 'wui.mjs' : 'wui.umd.js'
+        return format === 'es' ? 'vtron.mjs' : 'vtron.umd.js'
       }
     },
     rollupOptions: {

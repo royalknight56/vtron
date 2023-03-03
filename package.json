@@ -5,14 +5,14 @@
     "distlib",
     "distlib/*.css"
   ],
-  "main": "distlib/wui.mjs",
-  "module": "distlib/wui.mjs",
-  "types": "distlib/src/plug.d.ts",
+  "main": "distlib/vtron.mjs",
+  "module": "distlib/vtron.mjs",
+  "types": "distlib/src/packages/plug.d.ts",
   "style": "distlib/style.css",
   "exports": {
     ".": {
-      "import": "./distlib/wui.mjs",
-      "require": "./distlib/wui.umd.js"
+      "import": "./distlib/vtron.mjs",
+      "require": "./distlib/vtron.umd.js"
     },
     "./distlib/style.css": {
       "import": "./distlib/style.css",

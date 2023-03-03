@@ -16,7 +16,6 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref } from "vue";
-import { system } from "../systeminit";
 
 let winId = <string>inject('windowId')
 let urlinput = ref('')

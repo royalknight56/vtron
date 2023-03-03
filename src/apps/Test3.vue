@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { ref,useAttrs,getCurrentInstance } from "vue";
 // import { DragWindow } from "../packages/window/libs/DragWindow";
-import { system } from "../systeminit";
+
 
 import icon from "../assets/浏览器.png"
 import TestLoadafterVue from "./TestLoadafter.vue";
@@ -40,29 +40,29 @@ function changeUrl() {
     urlsrc.value=urlinput.value
 }
 window.open=<any>function(e:any) { 
-} 
-let after = system.DragWindow({
-    title:'test',
-    icon,
-    content:TestLoadafterVue})
-setTimeout(()=>{
-    after.show()
-},1000)
-setTimeout(()=>{
-    // after.hide()
-    after.center()
-},2000)
+// } 
+// let after = system.DragWindow({
+//     title:'test',
+//     icon,
+//     content:TestLoadafterVue})
+// setTimeout(()=>{
+//     after.show()
+// },1000)
+// setTimeout(()=>{
+//     // after.hide()
+//     after.center()
+// },2000)
 
-setTimeout(()=>{
-    after.setPosition(0,0)
-},3000)
-setTimeout(()=>{
-    console.log(after.isNormal())
-    console.log(after.getPosition())
-},4000)
-setTimeout(()=>{
-    after.destroy()
-},10000)
+// setTimeout(()=>{
+//     after.setPosition(0,0)
+// },3000)
+// setTimeout(()=>{
+//     console.log(after.isNormal())
+//     console.log(after.getPosition())
+// },4000)
+// setTimeout(()=>{
+//     after.destroy()
+// },10000)
 
 </script>
 <style>

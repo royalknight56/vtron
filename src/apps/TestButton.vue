@@ -6,23 +6,23 @@
 <template>
     <div class="outer">
         <button @click="test()">Test</button>
-        <div class="testdiv">TEST</div>
+        <div class="screen">TEST</div>
         <div class="testright"></div>
     </div>
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
-import { system } from "../systeminit";
+// import { system } from "../systeminit";
 function test(){
     // console.log('test') 
-    system.Notify.notify('test',"testtest")
+    // system.Notify.notify('test',"testtest")
 }
 </script>
 <style>
 
 </style>
 <style scoped>
-.testdiv{
+.screen{
     position: fixed;
     bottom: 0;
     right: 0i

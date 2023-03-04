@@ -10,10 +10,10 @@ import { defineConfig } from 'vite';
 import path from 'path';
 import vue from '@vitejs/plugin-vue'
 import dts from "vite-plugin-dts"
-import { visualizer } from 'rollup-plugin-visualizer';
+// import { visualizer } from 'rollup-plugin-visualizer';
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), dts(),visualizer()],
+  plugins: [vue(), dts()],
   resolve: {
     alias: [
       {
@@ -21,20 +21,8 @@ export default defineConfig({
         replacement: path.resolve(__dirname, 'src')
       },
       {
-        find: "@structure",
-        replacement: path.resolve(__dirname, 'src/packages/window/structure')
-      },
-      {
-        find: "@builtin",
-        replacement: path.resolve(__dirname, 'src/packages/window/builtin')
-      },
-      {
-        find: "@state",
-        replacement: path.resolve(__dirname, 'src/packages/window/state')
-      },
-      {
-        find: "@libs",
-        replacement: path.resolve(__dirname, 'src/packages/window/libs')
+        find: "@packages",
+        replacement: path.resolve(__dirname, 'src/packages/')
       }
     ],
     dedupe: ['vue']
@@ -45,10 +33,10 @@ export default defineConfig({
     outDir: "./distlib",
     lib: {
       formats: ["es","umd"],
-      entry: path.resolve(__dirname, 'src/plug.ts'),
+      entry: path.resolve(__dirname, 'src/packages/plug.ts'),
       name: 'Win10',
       fileName: (format) => {
-        return format === 'es' ? 'wui.mjs' : 'wui.umd.js'
+        return format === 'es' ? 'vtron.mjs' : 'vtron.umd.js'
       }
     },
     rollupOptions: {

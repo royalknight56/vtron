@@ -1,18 +1,18 @@
 {
-  "name": "vue3-win10",
-  "version": "0.4.0",
+  "name": "vtron",
+  "version": "0.1.2",
   "files": [
     "distlib",
     "distlib/*.css"
   ],
-  "main": "distlib/wui.mjs",
-  "module": "distlib/wui.mjs",
-  "types": "distlib/src/plug.d.ts",
+  "main": "distlib/vtron.mjs",
+  "module": "distlib/vtron.mjs",
+  "types": "distlib/src/packages/plug.d.ts",
   "style": "distlib/style.css",
   "exports": {
     ".": {
-      "import": "./distlib/wui.mjs",
-      "require": "./distlib/wui.umd.js"
+      "import": "./distlib/vtron.mjs",
+      "require": "./distlib/vtron.umd.js"
     },
     "./distlib/style.css": {
       "import": "./distlib/style.css",
@@ -37,6 +37,7 @@
     "@types/rollup-plugin-visualizer": "^4.2.1",
     "@vitejs/plugin-vue": "^3.0.3",
     "@vue/compiler-sfc": "^3.2.20",
+    "rollup-plugin-typescript2": "^0.34.1",
     "rollup-plugin-visualizer": "^5.8.0",
     "sass": "^1.45.1",
     "typescript": "^4.6.4",

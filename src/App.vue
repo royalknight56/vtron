@@ -37,10 +37,10 @@ onMounted(() => {
         })
       });
       system.addApp({
-        name: 'Mycom',
+        name: '测试链接',
         icon: brow,
         window: new BrowserWindow({
-          content:Mycom,
+          content:"http://localhost:5173/",
           icon: brow,
         })
       });

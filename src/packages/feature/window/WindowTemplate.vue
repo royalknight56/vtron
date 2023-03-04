@@ -17,8 +17,7 @@
     </div>
     <div class="wintmp_main" :class="{ resizeing: resizemode != 'null' }" @mousedown.stop="predown"
       @touchstart.stop.passive="predown">
-      <component :is="browserWindow.content" :key="componentKey"></component>
-      <!-- <WindowInner :id="winID" :componentKey="componentKey"></WindowInner> -->
+      <WindowInner :content="browserWindow.content"></WindowInner>
     </div>
     <div class="right_border win_drag_border" :class="{ isChoseMode: resizemode == 'r' }" v-if="resizable"
       @mousedown.stop.prevent="startScale($event, 'r')" @touchstart.stop.passive="startScale($event, 'r')"></div>
@@ -48,7 +47,7 @@
 import { inject, provide, ref, watch } from "vue";
 import { onMounted, computed, UnwrapNestedRefs } from "vue";
 import { WindowStateEnum } from "./BrowserWindow";
-
+import WindowInner from "./components/WindowInner.vue";
 // import type { PropType } from "vue";
 //   import { WindowInfo, defaultWinInfo } from "@/packages/window/libs/DragWindow/option";
 import { DragElement } from "@packages/feature/window/dom/DragElement";

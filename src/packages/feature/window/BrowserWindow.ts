@@ -11,8 +11,12 @@ const enum WindowStateEnum {
 }
 interface BrowserWindowConstructorOptions {
     title: string
-    content: ReturnType<typeof defineComponent>,
+    content: ReturnType<typeof defineComponent>|string,
     icon: string
+    width: number
+    height: number
+    x: number
+    y: number
 }
 interface WindowInfo {
     title: string
@@ -34,10 +38,14 @@ class BrowserWindow {
         previousState: WindowStateEnum
     }
     id: number
-    content?: DefineComponent
+    content?: ReturnType<typeof defineComponent>|string
     constructor(option?: Partial<BrowserWindowConstructorOptions>, parent?: BrowserWindow) {
         this._option = option || {};
-        this.content = markRaw(this._option.content);
+        if(typeof this._option.content !== "string"){
+            this.content = markRaw(this._option.content);
+        }else{
+            this.content = this._option.content;
+        }
         let rootState = useRootState();
         this.id = rootState.system.winnum;
         rootState.system.winnum++;

@@ -15,6 +15,7 @@ export interface WinApp {
     window?: BrowserWindow
 }
 export type RootState =UnwrapNestedRefs<{
+    ref:HTMLElement|undefined;
     system: {
         state:SystemStateEnum;
         apps:Array<WinApp>;

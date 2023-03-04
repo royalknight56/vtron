@@ -21,7 +21,7 @@ import TestButton from "./apps/TestButton.vue"
 // import APIVue from "./apps/API.vue"
 import Mycom from "./apps/MyComputer.vue"
 
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { System } from "./packages/plug";
 import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
 

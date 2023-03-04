@@ -1,5 +1,5 @@
 <template>
-    <div class="screen" @contextmenu.prevent="">
+    <div class="screen" @contextmenu.prevent="" ref="screen">
         <template v-if="rootState.system.state==SystemStateEnum.close">
             <CloseDesktop></CloseDesktop>
         </template>
@@ -17,9 +17,13 @@ import OpenDesktop from "@/packages/feature/desktop/OpenDesktop.vue";
 import OpeningDesktop from "@/packages/feature/desktop/OpeningDesktop.vue";
 import { SystemStateEnum } from "@/packages/type/enum";
 import {useRootState} from "@/packages/feature/state/Root";
+import { onMounted, ref } from "vue";
 
 let rootState = useRootState();
-
+let screen = ref<HTMLElement>();
+onMounted(()=>{
+    rootState.ref = screen.value;
+})
 </script>
 <style lang="scss" scoped>
 @import "@/packages/root.scss";

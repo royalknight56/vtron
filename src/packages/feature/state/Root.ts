@@ -5,6 +5,7 @@ import { Tree } from "@packages/util/Tree"
 import { BrowserWindow } from "../window/BrowserWindow";
 
 const rootState:RootState = reactive({
+    ref:undefined,
     system: {
         state:SystemStateEnum.close,
         apps:[],

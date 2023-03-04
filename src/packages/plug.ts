@@ -1,12 +1,11 @@
-import { App } from "vue";
+import type { App } from "vue";
 import { ScreenComponentVue } from "@/packages/feature/screen/Screen"
-import { Plugin } from 'vue'
+// import { Plugin } from 'vue'
 
-let plug: Plugin = {
-    install: function (app: App): void {
+let plug = {
+    install: function (app:any,...options: any[]): any {
         app.component('Screen', ScreenComponentVue)
     },
-
 }
 export default plug;
 

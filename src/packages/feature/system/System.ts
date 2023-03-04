@@ -14,12 +14,18 @@ class System {
     private _eventer: Eventer;
     private _ready: ((value: System) => void) | null = null;
     private _error: ((reason: unknown) => void) | null = null;
+    ref!: HTMLElement;
     constructor(options?: SystemOptions) {
         this._options = this.initOptions(options);
         this._rootState = this.initRootState(options);
         this._eventer = this.initEvent(options);
         this.initApp(options);
         this.initSystem(options);
+
+        this.setRef(this._rootState.ref!);
+    }
+    setRef(ref: HTMLElement) {
+        this.ref = ref;
     }
     /**
      * @description: pure 初始化配置选项
@@ -73,13 +79,13 @@ class System {
     /**
      * @description: 添加应用
      */
-    addApp(options:WinApp) {
+    addApp(options:Partial<WinApp>) {
         this._rootState.system.apps.push(options);
     }
-    addMagnet(options:WinApp) {
+    addMagnet(options:Partial<WinApp>) {
         this._rootState.system.magnet.push(options);
     }
-    addMenuList(options:WinApp) {
+    addMenuList(options:Partial<WinApp>) {
         this._rootState.system.menulist.push(options);
     }
     /**
@@ -89,6 +95,9 @@ class System {
 
     }
     whenReady(): Promise<System> {
+        if(this._rootState.system.state === SystemStateEnum.open){
+            return Promise.resolve(this);
+        }
         return new Promise<System>((resolve, reject) => {
             this._ready = resolve;
             this._error = reject;

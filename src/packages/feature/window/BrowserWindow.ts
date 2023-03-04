@@ -9,60 +9,62 @@ const enum WindowStateEnum {
     maximize = 'maximize',
     fullscreen = 'fullscreen'
 }
+type BrowserWindowContent = ReturnType<typeof defineComponent> | string
 interface BrowserWindowConstructorOptions {
     title: string
-    content: ReturnType<typeof defineComponent>|string,
+    content: BrowserWindowContent,
     icon: string
     width: number
     height: number
     x: number
     y: number
-}
-interface WindowInfo {
-    title: string
-    width: number
-    height: number
-    x: number
-    y: number
+    center: boolean
     resizable: boolean
+}
+interface WindowInfo extends BrowserWindowConstructorOptions {
     state: WindowStateEnum
     istop: boolean
     zindex: number
     isCreated: boolean
-    icon: string
 }
+type BrowserWindowOption = Partial<Omit<BrowserWindowConstructorOptions,'content'>> & {content: BrowserWindowContent}
 class BrowserWindow {
+    public static defaultOption: Omit<BrowserWindowConstructorOptions, 'content'> = {
+        title: "新窗口",
+        width: 800,
+        height: 600,
+        icon: '',
+        x: 0,
+        y: 0,
+        center: false,
+        resizable: true,
+    }
+    public static defaultInfo: Omit<WindowInfo, keyof BrowserWindowConstructorOptions> = {
+        state: WindowStateEnum.normal,
+        istop: false,
+        zindex: 0,
+        isCreated: false,
+    }
     windowInfo: WindowInfo
-    private _option: Partial<BrowserWindowConstructorOptions>
+    private _option: BrowserWindowConstructorOptions
     private _builtin: {
         previousState: WindowStateEnum
     }
     id: number
-    content?: ReturnType<typeof defineComponent>|string
-    constructor(option?: Partial<BrowserWindowConstructorOptions>, parent?: BrowserWindow) {
-        this._option = option || {};
-        if(typeof this._option.content !== "string"){
+    content?: ReturnType<typeof defineComponent> | string
+    constructor(option?: BrowserWindowOption, parent?: BrowserWindow) {
+        this._option = Object.assign({}, BrowserWindow.defaultOption, option);
+
+        if (typeof this._option.content !== "string") {
             this.content = markRaw(this._option.content);
-        }else{
+        } else {
             this.content = this._option.content;
         }
         let rootState = useRootState();
         this.id = rootState.system.winnum;
         rootState.system.winnum++;
 
-        this.windowInfo = reactive(Object.assign({}, {
-            title: "新窗口",
-            width: 800,
-            height: 600,
-            x: 0,
-            y: 0,
-            resizable: true,
-            state: WindowStateEnum.normal,
-            istop: false,
-            zindex: 0,
-            isCreated: false,
-            icon: ""
-        }, this._option));
+        this.windowInfo = reactive(Object.assign({},BrowserWindow.defaultInfo,this._option));
 
         this._builtin = {
             previousState: this.windowInfo.state,
@@ -88,6 +90,9 @@ class BrowserWindow {
             rootState.system.windowTree.addChild(this);
             rootState.system.windowOrder.push(this);
             this.windowInfo.isCreated = true;
+            if (this._option.center) {
+                this._moveToCenter();
+            }
         }
         this._setZindex();
         this._makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
@@ -122,6 +127,11 @@ class BrowserWindow {
     _setZindex() {
         this.windowInfo.zindex = 20 + useRootState().system.windowTree.findIndex(this,
             (val: Tree<BrowserWindow>) => { return val.value.isVisible() });
+    }
+    private _moveToCenter() {// 移动到屏幕中心
+        let { width, height } = this._getWinInner();
+        this.windowInfo.x = (width - this.windowInfo.width) / 2;
+        this.windowInfo.y = (height - this.windowInfo.height) / 2;
     }
     private _setState(state: WindowStateEnum) {
         this._builtin.previousState = this.windowInfo.state;

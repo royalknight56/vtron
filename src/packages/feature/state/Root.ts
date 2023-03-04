@@ -12,6 +12,7 @@ const rootState:RootState = reactive({
         // 磁贴:magnet
         magnet:[],
         menulist:[],
+        notify:[],
         windowTree:new Tree<BrowserWindow>(),
         windowOrder:Array<BrowserWindow>(),
         topWindow:undefined,

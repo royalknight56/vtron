@@ -4,6 +4,7 @@ import { Tree } from "@packages/util/Tree";
 import { DefineComponent } from "vue";
 import { reactive, ref, UnwrapNestedRefs, watch } from "vue";
 import { SystemStateEnum } from "./enum";
+import { Notify } from "../feature/notification/Notification";
 export interface SystemOptions {
     logo?:"default"|string;
     backgroud?:string;
@@ -14,6 +15,7 @@ export interface WinApp {
     url?:string;
     window?: BrowserWindow
 }
+
 export type RootState =UnwrapNestedRefs<{
     ref:HTMLElement|undefined;
     system: {
@@ -21,6 +23,7 @@ export type RootState =UnwrapNestedRefs<{
         apps:Array<WinApp>;
         magnet:Array<WinApp>;
         menulist:Array<WinApp>;
+        notify:Array<Notify>;
         windowTree:Tree<BrowserWindow>,
         windowOrder:Array<BrowserWindow>,
         winnum:number;

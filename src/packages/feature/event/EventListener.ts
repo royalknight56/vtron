@@ -3,9 +3,6 @@ import { mountEvent, redirectEvent, emitEvent } from "./EventHook";
 import type { RootState } from "@/packages/type/type";
 import {useSystem} from "@packages/feature/system"
 function initEventListener() {
-    mountEvent("system", (source: string, e: any) => {
-        console.log(source);
-    });
     let rootState = useRootState();
     mountEvent("system.initSize", (source: string, e: any) => {
         refreshDesktopSize(rootState)

@@ -48,10 +48,12 @@ function handleEvent(event: string) {
       props.browserWindow.minimize();
       break;
     case 'max':
-      if (props.browserWindow.windowInfo.state === WindowStateEnum.maximize && props.browserWindow.isResizable()) {
-        props.browserWindow.unmaximize();
-      } else {
-        props.browserWindow.maximize();
+      if (props.browserWindow.isResizable()) {
+        if (props.browserWindow.windowInfo.state === WindowStateEnum.maximize) {
+          props.browserWindow.unmaximize();
+        } else {
+          props.browserWindow.maximize();
+        }
       }
       break;
     case 'close':

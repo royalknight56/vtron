@@ -25,6 +25,7 @@ let notifyGroup = useRootState().system.notify
     background-color: #fff;
     border-left: 1px solid #ccc;
     overflow-y: auto;
+    user-select: none;
     .notify-item {
         padding: 10px;
         border-bottom: 1px solid #ccc;

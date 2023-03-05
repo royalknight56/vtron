@@ -1,7 +1,7 @@
 <template>
     <div v-if="backgroundType === 'image'" class="background">
         <Transition name="fade">
-            <img v-show="loaded" @load="imgload" class="background_load" :src="background">
+            <img v-show="loaded" draggable="false" @load="imgload" class="background_load" :src="background">
         </Transition>
     </div>
     <div v-else class="background" :style="{ backgroundColor: background }">
@@ -42,6 +42,7 @@ function imgload() {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        user-select: none;
     }
 }
 

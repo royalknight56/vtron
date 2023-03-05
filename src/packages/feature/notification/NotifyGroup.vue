@@ -26,6 +26,7 @@ let notifyGroup = useRootState().system.notify
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    user-select: none;
     color: rgba(255, 255, 255, 0.845);
     .notify-item {
         width: var(--notify-width);

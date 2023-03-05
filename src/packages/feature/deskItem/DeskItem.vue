@@ -1,7 +1,7 @@
 <template>
     <div class="desk-group">
         <div @dblclick="openapp(item)" class="desk-item" v-for="item in appList" :key="item.name">
-            <img class="desk-item_img" :src="item.icon" alt="">
+            <img draggable="false" class="desk-item_img" :src="item.icon" alt="">
             <span class="desk-item_title">{{ item.name }}</span>
         </div>
     </div>

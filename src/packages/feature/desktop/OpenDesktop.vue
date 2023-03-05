@@ -1,5 +1,5 @@
 <template>
-    <div class="desktop">
+    <div class="desktop" >
         <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown.left="backgroundDown">
             <DeskItem class="userarea-upper zhighher"></DeskItem>
             <DesktopBackground class="userarea-upper"></DesktopBackground>

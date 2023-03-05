@@ -24,10 +24,13 @@ const rootState:RootState = reactive({
                 isCharging:false,
                 chargeLevel:0
             }
-        }
+        },
+        options:{}
+
     }
 })
 function initRootState(options:SystemOptions):RootState{
+    rootState.system.options = options;
     return rootState;
 }
 function useRootState():RootState{

@@ -20,7 +20,9 @@ import { System } from "./packages/plug";
 import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
 
 onMounted(() => {
-  new System({}).whenReady().then((system) => {
+  new System({
+    background:"https://source.unsplash.com/random/1920x1080"
+  }).whenReady().then((system) => {
     system.addApp({
       name: '测试按钮',
       icon: testicon,
@@ -62,7 +64,7 @@ onMounted(() => {
       })
     });
 
-    autoTestApp.show()
+    // autoTestApp.show()
   });
 })
 

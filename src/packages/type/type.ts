@@ -7,7 +7,7 @@ import { SystemStateEnum } from "./enum";
 import { Notify } from "../feature/notification/Notification";
 export interface SystemOptions {
     logo?:"default"|string;
-    backgroud?:string;
+    background?:string;
 }
 export interface WinApp {
     name?:string;
@@ -36,6 +36,7 @@ export type RootState =UnwrapNestedRefs<{
                 chargeLevel:number;
             },
             connection:number;
-        }
+        },
+        options:SystemOptions
     };
 }>

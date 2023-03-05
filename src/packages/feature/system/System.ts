@@ -33,9 +33,8 @@ class System {
     private initOptions(options?: SystemOptions) {
         let tempOptions = Object.assign({
             logo: "default",
-            background: "default"
+            background: "#3A98CE"
         }, options);
-        // TODO: 处理 backkground的纯色和图片
         return tempOptions;
     }
     /**

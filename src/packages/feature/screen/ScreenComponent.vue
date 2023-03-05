@@ -1,5 +1,5 @@
 <template>
-    <div class="screen" @contextmenu.prevent="" ref="screen">
+    <div class="screen" @contextmenu.prevent ref="screen">
         <template v-if="rootState.system.state==SystemStateEnum.close">
             <CloseDesktop></CloseDesktop>
         </template>

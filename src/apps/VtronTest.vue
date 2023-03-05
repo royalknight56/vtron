@@ -69,13 +69,13 @@ await nextStep(() => {
 },100)
 await nextStep(() => {
     props.window.maximize();
-},1000)
+},200)
 await nextStep(() => {
     props.window.restore();
 },100)
 await nextStep(() => {
     props.window.minimize();
-},1000)
+},200)
 await nextStep(() => {
     props.window.restore();
 },100)

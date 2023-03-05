@@ -2,8 +2,8 @@ import { initRootState } from "@/packages/feature/state/Root";
 import { SystemStateEnum } from "@/packages/type/enum"
 import { watch } from "vue";
 import { RootState, SystemOptions,WinApp } from "@/packages/type/type";
-import { initEventer, Eventer,initEventListener } from "@packages/feature/event";
-// import { RootState, SystemOptions } from "@/packages/type/type";
+import { initEventer, Eventer,initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
+
 let GLOBAL_SYSTEM: System | null = null;
 
 export type VtronPlugin = (system:System,rootState:RootState)=>void
@@ -118,6 +118,15 @@ class System {
     }
     reboot() {
         this._rootState.system.state = SystemStateEnum.open;
+    }
+    emitEvent(event: string, ...args: any[]) {
+        emitEvent(event, ...args);
+    }
+    mountEvent(event: string, callback: (...args: any[]) => void) {
+        mountEvent(event, callback);
+    }
+    register(type:'contextmenu'){
+
     }
     // 插件系统
     use(func:VtronPlugin):void{

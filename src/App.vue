@@ -28,6 +28,7 @@ onMounted(() => {
       icon: testicon,
       window: new BrowserWindow({
         content: TestButton,
+        title: "测试按钮",
         icon: testicon,
         center: true,
       })
@@ -38,6 +39,7 @@ onMounted(() => {
       icon: testicon,
       window: new BrowserWindow({
         content: TestButton,
+        title: "测试不可缩放",
         icon: testicon,
         center: true,
         resizable: false,
@@ -46,6 +48,7 @@ onMounted(() => {
 
     let autoTestApp = new BrowserWindow({
         content: VtronTest,
+        title: "Vtron自动测试",
         icon: testicon,
         center: true,
       })
@@ -59,6 +62,7 @@ onMounted(() => {
       icon: testicon,
       window: new BrowserWindow({
         content: "http://static.myim.online/moon/",
+        title: "看月亮",
         icon: testicon,
         center: true,
       })

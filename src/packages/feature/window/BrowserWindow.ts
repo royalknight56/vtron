@@ -27,7 +27,7 @@ interface WindowInfo extends BrowserWindowConstructorOptions {
     zindex: number
     isCreated: boolean
 }
-type BrowserWindowOption = Partial<Omit<BrowserWindowConstructorOptions,'content'>> & {content: BrowserWindowContent}
+type BrowserWindowOption = Partial<Omit<BrowserWindowConstructorOptions, 'content'>> & { content: BrowserWindowContent }
 class BrowserWindow {
     public static defaultOption: Omit<BrowserWindowConstructorOptions, 'content'> = {
         title: "新窗口",
@@ -51,6 +51,7 @@ class BrowserWindow {
         previousState: WindowStateEnum
     }
     id: number
+    children: Array<BrowserWindow> = []
     content?: ReturnType<typeof defineComponent> | string
     constructor(option?: BrowserWindowOption, parent?: BrowserWindow) {
         this._option = Object.assign({}, BrowserWindow.defaultOption, option);
@@ -64,7 +65,7 @@ class BrowserWindow {
         this.id = rootState.system.winnum;
         rootState.system.winnum++;
 
-        this.windowInfo = reactive(Object.assign({},BrowserWindow.defaultInfo,this._option));
+        this.windowInfo = reactive(Object.assign({}, BrowserWindow.defaultInfo, this._option));
 
         this._builtin = {
             previousState: this.windowInfo.state,
@@ -73,8 +74,9 @@ class BrowserWindow {
     }
 
     _setZindex() {
-        this.windowInfo.zindex = 20 + useRootState().system.windowTree.findIndex(this,
-            (val: Tree<BrowserWindow>) => { return val.value.isVisible() });
+        this.windowInfo.zindex = 20 +
+            useRootState().system.windowTree.findIndex(this,
+                (val: Tree<BrowserWindow>) => { return val.value.isVisible() });
     }
     private _setState(state: WindowStateEnum) {
         this._builtin.previousState = this.windowInfo.state;
@@ -108,15 +110,18 @@ class BrowserWindow {
     moveTop() {// 窗口置顶
         let rootState = useRootState();
         let tree = rootState.system.windowTree;
-        let node = tree.findNode(this);
-        if (node) {
-            tree.removeChild(node);
-            tree.addChild(this);
+        let treeNode = tree.findNode(this);
+        if (treeNode) {
+            tree.removeChild(treeNode.value);
         }
-        this._setZindex();
-        const topWin = useRootState().system.topWindow;
+        tree.addChild(this);
+        // this._setZindex();
         useRootState().system.topWindow = this;
-        topWin?._setZindex();
+        useRootState().system.windowTree.traverseBFS((val) => {
+            if(val.value.id!==undefined){
+                val.value._setZindex();
+            }
+        });
     }
     show() {
         if (!this.windowInfo.isCreated) {
@@ -128,7 +133,7 @@ class BrowserWindow {
                 this.center();
             }
         }
-        this._setZindex();
+        // this._setZindex();
         this._makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         this.moveTop();
     }
@@ -184,10 +189,10 @@ class BrowserWindow {
         let { width, height } = this._getWinInner();
         this.windowInfo.x = (width - this.windowInfo.width) / 2;
         this.windowInfo.y = (height - this.windowInfo.height) / 2;
-        if(this.windowInfo.x < 0){
+        if (this.windowInfo.x < 0) {
             this.windowInfo.x = 0;
         }
-        if(this.windowInfo.y < 0){
+        if (this.windowInfo.y < 0) {
             this.windowInfo.y = 0;
         }
     }

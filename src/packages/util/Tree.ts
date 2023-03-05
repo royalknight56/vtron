@@ -11,16 +11,20 @@ class Tree<T>{
     addChild(child: T) {
         this.children.push(new Tree(child));
     }
-    removeChild(child: Tree<T>) {
-        this.children = this.children.filter(c => c !== child);
+    removeChild(child: T) {
+        this.children = this.children.filter(node => node.value !== child);
     }
     findNode(value: T,callBack?:(val:Tree<T>)=>void): Tree<T> | undefined {
-        if (this.value === value) return this;
+        // find node by dfs in children
         for (let child of this.children) {
-            const node = child.findNode(value);
-            if (node){
-                callBack?.(node);
-                return node
+            if (child.value === value){
+                if(callBack){
+                    callBack(child);
+                }
+                return child;
+            }else{
+                let node = child.findNode(value,callBack);
+                if (node) return node;
             };
         }
         return undefined;
@@ -33,17 +37,6 @@ class Tree<T>{
             return true;
         });
     }
-    // findIndex(value: T,filter:(value:T)=>boolean): number {
-    //     if(filter&&filter(value)===false) return -1;
-    //     if (this.value === value) return 0;
-    //     let index = 0;
-    //     for (let child of this.children) {
-    //         index++;
-    //         const node = child.findIndex(value,filter);
-    //         if (node !== -1) return index + node;
-    //     }
-    //     return -1;
-    // }
     findIndex(value: T,filter:(value: Tree<T>, index: number, array: Tree<T>[]) => boolean): number {
         // nth children index
         let index = 0;
@@ -53,7 +46,6 @@ class Tree<T>{
             }else{
                 index++;
             };
-            
         }
         return -1;
     }

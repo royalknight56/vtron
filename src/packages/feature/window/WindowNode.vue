@@ -1,8 +1,8 @@
 <template>
     <Transition name="window-animate">
-        <WindowTemplate v-if="windowNode.value.windowInfo.isCreated" :browserWindow="windowNode.value"></WindowTemplate>
+        <WindowTemplate v-if="window.windowInfo.isCreated" :browserWindow="window"></WindowTemplate>
     </Transition>
-    <WindowNode v-for="node in windowNode.children" :key="node.value?.id" :windowNode="node" />
+    <WindowNode v-for="node in window.children" :key="node.id" :window="node" />
 </template>
 <script lang="ts" setup>
 import { Tree } from '@/packages/util/Tree';
@@ -12,7 +12,7 @@ import WindowNode from './WindowNode.vue';
 import WindowTemplate from './WindowTemplate.vue';
 
 let props = defineProps<{
-    windowNode: UnwrapNestedRefs<Tree<BrowserWindow>>
+    window: UnwrapNestedRefs<BrowserWindow>
 }>();
 
 </script>

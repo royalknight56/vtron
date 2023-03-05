@@ -1,5 +1,5 @@
 <template>
-    <WindowNode v-for="node in rootState.system.windowTree.children" :key="node.value?.id" :windowNode="node" />
+    <WindowNode v-for="node in winArray" :key="node?.id" :window="node" />
 </template>
 <script lang="ts" setup>
 import { useRootState } from '@packages/feature/state/Root';
@@ -7,7 +7,7 @@ import { Tree } from "@packages/util/Tree"
 import WindowNode from './WindowNode.vue';
 
 let rootState = useRootState();
-rootState.system.windowTree;
+let winArray =  rootState.system.windowOrder;
 </script>
 <style lang="scss" scoped>
 .window-node{

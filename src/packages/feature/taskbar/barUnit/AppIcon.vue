@@ -38,7 +38,6 @@ function handleRightClick(e:MouseEvent){
     });
 }
 function handleClick(){
-    console.log(props.windowNode.id);
     props.windowNode.moveTop();
     if(props.windowNode.windowInfo.state === 'minimize'){
         props.windowNode.restore();

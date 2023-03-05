@@ -29,12 +29,7 @@ function handleRightClick(e: MouseEvent) {
         mouse: e,
         menuList: [
             {
-                name: '新建',
-                click: () => {
-                }
-            },
-            {
-                name: '粘贴',
+                name: '刷新',
                 click: () => {
                 }
             }

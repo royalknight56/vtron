@@ -17,7 +17,7 @@
     </div>
     <div class="wintmp_main" :class="{ resizeing: resizemode != 'null' }" @mousedown.stop="predown"
       @touchstart.stop.passive="predown">
-      <WindowInner :content="browserWindow"></WindowInner>
+      <WindowInner :window="browserWindow"></WindowInner>
     </div>
     <div class="right_border win_drag_border" :class="{ isChoseMode: resizemode == 'r' }" v-if="resizable"
       @mousedown.stop.prevent="startScale($event, 'r')" @touchstart.stop.passive="startScale($event, 'r')"></div>

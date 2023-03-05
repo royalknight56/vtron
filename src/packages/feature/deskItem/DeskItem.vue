@@ -32,6 +32,10 @@ const { openapp, appList } = useAppOpen('apps');
     user-select: none;
 
     .desk-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         width: var(--desk-item-size);
         height: var(--desk-item-size);
         font-size: var(--ui-font-size);

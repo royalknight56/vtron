@@ -40,6 +40,16 @@ onMounted(() => {
       icon: testicon,
       window: autoTestApp
     });
+    system.addApp({
+      name: '看月亮',
+      icon: testicon,
+      window: new BrowserWindow({
+        content: "http://static.myim.online/moon/",
+        icon: testicon,
+        center: true,
+      })
+    });
+
     autoTestApp.show()
   });
 })

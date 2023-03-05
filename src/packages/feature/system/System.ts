@@ -6,7 +6,7 @@ import { initEventer, Eventer,initEventListener } from "@packages/feature/event"
 // import { RootState, SystemOptions } from "@/packages/type/type";
 let GLOBAL_SYSTEM: System | null = null;
 
-export type VtronPlugin = (system:System)=>void
+export type VtronPlugin = (system:System,rootState:RootState)=>void
 
 /**
  * @description: System 类，在初始化的过程中需要提供挂载点，以及一些配置
@@ -121,7 +121,7 @@ class System {
     }
     // 插件系统
     use(func:VtronPlugin):void{
-        return func(this);
+        return func(this,this._rootState);
     }
 }
 function useSystem() {

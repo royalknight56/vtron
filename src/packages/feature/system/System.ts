@@ -89,11 +89,18 @@ class System {
         this._rootState.system.menulist.push(options);
     }
     /**
-     * @description: 移除应用
+     * @description: 清楚应用
      */
-    removeApp() {
-
+    clearApp() {
+        this._rootState.system.apps = [];
     }
+    clearMagnet() {
+        this._rootState.system.magnet = [];
+    }
+    clearMenuList() {
+        this._rootState.system.menulist = [];
+    }
+
     whenReady(): Promise<System> {
         if(this._rootState.system.state === SystemStateEnum.open){
             return Promise.resolve(this);

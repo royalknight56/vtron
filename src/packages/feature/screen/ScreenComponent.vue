@@ -33,4 +33,21 @@ onMounted(()=>{
     height: 100%;
     overflow: hidden;
 }
+
 </style>
+<style>
+@font-face {
+  font-family: "SEGOEUIMDL";
+  src:url("SegMDL2.ttf") format("truetype");
+    /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+      /* url("LXGWWenKai-Bold.svg#LXGWWenKai-Bold") format("svg"); iOS 4.1- */
+  font-style: normal;
+  font-weight: normal;
+}
+.SEGOEUIMDL {
+  font-family: "SEGOEUIMDL";
+  font-style: normal;
+  font-weight: normal;
+}
+</style>
+

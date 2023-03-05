@@ -19,7 +19,11 @@ const rootState:RootState = reactive({
         winnum:0,
         info:{
             screenWidth:window?.innerWidth||0,
-            screenHeight:window?.innerHeight||0
+            screenHeight:window?.innerHeight||0,
+            battery:{
+                isCharging:false,
+                chargeLevel:0
+            }
         }
     }
 })

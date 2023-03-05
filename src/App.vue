@@ -30,6 +30,18 @@ onMounted(() => {
         center: true,
       })
     });
+
+    system.addApp({
+      name: '测试不可缩放',
+      icon: testicon,
+      window: new BrowserWindow({
+        content: TestButton,
+        icon: testicon,
+        center: true,
+        resizable: false,
+      })
+    });
+
     let autoTestApp = new BrowserWindow({
         content: VtronTest,
         icon: testicon,

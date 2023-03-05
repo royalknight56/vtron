@@ -6,7 +6,7 @@
 -->
 <template>
     <div class="outer">
-        Test Finish
+        Test Finished
     </div>
 </template>
 <script lang="ts" setup>
@@ -87,12 +87,12 @@ await nextStep(() => {
             content: 'content' + Math.random(),
             timeout: 5000 * Math.random()
         })
-    }, 400);
-},3000)
+    }, 100);
+},1000)
 
 await nextStep(() => {
     clearInterval(timer);
-},3000);
+},100);
 
 onUnmounted(() => {
     clearInterval(timer);
@@ -104,5 +104,7 @@ onUnmounted(() => {
     flex-direction: column;
     height: 100%;
     width: 100%;
+    background-color: greenyellow;
+    font-size: 30px;
 }
 </style>

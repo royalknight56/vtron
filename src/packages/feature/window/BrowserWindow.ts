@@ -184,6 +184,12 @@ class BrowserWindow {
         let { width, height } = this._getWinInner();
         this.windowInfo.x = (width - this.windowInfo.width) / 2;
         this.windowInfo.y = (height - this.windowInfo.height) / 2;
+        if(this.windowInfo.x < 0){
+            this.windowInfo.x = 0;
+        }
+        if(this.windowInfo.y < 0){
+            this.windowInfo.y = 0;
+        }
     }
     /**
      * Restores the window from minimized state to its previous state.

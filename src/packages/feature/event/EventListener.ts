@@ -1,21 +1,19 @@
-import { useRootState } from "../state/Root";
+
 import { mountEvent, redirectEvent, emitEvent } from "./EventHook";
-import type { RootState } from "@/packages/type/type";
-import {useSystem} from "@packages/feature/system"
+
+import { useSystem } from "@packages/feature/system"
+import { initBatteryEvent, initSizeEvent, initNetworkEvent } from "./SystemEvent";
 function initEventListener() {
-    let rootState = useRootState();
-    mountEvent("system.initSize", (source: string, e: any) => {
-        refreshDesktopSize(rootState)
-    });
+    initBatteryEvent()
+    initSizeEvent()
+    initNetworkEvent()
     mountEvent("system.shutdown", (source: string, e: any) => {
         useSystem()?.shutdown();
     });
     mountEvent("system.reboot", (source: string, e: any) => {
         useSystem()?.reboot();
     });
-    window?.addEventListener("resize", () => {
-        emitEvent("system.resize");
-    });
+
     eventTransitCenter();
 }
 const eventTranslateMap: {
@@ -40,10 +38,6 @@ function eventTransitCenter() {
             redirectEvent(key, target);
         }
     }
-}
-function refreshDesktopSize(rootState: RootState) {
-    rootState.system.info.screenWidth = window?.innerWidth || 0;
-    rootState.system.info.screenHeight = window?.innerHeight || 0;
 }
 export {
     initEventListener

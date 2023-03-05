@@ -31,6 +31,11 @@ export type RootState =UnwrapNestedRefs<{
         info:{
             screenWidth:number;
             screenHeight:number;
+            battery:{
+                isCharging:boolean;
+                chargeLevel:number;
+            },
+            connection:number;
         }
     };
 }>

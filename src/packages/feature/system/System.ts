@@ -3,7 +3,7 @@ import { SystemStateEnum } from "@/packages/type/enum"
 import { watch } from "vue";
 import { RootState, SystemOptions,WinApp } from "@/packages/type/type";
 import { initEventer, Eventer,initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
-import { VtronFileSystem } from "../addon/fileSystem";
+import { fs,VtronFileSystem } from "../addon/fileSystem";
 
 let GLOBAL_SYSTEM: System | null = null;
 
@@ -19,6 +19,7 @@ class System {
     private _ready: ((value: System) => void) | null = null;
     private _error: ((reason: unknown) => void) | null = null;
     ref!: HTMLElement;
+    fs:VtronFileSystem;
     constructor(options?: SystemOptions) {
         this._options = this.initOptions(options);
         this._rootState = this.initRootState(options);
@@ -27,7 +28,7 @@ class System {
         this.initSystem(options);
 
         this.setRef(this._rootState.ref!);
-        // window.fileTest = new VtronFileSystem()
+        this.fs = fs
     }
     setRef(ref: HTMLElement) {
         this.ref = ref;

@@ -160,6 +160,8 @@ class VtronFileSystem {
         });
     }
 }
+const fs = new VtronFileSystem();
 export {
-    VtronFileSystem
+    VtronFileSystem,
+    fs
 }

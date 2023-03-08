@@ -10,10 +10,13 @@ export interface SystemOptions {
     background?:string;
 }
 export interface WinApp {
-    name?:string;
+    name:string;
+    icon:string;
+}
+export interface WinAppOptions {
+    name:string;
     icon?:string;
-    url?:string;
-    window?: BrowserWindow
+    window: BrowserWindow
 }
 
 export type RootState =UnwrapNestedRefs<{
@@ -26,6 +29,12 @@ export type RootState =UnwrapNestedRefs<{
         notify:Array<Notify>;
         windowTree:Tree<BrowserWindow>,
         windowOrder:Array<BrowserWindow>,
+        windowMap:{
+            Desktop:Map<string,BrowserWindow>,
+            Magnet:Map<string,BrowserWindow>,
+            Menulist:Map<string,BrowserWindow>,
+            [key:string]:Map<string,BrowserWindow>
+        },
         winnum:number;
         topWindow:BrowserWindow|undefined;
         info:{

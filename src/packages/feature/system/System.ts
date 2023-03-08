@@ -1,13 +1,14 @@
 import { initRootState } from "@/packages/feature/state/Root";
 import { SystemStateEnum } from "@/packages/type/enum"
 import { watch } from "vue";
-import { RootState, SystemOptions,WinApp } from "@/packages/type/type";
-import { initEventer, Eventer,initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
-import { fs,VtronFileSystem } from "../addon/fileSystem";
+import { RootState, SystemOptions, WinApp, WinAppOptions } from "@/packages/type/type";
+import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
+import { fs, VtronFileSystem, initFileSystem } from "../addon/FileSystem";
+import { initAppList } from "@/packages/hook/useAppOpen";
 
 let GLOBAL_SYSTEM: System | null = null;
 
-export type VtronPlugin = (system:System,rootState:RootState)=>void
+export type VtronPlugin = (system: System, rootState: RootState) => void
 
 /**
  * @description: System 类，在初始化的过程中需要提供挂载点，以及一些配置
@@ -19,7 +20,7 @@ class System {
     private _ready: ((value: System) => void) | null = null;
     private _error: ((reason: unknown) => void) | null = null;
     ref!: HTMLElement;
-    fs:VtronFileSystem;
+    fs: VtronFileSystem;
     constructor(options?: SystemOptions) {
         this._options = this.initOptions(options);
         this._rootState = this.initRootState(options);
@@ -28,7 +29,7 @@ class System {
         this.initSystem(options);
 
         this.setRef(this._rootState.ref!);
-        this.fs = fs
+        this.fs = fs;
     }
     setRef(ref: HTMLElement) {
         this.ref = ref;
@@ -52,17 +53,19 @@ class System {
     /**
      * @description: 初始化系统
      */
-    private initSystem(options?: SystemOptions) {
+    private async initSystem(options?: SystemOptions) {
         /**
          * 过程：激活屏幕，桥接事件。
          */
+        this._rootState.system.state = SystemStateEnum.opening;
         initEventListener();
-        this._ready?.(this);
-        this._rootState.system.state = SystemStateEnum.open;
-        setTimeout(() => {
-            this._rootState.system.state = SystemStateEnum.open;
-        }, 1000);
+
         GLOBAL_SYSTEM = this;
+
+        await initFileSystem();
+        initAppList();
+        this._rootState.system.state = SystemStateEnum.open;
+        this._ready && this._ready(this);
     }
     /**
      * @description: 初始化事件系统
@@ -84,14 +87,32 @@ class System {
     /**
      * @description: 添加应用
      */
-    addApp(options:Partial<WinApp>) {
-        this._rootState.system.apps.push(options);
+    addApp(options: WinAppOptions) {
+        this.fs.writeFile('/C/Users/Desktop/' + options.name, {
+            name: options.name,
+            icon: options.icon || '',
+            type: 'link',
+            content: `link:Desktop:${options.name}`
+        })
+        this._rootState.system.windowMap.Desktop.set(options.name, options.window);
     }
-    addMagnet(options:Partial<WinApp>) {
-        this._rootState.system.magnet.push(options);
+    addMagnet(options: WinAppOptions) {
+        this.fs.writeFile('/C/Users/Magnet/' + options.name, {
+            name: options.name || 'test',
+            icon: options.icon || '',
+            type: 'link',
+            content: `link:Magnet:${options.name}`
+        });
+        this._rootState.system.windowMap.Magnet.set(options.name, options.window);
     }
-    addMenuList(options:Partial<WinApp>) {
-        this._rootState.system.menulist.push(options);
+    addMenuList(options: WinAppOptions) {
+        this.fs.writeFile('/C/Users/Menulist/' + options.name, {
+            name: options.name || 'test',
+            icon: options.icon || '',
+            type: 'link',
+            content: `link:Menulist:${options.name}`
+        })
+        this._rootState.system.windowMap.Menulist.set(options.name, options.window);
     }
     /**
      * @description: 清楚应用
@@ -107,13 +128,9 @@ class System {
     }
 
     whenReady(): Promise<System> {
-        if(this._rootState.system.state === SystemStateEnum.open){
-            return Promise.resolve(this);
-        }
         return new Promise<System>((resolve, reject) => {
             this._ready = resolve;
             this._error = reject;
-            this._ready?.(this);
         })
     }
     shutdown() {
@@ -128,12 +145,22 @@ class System {
     mountEvent(event: string, callback: (...args: any[]) => void) {
         mountEvent(event, callback);
     }
-    register(type:'contextmenu'){
+    register(type: 'contextmenu') {
 
     }
+    /**打开vtron 文件系统的文件 */
+    openFile(path: string) {
+        fs.getFileInfo(path).then((res) => {
+            if (res?.type === 'link') {
+                this._rootState.system.windowMap[
+                    res.content.split(':')[1]
+                ].get(res.content.split(':')[2])?.show();
+            }
+        })
+    }
     // 插件系统
-    use(func:VtronPlugin):void{
-        return func(this,this._rootState);
+    use(func: VtronPlugin): void {
+        return func(this, this._rootState);
     }
 }
 function useSystem() {

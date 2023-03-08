@@ -64,7 +64,7 @@ class BrowserWindow {
         let rootState = useRootState();
         this.id = rootState.system.winnum;
         rootState.system.winnum++;
-
+        
         this.windowInfo = reactive(Object.assign({}, BrowserWindow.defaultInfo, this._option));
 
         this._builtin = {

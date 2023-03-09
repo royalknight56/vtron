@@ -99,13 +99,6 @@ class System {
                 type: 'link',
                 content: `link:${loc}:${options.name}`
             });
-            this._readyToUpdata = true;
-            nextTick(() => {
-                if(this._readyToUpdata){
-                    initAppList();
-                    this._readyToUpdata = false;
-                }
-            })
         }
         this._rootState.system.windowMap[loc].set(options.name, options.window);
     }

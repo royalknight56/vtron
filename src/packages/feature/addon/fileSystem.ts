@@ -1,3 +1,4 @@
+import { initAppList } from "@/packages/hook/useAppOpen";
 class VtronFile {
     path: string;
     parentPath: string;
@@ -95,7 +96,9 @@ class VtronFileSystem {
                 par.icon,
                 par.type)
         );
-
+        if(/^\/C\/Users\//.test(path)){
+            this.asyncSystemConfig();
+        }
         return new Promise((resolve, reject) => {
             request.onerror = () => {
                 console.error("Failed to write file");
@@ -130,7 +133,9 @@ class VtronFileSystem {
         const transaction = this.db.transaction("files", "readwrite");
         const objectStore = transaction.objectStore("files");
         const request = objectStore.delete(path);
-
+        if(/^\/C\/Users\//.test(path)){
+            this.asyncSystemConfig();
+        }
         return new Promise((resolve, reject) => {
             request.onerror = () => {
                 console.error("Failed to delete file");
@@ -219,6 +224,10 @@ class VtronFileSystem {
                 resolve();
             };
         });
+    }
+
+    async asyncSystemConfig(){
+        initAppList();
     }
 }
 const fs = new VtronFileSystem();

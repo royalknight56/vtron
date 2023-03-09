@@ -15,6 +15,7 @@ export interface SystemOptions {
 export interface WinApp {
     name:string;
     icon:string;
+    path:string;
 }
 export interface WinAppOptions {
     name:string;

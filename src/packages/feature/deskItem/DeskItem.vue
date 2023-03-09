@@ -1,18 +1,36 @@
 <template>
     <div class="desk-group">
-        <div @dblclick="openapp(item)" class="desk-item" v-for="item in appList" :key="item.name">
+        <div @dblclick="openapp(item)" @contextmenu.stop.prevent="handleRightClick($event, item)" class="desk-item"
+            v-for="item in appList" :key="item.name">
             <img draggable="false" class="desk-item_img" :src="item.icon" alt="">
             <span class="desk-item_title">{{ item.name }}</span>
         </div>
     </div>
-
 </template>
 <script lang="ts" setup>
-
 import { useAppOpen } from '@/packages/hook/useAppOpen';
+import { useSystem, WinApp } from '@/packages/plug';
+import { emitEvent } from '../event';
 
 const { openapp, appList } = useAppOpen('apps');
 
+function handleRightClick(mouse: MouseEvent, item: WinApp) {
+    emitEvent('contextMenu.show', {
+        mouse: mouse,
+        menuList: [
+            {
+                name: '打开',
+                click: () => openapp(item)
+            },
+            {
+                name: '删除',
+                click: () => {
+                    useSystem()?.fs.deleteFile(item.path);
+                }
+            }
+        ]
+    })
+}
 // import { useRootState } from '../state/Root';
 // import { BrowserWindow } from '../window/BrowserWindow';
 // import { WinApp } from '@packages/type/type';
@@ -40,6 +58,7 @@ const { openapp, appList } = useAppOpen('apps');
         height: var(--desk-item-size);
         font-size: var(--ui-font-size);
         margin: 6px;
+
         .desk-item_img {
             width: 60%;
             height: 60%;
@@ -51,7 +70,8 @@ const { openapp, appList } = useAppOpen('apps');
             text-align: center;
         }
     }
-    .desk-item:hover{
+
+    .desk-item:hover {
         background-color: #3bdbff4c;
     }
 }

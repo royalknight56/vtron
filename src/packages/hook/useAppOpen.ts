@@ -1,8 +1,19 @@
 import { useRootState } from '@packages/feature/state/Root';
 import { WinApp } from '@packages/type/type';
-import { UnwrapNestedRefs } from 'vue';
+import { nextTick, UnwrapNestedRefs } from 'vue';
 import { useSystem } from '../plug';
+let isReadyUpdateAppList = false;
 function initAppList() {
+
+    isReadyUpdateAppList = true;
+    nextTick(() => {
+        if (isReadyUpdateAppList) {
+            isReadyUpdateAppList = false;
+            refershAppList();
+        }
+    })
+}
+function refershAppList() {
     const APP_TYPE = ['apps', 'magnet', 'menulist']
     let system = useSystem();
     for (let i = 0; i < APP_TYPE.length; i++) {
@@ -14,7 +25,6 @@ function initAppList() {
         }[element]}`).then((res) => {
             if (res) {
                 let list = res;
-                console.log(list);
                 let tempList = [];
                 for (let j = 0; j < list.length; j++) {
                     const item = list[j];
@@ -22,6 +32,7 @@ function initAppList() {
                         let app: WinApp = {
                             name: item.name,
                             icon: item.icon,
+                            path: item.path
                         }
                         tempList.push(app);
                     }

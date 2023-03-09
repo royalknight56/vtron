@@ -15,34 +15,37 @@ function initAppList() {
             if (res) {
                 let list = res;
                 console.log(list);
-                for(let j=0;j<list.length;j++){
+                let tempList = [];
+                for (let j = 0; j < list.length; j++) {
                     const item = list[j];
-                    if(item.type==='link'){
-                        let app:WinApp = {
-                            name:item.name,
-                            icon:item.icon,
+                    if (item.type === 'link') {
+                        let app: WinApp = {
+                            name: item.name,
+                            icon: item.icon,
                         }
-                        switch(element){
-                            case 'apps':
-                                useRootState().system.apps.push(app);
-                                break;
-                            case 'magnet':
-                                useRootState().system.magnet.push(app);
-                                break;
-                            case 'menulist':
-                                useRootState().system.menulist.push(app);
-                                break;
-                            default:
-                                break;
-                        }
+                        tempList.push(app);
                     }
+                }
+
+                switch (element) {
+                    case 'apps':
+                        useRootState().system.apps.splice(0, useRootState().system.apps.length, ...tempList);
+                        break;
+                    case 'magnet':
+                        useRootState().system.magnet.splice(0, useRootState().system.magnet.length, ...tempList);
+                        break;
+                    case 'menulist':
+                        useRootState().system.menulist.splice(0, useRootState().system.menulist.length, ...tempList);
+                        break;
+                    default:
+                        break;
                 }
             }
         })
     }
-    
+
 }
-function useAppOpen(type: "apps" | "magnet"| "menulist") {
+function useAppOpen(type: "apps" | "magnet" | "menulist") {
     let rootState = useRootState();
     let system = useSystem();
     let appList = rootState.system[type];

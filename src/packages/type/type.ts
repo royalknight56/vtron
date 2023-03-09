@@ -8,6 +8,9 @@ import { Notify } from "../feature/notification/Notification";
 export interface SystemOptions {
     logo?:"default"|string;
     background?:string;
+    desktop?:WinAppOptions[];
+    magnet?:WinAppOptions[];
+    menulist?:WinAppOptions[];
 }
 export interface WinApp {
     name:string;
@@ -19,7 +22,7 @@ export interface WinAppOptions {
     window: BrowserWindow
 }
 
-export type RootState =UnwrapNestedRefs<{
+export type RootState ={
     ref:HTMLElement|undefined;
     system: {
         state:SystemStateEnum;
@@ -48,4 +51,4 @@ export type RootState =UnwrapNestedRefs<{
         },
         options:SystemOptions
     };
-}>
+}

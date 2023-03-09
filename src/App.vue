@@ -20,55 +20,57 @@ import { System } from "./packages/plug";
 import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
 
 onMounted(() => {
+  let testw = new BrowserWindow({
+    content: TestButton,
+    title: "测试按钮",
+    icon: testicon,
+    center: true,
+  })
   new System({
-    background:"https://source.unsplash.com/random/1920x1080"
+    background: "https://source.unsplash.com/random/1920x1080",
+    desktop: [
+      {
+        name: '测试按钮',
+        icon: testicon,
+        window: testw
+      },
+      {
+        name: '测试不可缩放',
+        icon: testicon,
+        window: new BrowserWindow({
+          content: TestButton,
+          title: "测试不可缩放",
+          icon: testicon,
+          center: true,
+          resizable: false,
+        })
+      },
+      {
+        name: 'Vtron自动测试',
+        icon: testicon,
+        window: new BrowserWindow({
+          content: VtronTest,
+          title: "Vtron自动测试",
+          icon: testicon,
+          center: true,
+        })
+      }
+    ]
   }).whenReady().then((system) => {
-    system.addApp({
-      name: '测试按钮',
-      icon: testicon,
-      window: new BrowserWindow({
-        content: TestButton,
-        title: "测试按钮",
+    setTimeout(() => {
+      system.addApp({
+        name: '看月亮',
         icon: testicon,
-        center: true,
+        window: new BrowserWindow({
+          content: "http://static.myim.online/moon/",
+          title: "看月亮",
+          icon: testicon,
+          center: true,
+        })
       })
-    });
-
-    system.addApp({
-      name: '测试不可缩放',
-      icon: testicon,
-      window: new BrowserWindow({
-        content: TestButton,
-        title: "测试不可缩放",
-        icon: testicon,
-        center: true,
-        resizable: false,
-      })
-    });
-
-    let autoTestApp = new BrowserWindow({
-        content: VtronTest,
-        title: "Vtron自动测试",
-        icon: testicon,
-        center: true,
-      })
-    system.addApp({
-      name: 'Vtron自动测试',
-      icon: testicon,
-      window: autoTestApp
-    });
-    system.addApp({
-      name: '看月亮',
-      icon: testicon,
-      window: new BrowserWindow({
-        content: "http://static.myim.online/moon/",
-        title: "看月亮",
-        icon: testicon,
-        center: true,
-      })
-    });
-
+    }, 3000);
     // autoTestApp.show()
+
   });
 })
 

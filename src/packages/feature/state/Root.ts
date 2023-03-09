@@ -28,12 +28,13 @@ const rootState:RootState = reactive({
             battery:{
                 isCharging:false,
                 chargeLevel:0
-            }
+            },
+            connection:0
         },
         options:{}
 
     }
-})
+} as RootState) as unknown as RootState;
 function initRootState(options:SystemOptions):RootState{
     rootState.system.options = options;
     return rootState;

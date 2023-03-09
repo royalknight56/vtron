@@ -224,7 +224,8 @@ class VtronFileSystem {
 const fs = new VtronFileSystem();
 async function initFileSystem() {
     let res =  await fs.whenReady()
-
+    let isInit = await res.readDirectory('/C');
+    if(isInit.length) return fs;
     res.createDirectory('/C');
     res.createDirectory('/C/Users');
     res.createDirectory('/C/Users/Desktop');

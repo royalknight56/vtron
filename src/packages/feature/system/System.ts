@@ -137,7 +137,9 @@ class System {
         this._rootState.system.state = SystemStateEnum.close;
     }
     reboot() {
-        this._rootState.system.state = SystemStateEnum.open;
+        localStorage.removeItem('vtronFirstRun');
+        this._rootState.system.state = SystemStateEnum.close;
+        window.location.reload();
     }
     emitEvent(event: string, ...args: any[]) {
         emitEvent(event, ...args);

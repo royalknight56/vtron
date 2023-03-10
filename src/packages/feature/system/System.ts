@@ -15,18 +15,19 @@ export type VtronPlugin = (system: System, rootState: RootState) => void
  */
 class System {
     private _options: SystemOptions;
-    private _rootState:RootState;
+    private _rootState: RootState;
     private _eventer: Eventer;
     private _ready: ((value: System) => void) | null = null;
     private _error: ((reason: unknown) => void) | null = null;
     private _readyToUpdata: boolean = false;
+    private _flieOpenerMap: Map<string, (path: string, content: string) => void> = new Map();
     isFirstRun: boolean = true;
     ref!: HTMLElement;
     fs: VtronFileSystem;
     constructor(options?: SystemOptions) {
         this._options = this.initOptions(options);
         this._rootState = this.initRootState(options);
- 
+
         this._eventer = this.initEvent(options);
 
         this.initSystem(options);
@@ -62,7 +63,7 @@ class System {
          */
         this._rootState.system.state = SystemStateEnum.opening;
         initEventListener();
-
+        this.registerFileOpener('link', this.openLink.bind(this))
         GLOBAL_SYSTEM = this;
 
         await initFileSystem();
@@ -80,14 +81,14 @@ class System {
          */
         return initEventer();
     }
-    private initApp(){
-        this._rootState.system.options.desktop?.forEach((item)=>{
+    private initApp() {
+        this._rootState.system.options.desktop?.forEach((item) => {
             this.addApp(item);
         })
-        this._rootState.system.options.magnet?.forEach((item)=>{
+        this._rootState.system.options.magnet?.forEach((item) => {
             this.addMagnet(item);
         })
-        this._rootState.system.options.menulist?.forEach((item)=>{
+        this._rootState.system.options.menulist?.forEach((item) => {
             this.addMenuList(item);
         })
     }
@@ -114,18 +115,6 @@ class System {
     addMenuList(options: WinAppOptions) {
         this.addWindowSysLink('Menulist', options);
     }
-    // /**
-    //  * @description: 清楚应用
-    //  */
-    // clearApp() {
-    //     this._rootState.system.apps = [];
-    // }
-    // clearMagnet() {
-    //     this._rootState.system.magnet = [];
-    // }
-    // clearMenuList() {
-    //     this._rootState.system.menulist = [];
-    // }
 
     whenReady(): Promise<System> {
         return new Promise<System>((resolve, reject) => {
@@ -156,17 +145,18 @@ class System {
     mountEvent(event: string, callback: (...args: any[]) => void) {
         mountEvent(event, callback);
     }
-    register(type: 'contextmenu') {
-
+    registerFileOpener(type: string, func: (path: string, content: string) => void) {
+        this._flieOpenerMap.set(type, func);
+    }
+    openLink(path: string, content: string) {
+        this._rootState.system.windowMap[
+            content.split(':')[1]
+        ].get(content.split(':')[2])?.show();
     }
     /**打开vtron 文件系统的文件 */
     openFile(path: string) {
         fs.getFileInfo(path).then((res) => {
-            if (res?.type === 'link') {
-                this._rootState.system.windowMap[
-                    res.content.split(':')[1]
-                ].get(res.content.split(':')[2])?.show();
-            }
+            this._flieOpenerMap.get(res?.type||'link')?.(path, res?.content || '');
         })
     }
     // 插件系统

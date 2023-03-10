@@ -34,7 +34,7 @@ export default defineConfig({
     lib: {
       formats: ["es","umd"],
       entry: path.resolve(__dirname, 'src/packages/plug.ts'),
-      name: 'Win10',
+      name: 'vtron',
       fileName: (format) => {
         return format === 'es' ? 'vtron.mjs' : 'vtron.umd.js'
       }

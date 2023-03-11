@@ -413,5 +413,6 @@ class VtronFileSystem {
 }
 
 export {
+    VtronFile,
     VtronFileSystem
 }

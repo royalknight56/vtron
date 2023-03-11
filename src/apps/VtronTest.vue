@@ -79,6 +79,16 @@ await nextStep(() => {
 await nextStep(() => {
     props.window.restore();
 },100)
+
+await nextStep(() => {
+    props.window.setFullScreen(true);
+},100)
+await nextStep(() => {
+    props.window.setFullScreen(false);
+},100)
+// await nextStep(() => {
+//     props.window.restore();
+// },100)
 let timer:any
 await nextStep(() => {
     timer = setInterval(() => {

@@ -21,6 +21,9 @@ interface BrowserWindowConstructorOptions {
     y: number
     center: boolean
     resizable: boolean
+    frame: boolean
+    fullscreen: boolean
+    backgroundColor: string
 }
 interface WindowInfo extends BrowserWindowConstructorOptions {
     state: WindowStateEnum
@@ -39,6 +42,9 @@ class BrowserWindow {
         y: 0,
         center: false,
         resizable: true,
+        frame: true,
+        fullscreen: false,
+        backgroundColor: '#fff'
     }
     public static defaultInfo: Omit<WindowInfo, keyof BrowserWindowConstructorOptions> = {
         state: WindowStateEnum.normal,
@@ -68,10 +74,13 @@ class BrowserWindow {
         rootState.system.winnum++;
         
         this.windowInfo = reactive(Object.assign({}, BrowserWindow.defaultInfo, this._option));
-
+        if(this._option.fullscreen){
+            this.windowInfo.state = WindowStateEnum.fullscreen;
+        }
         this._builtin = {
             previousState: this.windowInfo.state,
         }
+
 
     }
 
@@ -151,6 +160,26 @@ class BrowserWindow {
         }), 1);
         rootState.system.windowTree.removeNode(this);
     }
+    /**
+     * Moves window to the center of the screen.
+     */
+    center() {
+        let { width, height } = this._getWinInner();
+        this.windowInfo.x = (width - this.windowInfo.width) / 2;
+        this.windowInfo.y = (height - this.windowInfo.height) / 2;
+        if (this.windowInfo.x < 0) {
+            this.windowInfo.x = 0;
+        }
+        if (this.windowInfo.y < 0) {
+            this.windowInfo.y = 0;
+        }
+    }
+    /**
+     * Restores the window from minimized state to its previous state.
+     */
+    restore() {
+        this.windowInfo.state = this._builtin.previousState;
+    }
     maximize() {// 最大化窗口
         this._setState(WindowStateEnum.maximize);
     }
@@ -160,6 +189,7 @@ class BrowserWindow {
     minimize() {// 最小化窗口
         this._setState(WindowStateEnum.minimize);
     }
+
     isVisible() {// 判断窗口是否可见
         return this.windowInfo.isCreated;
     }
@@ -184,49 +214,41 @@ class BrowserWindow {
     isResizable() {// 判断窗口是否可以改变大小
         return this.windowInfo.resizable;
     }
-    /**
-     * Moves window to the center of the screen.
-     */
-    center() {
-        let { width, height } = this._getWinInner();
-        this.windowInfo.x = (width - this.windowInfo.width) / 2;
-        this.windowInfo.y = (height - this.windowInfo.height) / 2;
-        if (this.windowInfo.x < 0) {
-            this.windowInfo.x = 0;
-        }
-        if (this.windowInfo.y < 0) {
-            this.windowInfo.y = 0;
-        }
+    isFullScreen() {// 判断窗口是否全屏
+        return this.windowInfo.state === WindowStateEnum.fullscreen;
     }
-    /**
-     * Restores the window from minimized state to its previous state.
-     */
-    restore() {
-        this.windowInfo.state = this._builtin.previousState;
-    }
-    setSize(width: number, height: number) {
-        this.windowInfo.width = width;
-        this.windowInfo.height = height;
-    }
+    
     /**
      * Contains the window's width and height.
      */
     getSize() {
         return [this.windowInfo.width, this.windowInfo.height];
     }
-    setTitle(title: string) {
-        this.windowInfo.title = title;
-    }
     getTitle() {
         return this.windowInfo.title;
+    }
+    getPosition() {
+        return [this.windowInfo.x, this.windowInfo.y];
+    }
+    setFullScreen(flag: boolean) {// 设置窗口全屏
+        if (flag) {
+            this._setState(WindowStateEnum.fullscreen);
+        } else {
+            this._setState(WindowStateEnum.normal);
+        }
+    }
+    setSize(width: number, height: number) {
+        this.windowInfo.width = width;
+        this.windowInfo.height = height;
+    }
+    setTitle(title: string) {
+        this.windowInfo.title = title;
     }
     setPosition(x: number, y: number) {
         this.windowInfo.x = x;
         this.windowInfo.y = y;
     }
-    getPosition() {
-        return [this.windowInfo.x, this.windowInfo.y];
-    }
+    
 }
 export {
     BrowserWindow,

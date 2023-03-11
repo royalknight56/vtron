@@ -11,6 +11,7 @@
     max: windowInfo.state == WindowStateEnum.maximize,
     min: windowInfo.state == WindowStateEnum.minimize,
     fullscreen: windowInfo.state == WindowStateEnum.fullscreen,
+    noframe: !windowInfo.frame,
   }" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus" ref="$win_outer">
     <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
       <MenuBar :browser-window="browserWindow"></MenuBar>
@@ -106,6 +107,7 @@ onMounted(() => {
       // TODO:
       return windowInfo.zindex;
     }),
+    backgroundColor: computed(() => windowInfo.backgroundColor),
   };
 
 
@@ -182,7 +184,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: rgb(255, 255, 255);
+    // background-color: rgb(255, 255, 255);
     overflow: hidden;
     contain: content;
   }
@@ -214,12 +216,12 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 }
 
 .fullscreen {
-  position: absolute;
+  position: fixed;
   left: 0 !important;
   top: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  z-index: 105 !important;
+  z-index: 205 !important;
   border: none;
 
   .wintmp_uper {
@@ -227,7 +229,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   }
 }
 
-.noframes {
+.noframe {
   .wintmp_uper {
     display: none;
   }

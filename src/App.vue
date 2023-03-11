@@ -25,6 +25,7 @@ onMounted(() => {
     title: "测试按钮",
     icon: testicon,
     center: true,
+    backgroundColor: "rgba(0,0,0,0.3)",
   })
   new System({
     background: "https://source.unsplash.com/random/1920x1080",
@@ -32,7 +33,7 @@ onMounted(() => {
       {
         name: '测试按钮',
         icon: testicon,
-        window: testw
+        window: testw,
       },
       {
         name: '测试不可缩放',
@@ -42,7 +43,10 @@ onMounted(() => {
           title: "测试不可缩放",
           icon: testicon,
           center: true,
+          frame: false,
+          fullscreen: true,
           resizable: false,
+          backgroundColor: "rgba(0,0,0,0)",
         })
       },
       {

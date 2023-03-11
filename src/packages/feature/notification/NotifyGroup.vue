@@ -46,6 +46,9 @@ let notifyGroup = useRootState().system.notify
             font-size: 14px;
         }
     }
+    .notify-item:hover {
+        transform: scale(1.1);
+    }
 
     .list-move,
     /* apply transition to moving elements */

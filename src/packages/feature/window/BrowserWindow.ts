@@ -13,6 +13,7 @@ type BrowserWindowContent = ReturnType<typeof defineComponent> | string
 interface BrowserWindowConstructorOptions {
     title: string
     content: BrowserWindowContent,
+    config?: any
     icon: string
     width: number
     height: number
@@ -53,9 +54,10 @@ class BrowserWindow {
     id: number
     children: Array<BrowserWindow> = []
     content?: ReturnType<typeof defineComponent> | string
+    config: any
     constructor(option?: BrowserWindowOption, parent?: BrowserWindow) {
         this._option = Object.assign({}, BrowserWindow.defaultOption, option);
-
+        this.config = this._option.config;
         if (typeof this._option.content !== "string") {
             this.content = markRaw(this._option.content);
         } else {

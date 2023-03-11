@@ -3,7 +3,7 @@ import { SystemStateEnum } from "@/packages/type/enum"
 import { nextTick, reactive, watch } from "vue";
 import { RootState, SystemOptions, WinApp, WinAppOptions } from "@/packages/type/type";
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
-import { fs, VtronFileSystem, initFileSystem } from "../addon/FileSystem";
+import {  VtronFileSystem } from "../addon/FileSystem";
 import { initAppList } from "@/packages/hook/useAppOpen";
 
 let GLOBAL_SYSTEM: System | null = null;
@@ -23,7 +23,7 @@ class System {
     private _flieOpenerMap: Map<string, (path: string, content: string) => void> = new Map();
     isFirstRun: boolean = true;
     ref!: HTMLElement;
-    fs: VtronFileSystem;
+    fs!: VtronFileSystem;
     constructor(options?: SystemOptions) {
         this._options = this.initOptions(options);
         this._rootState = this.initRootState(options);
@@ -33,7 +33,6 @@ class System {
         this.initSystem(options);
         this.firstRun();
         this.setRef(this._rootState.ref!);
-        this.fs = fs;
     }
     setRef(ref: HTMLElement) {
         this.ref = ref;
@@ -66,7 +65,7 @@ class System {
         this.registerFileOpener('link', this.openLink.bind(this))
         GLOBAL_SYSTEM = this;
 
-        await initFileSystem();
+        this.fs = await this.initFileSystem();
         this.initApp();
         initAppList();
         this._rootState.system.state = SystemStateEnum.open;
@@ -91,6 +90,18 @@ class System {
         this._rootState.system.options.menulist?.forEach((item) => {
             this.addMenuList(item);
         })
+    }
+    private async initFileSystem(){
+        let res = await new VtronFileSystem().whenReady()
+        await res.mkdir('/C');
+        await res.mkdir('/C/Users');
+        await res.mkdir('/C/Users/Desktop');
+        await res.mkdir('/C/Users/Magnet');
+        await res.mkdir('/C/Users/Menulist');
+        res.registerWatcher(/^\/C\/Users\//,(path,content)=>{
+            initAppList();
+        })
+        return res;
     }
     private addWindowSysLink(loc: string, options: WinAppOptions) {
         if (this.isFirstRun) {
@@ -137,6 +148,7 @@ class System {
         this._rootState.system.state = SystemStateEnum.close;
     }
     reboot() {
+        this.fs.removeFileSystem();
         localStorage.removeItem('vtronFirstRun');
         this._rootState.system.state = SystemStateEnum.close;
         window.location.reload();
@@ -157,7 +169,7 @@ class System {
     }
     /**打开vtron 文件系统的文件 */
     openFile(path: string) {
-        fs.getFileInfo(path).then((res) => {
+        this.fs.stat(path).then((res) => {
             this._flieOpenerMap.get(res?.type||'link')?.(path, res?.content || '');
         })
     }

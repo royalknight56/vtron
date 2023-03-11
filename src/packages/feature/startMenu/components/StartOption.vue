@@ -48,7 +48,7 @@ function handleClick(key: number, ev: MouseEvent) {
                     }
                 },
                 {
-                    name: "重启",
+                    name: "恢复",
                     click: () => {
                         emitEvent('system.reboot')
                     }

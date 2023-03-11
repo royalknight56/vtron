@@ -18,7 +18,7 @@ function refershAppList() {
     let system = useSystem();
     for (let i = 0; i < APP_TYPE.length; i++) {
         const element = APP_TYPE[i];
-        system?.fs.readDirectory(`/C/Users/${{
+        system?.fs.readdir(`/C/Users/${{
             apps: 'Desktop',
             magnet: 'Magnet',
             menulist: 'Menulist'
@@ -28,14 +28,14 @@ function refershAppList() {
                 let tempList = [];
                 for (let j = 0; j < list.length; j++) {
                     const item = list[j];
-                    if (item.type === 'link') {
-                        let app: WinApp = {
-                            name: item.name,
-                            icon: item.icon,
-                            path: item.path
-                        }
-                        tempList.push(app);
+                    // if (item.type === 'link') {
+                    let app: WinApp = {
+                        name: item.name,
+                        icon: item.icon,
+                        path: item.path
                     }
+                    tempList.push(app);
+                    // }
                 }
 
                 switch (element) {

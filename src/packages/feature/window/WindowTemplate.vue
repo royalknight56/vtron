@@ -68,10 +68,6 @@ let windowInfo = browserWindow.windowInfo;
 // 传递windowid
 provide("browserWindow", browserWindow);
 
-let winStatus = browserWindow.id;
-const componentKey = ref<Number>(1);
-
-
 function predown() {
   browserWindow.moveTop();
   emitEvent("window.content.click", browserWindow);
@@ -79,20 +75,7 @@ function predown() {
 
 
 function uperRightClick(e: MouseEvent) {
-  // system.ContextMenu.callMenu(e, [
-  //   {
-  //     name: "关闭",
-  //     click: () => {
-  //       DragWindowItem?.destroy()
-  //     },
-  //   },
-  //   {
-  //     name: "最小化",
-  //     click: () => {
-  //       DragWindowItem?.hide()
-  //     },
-  //   },
-  // ]);
+
 }
 
 let customerStyle = ref<any>({});

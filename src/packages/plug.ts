@@ -9,7 +9,6 @@ let plug = {
     },
 }
 export default plug;
-export { fs } from "@/packages/feature/addon/FileSystem";
 export { System, useSystem } from "@/packages/feature/system/index";
 export { BrowserWindow } from "@/packages/feature/window/BrowserWindow"
 export { Notify } from "@/packages/feature/notification/Notification";

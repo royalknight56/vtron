@@ -25,7 +25,7 @@ function handleRightClick(mouse: MouseEvent, item: WinApp) {
             {
                 name: '删除',
                 click: () => {
-                    useSystem()?.fs.deleteFile(item.path);
+                    useSystem()?.fs.unlink(item.path);
                 }
             }
         ]

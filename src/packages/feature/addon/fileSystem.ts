@@ -1,4 +1,3 @@
-import { initAppList } from "@/packages/hook/useAppOpen";
 class VtronFile {
     path: string;
     parentPath: string;
@@ -20,6 +19,7 @@ class VtronFile {
 class VtronFileSystem {
     private db!: IDBDatabase;
     private _ready: ((value: VtronFileSystem) => void) | null = null;
+    private _watchMap: Map<RegExp, (path: string, content: string) => void> = new Map();
     constructor() {
         const request = window.indexedDB.open("FileSystemDB", 1);
 
@@ -34,13 +34,43 @@ class VtronFileSystem {
 
         request.onupgradeneeded = () => {
             this.db = request.result;
-            const objectStore = this.db.createObjectStore("files", {
-                keyPath: "path",
-            });
+            const objectStore = this.db.createObjectStore("files",
+                { keyPath: "id", autoIncrement: true });
             objectStore.createIndex("parentPath", "parentPath");
+            objectStore.createIndex("path", "path", { unique: true });
+
+            objectStore.put(
+                new VtronFile('/',
+                    '',
+                    "",
+                    "/",
+                    "dir",
+                    "dir")
+            );
         };
     }
 
+    whenReady(): Promise<VtronFileSystem> {
+        if (this.db) {
+            return Promise.resolve(this);
+        }
+        return new Promise<VtronFileSystem>((resolve, reject) => {
+            this._ready = resolve;
+        })
+    }
+    registerWatcher(path: RegExp, callback: (path: string, content: string) => void) {
+        this._watchMap.set(path, callback);
+    }
+    commitWatch(path: string, content: string) {
+        this._watchMap.forEach((callback, reg) => {
+            if (reg.test(path)) {
+                callback(path, content);
+            }
+        })
+    }
+    removeFileSystem() {
+        window.indexedDB.deleteDatabase("FileSystemDB");
+    }
 
     /**
      * 读取指定路径的文件内容
@@ -50,28 +80,22 @@ class VtronFileSystem {
     async readFile(path: string): Promise<string | null> {
         const transaction = this.db.transaction("files", "readonly");
         const objectStore = transaction.objectStore("files");
-        const request = objectStore.get(path);
+
+        const index = objectStore.index("path");
+        const range = IDBKeyRange.only(path);
+        const request = index.get(range);
 
         return new Promise((resolve, reject) => {
             request.onerror = () => {
-                console.error("Failed to read file");
-                reject();
+                reject("Failed to read file");
             };
             request.onsuccess = () => {
                 const file: VtronFile = request.result;
                 resolve(file ? file.content : null);
-
             };
         });
     }
-    whenReady(): Promise<VtronFileSystem> {
-        if (this.db) {
-            return Promise.resolve(this);
-        }
-        return new Promise<VtronFileSystem>((resolve, reject) => {
-            this._ready = resolve;
-        })
-    }
+
 
     /**
      * 写入文件内容到指定路径
@@ -84,39 +108,129 @@ class VtronFileSystem {
         icon: string;
         type: string;
     }): Promise<void> {
-        const transaction = this.db.transaction("files", "readwrite");
-        const objectStore = transaction.objectStore("files");
         let parentPath = path.split("/").slice(0, -1).join("/");
         if (parentPath === "") parentPath = "/";
+        // judge if file exists
+        let exists = await this.exists(parentPath);
+        if (!exists) {
+            return Promise.reject("Cannot write file to a non-exist path");
+        }
+        const transaction = this.db.transaction("files", "readwrite");
+        const objectStore = transaction.objectStore("files");
+
         const request = objectStore.put(
             new VtronFile(path,
                 parentPath,
                 par.content,
-                par.name || path.split("/").slice(-1)[0],
+                path.split("/").slice(-1)[0],
                 par.icon,
                 par.type)
         );
-        if(/^\/C\/Users\//.test(path)){
-            this.asyncSystemConfig();
-        }
         return new Promise((resolve, reject) => {
             request.onerror = () => {
                 console.error("Failed to write file");
-                reject();
+                reject("Failed to write file");
             };
             request.onsuccess = () => {
+                // if (/^\/C\/Users\//.test(path)) {
+                //     this.asyncSystemConfig();
+                // }
+                this.commitWatch(path, par.content);
                 resolve();
             };
         });
     }
-    async getFileInfo(path: string): Promise<VtronFile | null> {
-        const transaction = this.db.transaction("files", "readonly");
+    async appendFile(path: string, content: string): Promise<void> {
+        const transaction = this.db.transaction("files", "readwrite");
         const objectStore = transaction.objectStore("files");
-        const request = objectStore.get(path);
+
+        const index = objectStore.index("path");
+        const range = IDBKeyRange.only(path);
+        const request = index.get(range);
+
         return new Promise((resolve, reject) => {
             request.onerror = () => {
                 console.error("Failed to read file");
-                reject();
+                reject("Failed to read file");
+            };
+            request.onsuccess = () => {
+                const file: VtronFile = request.result;
+                if (file) {
+                    file.content += content;
+                    const request = objectStore.put(file);
+                    request.onerror = () => {
+                        console.error("Failed to write file");
+                        reject("Failed to write file");
+                    };
+                    request.onsuccess = () => {
+                        this.commitWatch(path, file.content);
+                        resolve();
+                    };
+                } else {
+                    console.error("File not found");
+                    reject("File not found");
+                }
+            };
+        });
+    }
+    /**
+   * 读取指定路径下的所有文件和文件夹
+   * @param path 目录路径
+   * @returns 文件和文件夹列表
+   */
+    async readdir(path: string): Promise<VtronFile[]> {
+        const transaction = this.db.transaction("files", "readonly");
+        const objectStore = transaction.objectStore("files");
+
+        const index = objectStore.index("parentPath");
+        const range = IDBKeyRange.only(path);
+        const request = index.getAll(range);
+
+        return new Promise((resolve, reject) => {
+            request.onerror = () => {
+                console.error("Failed to read directory");
+                reject("Failed to read directory");
+            };
+            request.onsuccess = () => {
+                const files = request.result;
+                resolve(files);
+            };
+        });
+    }
+
+    async exists(path: string): Promise<boolean> {
+        const transaction = this.db.transaction("files", "readonly");
+        const objectStore = transaction.objectStore("files");
+
+        const index = objectStore.index("path");
+        const range = IDBKeyRange.only(path);
+        const request = index.getAll(range);
+
+        return new Promise((resolve, reject) => {
+            request.onerror = () => {
+                console.error("Failed to read file");
+                reject("Failed to read file");
+            };
+            request.onsuccess = () => {
+                const fileArray: VtronFile[] = request.result;
+                resolve(fileArray.length ? true : false);
+            };
+        });
+    }
+
+
+    async stat(path: string): Promise<VtronFile | null> {
+        const transaction = this.db.transaction("files", "readonly");
+        const objectStore = transaction.objectStore("files");
+
+        const index = objectStore.index("path");
+        const range = IDBKeyRange.only(path);
+        const request = index.get(range);
+
+        return new Promise((resolve, reject) => {
+            request.onerror = () => {
+                console.error("Failed to read file");
+                reject("Failed to read file");
             };
             request.onsuccess = () => {
                 const file: VtronFile = request.result;
@@ -129,78 +243,78 @@ class VtronFileSystem {
      * 删除指定路径的文件
      * @param path 文件路径
      */
-    async deleteFile(path: string): Promise<void> {
+    async unlink(path: string): Promise<void> {
         const transaction = this.db.transaction("files", "readwrite");
         const objectStore = transaction.objectStore("files");
-        const request = objectStore.delete(path);
-        if(/^\/C\/Users\//.test(path)){
-            this.asyncSystemConfig();
-        }
+
+        const index = objectStore.index("path");
+        const range = IDBKeyRange.only(path);
+        const request = index.get(range);
+
         return new Promise((resolve, reject) => {
             request.onerror = () => {
                 console.error("Failed to delete file");
-                reject();
+                reject("Failed to delete file");
             };
             request.onsuccess = () => {
-                resolve();
+                let file: VtronFile = request.result;
+                if (file) {
+                    if (file.type === "dir") {
+                        reject("Cannot delete a directory");
+                    } else {
+                        objectStore.delete(request.result.id);
+                        this.commitWatch(path, file.content);
+                        resolve();
+                    }
+                } else {
+                    reject("File not found");
+                }
+
             };
         });
     }
-    /**
-   * 读取指定路径下的所有文件和文件夹
-   * @param path 目录路径
-   * @returns 文件和文件夹列表
-   */
-    async readDirectory(path: string): Promise<VtronFile[]> {
-        const transaction = this.db.transaction("files", "readonly");
-        const objectStore = transaction.objectStore("files");
-        // get 'parentPath' === path
-        const index = objectStore.index("parentPath");
-        const range = IDBKeyRange.only(path);
-        const request = index.getAll(range);
-
-        return new Promise((resolve, reject) => {
-            request.onerror = () => {
-                console.error("Failed to read directory");
-                reject();
-            };
-            request.onsuccess = () => {
-                const files = request.result;
-                resolve(files);
-            };
-        });
-    }
-
-    /**
-     * 创建新的文件夹
-     * @param path 文件夹路径
-     */
-    async createDirectory(path: string): Promise<void> {
+    async rename(path: string, newPath: string): Promise<void> {
         const transaction = this.db.transaction("files", "readwrite");
         const objectStore = transaction.objectStore("files");
 
-        let parentPath = path.split("/").slice(0, -1).join("/");
-        if (parentPath === "") parentPath = "/";
-        let res = objectStore.get(path);
-        res.onsuccess = () => {
-            if (res.result) {
-                return Promise.resolve();
-            }
-        }
-
-        const request = objectStore.put(
-            new VtronFile(path, parentPath,
-                "", path.split("/").slice(-1)[0],
-                "folder",
-                "folder")
-        );
+        const index = objectStore.index("path");
+        const range = IDBKeyRange.only(path);
+        const request = index.get(range);
 
         return new Promise((resolve, reject) => {
             request.onerror = () => {
-                console.error("Failed to create directory");
-                reject();
+                reject("Failed to read file");
             };
             request.onsuccess = () => {
+                const file: VtronFile = request.result;
+                if (file) {
+                    function updatePath(vfile: VtronFile, vFileNewPath: string, vParentPath: string) {
+                        if (vfile.type === "dir") {
+                            objectStore.index("parentPath").openCursor(IDBKeyRange.only(vfile.path)).onsuccess =
+                                (event: any) => {
+                                    let cursor: IDBCursorWithValue = event.target.result;
+                                    if (cursor) {
+                                        let tempfile = cursor.value;
+                                        let tempNewPath = vFileNewPath + '/' + tempfile.path.split('/').slice(-1)[0];
+                                        updatePath(tempfile,
+                                            tempNewPath,
+                                            vFileNewPath
+                                        );
+                                        cursor.continue()
+                                    }
+                                }
+                            vfile.path = vFileNewPath;
+                            vfile.parentPath = vParentPath;
+                            objectStore.put(vfile);
+                        } else {
+                            vfile.path = vFileNewPath;
+                            vfile.parentPath = vParentPath;
+                            objectStore.put(vfile);
+                        }
+                    }
+                    updatePath(file, newPath, newPath.split("/").slice(0, -1).join("/"));
+                }
+                this.commitWatch(path, file.content);
                 resolve();
             };
         });
@@ -210,38 +324,94 @@ class VtronFileSystem {
      * 删除指定路径的文件夹及其内容
      * @param path 文件夹路径
      */
-    async deleteDirectory(path: string): Promise<void> {
+    async rmdir(path: string): Promise<void> {
         const transaction = this.db.transaction("files", "readwrite");
         const objectStore = transaction.objectStore("files");
-        const range = IDBKeyRange.bound(path, path + "\uffff");
-        const request = objectStore.delete(range);
+
+        const index = objectStore.index("path");
+        const range = IDBKeyRange.only(path);
+        const request = index.get(range);
+
         return new Promise((resolve, reject) => {
             request.onerror = () => {
-                console.error("Failed to delete directory");
-                reject();
+                reject("Failed to read file");
             };
             request.onsuccess = () => {
+                const file: VtronFile = request.result;
+                if (file) {
+                    function updatePath(vfile: VtronFile) {
+                        if (vfile.type === "dir") {
+                            objectStore.index("parentPath").openCursor(IDBKeyRange.only(vfile.path)).onsuccess =
+                                (event: any) => {
+                                    let cursor: IDBCursorWithValue = event.target.result;
+                                    if (cursor) {
+                                        let tempfile = cursor.value;
+                                        updatePath(tempfile);
+                                        cursor.continue()
+                                    }
+                                }
+                        }
+                        objectStore.index("path").openCursor(IDBKeyRange.only(vfile.path)).onsuccess =
+                            (event: any) => {
+                                let cursor: IDBCursorWithValue = event.target.result;
+                                if (cursor) {
+                                    objectStore.delete(cursor.value.id);
+                                    cursor.continue()
+                                }
+                            }
+                    }
+                    updatePath(file);
+                }
+                this.commitWatch(path, file.content);
                 resolve();
             };
         });
     }
 
-    async asyncSystemConfig(){
-        initAppList();
+    /**
+     * 创建新的文件夹
+     * @param path 文件夹路径
+     */
+    async mkdir(path: string): Promise<void> {
+        let parentPath = path.split("/").slice(0, -1).join("/");
+        if (parentPath === "") parentPath = "/";
+        // judge if file exists
+        let exists = await this.exists(parentPath);
+        if (!exists) {
+            console.error("Cannot create directory to a non-exist path:" + parentPath);
+            return Promise.reject("Cannot create directory to a non-exist path:" + parentPath);
+        }
+
+        let res = await this.exists(path);
+        if (res) {
+            // console.error("Directory already exists");
+            return Promise.resolve();
+        }
+
+        const transaction = this.db.transaction("files", "readwrite");
+        const objectStore = transaction.objectStore("files");
+
+
+        const request = objectStore.put(
+            new VtronFile(path, parentPath,
+                "", path.split("/").slice(-1)[0],
+                "dir",
+                "dir")
+        );
+
+        return new Promise((resolve, reject) => {
+            request.onerror = () => {
+                console.error("Failed to create directory");
+                reject("Failed to create directory");
+            };
+            request.onsuccess = () => {
+                this.commitWatch(path, "");
+                resolve();
+            };
+        });
     }
 }
-const fs = new VtronFileSystem();
-async function initFileSystem() {
-    let res =  await fs.whenReady()
-    let isInit = await res.readDirectory('/C');
-    if(isInit.length) return fs;
-    res.createDirectory('/C');
-    res.createDirectory('/C/Users');
-    res.createDirectory('/C/Users/Desktop');
-    return fs;
-}
+
 export {
-    initFileSystem,
-    VtronFileSystem,
-    fs
+    VtronFileSystem
 }

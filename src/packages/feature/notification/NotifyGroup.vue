@@ -28,6 +28,7 @@ let notifyGroup = useRootState().system.notify
     justify-content: flex-end;
     user-select: none;
     color: rgba(255, 255, 255, 0.845);
+    z-index: 100;
     .notify-item {
         width: var(--notify-width);
         height: var(--notify-height);

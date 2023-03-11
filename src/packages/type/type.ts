@@ -6,7 +6,7 @@ import { reactive, ref, UnwrapNestedRefs, watch } from "vue";
 import { SystemStateEnum } from "./enum";
 import { Notify } from "../feature/notification/Notification";
 export interface SystemOptions {
-    logo?:"default"|string;
+    logo?:string;
     background?:string;
     desktop?:WinAppOptions[];
     magnet?:WinAppOptions[];

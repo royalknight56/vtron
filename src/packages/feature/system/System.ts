@@ -5,6 +5,7 @@ import { RootState, SystemOptions, WinApp, WinAppOptions } from "@/packages/type
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
 import {  VtronFileSystem } from "../addon/FileSystem";
 import { initAppList } from "@/packages/hook/useAppOpen";
+import vtronLogoIcon from "@/assets/vtron-icon-nobg.png?url";
 
 let GLOBAL_SYSTEM: System | null = null;
 
@@ -14,7 +15,7 @@ export type VtronPlugin = (system: System, rootState: RootState) => void
  * @description: System 类，在初始化的过程中需要提供挂载点，以及一些配置
  */
 class System {
-    private _options: SystemOptions;
+    readonly _options: SystemOptions;
     private _rootState: RootState;
     private _eventer: Eventer;
     private _ready: ((value: System) => void) | null = null;
@@ -42,7 +43,6 @@ class System {
      */
     private initOptions(options?: SystemOptions) {
         let tempOptions = Object.assign({
-            logo: "default",
             background: "#3A98CE"
         }, options);
         return tempOptions;
@@ -107,7 +107,7 @@ class System {
         if (this.isFirstRun) {
             this.fs.writeFile(`/C/Users/${loc}/` + options.name, {
                 name: options.name,
-                icon: options.icon || '',
+                icon: options.icon || vtronLogoIcon,
                 type: 'link',
                 content: `link:${loc}:${options.name}`
             });

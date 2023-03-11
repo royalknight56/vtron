@@ -18,7 +18,7 @@ import VtronTest from "./apps/VtronTest.vue";
 import { onMounted, ref } from "vue";
 import { System } from "./packages/plug";
 import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
-
+import vtronLogoIcon from "./assets/vtron-icon-nobg.png"
 onMounted(() => {
   let testw = new BrowserWindow({
     content: TestButton,
@@ -28,11 +28,12 @@ onMounted(() => {
     backgroundColor: "rgba(0,0,0,0.3)",
   })
   new System({
+    logo: vtronLogoIcon,
     background: "https://source.unsplash.com/random/1920x1080",
     desktop: [
       {
         name: '测试按钮',
-        icon: testicon,
+        // icon: testicon,
         window: testw,
       },
       {

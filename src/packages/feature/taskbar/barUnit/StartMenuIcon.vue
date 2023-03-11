@@ -1,6 +1,6 @@
 <template>
     <div class="startmenuicon" @click.stop="emitClick">
-        <img class="startmenuicon-img" :src="winimg">
+        <img class="startmenuicon-img" :src="system?._options.logo||winimg">
     </div>
     <Transition name="startmenu">
         <StartMenu v-if="isStartmenuShow" class="startmenu"></StartMenu>
@@ -12,7 +12,9 @@ import WinLogo from "@/packages/components/WinLogo.vue";
 import { emitEvent, mountEvent } from "@packages/feature/event";
 import { ref } from "vue";
 import StartMenu from "../../startMenu/StartMenu.vue";
+import { useSystem } from "../../system";
 
+let system = useSystem();
 let isStartmenuShow = ref(false);
 mountEvent('startmenu.changeVisible', function (e: string, data: any) {
     isStartmenuShow.value = !isStartmenuShow.value;

@@ -5,15 +5,18 @@ class VtronFile {
     name: string;
     icon: string;
     type: string;
+    id: number = 0;
     constructor(path: string, parentPath: string,
         content: string, name: string,
-        icon: string, type: string) {
+        icon: string, type: string,
+        id: number = 0) {
         this.path = path;
         this.parentPath = parentPath;
         this.content = content;
         this.name = name;
         this.icon = icon;
         this.type = type;
+        this.id = id;
     }
 }
 class VtronFileSystem {
@@ -98,7 +101,7 @@ class VtronFileSystem {
 
 
     /**
-     * 写入文件内容到指定路径
+     * 写入文件内容到指定路径 不存在则创建，存在则覆盖
      * @param path 文件路径
      * @param content 文件内容
      */
@@ -115,30 +118,54 @@ class VtronFileSystem {
         if (!exists) {
             return Promise.reject("Cannot write file to a non-exist path");
         }
+        let stat = await this.stat(path);
         const transaction = this.db.transaction("files", "readwrite");
         const objectStore = transaction.objectStore("files");
 
-        const request = objectStore.put(
-            new VtronFile(path,
-                parentPath,
-                par.content,
-                path.split("/").slice(-1)[0],
-                par.icon,
-                par.type)
-        );
-        return new Promise((resolve, reject) => {
-            request.onerror = () => {
-                console.error("Failed to write file");
-                reject("Failed to write file");
-            };
-            request.onsuccess = () => {
-                // if (/^\/C\/Users\//.test(path)) {
-                //     this.asyncSystemConfig();
-                // }
-                this.commitWatch(path, par.content);
-                resolve();
-            };
-        });
+        if (!stat) {
+            const request = objectStore.put(
+                new VtronFile(path,
+                    parentPath,
+                    par.content,
+                    path.split("/").slice(-1)[0],
+                    par.icon,
+                    par.type,
+                )
+            );
+            return new Promise((resolve, reject) => {
+                request.onerror = () => {
+                    console.error("Failed to write file");
+                    reject("Failed to write file");
+                };
+                request.onsuccess = () => {
+                    this.commitWatch(path, par.content);
+                    resolve();
+                };
+            });
+        } else {
+            const request = objectStore.put(
+                new VtronFile(
+                    path,
+                    stat.parentPath,
+                    par.content,
+                    stat.name,
+                    stat.icon,
+                    stat.type,
+                )
+            );
+            return new Promise((resolve, reject) => {
+                request.onerror = () => {
+                    console.error("Failed to write file");
+                    reject("Failed to write file");
+                };
+                request.onsuccess = () => {
+                    this.commitWatch(path, par.content);
+                    resolve();
+                };
+            });
+        }
+
+
     }
     async appendFile(path: string, content: string): Promise<void> {
         const transaction = this.db.transaction("files", "readwrite");

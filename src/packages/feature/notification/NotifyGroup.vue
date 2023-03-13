@@ -20,9 +20,9 @@ let notifyGroup = useRootState().system.notify
 <style lang="scss" scoped>
 .notify {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
-    height: 100%;
+    // height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;

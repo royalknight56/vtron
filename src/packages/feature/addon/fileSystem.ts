@@ -5,18 +5,23 @@ class VtronFile {
     name: string;
     icon: string;
     type: string;
-    id: number = 0;
+    id?: number;
     constructor(path: string, parentPath: string,
         content: string, name: string,
         icon: string, type: string,
-        id: number = 0) {
+        id?: number) {
         this.path = path;
         this.parentPath = parentPath;
         this.content = content;
         this.name = name;
         this.icon = icon;
         this.type = type;
+
         this.id = id;
+        if (id === undefined) {
+            delete this.id;
+        }
+
     }
 }
 class VtronFileSystem {
@@ -41,8 +46,7 @@ class VtronFileSystem {
                 { keyPath: "id", autoIncrement: true });
             objectStore.createIndex("parentPath", "parentPath");
             objectStore.createIndex("path", "path", { unique: true });
-
-            objectStore.put(
+            objectStore.add(
                 new VtronFile('/',
                     '',
                     "",
@@ -123,7 +127,7 @@ class VtronFileSystem {
         const objectStore = transaction.objectStore("files");
 
         if (!stat) {
-            const request = objectStore.put(
+            const request = objectStore.add(
                 new VtronFile(path,
                     parentPath,
                     par.content,
@@ -151,6 +155,7 @@ class VtronFileSystem {
                     stat.name,
                     stat.icon,
                     stat.type,
+                    stat.id
                 )
             );
             return new Promise((resolve, reject) => {
@@ -419,7 +424,7 @@ class VtronFileSystem {
         const objectStore = transaction.objectStore("files");
 
 
-        const request = objectStore.put(
+        const request = objectStore.add(
             new VtronFile(path, parentPath,
                 "", path.split("/").slice(-1)[0],
                 "dir",

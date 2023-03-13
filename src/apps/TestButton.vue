@@ -11,9 +11,15 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { Notify } from "@/packages/plug";
 import { ref } from "vue";
 // import { system } from "../systeminit";
 function test(){
+    new Notify({
+        title: 'title',
+        content: '55',
+        timeout: 5000
+    })
     // console.log('test') 
     // system.Notify.notify('test',"testtest")
 }

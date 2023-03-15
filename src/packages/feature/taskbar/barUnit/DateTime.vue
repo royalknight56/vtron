@@ -1,5 +1,5 @@
 <template>
-    <div class="data">
+    <div class="date-time">
         <span class="time">{{ timeDisplay }}</span>
         <span class="date">{{ dateDisplay }}</span>
     </div>
@@ -20,7 +20,7 @@ setInterval(() => {
 }, 5000);
 </script>
 <style lang="scss" scoped>
-.data{
+.date-time{
     display: flex;
     flex-direction: column;
     align-items: center;

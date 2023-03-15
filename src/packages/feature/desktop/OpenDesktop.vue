@@ -5,6 +5,7 @@
             <DesktopBackground class="userarea-upper"></DesktopBackground>
             <WindowGroup></WindowGroup>
             <NotificationGroup></NotificationGroup>
+            <DateTimePop></DateTimePop>
         </div>
         <div class="bottom">
             <Taskbar></Taskbar>
@@ -20,6 +21,8 @@ import { emitEvent, mountEvent } from "@packages/feature/event";
 import WindowGroup from '../window/WindowGroup.vue';
 import ContextMenu from '../contextMenu/ContextMenu.vue';
 import NotificationGroup from '../notification/NotifyGroup.vue';
+import DateTimePop from '../popover/DateTimePop.vue';
+
 function backgroundDown(e: MouseEvent) {
     emitEvent('desktop.background.leftClick', e);
 }

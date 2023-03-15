@@ -6,7 +6,7 @@
         <div class="state-item network">
             <NetWork></NetWork>
         </div>
-        <div class="state-item datetime">
+        <div @click="handleClick" class="state-item datetime">
             <DateTime></DateTime>
         </div>
         <div class="showdesk">
@@ -15,10 +15,19 @@
     </div>
 </template>
 <script setup lang="ts">
+import { ref } from 'vue';
+import { emitEvent } from '../../event';
+import DateTimePop from '../../popover/DateTimePop.vue';
 import Battery from './Battery.vue';
 import DateTime from './DateTime.vue';
 import NetWork from './NetWork.vue';
 
+const isDataPopShow = ref(false);
+
+function handleClick(){
+    emitEvent('datetime.show')
+    isDataPopShow.value = !isDataPopShow.value;
+}
 </script>
 <style lang="scss" scoped>
 .state-group {

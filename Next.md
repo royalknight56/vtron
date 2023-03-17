@@ -88,38 +88,23 @@ system.whenReady().then(()=>{
 });
 
 ```
+## HTTP
 
-## BrowserWindow
-```js
-import {BrowserWindow} from "Magneton";
-let win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    // 是否开启调试模式
-    debug: true,
-    // 是否开启全屏
-    fullscreen: true,
-    // 是否开启最大化
-    maximizable: true,
-    // 是否开启最小化
-    minimizable: true,
-    // 是否开启关闭
-    closable: true,
-    // 是否开启缩放
-    resizable: true,
-    // 是否开启拖拽
-    movable: true,
-    // 是否开启透明
-    transparent: true,
-    // 是否开启阴影
-    hasShadow: true,
-    // 是否开启总是置顶
-    alwaysOnTop: true,
-    // 是否开启无边框
-    frame: true,
-    // 是否开启菜单栏
-    menu: true,
-    // 是否开启任务栏
-    taskbar: true,
-});
-```
+HTTP是一种广泛用于Web应用程序的协议。在Node.js中，可以使用http模块提供的API来创建HTTP服务器和客户端。以下是一些常用的HTTP相关API：
+
+http.createServer([options][, requestListener])：创建HTTP服务器，options是可选参数，可以设置服务器的一些选项，requestListener是一个回调函数，用于处理收到的HTTP请求。
+http.Server：HTTP服务器对象，提供了一些事件和方法，例如request事件、listen方法等。
+http.request(options[, callback])：创建HTTP客户端请求，options是一个对象，包含请求的选项，callback是一个回调函数，用于处理响应。
+http.get(options[, callback])：和http.request()类似，但是用于发送HTTP GET请求。
+response.writeHead(statusCode[, statusMessage][, headers])：设置HTTP响应头的信息，statusCode是响应状态码，statusMessage是可选的状态消息，headers是一个包含响应头信息的对象。
+response.write(chunk[, encoding][, callback])：向HTTP响应中写入数据，chunk是要写入的数据，encoding是可选的字符编码，callback是一个可选的回调函数，表示数据写入完成。
+response.end([data][, encoding][, callback])：结束HTTP响应，data是可选的响应体数据，encoding是可选的字符编码，callback是一个可选的回调函数，表示响应结束完成。
+request.abort()：终止HTTP请求。
+request.setHeader(name, value)：设置HTTP请求头信息，name是请求头名称，value是请求头的值。
+request.write(chunk[, encoding][, callback])：向HTTP请求中写入数据，chunk是要写入的数据，encoding是可选的字符编码，callback是一个可选的回调函数，表示数据写入完成。
+这些API可以帮助您构建基于HTTP协议的Web应用程序和客户端。
+
+## 指向内部http的浏览器
+
+上面通过http server 已经创建了一个服务器，通过某个链接去请求的时候，请求会发送到这个http实例。
+这样就打通了fs与请求，可以实现简单的浏览器功能。

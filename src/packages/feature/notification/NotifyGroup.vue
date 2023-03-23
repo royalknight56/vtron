@@ -36,6 +36,7 @@ let notifyGroup = useRootState().system.notify
         padding: 18px;
         margin-bottom: 10px;
         background-color: var(--color-notify);
+        transition: all 0.3s ease;
         .notify-item-title {
             font-size: 16px;
             font-weight: bold;
@@ -47,7 +48,7 @@ let notifyGroup = useRootState().system.notify
         }
     }
     .notify-item:hover {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 
     .list-move,

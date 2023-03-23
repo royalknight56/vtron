@@ -103,6 +103,7 @@ function handleRightClick(e: MouseEvent) {
       font-size: 12px;
       display: inline;
       padding: 0 10px;
+      white-space: nowrap;
     }
 
     .menubar-logo {

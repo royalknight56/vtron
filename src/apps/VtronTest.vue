@@ -12,11 +12,10 @@
 <script lang="ts" setup>
 import { Notify } from "@/packages/feature/notification/Notification";
 import { BrowserWindow } from "@/packages/plug";
-import { ref, useAttrs, getCurrentInstance, onUnmounted } from "vue";
+import { ref, useAttrs, getCurrentInstance, onUnmounted, inject } from "vue";
 
-let props = defineProps<{
-    window: BrowserWindow
-}>()
+let browserWindow:BrowserWindow = inject('browserWindow')!;
+
 function nextStep(fun: Function,time?:number) {
     return new Promise((resolve, reject) => {
         let res = fun();
@@ -26,8 +25,8 @@ function nextStep(fun: Function,time?:number) {
     })
 }
 await nextStep(() => {
-    let [x, y] = props.window.getPosition();
-    let [width, height] = props.window.getSize();
+    let [x, y] = browserWindow.getPosition();
+    let [width, height] = browserWindow.getSize();
     new Notify({
         title: 'title',
         content: `${x},${y},${width},${height}`,
@@ -35,12 +34,12 @@ await nextStep(() => {
     })
 },100)
 await nextStep(() => {
-    props.window.setPosition(100, 100);
-    props.window.setSize(500, 500);
+    browserWindow.setPosition(100, 100);
+    browserWindow.setSize(500, 500);
 },100)
 await nextStep(() => {
-    let [x, y] = props.window.getPosition();
-    let [width, height] = props.window.getSize();
+    let [x, y] = browserWindow.getPosition();
+    let [width, height] = browserWindow.getSize();
     new Notify({
         title: 'title',
         content: `${x},${y},${width},${height}`,
@@ -48,10 +47,10 @@ await nextStep(() => {
     })
 },100);
 await nextStep(() => {
-    props.window.center();
+    browserWindow.center();
 },100)
 await nextStep(() => {
-    let title = props.window.getTitle();
+    let title = browserWindow.getTitle();
     new Notify({
         title: 'title',
         content: `${title}`,
@@ -59,8 +58,8 @@ await nextStep(() => {
     })
 },100)
 await nextStep(() => {
-    props.window.setTitle('新标题');
-    let title = props.window.getTitle();
+    browserWindow.setTitle('新标题');
+    let title = browserWindow.getTitle();
     new Notify({
         title: 'title',
         content: `${title}`,
@@ -68,23 +67,23 @@ await nextStep(() => {
     })
 },100)
 await nextStep(() => {
-    props.window.maximize();
+    browserWindow.maximize();
 },200)
 await nextStep(() => {
-    props.window.restore();
+    browserWindow.restore();
 },100)
 await nextStep(() => {
-    props.window.minimize();
+    browserWindow.minimize();
 },200)
 await nextStep(() => {
-    props.window.restore();
+    browserWindow.restore();
 },100)
 
 await nextStep(() => {
-    props.window.setFullScreen(true);
+    browserWindow.setFullScreen(true);
 },100)
 await nextStep(() => {
-    props.window.setFullScreen(false);
+    browserWindow.setFullScreen(false);
 },100)
 // await nextStep(() => {
 //     props.window.restore();

@@ -6,7 +6,8 @@ import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from "
 import {  VtronFileSystem } from "../addon/FileSystem";
 import { initAppList } from "@/packages/hook/useAppOpen";
 import vtronLogoIcon from "@/assets/vtron-icon-nobg.png?url";
-
+import { BrowserWindow } from "@packages/feature/window/BrowserWindow";
+import FileViewer from "../builtin/FileViewer.vue";
 let GLOBAL_SYSTEM: System | null = null;
 
 export type VtronPlugin = (system: System, rootState: RootState) => void
@@ -63,6 +64,21 @@ class System {
         this._rootState.system.state = SystemStateEnum.opening;
         initEventListener();
         this.registerFileOpener('link', this.openLink.bind(this))
+
+        this.registerFileOpener("file",(path,content)=>{
+            let pdfwindow = new BrowserWindow({
+                width: 400,
+                height: 400,
+                center: true,
+                title:'文本文档',
+                content: FileViewer,
+                config:{
+                    content:content,
+                    path:path
+                }
+            });
+            pdfwindow.show()
+        })
         GLOBAL_SYSTEM = this;
 
         this.fs = await this.initFileSystem();

@@ -9,7 +9,8 @@
 </template>
 <script lang="ts" setup>
 import { useAppOpen } from '@/packages/hook/useAppOpen';
-import { useSystem, WinApp } from '@/packages/plug';
+import { BrowserWindow, useSystem, WinApp } from '@/packages/plug';
+import FileProps from '../builtin/FileProps.vue';
 import { emitEvent } from '../event';
 
 const { openapp, appList } = useAppOpen('apps');
@@ -23,6 +24,22 @@ function handleRightClick(mouse: MouseEvent, item: WinApp) {
                 click: () => openapp(item)
             },
             {
+                name: '属性',
+                click: () => {
+                    new BrowserWindow({
+                        title: '属性',
+                        content:FileProps,
+                        config: {
+                            content:item
+                        },
+                        width: 350,
+                        height: 400,
+                        resizable: false,
+                    }).show();
+                    // useSystem()?.fs.unlink(item.path);
+                }
+            },
+            {
                 name: '删除',
                 click: () => {
                     useSystem()?.fs.unlink(item.path);
@@ -31,15 +48,6 @@ function handleRightClick(mouse: MouseEvent, item: WinApp) {
         ]
     })
 }
-// import { useRootState } from '../state/Root';
-// import { BrowserWindow } from '../window/BrowserWindow';
-// import { WinApp } from '@packages/type/type';
-// import { UnwrapNestedRefs } from 'vue';
-// let rootState = useRootState();
-// let appList = rootState.system.apps;
-// function openapp(item: UnwrapNestedRefs<WinApp>) {
-//     item.window?.show();
-// }
 </script>
 <style lang="scss" scoped>
 .desk-group {

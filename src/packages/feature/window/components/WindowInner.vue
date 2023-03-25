@@ -4,7 +4,7 @@
     </template>
     <template v-else>
         <Suspense>
-            <component :is="window.content" :window="window"></component>
+            <component :is="window.content"></component>
         </Suspense>
     </template>
 </template>

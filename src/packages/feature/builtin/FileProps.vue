@@ -13,7 +13,7 @@
             <div class="split-line"></div>
             <div class="propitem">
                 <div class="propname">文件类型：</div>
-                <div class="propvalue">{{ file?.type }}</div>
+                <div class="propvalue">{{ file?.type }}<WinButton class="some-button" @click="editType">修改类型</WinButton></div>
             </div>
             <div class="propitem">
                 <div class="propname">位置：</div>
@@ -31,13 +31,26 @@ import WinButton from '@/packages/components/WinButton.vue';
 import { inject } from 'vue';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
-
+import EditType from "./EditType.vue"
 let window: BrowserWindow | undefined = inject('browserWindow');
 
 let file = await useSystem()?.fs.stat(window?.config.content.path);
 
 function confirm(){
     window?.close();
+}
+function editType(){
+    new BrowserWindow({
+        title: '修改类型',
+        content:EditType,
+        config: {
+            content:file
+        },
+        width: 300,
+        height: 200,
+        center: true,
+        resizable: false,
+    }).show();
 }
 </script>
 <style lang="scss" scoped>
@@ -102,6 +115,7 @@ function confirm(){
                 flex: 1;
                 display: flex;
                 align-items: center;
+                // justify-content: space-between;
             }
         }
     }
@@ -111,6 +125,9 @@ function confirm(){
         justify-content: flex-end;
         margin-top: 10px;
         gap: 10px;
+    }
+    .some-button{
+        margin-left: 10px;
     }
 
 }</style>

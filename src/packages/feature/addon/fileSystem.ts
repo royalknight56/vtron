@@ -152,9 +152,9 @@ class VtronFileSystem {
                     path,
                     stat.parentPath,
                     par.content,
-                    stat.name,
-                    stat.icon,
-                    stat.type,
+                    par.name||stat.name,
+                    par.icon||stat.icon,
+                    par.type||stat.type,
                     stat.id
                 )
             );

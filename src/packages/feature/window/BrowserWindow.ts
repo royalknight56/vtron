@@ -1,6 +1,8 @@
 import { defineComponent, nextTick, reactive, DefineComponent, markRaw } from "vue";
 import { useRootState } from "../state/Root";
 import { Tree } from "@packages/util/Tree";
+import { Eventer } from "../event";
+
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
 // implements BrowserWindowModel
 const enum WindowStateEnum {
@@ -21,8 +23,11 @@ interface BrowserWindowConstructorOptions {
     y: number
     center: boolean
     resizable: boolean
+    minimizable: boolean
     frame: boolean
     fullscreen: boolean
+    alwaysOnTop: boolean
+    skipTaskbar: boolean
     backgroundColor: string
 }
 interface WindowInfo extends BrowserWindowConstructorOptions {
@@ -42,8 +47,11 @@ class BrowserWindow {
         y: 0,
         center: false,
         resizable: true,
+        minimizable: true,
         frame: true,
         fullscreen: false,
+        alwaysOnTop: false,
+        skipTaskbar: false,
         backgroundColor: '#fff'
     }
     public static defaultInfo: Omit<WindowInfo, keyof BrowserWindowConstructorOptions> = {
@@ -61,6 +69,7 @@ class BrowserWindow {
     children: Array<BrowserWindow> = []
     content?: ReturnType<typeof defineComponent> | string
     config: any
+    eventer: Eventer = new Eventer()
     constructor(option?: BrowserWindowOption, parent?: BrowserWindow) {
         this._option = Object.assign({}, BrowserWindow.defaultOption, option);
         this.config = this._option.config;
@@ -118,6 +127,9 @@ class BrowserWindow {
             }
         }
     }
+    on(event: string, callback: Function) {
+        this.eventer.on(event, callback);
+    }
     moveTop() {// 窗口置顶
         let rootState = useRootState();
         let tree = rootState.system.windowTree;
@@ -151,6 +163,7 @@ class BrowserWindow {
     destroy() {// 销毁窗口
         // TODO:
         this.close();
+        this.eventer.emit("closed","closed");
     }
     close() {// 关闭窗口
         this.windowInfo.isCreated = false;
@@ -159,6 +172,7 @@ class BrowserWindow {
             return val === this;
         }), 1);
         rootState.system.windowTree.removeNode(this);
+        this.eventer.emit("closed","closed");
     }
     /**
      * Moves window to the center of the screen.
@@ -206,7 +220,7 @@ class BrowserWindow {
         return this.windowInfo.state === WindowStateEnum.minimize;
     }
     isMinimizable() {// 判断窗口是否可以最小化
-        return true;
+        return this.windowInfo.minimizable;
     }
     isNormal() {// 判断窗口是否正常
         return this.windowInfo.state === WindowStateEnum.normal;

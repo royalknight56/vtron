@@ -1,13 +1,13 @@
 <template>
   <div class="menubar" @dblclick="handleEvent('max')" @contextmenu.stop="handleRightClick">
     <div class="menubar-left">
-      <div class="menubar-logo">
+      <div v-if="browserWindow.windowInfo.icon" class="menubar-logo">
         <img draggable="false" :src="browserWindow.windowInfo.icon" />
       </div>
       <div class="menubar-title">{{ browserWindow.windowInfo.title }}</div>
     </div>
     <div class="menubar-right">
-      <div class="menubar-item" @click="handleEvent('min')">
+      <div class="menubar-item" v-if="browserWindow.isMinimizable()"  @click="handleEvent('min')">
         <svg class="menubar-icon" viewBox="0 0 1024 1024">
           <path d="M128 512h768a25.6 25.6 0 1 1 0 51.2h-768a25.6 25.6 0 1 1 0-51.2z" />
         </svg>

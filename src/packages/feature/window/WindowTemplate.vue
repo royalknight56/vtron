@@ -104,7 +104,9 @@ onMounted(() => {
     top: computed(() => windowInfo.y + "px"),
 
     zIndex: computed(() => {
-      // TODO:
+      if(windowInfo.alwaysOnTop){
+        return 9999
+      }
       return windowInfo.zindex;
     }),
     backgroundColor: computed(() => windowInfo.backgroundColor),

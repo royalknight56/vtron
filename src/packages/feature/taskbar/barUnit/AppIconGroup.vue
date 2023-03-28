@@ -9,7 +9,9 @@
 import AppIcon from './AppIcon.vue';
 import { useRootState } from '@packages/feature/state/Root';
 let rootState = useRootState();
-let treeRoot = rootState.system.windowOrder;
+let treeRoot = rootState.system.windowOrder.filter((node)=>{
+    return node.windowInfo.skipTaskbar === false;
+});
 </script>
 <style lang="scss" scoped>
 .appicon-group{

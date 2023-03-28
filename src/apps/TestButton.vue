@@ -11,15 +11,24 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { Dialog } from "@/packages/feature/dialog/Dialog";
 import { Notify } from "@/packages/plug";
 import { ref } from "vue";
 // import { system } from "../systeminit";
-function test(){
+async function test(){
+
+    let res = await Dialog.showMessageBox({
+        type: 'info',
+        title: 'title',
+        message: '无法将文件移动到“C:',
+    });
+
     new Notify({
         title: 'title',
-        content: '55',
+        content: JSON.stringify(res),
         timeout: 5000
-    })
+    });
+
     // console.log('test') 
     // system.Notify.notify('test',"testtest")
 }

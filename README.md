@@ -5,7 +5,7 @@
  * @FilePath: /myindex/README.md
 -->
 
-<p align="center"><a href="https://myim.online" target="_blank" rel="noopener noreferrer"><img width="200" src="./vtron-logo-nobg.png" alt="vtron logo"></a></p>
+<p align="center"><a href="https://myim.online" target="_blank" rel="noopener noreferrer"><img width="200" src="./rdmassert/vtron-logo-nobg.png" alt="vtron logo"></a></p>
 
 <div align="center">
 

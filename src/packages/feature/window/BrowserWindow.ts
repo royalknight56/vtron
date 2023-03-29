@@ -266,5 +266,6 @@ class BrowserWindow {
 }
 export {
     BrowserWindow,
-    WindowStateEnum
+    WindowStateEnum,
+    BrowserWindowOption
 }

@@ -1,8 +1,8 @@
 import { SystemStateEnum } from "@/packages/type/enum";
 import { RootState, SystemOptions } from "@/packages/type/type";
-import { reactive, ref, UnwrapNestedRefs, watch } from "vue";
+import { reactive, ref, UnwrapNestedRefs, watch,markRaw } from "vue";
 import { Tree } from "@packages/util/Tree"
-import { BrowserWindow } from "../window/BrowserWindow";
+import { BrowserWindow,BrowserWindowOption } from "../window/BrowserWindow";
 
 const rootState:RootState = reactive({
     ref:undefined,
@@ -16,9 +16,9 @@ const rootState:RootState = reactive({
         windowTree:new Tree<BrowserWindow>(),
         windowOrder:Array<BrowserWindow>(),
         windowMap:{
-            Desktop:new Map<string,BrowserWindow>(),
-            Magnet:new Map<string,BrowserWindow>(),
-            Menulist:new Map<string,BrowserWindow>(),
+            Desktop:new Map<string,BrowserWindowOption>(),
+            Magnet:new Map<string,BrowserWindowOption>(),
+            Menulist:new Map<string,BrowserWindowOption>(),
         },
         topWindow:undefined,
         winnum:0,
@@ -36,6 +36,15 @@ const rootState:RootState = reactive({
     }
 } as RootState) as unknown as RootState;
 function initRootState(options:SystemOptions):RootState{
+    options.desktop?.forEach((item)=>{
+        item.window.content = markRaw(item.window.content);
+    })
+    options.magnet?.forEach((item)=>{
+        item.window.content = markRaw(item.window.content);
+    })
+    options.menulist?.forEach((item)=>{
+        item.window.content = markRaw(item.window.content);
+    })
     rootState.system.options = options;
     return rootState;
 }

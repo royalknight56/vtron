@@ -1,7 +1,7 @@
 <template>
     <div class="appicon-group">
         <template v-for="node in treeRoot" :key="node.value?.id">
-            <AppIcon v-if="node.windowInfo.isCreated" :windowNode="node" />
+            <AppIcon v-if="node.windowInfo.isCreated && !node.windowInfo.skipTaskbar" :windowNode="node" />
         </template>
     </div>
 </template>
@@ -9,9 +9,7 @@
 import AppIcon from './AppIcon.vue';
 import { useRootState } from '@packages/feature/state/Root';
 let rootState = useRootState();
-let treeRoot = rootState.system.windowOrder.filter((node)=>{
-    return node.windowInfo.skipTaskbar === false;
-});
+let treeRoot = rootState.system.windowOrder
 </script>
 <style lang="scss" scoped>
 .appicon-group{

@@ -20,13 +20,7 @@ import { System } from "./packages/plug";
 import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
 import vtronLogoIcon from "./assets/vtron-icon-nobg.png"
 onMounted(() => {
-  let testw = new BrowserWindow({
-    content: TestButton,
-    title: "测试按钮",
-    icon: testicon,
-    center: true,
-    backgroundColor: "rgba(0,0,0,0.3)",
-  })
+
   new System({
     logo: vtronLogoIcon,
     background: "https://source.unsplash.com/random/1920x1080",
@@ -34,12 +28,18 @@ onMounted(() => {
       {
         name: '测试按钮',
         // icon: testicon,
-        window: testw,
+        window: {
+          content: TestButton,
+          title: "测试按钮",
+          icon: testicon,
+          center: true,
+          backgroundColor: "rgba(0,0,0,0.3)",
+        },
       },
       {
         name: '测试不可缩放',
         icon: testicon,
-        window: new BrowserWindow({
+        window: {
           content: TestButton,
           title: "测试不可缩放",
           icon: testicon,
@@ -48,17 +48,17 @@ onMounted(() => {
           fullscreen: true,
           resizable: false,
           backgroundColor: "rgba(0,0,0,0)",
-        })
+        }
       },
       {
         name: 'Vtron自动测试',
         icon: testicon,
-        window: new BrowserWindow({
+        window: {
           content: VtronTest,
           title: "Vtron自动测试",
           icon: testicon,
           center: true,
-        })
+        }
       }
     ]
   }).whenReady().then((system) => {
@@ -66,12 +66,12 @@ onMounted(() => {
       system.addApp({
         name: '看月亮',
         icon: testicon,
-        window: new BrowserWindow({
+        window: {
           content: "http://static.myim.online/moon/",
           title: "看月亮",
           icon: testicon,
           center: true,
-        })
+        }
       })
     }, 3000);
     // autoTestApp.show()

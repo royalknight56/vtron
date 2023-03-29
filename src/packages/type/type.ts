@@ -1,4 +1,4 @@
-import { BrowserWindow } from "../feature/window/BrowserWindow";
+import { BrowserWindow, BrowserWindowOption } from "../feature/window/BrowserWindow";
 import { Tree } from "@packages/util/Tree";
 
 import { DefineComponent } from "vue";
@@ -20,7 +20,7 @@ export interface WinApp {
 export interface WinAppOptions {
     name:string;
     icon?:string;
-    window: BrowserWindow
+    window: BrowserWindowOption
 }
 
 export type RootState ={
@@ -34,10 +34,10 @@ export type RootState ={
         windowTree:Tree<BrowserWindow>,
         windowOrder:Array<BrowserWindow>,
         windowMap:{
-            Desktop:Map<string,BrowserWindow>,
-            Magnet:Map<string,BrowserWindow>,
-            Menulist:Map<string,BrowserWindow>,
-            [key:string]:Map<string,BrowserWindow>
+            Desktop:Map<string,BrowserWindowOption>,
+            Magnet:Map<string,BrowserWindowOption>,
+            Menulist:Map<string,BrowserWindowOption>,
+            [key:string]:Map<string,BrowserWindowOption>
         },
         winnum:number;
         topWindow:BrowserWindow|undefined;

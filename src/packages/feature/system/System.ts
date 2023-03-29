@@ -179,9 +179,13 @@ class System {
         this._flieOpenerMap.set(type, func);
     }
     openLink(path: string, content: string) {
-        this._rootState.system.windowMap[
+        let winopt = this._rootState.system.windowMap[
             content.split(':')[1]
-        ].get(content.split(':')[2])?.show();
+        ].get(content.split(':')[2]);
+        if (winopt) {
+            let win = new BrowserWindow(winopt);
+            win.show();
+        }
     }
     /**打开vtron 文件系统的文件 */
     openFile(path: string) {

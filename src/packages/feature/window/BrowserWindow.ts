@@ -164,6 +164,13 @@ class BrowserWindow {
         // TODO:
         this.close();
         this.eventer.emit("closed","closed");
+        // delete this;
+        let rootState = useRootState();
+        rootState.system.windowOrder.splice(rootState.system.windowOrder.findIndex((val) => {
+            return val === this;
+        }), 1);
+        rootState.system.windowTree.removeNode(this);
+        
     }
     close() {// 关闭窗口
         this.windowInfo.isCreated = false;

@@ -60,7 +60,7 @@ function handleEvent(event: string) {
       }
       break;
     case 'close':
-      props.browserWindow.close();
+      props.browserWindow.destroy();
       break;
   }
 }

@@ -13,10 +13,8 @@
 <script lang="ts" setup>
 import { Dialog } from "@/packages/feature/dialog/Dialog";
 import { Notify } from "@/packages/plug";
-import { ref } from "vue";
 // import { system } from "../systeminit";
 async function test(){
-
     let res = await Dialog.showMessageBox({
         type: 'info',
         title: 'title',

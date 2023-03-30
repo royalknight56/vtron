@@ -33,7 +33,40 @@ onMounted(() => {
           title: "测试按钮",
           icon: testicon,
           center: true,
-          backgroundColor: "rgba(0,0,0,0.3)",
+          // backgroundColor: "rgba(0,0,0,1)",
+        },
+      },
+      {
+        name: '测试按钮2',
+        // icon: testicon,
+        window: {
+          content: TestButton,
+          title: "测试按钮",
+          icon: testicon,
+          center: true,
+          // backgroundColor: "rgba(0,0,0,1)",
+        },
+      },
+      {
+        name: '测试按钮3',
+        // icon: testicon,
+        window: {
+          content: TestButton,
+          title: "测试按钮",
+          icon: testicon,
+          center: true,
+          // backgroundColor: "rgba(0,0,0,1)",
+        },
+      },
+      {
+        name: '测试按钮4',
+        // icon: testicon,
+        window: {
+          content: TestButton,
+          title: "测试按钮",
+          icon: testicon,
+          center: true,
+          // backgroundColor: "rgba(0,0,0,1)",
         },
       },
       {

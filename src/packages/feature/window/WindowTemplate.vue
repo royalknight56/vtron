@@ -12,14 +12,13 @@
     min: windowInfo.state == WindowStateEnum.minimize,
     fullscreen: windowInfo.state == WindowStateEnum.fullscreen,
     noframe: !windowInfo.frame,
+    disable: windowInfo.disable,
   }" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus" ref="$win_outer">
     <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
       <MenuBar :browser-window="browserWindow"></MenuBar>
     </div>
     <div class="wintmp_main" :class="{ resizeing: resizemode != 'null' }" @mousedown.stop="predown"
-      @touchstart.stop.passive="predown"
-      @contextmenu.stop.prevent
-      >
+      @touchstart.stop.passive="predown" @contextmenu.stop.prevent>
       <WindowInner :window="browserWindow"></WindowInner>
     </div>
     <div class="right_border win_drag_border" :class="{ isChoseMode: resizemode == 'r' }" v-if="resizable"
@@ -104,7 +103,7 @@ onMounted(() => {
     top: computed(() => windowInfo.y + "px"),
 
     zIndex: computed(() => {
-      if(windowInfo.alwaysOnTop){
+      if (windowInfo.alwaysOnTop) {
         return 9999
       }
       return windowInfo.zindex;
@@ -132,6 +131,9 @@ onMounted(() => {
     }
   );
   dragAble.onDrag((x, y) => {
+    if (windowInfo.disable) {
+      return;
+    }
     if (windowInfo.state !== WindowStateEnum.maximize) {
       windowInfo.x = x;
       windowInfo.y = y;
@@ -155,6 +157,9 @@ onMounted(() => {
   });
 })
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
+  if (windowInfo.disable) {
+    return;
+  }
   scaleAble?.startScale(e, dire, windowInfo.x, windowInfo.y, windowInfo.width, windowInfo.height);
 }
 
@@ -211,6 +216,15 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   width: 100% !important;
   height: 100% !important;
   transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
+}
+
+.disable {
+  .wintmp_uper{
+    pointer-events: none;
+  }
+  .wintmp_main{
+    pointer-events: none;
+  }
 }
 
 .min {

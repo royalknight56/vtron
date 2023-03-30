@@ -35,6 +35,7 @@ interface WindowInfo extends BrowserWindowConstructorOptions {
     istop: boolean
     zindex: number
     isCreated: boolean
+    disable: boolean
 }
 type BrowserWindowOption = Partial<Omit<BrowserWindowConstructorOptions, 'content'>> & { content: BrowserWindowContent }
 class BrowserWindow {
@@ -59,6 +60,7 @@ class BrowserWindow {
         istop: false,
         zindex: 0,
         isCreated: false,
+        disable: false
     }
     readonly windowInfo: WindowInfo
     private _option: BrowserWindowConstructorOptions
@@ -164,13 +166,6 @@ class BrowserWindow {
         // TODO:
         this.close();
         this.eventer.emit("closed","closed");
-        // delete this;
-        let rootState = useRootState();
-        rootState.system.windowOrder.splice(rootState.system.windowOrder.findIndex((val) => {
-            return val === this;
-        }), 1);
-        rootState.system.windowTree.removeNode(this);
-        
     }
     close() {// 关闭窗口
         this.windowInfo.isCreated = false;
@@ -238,7 +233,9 @@ class BrowserWindow {
     isFullScreen() {// 判断窗口是否全屏
         return this.windowInfo.state === WindowStateEnum.fullscreen;
     }
-    
+    isDisable() {// 判断窗口是否禁用
+        return this.windowInfo.disable;
+    }
     /**
      * Contains the window's width and height.
      */
@@ -268,6 +265,9 @@ class BrowserWindow {
     setPosition(x: number, y: number) {
         this.windowInfo.x = x;
         this.windowInfo.y = y;
+    }
+    setDisable(flag: boolean) {
+        this.windowInfo.disable = flag;
     }
     
 }

@@ -44,7 +44,11 @@ class Tree<T>{
             if (child.value === value){
                 return index;
             }else{
-                index++;
+                let cindex = 0;
+                if(child.children.length>0){
+                    cindex = child.findIndex(value,filter);
+                }
+                index+=cindex+1;
             };
         }
         return -1;

@@ -2,13 +2,13 @@
     <div class="dialog">
         <div class="dialog-content">
             <div class="dialog-icon">
-                <img  class="dialog-icon_img" :src="iconMap[win.config.option.type]" alt="">
+                <img class="dialog-icon_img" :src="iconMap[win.config.option.type]" alt="">
             </div>
             {{ win.config.option.message }}
         </div>
         <div class="dialog-button">
             <template v-for="(item, index) in win.config.option.buttons" :key="item">
-                <WinButton  @click="handleClick(index)">{{ item }}</WinButton>
+                <WinButton @click="handleClick(index)">{{ item }}</WinButton>
             </template>
         </div>
     </div>
@@ -22,8 +22,8 @@ import infoIcon from "@packages/assets/info-icon.ico";
 import questionIcon from "@packages/assets/question-icon.ico";
 import warningIcon from "@packages/assets/warning-icon.ico";
 
-const iconMap:{
-    [key:string]:string
+const iconMap: {
+    [key: string]: string
 } = {
     error: errorIcon,
     info: infoIcon,
@@ -32,7 +32,7 @@ const iconMap:{
 };
 
 let win: BrowserWindow = inject('browserWindow')!;
-function handleClick(index:number) {
+function handleClick(index: number) {
     win.config.res({
         response: index,
     });
@@ -40,33 +40,37 @@ function handleClick(index:number) {
 }
 </script>
 <style lang="scss" scoped>
-.dialog{
+.dialog {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    .dialog-content{
+
+    .dialog-content {
         width: 100%;
         height: 80px;
         font-size: var(--ui-font-size);
         display: flex;
         justify-content: center;
         align-items: center;
-        .dialog-icon{
+
+        .dialog-icon {
             width: 100px;
             height: 60px;
             display: flex;
             justify-content: center;
             align-items: center;
-            .dialog-icon_img{
+
+            .dialog-icon_img {
                 width: 34px;
                 height: 34px;
             }
         }
     }
-    .dialog-button{
+
+    .dialog-button {
         width: 100%;
         height: 40px;
         display: flex;
@@ -74,9 +78,9 @@ function handleClick(index:number) {
         justify-content: flex-end;
         align-items: center;
         background-color: var(--color-ui-gray);
-        .win-button{
+
+        .win-button {
             margin: 0 10px;
         }
     }
-}
-</style>
+}</style>

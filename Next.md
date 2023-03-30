@@ -114,3 +114,5 @@ request.write(chunk[, encoding][, callback])：向HTTP请求中写入数据，ch
 在electron中，通过BrowserWindow类来创建窗口，通过win.close()来关闭窗口，通过win.destroy()来销毁窗口。
 
 这里在桌面的软件是直接传入了BrowserWindow实例，这样这个窗口会一直在内存中，需要找到一种方法使得窗口在关闭的时候，也会被销毁。
+
+## 

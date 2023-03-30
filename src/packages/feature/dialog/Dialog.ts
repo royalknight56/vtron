@@ -1,3 +1,5 @@
+import { toRaw } from "vue";
+import { useRootState } from "../state/Root";
 import { BrowserWindow } from "../window/BrowserWindow";
 import DialogVue from "./DialogTemp.vue";
 class Dialog{
@@ -11,6 +13,7 @@ class Dialog{
     }):Promise<{
         response: number;
     }>{
+
         let opt = Object.assign({
             message: '',
             type: 'info',
@@ -44,7 +47,17 @@ class Dialog{
             alwaysOnTop: true,
         })
         dialogwin.show();
+        useRootState().system.windowOrder.forEach((win)=>{
+            if(!(toRaw(win)===dialogwin)){
+                win.setDisable(true)
+            }
+        })
         dialogwin.on('closed', ()=>{
+            useRootState().system.windowOrder.forEach((win)=>{
+                if(!(toRaw(win)===dialogwin)){
+                    win.setDisable(false)
+                }
+            })
             promres({
                 response: -1
             })

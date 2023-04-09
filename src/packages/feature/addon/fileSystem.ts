@@ -1,3 +1,5 @@
+import { InitFile, InitFileItem } from "./SystemFileConfig"
+import { initAppList } from "@/packages/hook/useAppOpen";
 class VtronFile {
     path: string;
     parentPath: string;
@@ -56,7 +58,31 @@ class VtronFileSystem {
             );
         };
     }
+    private async createDir(fileItem: InitFileItem, path: string = '') {
 
+        if (fileItem.type === 'file') {
+            if (fileItem.content) {
+                await this.writeFile(path + '/' + fileItem.name, fileItem.content);
+            }
+        } else if (fileItem.type === 'dir') {
+            console.log(path + '/' + fileItem.name);
+            await this.mkdir(path + '/' + fileItem.name);
+
+            if (fileItem.children?.length) {
+                for (let i = 0; i < fileItem.children.length; i++) {
+                    await this.createDir(fileItem.children[i], path + '/' + fileItem.name);
+                }
+            }
+        }
+    }
+    async initFileSystem() {
+        await this.whenReady();
+        await this.createDir(InitFile)
+        this.registerWatcher(/^\/C\/Users\//, (path, content) => {
+            initAppList();
+        });
+        return this;
+    }
     whenReady(): Promise<VtronFileSystem> {
         if (this.db) {
             return Promise.resolve(this);
@@ -120,7 +146,7 @@ class VtronFileSystem {
         // judge if file exists
         let exists = await this.exists(parentPath);
         if (!exists) {
-            return Promise.reject("Cannot write file to a non-exist path");
+            return Promise.reject("Cannot write file to a non-exist path:" + path);
         }
         let stat = await this.stat(path);
         const transaction = this.db.transaction("files", "readwrite");
@@ -152,9 +178,9 @@ class VtronFileSystem {
                     path,
                     stat.parentPath,
                     par.content,
-                    par.name||stat.name,
-                    par.icon||stat.icon,
-                    par.type||stat.type,
+                    par.name || stat.name,
+                    par.icon || stat.icon,
+                    par.type || stat.type,
                     stat.id
                 )
             );

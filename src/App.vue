@@ -96,19 +96,15 @@ onMounted(() => {
     ]
   }).whenReady().then((system) => {
     setTimeout(() => {
-      system.addApp({
-        name: '看月亮',
-        icon: testicon,
-        window: {
+      system.fs.writeFile('/C/Users/Desktop/看月亮',
+        {
           content: "http://static.myim.online/moon/",
-          title: "看月亮",
+          name: "看月亮",
           icon: testicon,
-          center: true,
+          type: 'ink/url'
         }
-      })
+      )
     }, 3000);
-    // autoTestApp.show()
-
   });
 })
 

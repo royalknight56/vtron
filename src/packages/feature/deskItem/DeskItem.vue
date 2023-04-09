@@ -74,6 +74,7 @@ function handleRightClick(mouse: MouseEvent, item: WinApp) {
         }
 
         .desk-item_title {
+            color: var(--color-ui-desk-item-title);
             display: block;
             text-align: center;
         }

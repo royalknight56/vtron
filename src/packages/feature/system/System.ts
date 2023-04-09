@@ -1,13 +1,19 @@
 import { initRootState } from "@/packages/feature/state/Root";
 import { SystemStateEnum } from "@/packages/type/enum"
-import { nextTick, reactive, watch } from "vue";
+import { markRaw, nextTick, reactive, watch } from "vue";
 import { RootState, SystemOptions, WinApp, WinAppOptions } from "@/packages/type/type";
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
-import {  VtronFileSystem } from "../addon/FileSystem";
+import { VtronFileSystem } from "../addon/FileSystem";
 import { initAppList } from "@/packages/hook/useAppOpen";
 import vtronLogoIcon from "@/assets/vtron-icon-nobg.png?url";
+import myComputerLogoIcon from "@/packages/assets/computer.ico?url";
+import infoIcon from "@/packages/assets/info-icon.ico?url";
+
+
 import { BrowserWindow } from "@packages/feature/window/BrowserWindow";
 import FileViewer from "../builtin/FileViewer.vue";
+import MyComputerVue from "../builtin/MyComputer.vue";
+import UrlBrowser from "../builtin/UrlBrowser.vue";
 let GLOBAL_SYSTEM: System | null = null;
 
 export type VtronPlugin = (system: System, rootState: RootState) => void
@@ -65,25 +71,56 @@ class System {
         initEventListener();
         this.registerFileOpener('link', this.openLink.bind(this))
 
-        this.registerFileOpener("file",(path,content)=>{
+        this.registerFileOpener("file", (path, content) => {
             let pdfwindow = new BrowserWindow({
                 width: 400,
                 height: 400,
                 center: true,
-                title:'文本文档',
+                title: '文本文档',
                 content: FileViewer,
+                config: {
+                    content: content,
+                    path: path
+                }
+            });
+            pdfwindow.show()
+        });
+
+        this.registerFileOpener('ink/url',(path,content)=>{
+            let imgwindow = new BrowserWindow({
+                width: 400,
+                height: 400,
+                icon: infoIcon,
+                center: true,
+                title:'',
+                content: UrlBrowser,
                 config:{
                     content:content,
                     path:path
                 }
             });
-            pdfwindow.show()
+            imgwindow.show()
         })
+
         GLOBAL_SYSTEM = this;
 
         this.fs = await this.initFileSystem();
         this.initApp();
         initAppList();
+        this.addApp({
+            name: '此电脑',
+            icon: myComputerLogoIcon,
+            window: {
+                width: 400,
+                height: 400,
+                center: true,
+                title: '此电脑',
+                content: MyComputerVue,
+                config: {
+                    path: '/'
+                }
+            }
+        })
         this._rootState.system.state = SystemStateEnum.open;
         this._ready && this._ready(this);
     }
@@ -107,16 +144,8 @@ class System {
             this.addMenuList(item);
         })
     }
-    private async initFileSystem(){
-        let res = await new VtronFileSystem().whenReady()
-        await res.mkdir('/C');
-        await res.mkdir('/C/Users');
-        await res.mkdir('/C/Users/Desktop');
-        await res.mkdir('/C/Users/Magnet');
-        await res.mkdir('/C/Users/Menulist');
-        res.registerWatcher(/^\/C\/Users\//,(path,content)=>{
-            initAppList();
-        })
+    private async initFileSystem() {
+        let res = await new VtronFileSystem().initFileSystem()
         return res;
     }
     private addWindowSysLink(loc: string, options: WinAppOptions) {
@@ -128,6 +157,7 @@ class System {
                 content: `link:${loc}:${options.name}`
             });
         }
+        options.window.content = markRaw(options.window.content);
         this._rootState.system.windowMap[loc].set(options.name, options.window);
     }
     /**
@@ -190,7 +220,7 @@ class System {
     /**打开vtron 文件系统的文件 */
     openFile(path: string) {
         this.fs.stat(path).then((res) => {
-            this._flieOpenerMap.get(res?.type||'link')?.(path, res?.content || '');
+            this._flieOpenerMap.get(res?.type || 'link')?.(path, res?.content || '');
         })
     }
     // 插件系统

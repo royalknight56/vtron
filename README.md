@@ -152,5 +152,14 @@ let system = new System({
 
 ![](https://komarev.com/ghpvc/?username=royalknight56&color=blue)
 
+# 需要的帮助
+
+我们需要帮助：
+
+目前需要帮助的方向：
+
+文档建设
+
+更加完善的功能：向更加完善的webOS迈进
 
 ## Thanks

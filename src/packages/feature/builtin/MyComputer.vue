@@ -352,7 +352,6 @@ function end_input() {
 
 .desk-item:hover {
     border: 1px solid rgba(255, 255, 255, 0.521);
-
     background-color: rgba(255, 255, 255, 0.281);
 }
 
@@ -436,6 +435,9 @@ function end_input() {
     flex-shrink: 0;
     text-align: center;
     filter: brightness(230%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .uper_nav_button_small {

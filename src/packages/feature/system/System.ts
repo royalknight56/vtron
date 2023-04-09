@@ -115,6 +115,7 @@ class System {
                 height: 400,
                 center: true,
                 title: '此电脑',
+                icon: myComputerLogoIcon,
                 content: MyComputerVue,
                 config: {
                     path: '/'
@@ -123,6 +124,7 @@ class System {
         })
         this._rootState.system.state = SystemStateEnum.open;
         this._ready && this._ready(this);
+        this.fs.runPlugin(this)
     }
     /**
      * @description: 初始化事件系统

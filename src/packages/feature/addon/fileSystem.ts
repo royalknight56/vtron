@@ -1,3 +1,4 @@
+import { System } from "../system";
 import { InitFile, InitFileItem } from "./SystemFileConfig"
 import { initAppList } from "@/packages/hook/useAppOpen";
 class VtronFile {
@@ -73,6 +74,19 @@ class VtronFileSystem {
                     await this.createDir(fileItem.children[i], path + '/' + fileItem.name);
                 }
             }
+        }
+    }
+    async runPlugin(system:System){
+        let pluginsFile = await this.readdir('/C/System/plugs');
+        if(pluginsFile){
+            pluginsFile.forEach((file)=>{
+                if(file.type === 'file'){
+                    let content = file.content;
+                    if(content){
+                        new Function('system',content)(system);
+                    }
+                }
+            })
         }
     }
     async initFileSystem() {

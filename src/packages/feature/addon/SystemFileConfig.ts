@@ -32,23 +32,39 @@ const InitFile = {
             ]
         },
         {
-            name: 'Program Files',
+            name: 'System',
             type: 'dir',
             children: [
+                {
+                    name:'plugs',
+                    type: 'dir',
+                    children: [
+                        // {
+                        //     name: 'test.ts',
+                        //     type: 'file',
+                        //     content: {
+                        //         name: 'test.ts',
+                        //         icon: 'https://img.alicdn.com/tfs/TB1ZQ9Xb4v1gK0jSZFFXXb0sXXa-256-256.png',
+                        //         type: 'file',
+                        //         content: 'console.log("test")'
+                        //     }
+                        // }
+                    ]
+                },
                 {
                     name: 'Vtron',
                     type: 'dir',
                     children: [
-                        {
-                            name: 'Vtron.exe',
-                            type: 'file',
-                            content: {
-                                content: 'link:Program Files:Vtron:Vtron.exe',
-                                name: 'Vtron.exe',
-                                icon: 'https://img.alicdn.com/tfs/TB1ZQ9Xb4v1gK0jSZFFXXb0sXXa-256-256.png',
-                                type: 'link'
-                            }
-                        }
+                        // {
+                        //     name: 'Vtron.exe',
+                        //     type: 'file',
+                        //     content: {
+                        //         content: 'link:Program Files:Vtron:Vtron.exe',
+                        //         name: 'Vtron.exe',
+                        //         icon: 'https://img.alicdn.com/tfs/TB1ZQ9Xb4v1gK0jSZFFXXb0sXXa-256-256.png',
+                        //         type: 'link'
+                        //     }
+                        // }
                     ]
                 }
             ]

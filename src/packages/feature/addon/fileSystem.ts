@@ -83,7 +83,11 @@ class VtronFileSystem {
                 if(file.type === 'file'){
                     let content = file.content;
                     if(content){
-                        new Function('system',content)(system);
+                        new Function('system','process',content)(system,{
+                            env:{
+                                NODE_ENV:'development'
+                            }
+                        });
                     }
                 }
             })

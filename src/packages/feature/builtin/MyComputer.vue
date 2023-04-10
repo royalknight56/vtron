@@ -56,7 +56,7 @@
             </div>
         </div>
     </div>
-    <div class="desk-outer" ref="compu">
+    <div class="desk-outer" ref="compu" @contextmenu="showOuterMenu($event)">
         <div draggable="true" class="desk-item" v-for="(item, index) in currentList" @dblclick="openFolder(item)"
             @contextmenu="showMenu(item, index, $event)">
             <div class="item_img">
@@ -87,6 +87,9 @@ import unknownicon from "@/packages/assets/unknown.ico";
 // import { Notify, useSystem } from "vtron";
 import { Notify } from "../notification/Notification";
 import { useSystem } from "../system";
+import { BrowserWindow } from "@/packages/plug";
+import FileProps from '@/packages/feature/builtin/FileProps.vue';
+
 let system = useSystem();
 
 function pathJoin(...paths: string[]) {
@@ -110,6 +113,28 @@ function creatingEditEnd() {
         createInput.value = "新建文件夹";
 
     }
+}
+
+function showOuterMenu(e: MouseEvent) {
+    system?.emitEvent('contextMenu.show', {
+        mouse: e,
+        menuList: [
+            {
+                name: '新建文件',
+                click: () => {
+                    useSystem()?.fs.writeFile(
+                        pathJoin(router_url.value, '新建文件'), {
+                        content: "",
+                        name: "新建文件",
+                        icon: unknownicon,
+                        type: "file"
+                    }).then(()=>{
+                        refersh(router_url.value);
+                    });
+                }
+            }
+        ]
+    });
 }
 function createFolder() {
     creating.value = true;
@@ -155,6 +180,21 @@ function showMenu(item: any, index: number, ev: MouseEvent) {
                 name: '打开',
                 click: () => {
                     openFolder(item)
+                }
+            },
+            {
+                name: '属性',
+                click: () => {
+                    new BrowserWindow({
+                        title: '属性',
+                        content: FileProps,
+                        config: {
+                            content: item
+                        },
+                        width: 350,
+                        height: 400,
+                        resizable: false,
+                    }).show();
                 }
             },
             {

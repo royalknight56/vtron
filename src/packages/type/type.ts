@@ -11,6 +11,7 @@ export interface SystemOptions {
     desktop?:WinAppOptions[];
     magnet?:WinAppOptions[];
     menulist?:WinAppOptions[];
+    rootStyle?:any;
 }
 export interface WinApp {
     name:string;

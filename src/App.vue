@@ -93,7 +93,10 @@ onMounted(() => {
           center: true,
         }
       }
-    ]
+    ],
+    rootStyle:{
+      '--color-ui-desk-item-title': '#a30'
+    }
   }).whenReady().then((system) => {
     setTimeout(() => {
       system.fs.writeFile('/C/Users/Desktop/看月亮',

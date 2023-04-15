@@ -161,6 +161,7 @@ class BrowserWindow {
         // this._setZindex();
         this._makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         this.moveTop();
+        this.eventer.emit("show","show");
     }
     destroy() {// 销毁窗口
         // TODO:

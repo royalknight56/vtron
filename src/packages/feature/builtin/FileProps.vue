@@ -35,21 +35,21 @@
 </template>
 <script setup lang="ts">
 import WinButton from '@/packages/components/WinButton.vue';
-import { inject } from 'vue';
+import { inject, ref } from 'vue';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 import EditType from "./EditType.vue"
 import foldericon from "@/packages/assets/folder.ico";
 import unknownicon from "@/packages/assets/unknown.ico";
 let window: BrowserWindow | undefined = inject('browserWindow');
-
-let file = await useSystem()?.fs.stat(window?.config.content.path);
+const file = ref();
+file.value = await useSystem()?.fs.stat(window?.config.content.path);
 
 function confirm() {
     window?.close();
 }
 function editType() {
-    new BrowserWindow({
+    let win = new BrowserWindow({
         title: '修改类型',
         content: EditType,
         config: {
@@ -59,7 +59,12 @@ function editType() {
         height: 200,
         center: true,
         resizable: false,
-    }).show();
+    })
+    win.on('closed', async () => {
+        file.value = await useSystem()?.fs.stat(window?.config.content.path);
+    })
+    win.show();
+    
 }
 </script>
 <style lang="scss" scoped>

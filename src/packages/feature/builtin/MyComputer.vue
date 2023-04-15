@@ -56,16 +56,18 @@
             </div>
         </div>
     </div>
-    <div class="desk-outer" ref="compu" @contextmenu="showOuterMenu($event)">
-        <div draggable="true" class="desk-item" v-for="(item, index) in currentList" @dblclick="openFolder(item)"
-            @contextmenu="showMenu(item, index, $event)">
+    <div class="desk-outer" ref="compu" 
+    @contextmenu.self="showOuterMenu($event)">
+        <div draggable="true" class="desk-item" v-for="(item, index) in currentList"
+        @contextmenu="showMenu(item, index, $event)"
+        @dragstart="startDrag($event,item)"
+        @drop="folderDrop($event,item)"
+         @dblclick="openFolder(item)">
             <div class="item_img">
-
                 <img v-if="item.icon === 'dir'" draggable="false" width="50" :src="foldericon" />
                 <img v-else-if="item.icon === 'file'" draggable="false" width="50" :src="unknownicon" />
                 <img v-else-if="item.icon" draggable="false" width="50" :src="item.icon" />
                 <img v-else draggable="false" width="50" :src="unknownicon" />
-                <!-- <img draggable="false" width="50" :src="item ? item.icon === 'dir' ? foldericon : item.icon : foldericon" /> -->
             </div>
             <div class="item_name">{{ item.name }}</div>
         </div>
@@ -78,7 +80,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, watch } from "vue";
+import { ref, reactive, computed, onMounted, watch, inject } from "vue";
 import type { UnwrapNestedRefs } from "vue";
 // import folderimg from "../assets/newFolder.ico";
 import foldericon from "@/packages/assets/folder.ico";
@@ -87,13 +89,18 @@ import unknownicon from "@/packages/assets/unknown.ico";
 // import { Notify, useSystem } from "vtron";
 import { Notify } from "../notification/Notification";
 import { useSystem } from "../system";
-import { BrowserWindow } from "@/packages/plug";
+import { BrowserWindow, VtronFile } from "@/packages/plug";
 import FileProps from '@/packages/feature/builtin/FileProps.vue';
+import * as fspath from "@packages/feature/addon/Path";
 
+let browserWindow: BrowserWindow | undefined = inject('browserWindow');
+
+const config = browserWindow?.config;
 let system = useSystem();
 
+
 function pathJoin(...paths: string[]) {
-    return paths.join('/').replace(/\/+/g, '/');
+    return fspath.join(...paths);
 }
 
 const createInput = ref("新建文件夹");
@@ -128,7 +135,7 @@ function showOuterMenu(e: MouseEvent) {
                         name: "新建文件",
                         icon: unknownicon,
                         type: "file"
-                    }).then(()=>{
+                    }).then(() => {
                         refersh(router_url.value);
                     });
                 }
@@ -143,7 +150,15 @@ let router_url = ref("");
 watch(router_url, async (newVal, oldVal) => {
     refersh(newVal);
 })
-router_url.value = "/";
+
+onMounted(() => {
+    if (config) {
+        router_url.value = config.path;
+    }else{
+        router_url.value = "/";
+    }
+});
+
 async function refersh(newVal: string) {
     if (!await isVia(newVal)) return;
     let result = await system?.fs.readdir(newVal);
@@ -163,7 +178,7 @@ async function isVia(newVal: string, alert: boolean = false) {
     }
     return true
 }
-let currentList = ref<Array<any>>([]);
+let currentList = ref<Array<VtronFile>>([]);
 
 function openFolder(item: any) {
     if (item.type == 'dir') {
@@ -216,36 +231,32 @@ function showMenu(item: any, index: number, ev: MouseEvent) {
 }
 function backFolder() {
     let path = router_url.value;
-    let arr = path.split('/');
-    arr.pop();
-    router_url.value = arr.join('/');
+    if (path === '/') return;
+
+    router_url.value = fspath.join(path, '..');
 }
 
-// function startDrag(ev: DragEvent, item: Folder) {
-//     ev?.dataTransfer?.setData('fromobj', 'web');
-//     ev?.dataTransfer?.setData('frominfo', JSON.stringify(item));
-//     ev?.dataTransfer?.setData('fromid', item.id.toString());
-//     // console.log(ev?.dataTransfer)
-//     // console.log(item)
-//     // ev?.dataTransfer?.setData('text', ev.target.id);
-// }
+function startDrag(ev: DragEvent, item:VtronFile) {
+    ev?.dataTransfer?.setData('fromobj', 'web');
+    ev?.dataTransfer?.setData('frompath', item.path);
+}
 
-// // 拖到文件放下时
-// function folderDrop(ev: DragEvent, item: Folder, index: number) {
-//     let fromInfo = JSON.parse(ev?.dataTransfer?.getData('frominfo') || '{}')
-//     let fromId = ev?.dataTransfer?.getData('fromid')
-//     // console.log(fromInfo)
-//     // console.log(item)
-//     if (fromInfo.id == item.id) {
-//         return;
-//     }
-//     let file = findFileById(Number(fromId))
-
-//     if (file) {
-//         deleteFileById(Number(fromId))
-//         folderStack[folderStack.length - 1]?.children?.[index]?.children?.push(file)
-//     }
-// }
+// 拖到文件放下时
+function folderDrop(ev: DragEvent, item: VtronFile) {
+    let frompath = ev?.dataTransfer?.getData('frompath')
+    if(!frompath) return;
+    if (frompath == item.path) {
+        return;
+    }
+    system?.fs.rename(frompath, pathJoin(item.path, fspath.basename(frompath))).then(() => {
+        refersh(router_url.value);
+    }, (err) => {
+        new Notify({
+            title: "移动失败",
+            content: err,
+        });
+    });
+}
 // 拖动文件上传
 let compu = ref(null);
 onMounted(() => {
@@ -344,11 +355,8 @@ async function readFileList(list: FileList | undefined) {
         reader.onprogress = function (ev) {
             var scale = ev.loaded / ev.total;
             if (scale >= 0.5) {
-                // alert(1);
                 reader.abort();
             }
-            // console.log(scale);
-            // oM.value = scale * 100;
         };
         reader.readAsDataURL(new Blob([item as BlobPart]));
     }
@@ -378,20 +386,16 @@ function end_input() {
 .desk-item {
     position: relative;
     cursor: default;
-    /* user-select: none; */
     box-sizing: border-box;
-    /* display: flex; */
-    /* align-items: center; */
     width: 70px;
-    height: 90px;
+    height: 100px;
     background-color: rgba(119, 119, 119, 0);
     color: white;
-    /* text-shadow: 0px 0px 3px #000000; */
     border: 1px solid rgba(0, 0, 0, 0);
 }
 
 .desk-item:hover {
-    border: 1px solid rgba(255, 255, 255, 0.521);
+    border: 1px solid rgba(149, 149, 149, 0.233);
     background-color: rgba(255, 255, 255, 0.281);
 }
 

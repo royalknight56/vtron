@@ -1,6 +1,7 @@
 import { System } from "../system";
 import { InitFile, InitFileItem } from "./SystemFileConfig"
 import { initAppList } from "@/packages/hook/useAppOpen";
+import * as fspath from "@packages/feature/addon/Path";
 class VtronFile {
     path: string;
     parentPath: string;
@@ -21,6 +22,7 @@ class VtronFile {
         this.type = type;
 
         this.id = id;
+
         if (id === undefined) {
             delete this.id;
         }
@@ -66,7 +68,6 @@ class VtronFileSystem {
                 await this.writeFile(path + '/' + fileItem.name, fileItem.content);
             }
         } else if (fileItem.type === 'dir') {
-            console.log(path + '/' + fileItem.name);
             await this.mkdir(path + '/' + fileItem.name);
 
             if (fileItem.children?.length) {
@@ -76,16 +77,16 @@ class VtronFileSystem {
             }
         }
     }
-    async runPlugin(system:System){
+    async runPlugin(system: System) {
         let pluginsFile = await this.readdir('/C/System/plugs');
-        if(pluginsFile){
-            pluginsFile.forEach((file)=>{
-                if(file.type === 'file'){
+        if (pluginsFile) {
+            pluginsFile.forEach((file) => {
+                if (file.type === 'file') {
                     let content = file.content;
-                    if(content){
-                        new Function('system','process',content)(system,{
-                            env:{
-                                NODE_ENV:'development'
+                    if (content) {
+                        new Function('system', 'process', content)(system, {
+                            env: {
+                                NODE_ENV: 'development'
                             }
                         });
                     }
@@ -486,6 +487,7 @@ class VtronFileSystem {
             };
         });
     }
+
 }
 
 export {

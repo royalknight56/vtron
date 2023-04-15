@@ -2,7 +2,13 @@
     <div class="desk-group">
         <div @dblclick="openapp(item)" @contextmenu.stop.prevent="handleRightClick($event, item)" class="desk-item"
             v-for="item in appList" :key="item.name">
-            <img draggable="false" class="desk-item_img" :src="item.icon" alt="">
+            <!-- <img draggable="false" class="desk-item_img" :src="item.icon" alt=""> -->
+
+            <img class="desk-item_img" v-if="item.icon === 'dir'" draggable="false" :src="foldericon" />
+            <img class="desk-item_img" v-else-if="item.icon === 'file'" draggable="false" :src="unknownicon" />
+            <img class="desk-item_img" v-else-if="item.icon" draggable="false" :src="item.icon" />
+            <img class="desk-item_img" v-else draggable="false" :src="unknownicon" />
+
             <span class="desk-item_title">{{ item.name }}</span>
         </div>
     </div>
@@ -12,7 +18,8 @@ import { useAppOpen } from '@/packages/hook/useAppOpen';
 import { BrowserWindow, useSystem, WinApp } from '@/packages/plug';
 import FileProps from '../builtin/FileProps.vue';
 import { emitEvent } from '../event';
-
+import foldericon from "@/packages/assets/folder.ico";
+import unknownicon from "@/packages/assets/unknown.ico";
 const { openapp, appList } = useAppOpen('apps');
 
 function handleRightClick(mouse: MouseEvent, item: WinApp) {
@@ -28,9 +35,9 @@ function handleRightClick(mouse: MouseEvent, item: WinApp) {
                 click: () => {
                     new BrowserWindow({
                         title: '属性',
-                        content:FileProps,
+                        content: FileProps,
                         config: {
-                            content:item
+                            content: item
                         },
                         width: 350,
                         height: 400,

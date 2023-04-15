@@ -7,13 +7,20 @@
         </div>
         <div class="content">
             <div class="propitem">
-                <div class="propname"><img class="file-icon" :src="file?.icon"></div>
+                <div class="propname">
+                    <img class="file-icon" v-if="file?.icon === 'dir'" draggable="false" width="50" :src="foldericon" />
+                    <img class="file-icon" v-else-if="file?.icon === 'file'" draggable="false" width="50"
+                        :src="unknownicon" />
+                    <img class="file-icon" v-else-if="file?.icon" draggable="false" width="50" :src="file?.icon" />
+                    <img class="file-icon" v-else draggable="false" width="50" :src="unknownicon" />
+                </div>
                 <div class="propvalue">{{ file?.name }}</div>
             </div>
             <div class="split-line"></div>
             <div class="propitem">
                 <div class="propname">文件类型：</div>
-                <div class="propvalue">{{ file?.type }}<WinButton class="some-button" @click="editType">修改类型</WinButton></div>
+                <div class="propvalue">{{ file?.type }}<WinButton class="some-button" @click="editType">修改类型</WinButton>
+                </div>
             </div>
             <div class="propitem">
                 <div class="propname">位置：</div>
@@ -32,19 +39,21 @@ import { inject } from 'vue';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 import EditType from "./EditType.vue"
+import foldericon from "@/packages/assets/folder.ico";
+import unknownicon from "@/packages/assets/unknown.ico";
 let window: BrowserWindow | undefined = inject('browserWindow');
 
 let file = await useSystem()?.fs.stat(window?.config.content.path);
 
-function confirm(){
+function confirm() {
     window?.close();
 }
-function editType(){
+function editType() {
     new BrowserWindow({
         title: '修改类型',
-        content:EditType,
+        content: EditType,
         config: {
-            content:file
+            content: file
         },
         width: 300,
         height: 200,
@@ -119,14 +128,16 @@ function editType(){
             }
         }
     }
-    .button-group{
+
+    .button-group {
         display: flex;
         flex-direction: row;
         justify-content: flex-end;
         margin-top: 10px;
         gap: 10px;
     }
-    .some-button{
+
+    .some-button {
         margin-left: 10px;
     }
 

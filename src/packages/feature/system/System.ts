@@ -89,6 +89,21 @@ class System {
             pdfwindow.show()
         });
 
+        this.registerFileOpener("dir", (path, content) => {
+            let pdfwindow = new BrowserWindow({
+                width: 400,
+                height: 400,
+                center: true,
+                title: '此电脑',
+                content: MyComputerVue,
+                config: {
+                    content: content,
+                    path: path
+                }
+            });
+            pdfwindow.show()
+        });
+
         this.registerFileOpener('ink/url',(path,content)=>{
             let imgwindow = new BrowserWindow({
                 width: 400,

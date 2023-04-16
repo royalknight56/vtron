@@ -64,10 +64,7 @@
         @drop="folderDrop($event,item)"
          @dblclick="openFolder(item)">
             <div class="item_img">
-                <img v-if="item.icon === 'dir'" draggable="false" width="50" :src="foldericon" />
-                <img v-else-if="item.icon === 'file'" draggable="false" width="50" :src="unknownicon" />
-                <img v-else-if="item.icon" draggable="false" width="50" :src="item.icon" />
-                <img v-else draggable="false" width="50" :src="unknownicon" />
+                <FileIcon :icon="item.icon" />
             </div>
             <div class="item_name">{{ item.name }}</div>
         </div>
@@ -85,6 +82,7 @@ import type { UnwrapNestedRefs } from "vue";
 // import folderimg from "../assets/newFolder.ico";
 import foldericon from "@/packages/assets/folder.ico";
 import unknownicon from "@/packages/assets/unknown.ico";
+import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
 
 // import { Notify, useSystem } from "vtron";
 import { Notify } from "../notification/Notification";

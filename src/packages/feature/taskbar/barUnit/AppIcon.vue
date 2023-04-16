@@ -1,12 +1,16 @@
 <template>
     <div class="appicon" @contextmenu.prevent="handleRightClick" @click="handleClick">
-        <img draggable="false" :src="windowNode.windowInfo.icon" />
+        <div class="appicon-img">
+            <FileIcon :icon="windowNode.windowInfo.icon" />
+        </div>
     </div>
 </template>
 <script lang="ts" setup>
 import { UnwrapNestedRefs } from 'vue';
 import { emitEvent } from '../../event';
 import { BrowserWindow } from '../../window/BrowserWindow';
+import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
+
 let props = defineProps<{
     windowNode:UnwrapNestedRefs<BrowserWindow>;
 }>();
@@ -51,7 +55,7 @@ function handleClick(){
     display: flex;
     justify-content: center;
     align-items: center;
-    img{
+    .appicon-img{
         user-select: none;
         width: 60%;
         height: 60%;

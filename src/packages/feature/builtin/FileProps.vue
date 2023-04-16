@@ -8,11 +8,9 @@
         <div class="content">
             <div class="propitem">
                 <div class="propname">
-                    <img class="file-icon" v-if="file?.icon === 'dir'" draggable="false" width="50" :src="foldericon" />
-                    <img class="file-icon" v-else-if="file?.icon === 'file'" draggable="false" width="50"
-                        :src="unknownicon" />
-                    <img class="file-icon" v-else-if="file?.icon" draggable="false" width="50" :src="file?.icon" />
-                    <img class="file-icon" v-else draggable="false" width="50" :src="unknownicon" />
+                    <div class="file-icon">
+                        <FileIcon :icon="file?.icon" />
+                    </div>
                 </div>
                 <div class="propvalue">{{ file?.name }}</div>
             </div>
@@ -41,6 +39,7 @@ import { BrowserWindow } from '../window/BrowserWindow';
 import EditType from "./EditType.vue"
 import foldericon from "@/packages/assets/folder.ico";
 import unknownicon from "@/packages/assets/unknown.ico";
+import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
 let window: BrowserWindow | undefined = inject('browserWindow');
 const file = ref();
 file.value = await useSystem()?.fs.stat(window?.config.content.path);
@@ -118,6 +117,7 @@ function editType() {
             .propname {
                 width: 80px;
                 margin-left: 20px;
+
             }
 
             .file-icon {

@@ -96,6 +96,7 @@ class System {
                 center: true,
                 title: '此电脑',
                 content: MyComputerVue,
+                icon: myComputerLogoIcon,
                 config: {
                     content: content,
                     path: path

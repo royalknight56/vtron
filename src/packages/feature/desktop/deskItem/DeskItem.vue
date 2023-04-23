@@ -12,8 +12,8 @@
 <script lang="ts" setup>
 import { useAppOpen } from '@/packages/hook/useAppOpen';
 import { BrowserWindow, useSystem, WinApp } from '@/packages/plug';
-import FileProps from '../builtin/FileProps.vue';
-import { emitEvent } from '../event';
+import FileProps from '@/packages/feature/builtin/FileProps.vue';
+import { emitEvent } from '@/packages/feature/event';
 import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
 
 const { openapp, appList } = useAppOpen('apps');

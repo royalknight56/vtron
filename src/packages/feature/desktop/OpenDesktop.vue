@@ -14,7 +14,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import DeskItem from '../deskItem/DeskItem.vue';
+import DeskItem from './deskItem/DeskItem.vue';
 import Taskbar from '../taskbar/Taskbar.vue';
 import DesktopBackground from './components/DesktopBackground.vue';
 import { emitEvent, mountEvent } from "@packages/feature/event";

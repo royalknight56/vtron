@@ -3,7 +3,7 @@ import { SystemStateEnum } from "@/packages/type/enum"
 import { markRaw, nextTick, reactive, watch } from "vue";
 import { RootState, SystemOptions, WinApp, WinAppOptions } from "@/packages/type/type";
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
-import { VtronFileSystem } from "../addon/FileSystem";
+import { VtronFileSystem } from "../core/FileSystem";
 import { initAppList } from "@/packages/hook/useAppOpen";
 import vtronLogoIcon from "@/assets/vtron-icon-nobg.png?url";
 import myComputerLogoIcon from "@/packages/assets/computer.ico?url";

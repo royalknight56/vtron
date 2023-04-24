@@ -9,7 +9,7 @@ let plug = {
 }
 export default plug;
 
-export { VtronFile } from "@/packages/feature/addon/FileSystem";
+export { VtronFile } from "@/packages/feature/core/FileSystem";
 export { System, useSystem } from "@/packages/feature/system/index";
 export { BrowserWindow } from "@/packages/feature/window/BrowserWindow"
 export { Notify } from "@/packages/feature/notification/Notification";

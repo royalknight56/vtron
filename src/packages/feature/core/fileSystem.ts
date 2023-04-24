@@ -1,7 +1,7 @@
 import { System } from "../system";
 import { InitFile, InitFileItem } from "./SystemFileConfig"
 import { initAppList } from "@/packages/hook/useAppOpen";
-import * as fspath from "@packages/feature/addon/Path";
+import * as fspath from "@/packages/feature/core/Path";
 class VtronFile {
     path: string;
     parentPath: string;
@@ -276,23 +276,27 @@ class VtronFileSystem {
     }
 
     async exists(path: string): Promise<boolean> {
-        const transaction = this.db.transaction("files", "readonly");
-        const objectStore = transaction.objectStore("files");
+        try{
+            const transaction = this.db.transaction("files", "readonly");
+            const objectStore = transaction.objectStore("files");
 
-        const index = objectStore.index("path");
-        const range = IDBKeyRange.only(path);
-        const request = index.getAll(range);
+            const index = objectStore.index("path");
+            const range = IDBKeyRange.only(path);
+            const request = index.getAll(range);
 
-        return new Promise((resolve, reject) => {
-            request.onerror = () => {
-                console.error("Failed to read file");
-                reject("Failed to read file");
-            };
-            request.onsuccess = () => {
-                const fileArray: VtronFile[] = request.result;
-                resolve(fileArray.length ? true : false);
-            };
-        });
+            return new Promise((resolve, reject) => {
+                request.onerror = () => {
+                    console.error("Failed to read file");
+                    reject("Failed to read file");
+                };
+                request.onsuccess = () => {
+                    const fileArray: VtronFile[] = request.result;
+                    resolve(fileArray.length ? true : false);
+                };
+            });
+        }catch(e){
+            return false;
+        }
     }
 
 

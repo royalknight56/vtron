@@ -89,7 +89,7 @@ import { Notify } from "../notification/Notification";
 import { useSystem } from "../system";
 import { BrowserWindow, VtronFile } from "@/packages/plug";
 import FileProps from '@/packages/feature/builtin/FileProps.vue';
-import * as fspath from "@packages/feature/addon/Path";
+import * as fspath from "@/packages/feature/core/Path";
 
 let browserWindow: BrowserWindow | undefined = inject('browserWindow');
 

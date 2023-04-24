@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import WinButton from '@/packages/components/WinButton.vue';
 import { inject, ref } from 'vue';
-import { VtronFile } from '../addon/FileSystem';
+import { VtronFile } from '../core/FileSystem';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 

@@ -1,3 +1,8 @@
+/**
+ * 感谢 Deno 的开源项目 deno std,所有权利归 deno std 所有
+ * Thanks to the open source project deno std of Deno, all rights belong to deno std
+ * https://github.com/denoland/deno_std
+ */
 export const CHAR_UPPERCASE_A = 65; /* A */
 export const CHAR_LOWERCASE_A = 97; /* a */
 export const CHAR_UPPERCASE_Z = 90; /* Z */

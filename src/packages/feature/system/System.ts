@@ -3,13 +3,13 @@ import { SystemStateEnum } from "@/packages/type/enum"
 import { markRaw, nextTick, reactive, watch } from "vue";
 import { RootState, SystemOptions, WinApp, WinAppOptions } from "@/packages/type/type";
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
-import { VtronFileSystem } from "../core/FileSystem";
+import { VtronFileSystem } from "@/packages/feature/core/fileSystem";
 import { initAppList } from "@/packages/hook/useAppOpen";
 import vtronLogoIcon from "@/assets/vtron-icon-nobg.png?url";
 import myComputerLogoIcon from "@/packages/assets/computer.ico?url";
 import infoIcon from "@/packages/assets/info-icon.ico?url";
 import termIcon from "@/packages/assets/term.ico?url";
-import { Shell } from "../core/Shell";
+import { Shell } from "@/packages/feature/core/Shell";
 
 import { BrowserWindow } from "@packages/feature/window/BrowserWindow";
 import FileViewer from "../builtin/FileViewer.vue";

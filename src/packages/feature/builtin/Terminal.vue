@@ -47,7 +47,6 @@ onMounted(() => {
 
         });
         let router = shell.router;
-        // let prefix = `${router}>`;
 
         inputTextList = (JSON.parse(localStorage.getItem('vtronCommandHistory') || '[]') as string[]) || []
         currentIndex = inputTextList.length
@@ -57,6 +56,9 @@ onMounted(() => {
         });
         term.loadAddon(fitAddon);
         term.open(document.getElementById('terminal')!);
+        term.write('\x1b[2m' + "Welcome to Vtron Terminal" + '\x1b[0m\r\n');
+
+
         term.write(shell.prefix);
         onUnmounted(() => {
             term.dispose()

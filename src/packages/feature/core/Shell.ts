@@ -1,5 +1,5 @@
 import { System } from "../system";
-import { VtronFileSystem } from "./FileSystem";
+import { VtronFileSystem } from "./fileSystem";
 import { commandMap } from "./shellCommand/commandMap";
 class Shell {
     system: System;
@@ -24,7 +24,7 @@ class Shell {
         this.router = router;
         this.user = user;
 
-        this.prefix = `${router}>`;
+        this.prefix = `${user} ${router}>`;
 
         this.inputTextList = [];
         this.childrenDir = [];
@@ -34,7 +34,7 @@ class Shell {
     }
     setRouter(router: string) {
         this.router = router;
-        this.prefix = `${router}>`;
+        this.prefix = `${this.user} ${router}>`;
     }
     private async handleCommand(input: string) {
         input = input.trim();

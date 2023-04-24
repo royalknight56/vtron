@@ -8,12 +8,14 @@ import { initAppList } from "@/packages/hook/useAppOpen";
 import vtronLogoIcon from "@/assets/vtron-icon-nobg.png?url";
 import myComputerLogoIcon from "@/packages/assets/computer.ico?url";
 import infoIcon from "@/packages/assets/info-icon.ico?url";
-
+import termIcon from "@/packages/assets/term.ico?url";
+import { Shell } from "../core/Shell";
 
 import { BrowserWindow } from "@packages/feature/window/BrowserWindow";
 import FileViewer from "../builtin/FileViewer.vue";
 import MyComputerVue from "../builtin/MyComputer.vue";
 import UrlBrowser from "../builtin/UrlBrowser.vue";
+import Terminal from "../builtin/Terminal.vue";
 let GLOBAL_SYSTEM: System | null = null;
 
 export type VtronPlugin = (system: System, rootState: RootState) => void
@@ -136,6 +138,22 @@ class System {
                 title: '此电脑',
                 icon: myComputerLogoIcon,
                 content: MyComputerVue,
+                config: {
+                    path: '/'
+                }
+            }
+        });
+        this.addApp({
+            name: '终端',
+            icon: termIcon,
+            window: {
+                width: 700,
+                height: 470,
+                center: true,
+                title: '终端',
+                icon: termIcon,
+                content: Terminal,
+                resizable: false,
                 config: {
                     path: '/'
                 }

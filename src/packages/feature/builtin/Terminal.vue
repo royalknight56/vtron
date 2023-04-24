@@ -19,8 +19,6 @@ let currentIndex = 0
 let inputText = ''
 let inputTextList: string[] = [];
 
-let childrenDir: string[] = [];
-
 const TERMINAL_INPUT_KEY = {
     BACK: 8, // 退格删除键
     ENTER: 13, // 回车键
@@ -42,11 +40,8 @@ onMounted(() => {
     if (sys) {
         let shell = new Shell(sys);
         shell.on('message', (msg) => {
-            // term.write(`\x1b[?K${msg}\r\n`);
             term.write(`${msg}`)
-
         });
-        let router = shell.router;
 
         inputTextList = (JSON.parse(localStorage.getItem('vtronCommandHistory') || '[]') as string[]) || []
         currentIndex = inputTextList.length
@@ -65,7 +60,6 @@ onMounted(() => {
         })
         async function prompt(term: any) {
             currentIndex = inputTextList.length
-            // await handleCommand(inputText, term);
             await shell.exec(inputText)
             term.write(shell.prefix);
         }

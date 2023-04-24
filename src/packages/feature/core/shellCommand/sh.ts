@@ -5,7 +5,7 @@ async function sh(input: string, output: (text: string) => void,shell:Shell) {
     if (path) {
         let res = await shell.system.fs.stat(vPath.join(shell.router, path))
         if (res) {
-            if (res.type === 'file') {
+            if (res.type !== 'dir') {
                 let file = await shell.system.fs.readFile(vPath.join(shell.router, path))
                 if (file) {
                     let subShell = new Shell(shell.system, shell.router, shell.user);

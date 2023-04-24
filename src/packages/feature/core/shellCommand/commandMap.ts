@@ -7,6 +7,7 @@ import { rm } from './rm';
 import { sh } from './sh';
 import { pwd } from './pwd';
 import { open } from './open';
+import { node } from './node';
 const commandMap = [
     {
         name: 'ls',
@@ -61,6 +62,12 @@ const commandMap = [
         description: 'run shell script',
         usage: 'sh [FILE]',
         callback: sh
+    },
+    {
+        name: 'node',
+        description: 'run node script',
+        usage: 'node [FILE]',
+        callback: node
     },
     {
         name: 'help',

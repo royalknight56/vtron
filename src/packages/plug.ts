@@ -8,7 +8,7 @@ let plug = {
     },
 }
 export default plug;
-
+export * from "@/packages/feature/core/Shell";
 export * from "@/packages/feature/core/Path";
 export { VtronFile } from "@/packages/feature/core/fileSystem";
 export { System, useSystem } from "@/packages/feature/system/index";

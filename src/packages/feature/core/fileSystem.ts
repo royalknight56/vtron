@@ -2,6 +2,7 @@ import { System } from "../system";
 import { InitFile, InitFileItem } from "./SystemFileConfig"
 import { initAppList } from "@/packages/hook/useAppOpen";
 import * as fspath from "@/packages/feature/core/Path";
+import { Shell } from "./Shell";
 class VtronFile {
     path: string;
     parentPath: string;
@@ -84,11 +85,7 @@ class VtronFileSystem {
                 if (file.type === 'file') {
                     let content = file.content;
                     if (content) {
-                        new Function('system', 'process', content)(system, {
-                            env: {
-                                NODE_ENV: 'development'
-                            }
-                        });
+                        new Shell(system,"/C/System/plugs",'root').exec('node ' + file.name)
                     }
                 }
             })

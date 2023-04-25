@@ -2,7 +2,7 @@
   <div class="menubar" @dblclick="handleEvent('max')" @contextmenu.stop="handleRightClick">
     <div class="menubar-left">
       <div v-if="browserWindow.windowInfo.icon" class="menubar-logo">
-        <img draggable="false" :src="browserWindow.windowInfo.icon" />
+        <FileIcon :icon="browserWindow.windowInfo.icon" />
       </div>
       <div class="menubar-title">{{ browserWindow.windowInfo.title }}</div>
     </div>
@@ -42,6 +42,8 @@
 import { BrowserWindow, WindowStateEnum } from '../BrowserWindow';
 import { UnwrapNestedRefs } from 'vue';
 import { emitEvent } from '../../event';
+import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
+
 let props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
 }>();

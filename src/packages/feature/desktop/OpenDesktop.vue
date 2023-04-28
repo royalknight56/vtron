@@ -44,7 +44,7 @@ function handleRightClick(e: MouseEvent) {
                     useSystem()?.fs.writeFile('/C/Users/Desktop/新建文件',{
                         content: "",
                         name: "新建文件",
-                        icon: vtronicon,
+                        icon: 'file',
                         type: "file"
                     });
                 }

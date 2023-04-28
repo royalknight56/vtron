@@ -46,9 +46,11 @@ class System {
     }
     setRef(ref: HTMLElement) {
         this.ref = ref;
-        Object.keys(this._options.rootStyle).forEach((key) => {
-            this.ref.style.setProperty(key, this._options.rootStyle[key]);
-        });
+        if(this._options.rootStyle){
+            Object.keys(this._options.rootStyle).forEach((key) => {
+                this.ref.style.setProperty(key, this._options.rootStyle[key]);
+            });
+        }
     }
     /**
      * @description: pure 初始化配置选项

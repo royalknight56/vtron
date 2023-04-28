@@ -9,10 +9,10 @@
             <div class="propitem">
                 <div class="propname">
                     <div class="file-icon">
-                        <FileIcon :icon="file?.icon" />
+                        <FileIcon :icon="file?.icon || 'file'" />
                     </div>
                 </div>
-                <div class="propvalue">{{ file?.name }}</div>
+                <div class="propvalue">{{ basename(file?.path||'') }} <WinButton class="some-button" @click="editFileName">重命名</WinButton></div>
             </div>
             <div class="split-line"></div>
             <div class="propitem">
@@ -37,12 +37,22 @@ import { inject, ref } from 'vue';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 import EditType from "./EditType.vue"
+import EditFileName from "./EditFileName.vue"
+
 import foldericon from "@/packages/assets/folder.ico";
 import unknownicon from "@/packages/assets/unknown.ico";
 import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
+import { mountEvent } from '../event';
+import { VtronFile } from '@/packages/plug';
+import { basename } from "@/packages/feature/core/Path"
+
 let window: BrowserWindow | undefined = inject('browserWindow');
-const file = ref();
-file.value = await useSystem()?.fs.stat(window?.config.content.path);
+const file = ref<VtronFile|null>();
+file.value = await useSystem()?.fs.stat(window?.config.content);
+
+// mountEvent('file.props.edit', async (source: string, data: any) => {
+//     file.value = await useSystem()?.fs.stat(window?.config.content);
+// });
 
 function confirm() {
     window?.close();
@@ -60,11 +70,32 @@ function editType() {
         resizable: false,
     })
     win.on('closed', async () => {
-        file.value = await useSystem()?.fs.stat(window?.config.content.path);
+        file.value = await useSystem()?.fs.stat(window?.config.content);
     })
     win.show();
-    
 }
+
+function editFileName() {
+    let win = new BrowserWindow({
+        title: '重命名',
+        content: EditFileName,
+        config: {
+            content: file
+        },
+        width: 300,
+        height: 200,
+        center: true,
+        resizable: false,
+    })
+    win.on('file.props.edit',async (source: string, data: any) => {
+        file.value = await useSystem()?.fs.stat(data);
+    })
+    // win.on('closed', async () => {
+    //     file.value = await useSystem()?.fs.stat(window?.config.content);
+    // })
+    win.show();
+}
+
 </script>
 <style lang="scss" scoped>
 .outer {

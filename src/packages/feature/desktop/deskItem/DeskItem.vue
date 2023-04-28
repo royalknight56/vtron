@@ -1,20 +1,22 @@
 <template>
     <div class="desk-group">
         <div @dblclick="openapp(item)" @contextmenu.stop.prevent="handleRightClick($event, item)" class="desk-item"
-            v-for="item in appList" :key="item.name">
+            v-for="item in appList" :key="basename(item.path)">
             <div class="desk-item_img">
                 <FileIcon :icon="item.icon" />
             </div>
-            <span class="desk-item_title">{{ item.name }}</span>
+            <span class="desk-item_title">{{ basename(item.path) }}</span>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
 import { useAppOpen } from '@/packages/hook/useAppOpen';
 import { BrowserWindow, useSystem, WinApp } from '@/packages/plug';
-import FileProps from '@/packages/feature/builtin/FileProps.vue';
+import FileProps from '@/packages/feature/builtin/FileProps.vue.js';
 import { emitEvent } from '@/packages/feature/event';
 import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
+import { createNewFile, openPropsWindow } from "@/packages/hook/useContextMenu"
+import { basename } from "@/packages/feature/core/Path"
 
 const { openapp, appList } = useAppOpen('apps');
 
@@ -29,17 +31,7 @@ function handleRightClick(mouse: MouseEvent, item: WinApp) {
             {
                 name: '属性',
                 click: () => {
-                    new BrowserWindow({
-                        title: '属性',
-                        content: FileProps,
-                        config: {
-                            content: item
-                        },
-                        width: 350,
-                        height: 400,
-                        resizable: false,
-                    }).show();
-                    // useSystem()?.fs.unlink(item.path);
+                    openPropsWindow(item.path)
                 }
             },
             {
@@ -51,6 +43,7 @@ function handleRightClick(mouse: MouseEvent, item: WinApp) {
         ]
     })
 }
+
 </script>
 <style lang="scss" scoped>
 .desk-group {

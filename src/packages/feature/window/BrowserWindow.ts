@@ -83,9 +83,9 @@ class BrowserWindow {
         let rootState = useRootState();
         this.id = rootState.system.winnum;
         rootState.system.winnum++;
-        
+
         this.windowInfo = reactive(Object.assign({}, BrowserWindow.defaultInfo, this._option));
-        if(this._option.fullscreen){
+        if (this._option.fullscreen) {
             this.windowInfo.state = WindowStateEnum.fullscreen;
         }
         this._builtin = {
@@ -132,6 +132,9 @@ class BrowserWindow {
     on(event: string, callback: Function) {
         this.eventer.on(event, callback);
     }
+    emit(event: string, ...args: any[]) {
+        this.eventer.emit(event, 'window', ...args);
+    }
     moveTop() {// 窗口置顶
         let rootState = useRootState();
         let tree = rootState.system.windowTree;
@@ -143,7 +146,7 @@ class BrowserWindow {
         // this._setZindex();
         useRootState().system.topWindow = this;
         useRootState().system.windowTree.traverseBFS((val) => {
-            if(val.value.id!==undefined){
+            if (val.value.id !== undefined) {
                 val.value._setZindex();
             }
         });
@@ -161,12 +164,12 @@ class BrowserWindow {
         // this._setZindex();
         this._makeWindowNotOverSize();// 使得窗口在生成时，不超过屏幕
         this.moveTop();
-        this.eventer.emit("show","show");
+        this.eventer.emit("show", "show");
     }
     destroy() {// 销毁窗口
         // TODO:
         this.close();
-        this.eventer.emit("closed","closed");
+        this.eventer.emit("closed", "closed");
     }
     close() {// 关闭窗口
         this.windowInfo.isCreated = false;
@@ -175,7 +178,7 @@ class BrowserWindow {
             return val === this;
         }), 1);
         rootState.system.windowTree.removeNode(this);
-        this.eventer.emit("closed","closed");
+        this.eventer.emit("closed", "closed");
     }
     /**
      * Moves window to the center of the screen.
@@ -270,7 +273,7 @@ class BrowserWindow {
     setDisable(flag: boolean) {
         this.windowInfo.disable = flag;
     }
-    
+
 }
 export {
     BrowserWindow,

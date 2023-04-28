@@ -28,14 +28,11 @@ function refershAppList() {
                 let tempList = [];
                 for (let j = 0; j < list.length; j++) {
                     const item = list[j];
-                    // if (item.type === 'link') {
                     let app: WinApp = {
-                        name: item.name,
                         icon: item.icon,
                         path: item.path
                     }
                     tempList.push(app);
-                    // }
                 }
 
                 switch (element) {
@@ -61,11 +58,12 @@ function useAppOpen(type: "apps" | "magnet" | "menulist") {
     let system = useSystem();
     let appList = rootState.system[type];
     function openapp(item: UnwrapNestedRefs<WinApp>) {
-        system?.openFile(`/C/Users/${{
-            apps: 'Desktop',
-            magnet: 'Magnet',
-            menulist: 'Menulist'
-        }[type]}/${item.name}`);
+        // system?.openFile(`/C/Users/${{
+        //     apps: 'Desktop',
+        //     magnet: 'Magnet',
+        //     menulist: 'Menulist'
+        // }[type]}/${item.name}`);
+        system?.openFile(item.path);
     }
     return {
         appList,

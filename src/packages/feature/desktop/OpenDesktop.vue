@@ -24,6 +24,7 @@ import NotificationGroup from '../notification/NotifyGroup.vue';
 import DateTimePop from '../popover/DateTimePop.vue';
 import { useSystem } from '../system';
 import vtronicon from '@packages/assets/vtron-icon-nobg.png';
+import { createNewFile,openPropsWindow } from "@/packages/hook/useContextMenu"
 
 function backgroundDown(e: MouseEvent) {
     emitEvent('desktop.background.leftClick', e);
@@ -41,12 +42,7 @@ function handleRightClick(e: MouseEvent) {
             {
                 name: '新建文件',
                 click: () => {
-                    useSystem()?.fs.writeFile('/C/Users/Desktop/新建文件',{
-                        content: "",
-                        name: "新建文件",
-                        icon: 'file',
-                        type: "file"
-                    });
+                    createNewFile('/C/Users/Desktop')
                 }
             }
         ]

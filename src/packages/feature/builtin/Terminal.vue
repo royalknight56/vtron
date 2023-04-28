@@ -11,6 +11,7 @@ import { Terminal } from "xterm";
 import { FitAddon } from 'xterm-addon-fit';
 import { useSystem } from '../system';
 import { Shell } from '../core/Shell';
+import { basename } from "@/packages/feature/core/Path"
 
 let sys = useSystem();
 
@@ -141,7 +142,7 @@ onMounted(() => {
                     let res = await sys?.fs.readdir(shell.router)
                     let list: string[] = [];
                     res?.forEach((item) => {
-                        list.push(item.name)
+                        list.push(basename(item.path))
                     })
                     let matchList = list.filter((item: any) => {
                         return item.startsWith(unready)

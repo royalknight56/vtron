@@ -56,17 +56,14 @@
             </div>
         </div>
     </div>
-    <div class="desk-outer" ref="compu" 
-    @contextmenu.self="showOuterMenu($event)">
+    <div class="desk-outer" ref="compu" @contextmenu.self="showOuterMenu($event)">
         <div draggable="true" class="desk-item" v-for="(item, index) in currentList"
-        @contextmenu="showMenu(item, index, $event)"
-        @dragstart="startDrag($event,item)"
-        @drop="folderDrop($event,item)"
-         @dblclick="openFolder(item)">
+            @contextmenu="showMenu(item, index, $event)" @dragstart="startDrag($event, item)" @drop="folderDrop($event, item)"
+            @dblclick="openFolder(item)">
             <div class="item_img">
                 <FileIcon :icon="item.icon" />
             </div>
-            <div class="item_name">{{ item.name }}</div>
+            <div class="item_name">{{ basename(item.path) }}</div>
         </div>
         <div draggable="true" class="desk-item" v-if="creating">
             <div class="item_img">
@@ -78,18 +75,18 @@
 </template>
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, watch, inject } from "vue";
-import type { UnwrapNestedRefs } from "vue";
 // import folderimg from "../assets/newFolder.ico";
 import foldericon from "@/packages/assets/folder.ico";
 import unknownicon from "@/packages/assets/unknown.ico";
 import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
 
-// import { Notify, useSystem } from "vtron";
 import { Notify } from "../notification/Notification";
 import { useSystem } from "../system";
 import { BrowserWindow, VtronFile } from "@/packages/plug";
-import FileProps from '@/packages/feature/builtin/FileProps.vue';
 import * as fspath from "@/packages/feature/core/Path";
+import { createNewFile,openPropsWindow } from "@/packages/hook/useContextMenu"
+import { basename } from "@/packages/feature/core/Path"
+import { mountEvent } from "../event";
 
 let browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
@@ -127,13 +124,7 @@ function showOuterMenu(e: MouseEvent) {
             {
                 name: '新建文件',
                 click: () => {
-                    useSystem()?.fs.writeFile(
-                        pathJoin(router_url.value, '新建文件'), {
-                        content: "",
-                        name: "新建文件",
-                        icon: unknownicon,
-                        type: "file"
-                    }).then(() => {
+                    createNewFile(router_url.value).then(() => {
                         refersh(router_url.value);
                     });
                 }
@@ -152,9 +143,12 @@ watch(router_url, async (newVal, oldVal) => {
 onMounted(() => {
     if (config) {
         router_url.value = config.path;
-    }else{
+    } else {
         router_url.value = "/";
     }
+    mountEvent('file.props.edit', async (source: string, data: any) => {
+        refersh(router_url.value);
+    });
 });
 
 async function refersh(newVal: string) {
@@ -185,7 +179,7 @@ function openFolder(item: any) {
         system?.openFile(item.path);
     }
 }
-function showMenu(item: any, index: number, ev: MouseEvent) {
+function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
     system?.emitEvent('contextMenu.show', {
         mouse: ev,
         menuList: [
@@ -198,16 +192,7 @@ function showMenu(item: any, index: number, ev: MouseEvent) {
             {
                 name: '属性',
                 click: () => {
-                    new BrowserWindow({
-                        title: '属性',
-                        content: FileProps,
-                        config: {
-                            content: item
-                        },
-                        width: 350,
-                        height: 400,
-                        resizable: false,
-                    }).show();
+                    openPropsWindow(item.path);
                 }
             },
             {
@@ -234,7 +219,7 @@ function backFolder() {
     router_url.value = fspath.join(path, '..');
 }
 
-function startDrag(ev: DragEvent, item:VtronFile) {
+function startDrag(ev: DragEvent, item: VtronFile) {
     ev?.dataTransfer?.setData('fromobj', 'web');
     ev?.dataTransfer?.setData('frompath', item.path);
 }
@@ -242,7 +227,7 @@ function startDrag(ev: DragEvent, item:VtronFile) {
 // 拖到文件放下时
 function folderDrop(ev: DragEvent, item: VtronFile) {
     let frompath = ev?.dataTransfer?.getData('frompath')
-    if(!frompath) return;
+    if (!frompath) return;
     if (frompath == item.path) {
         return;
     }
@@ -318,7 +303,6 @@ async function readFileList(list: FileList | undefined) {
                     content: reader.result as string,
                     type: item?.type || 'text/plain',
                     icon: reader.result as string,
-                    name: item?.name || 'Unknown',
                 }).then((res) => {
                     refersh(router_url.value)
                 });
@@ -329,20 +313,10 @@ async function readFileList(list: FileList | undefined) {
                     content: decodeURIComponent(escape(atob((reader.result?.toString() || '').split(',')[1]))),
                     type: item?.type || 'file',
                     icon: 'file',
-                    name: item?.name || 'Unknown',
                 }).then((res) => {
                     refersh(router_url.value)
                 });
             }
-            // system?.fs.writeFile(router_url.value + '/' + item?.name, {
-            //     content: reader.result as string,
-            //     type: item?.type || 'text/plain',
-            //     icon: reader.result as string,
-            //     name: item?.name || 'Unknown',
-            // }).then((res) => {
-            //     refersh(router_url.value)
-            // });
-            // newFile(item?.name || 'Unknown', reader.result as string)
         };
         reader.onabort = function () {
             // console.log('中断');
@@ -420,6 +394,7 @@ function end_input() {
     user-select: none;
     overflow: hidden;
     text-overflow: ellipsis;
+    word-break: break-all;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;

@@ -1,6 +1,5 @@
 import { System } from "../system";
 import * as vPath from "./Path";
-import { VtronFileSystem } from "./fileSystem";
 import { commandMap } from "./shellCommand/commandMap";
 
 class Shell {

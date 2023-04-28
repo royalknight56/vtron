@@ -1,7 +1,7 @@
 import { initRootState } from "@/packages/feature/state/Root";
 import { SystemStateEnum } from "@/packages/type/enum"
 import { markRaw, nextTick, reactive, watch } from "vue";
-import { RootState, SystemOptions, WinApp, WinAppOptions } from "@/packages/type/type";
+import { RootState, SystemOptions, WinAppOptions } from "@/packages/type/type";
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
 import { VtronFileSystem } from "@/packages/feature/core/fileSystem";
 import { initAppList } from "@/packages/hook/useAppOpen";
@@ -192,7 +192,6 @@ class System {
     private addWindowSysLink(loc: string, options: WinAppOptions) {
         if (this.isFirstRun) {
             this.fs.writeFile(`/C/Users/${loc}/` + options.name, {
-                name: options.name,
                 icon: options.icon || vtronLogoIcon,
                 type: 'link',
                 content: `link:${loc}:${options.name}`

@@ -1,15 +1,16 @@
 <template>
     <div class="magnet-group scroll-bar">
         <div @click.stop="handle(item)"
-         class="magnet-item" v-for="item in appList" :key="item.name">
+         class="magnet-item" v-for="item in appList" :key="basename(item.path)">
             <img class="magnet-item_img" :src="item.icon" alt="">
-            <span class="magnet-item_title">{{ item.name }}</span>
+            <span class="magnet-item_title">{{ basename(item.path) }}</span>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
 import { useAppOpen } from '@/packages/hook/useAppOpen';
 import { emitEvent } from '@packages/feature/event';
+import { basename } from "@/packages/feature/core/Path"
 
 const { openapp, appList } = useAppOpen('magnet');
 function handle(item: any) {

@@ -7,18 +7,16 @@ class VtronFile {
     path: string;
     parentPath: string;
     content: string;
-    name: string;
     icon: string;
     type: string;
     id?: number;
     constructor(path: string, parentPath: string,
-        content: string, name: string,
+        content: string,
         icon: string, type: string,
         id?: number) {
         this.path = path;
         this.parentPath = parentPath;
         this.content = content;
-        this.name = name;
         this.icon = icon;
         this.type = type;
 
@@ -56,7 +54,6 @@ class VtronFileSystem {
                 new VtronFile('/',
                     '',
                     "",
-                    "/",
                     "dir",
                     "dir")
             );
@@ -85,7 +82,7 @@ class VtronFileSystem {
                 if (file.type === 'file') {
                     let content = file.content;
                     if (content) {
-                        new Shell(system,"/C/System/plugs",'root').exec('node ' + file.name)
+                        new Shell(system,"/",'root').exec('node ' + file.path)
                     }
                 }
             })
@@ -153,7 +150,6 @@ class VtronFileSystem {
      */
     async writeFile(path: string, par: {
         content: string;
-        name: string;
         icon: string;
         type: string;
     }): Promise<void> {
@@ -173,7 +169,6 @@ class VtronFileSystem {
                 new VtronFile(path,
                     parentPath,
                     par.content,
-                    path.split("/").slice(-1)[0],
                     par.icon,
                     par.type,
                 )
@@ -194,7 +189,6 @@ class VtronFileSystem {
                     path,
                     stat.parentPath,
                     par.content,
-                    par.name || stat.name,
                     par.icon || stat.icon,
                     par.type || stat.type,
                     stat.id
@@ -373,7 +367,8 @@ class VtronFileSystem {
                                     let cursor: IDBCursorWithValue = event.target.result;
                                     if (cursor) {
                                         let tempfile = cursor.value;
-                                        let tempNewPath = vFileNewPath + '/' + tempfile.path.split('/').slice(-1)[0];
+                                        // let tempNewPath = vFileNewPath + '/' + tempfile.path.split('/').slice(-1)[0];
+                                        let tempNewPath = fspath.join(vFileNewPath, tempfile.path.split('/').slice(-1)[0]);
                                         updatePath(tempfile,
                                             tempNewPath,
                                             vFileNewPath
@@ -472,7 +467,7 @@ class VtronFileSystem {
 
         const request = objectStore.add(
             new VtronFile(path, parentPath,
-                "", path.split("/").slice(-1)[0],
+                "",
                 "dir",
                 "dir")
         );

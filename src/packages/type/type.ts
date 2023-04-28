@@ -14,7 +14,6 @@ export interface SystemOptions {
     rootStyle?:any;
 }
 export interface WinApp {
-    name:string;
     icon:string;
     path:string;
 }

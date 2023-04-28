@@ -86,7 +86,7 @@ import { BrowserWindow, VtronFile } from "@/packages/plug";
 import * as fspath from "@/packages/feature/core/Path";
 import { createNewFile,openPropsWindow } from "@/packages/hook/useContextMenu"
 import { basename } from "@/packages/feature/core/Path"
-import { mountEvent } from "../event";
+import { emitEvent, mountEvent } from "../event";
 
 let browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
@@ -232,7 +232,7 @@ function folderDrop(ev: DragEvent, item: VtronFile) {
         return;
     }
     system?.fs.rename(frompath, pathJoin(item.path, fspath.basename(frompath))).then(() => {
-        refersh(router_url.value);
+        emitEvent('file.props.edit');
     }, (err) => {
         new Notify({
             title: "移动失败",
@@ -340,7 +340,6 @@ function start_input() {
     path_state.value = 'inputing';
 }
 function end_input() {
-    console.log(router_url.value)
     path_state.value = 'pendding';
 }
 </script>

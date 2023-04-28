@@ -26,10 +26,10 @@ onMounted(() => {
     background: "https://source.unsplash.com/random/1920x1080",
     desktop: [
       {
-        name: '测试按钮',
+        name: '测试Url',
         // icon: testicon,
         window: {
-          content: TestButton,
+          content: "https://source.unsplash.com/random/1920x1080",
           title: "测试按钮",
           icon: testicon,
           center: true,

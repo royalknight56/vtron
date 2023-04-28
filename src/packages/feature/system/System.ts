@@ -198,7 +198,11 @@ class System {
                 content: `link:${loc}:${options.name}`
             });
         }
-        options.window.content = markRaw(options.window.content);
+        if(typeof options.window.content === 'string'){
+
+        }else{
+            options.window.content = markRaw(options.window.content);
+        }
         this._rootState.system.windowMap[loc].set(options.name, options.window);
     }
     /**

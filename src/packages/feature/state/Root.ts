@@ -37,13 +37,19 @@ const rootState:RootState = reactive({
 } as RootState) as unknown as RootState;
 function initRootState(options:SystemOptions):RootState{
     options.desktop?.forEach((item)=>{
-        item.window.content = markRaw(item.window.content);
+        if (typeof item.window.content !== "string") {
+            item.window.content = markRaw(item.window.content);
+        }
     })
     options.magnet?.forEach((item)=>{
-        item.window.content = markRaw(item.window.content);
+        if (typeof item.window.content !== "string") {
+            item.window.content = markRaw(item.window.content);
+        }
     })
     options.menulist?.forEach((item)=>{
-        item.window.content = markRaw(item.window.content);
+        if (typeof item.window.content !== "string") {
+            item.window.content = markRaw(item.window.content);
+        }
     })
     rootState.system.options = options;
     return rootState;

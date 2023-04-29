@@ -102,7 +102,6 @@ onMounted(() => {
       system.fs.writeFile('/C/Users/Desktop/看月亮',
         {
           content: "http://static.myim.online/moon/",
-          name: "看月亮",
           icon: testicon,
           type: 'ink/url'
         }

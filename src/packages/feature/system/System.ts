@@ -271,6 +271,14 @@ class System {
     use(func: VtronPlugin): void {
         return func(this, this._rootState);
     }
+    // 状态序列化和反序列化
+    async serializeState(): Promise<string> {
+        let serializeFile =await this.fs.serializeFileSystem();
+        return JSON.stringify(serializeFile);
+    }
+    deserializeState(state: string) {
+        this.fs.deserializeFileSystem(JSON.parse(state));
+    }
 }
 function useSystem() {
     return GLOBAL_SYSTEM;

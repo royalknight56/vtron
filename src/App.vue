@@ -7,6 +7,9 @@
 <template>
   <div class="outer">
     <Screen></Screen>
+    <button @click="save">save</button>
+    <button @click="restore">restore</button>
+
   </div>
 </template>
 
@@ -19,9 +22,19 @@ import { onMounted, ref } from "vue";
 import { System } from "./packages/plug";
 import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
 import vtronLogoIcon from "./assets/vtron-icon-nobg.png"
+let sys:System|null = null;
+async function save(){
+  let state = await sys?.serializeState();
+  localStorage.setItem('vtron-state', JSON.stringify(state));
+}
+async function restore(){
+  let state = localStorage.getItem('vtron-state');
+  if(state){
+    await sys?.deserializeState(JSON.parse(state));
+  }
+}
 onMounted(() => {
-
-  new System({
+  sys =  new System({
     logo: vtronLogoIcon,
     background: "https://source.unsplash.com/random/1920x1080",
     desktop: [
@@ -97,7 +110,8 @@ onMounted(() => {
     rootStyle:{
       '--color-ui-desk-item-title': '#a30'
     }
-  }).whenReady().then((system) => {
+  })
+  sys.whenReady().then((system) => {
     setTimeout(() => {
       system.fs.writeFile('/C/Users/Desktop/看月亮',
         {

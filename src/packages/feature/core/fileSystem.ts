@@ -96,6 +96,35 @@ class VtronFileSystem {
         });
         return this;
     }
+    serializeFileSystem() {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction("files", "readonly");
+            const objectStore = transaction.objectStore("files");
+            const request = objectStore.getAll();
+            request.onerror = () => {
+                reject("Failed to read file");
+            };
+            request.onsuccess = () => {
+                resolve(request.result);
+            };
+        });
+    }
+    deserializeFileSystem(files: VtronFile[]) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction("files", "readwrite");
+            const objectStore = transaction.objectStore("files");
+            const request = objectStore.clear();
+            request.onerror = () => {
+                reject("Failed to clear file");
+            };
+            request.onsuccess = () => {
+                files.forEach((file) => {
+                    objectStore.add(file);
+                });
+                resolve(void 0);
+            };
+        });
+    }
     whenReady(): Promise<VtronFileSystem> {
         if (this.db) {
             return Promise.resolve(this);

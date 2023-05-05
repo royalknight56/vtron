@@ -180,12 +180,14 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   top: 0;
   width: 100px;
   height: 100px;
-  background-color: rgb(255, 255, 255);
-  border: 1px solid #0078d7;
+  background-color: #fff;
+  border: var(--window-border);
   display: flex;
   flex-direction: column;
-  box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
-    0 7px 19px rgb(0 0 0 / 58%);
+  box-shadow: var(--window-box-shadow);
+  border-radius: var(--window-border-radius);
+  
+  overflow: hidden;
 
   .wintmp_main {
     position: relative;
@@ -200,8 +202,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 
 .topwin {
   border: 1px solid #0078d7;
-  box-shadow: inset 0 0 0 1px rgb(246 246 247 / 92%),
-    0 7px 19px rgb(0 0 0 / 90%);
+  box-shadow:  var(--window-top-box-shadow);
 }
 
 .icon {

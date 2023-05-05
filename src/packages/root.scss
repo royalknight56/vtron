@@ -1,6 +1,14 @@
 .screen{
+    --window-border:1px solid #0078d7;
+    --window-border-radius:0px;
+    --window-box-shadow:0  0px 10px 1px rgb(0 0 0 / 40%);
+    --window-top-box-shadow: 0 0px 13px 1px rgb(0 0 0 / 60%);
+
     --ui-font-size: 12px;
     --ui-list-item-height: 20px;
+    --ui-button-width: 80px;
+    --ui-button-height: 26px;
+    
     --bar-height: 40px;
     --menu-bar-height: 30px;
     --menu-bar-button-size:12px;
@@ -15,8 +23,7 @@
     --contextmenu-width: 160px;
     --notify-width: 240px;
     --notify-height: 60px;
-    --ui-button-width: 80px;
-    --ui-button-height: 26px;
+
     --color-notify: #333333e3;
     --color-magnet:#e5e5e5ad;
     --color-magnet-item: #f2f2f2bb;

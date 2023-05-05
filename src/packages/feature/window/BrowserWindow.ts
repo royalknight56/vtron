@@ -148,8 +148,10 @@ class BrowserWindow {
         useRootState().system.windowTree.traverseBFS((val) => {
             if (val.value.id !== undefined) {
                 val.value._setZindex();
+                val.value.windowInfo.istop = false;
             }
         });
+        this.windowInfo.istop = true;
     }
     show() {
         if (!this.windowInfo.isCreated) {

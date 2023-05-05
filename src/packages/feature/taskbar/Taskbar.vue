@@ -13,7 +13,7 @@ import StateIcon from './barUnit/StateIcon.vue';
 <style lang="scss" scoped>
 .taskbar{
     width: 100%;
-    height:var(--bar-height);
+    height:var(--task-bar-height);
     background-color: var(--color-gray);
     display: flex;
     position: relative;

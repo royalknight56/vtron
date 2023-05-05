@@ -50,8 +50,8 @@ function handleClick(){
 </script>
 <style lang="scss" scoped>
 .appicon{
-    width: var(--bar-height);
-    height: var(--bar-height);
+    width: var(--task-bar-height);
+    height: var(--task-bar-height);
     display: flex;
     justify-content: center;
     align-items: center;

@@ -7,8 +7,8 @@
 <template>
   <div class="outer">
     <Screen></Screen>
-    <button @click="save">save</button>
-    <button @click="restore">restore</button>
+    <!-- <button @click="save">save</button>
+    <button @click="restore">restore</button> -->
 
   </div>
 </template>
@@ -108,7 +108,9 @@ onMounted(() => {
       }
     ],
     rootStyle:{
-      '--color-ui-desk-item-title': '#a30'
+      '--color-ui-desk-item-title': '#a30',
+      '--window-border-radius': '4px',
+      // '--menu-bar-height':'100px'
     }
   })
   sys.whenReady().then((system) => {

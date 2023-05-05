@@ -28,8 +28,8 @@ function emitClick(e: MouseEvent) {
 </script>           
 <style lang="scss" scoped>
 .startmenuicon {
-    width:var(--startmenu-icon-width);
-    height: var(--bar-height);
+    width:var(--startmenu-icon-size);
+    height: var(--task-bar-height);
     background-color: var(--color-gray);
     user-select: none;
     display: flex;
@@ -44,7 +44,7 @@ function emitClick(e: MouseEvent) {
 
 .startmenu {
     position: absolute;
-    bottom: var(--bar-height);
+    bottom: var(--task-bar-height);
     left: 0;
 }
 

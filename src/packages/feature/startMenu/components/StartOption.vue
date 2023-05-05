@@ -64,7 +64,7 @@ function handleClick(key: number, ev: MouseEvent) {
 <style lang="scss" scoped>
 .s-option {
     position: relative;
-    width: var(--startmenu-icon-width);
+    width: var(--startmenu-icon-size);
     height: 100%;
     z-index: 40;
     user-select: none;
@@ -72,7 +72,7 @@ function handleClick(key: number, ev: MouseEvent) {
     .s-option-inner {
         position: absolute;
         height: 100%;
-        width: var(--startmenu-icon-width);
+        width: var(--startmenu-icon-size);
         background-color: var(--color-startmenu);
         transition: all 0.1s ease-in-out;
         transition-delay: 0s;
@@ -82,7 +82,7 @@ function handleClick(key: number, ev: MouseEvent) {
 
         .s-option-button {
             height: var(--start-option-size);
-            width: var(--startmenu-icon-width-hover);
+            width: var(--startmenu-icon-size-hover);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -118,7 +118,7 @@ function handleClick(key: number, ev: MouseEvent) {
 .s-option:hover {
     .s-option-inner {
         transition-delay: 0.5s;
-        width: var(--startmenu-icon-width-hover);
+        width: var(--startmenu-icon-size-hover);
         box-shadow: 10px 0px 20px 0px rgba(0, 0, 0, 0.216);
     }
 }

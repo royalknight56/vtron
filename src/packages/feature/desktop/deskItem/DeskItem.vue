@@ -17,10 +17,12 @@ import { emitEvent } from '@/packages/feature/event';
 import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
 import { createNewFile, openPropsWindow } from "@/packages/hook/useContextMenu"
 import { basename } from "@/packages/feature/core/Path"
+import { VtronFile } from "@packages/feature/core/fileSystem";
 
 const { openapp, appList } = useAppOpen('apps');
 
-function handleRightClick(mouse: MouseEvent, item: WinApp) {
+const sys  = useSystem()
+function handleRightClick(mouse: MouseEvent, item: VtronFile) {
     emitEvent('contextMenu.show', {
         mouse: mouse,
         menuList: [
@@ -37,7 +39,11 @@ function handleRightClick(mouse: MouseEvent, item: WinApp) {
             {
                 name: '删除',
                 click: () => {
-                    useSystem()?.fs.unlink(item.path);
+                    if (item.type == 'dir') {
+                        sys?.fs.rmdir(item.path)
+                    } else {
+                        sys?.fs.unlink(item.path)
+                    }
                 }
             }
         ]

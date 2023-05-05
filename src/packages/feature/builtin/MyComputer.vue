@@ -84,7 +84,7 @@ import { Notify } from "../notification/Notification";
 import { useSystem } from "../system";
 import { BrowserWindow, VtronFile } from "@/packages/plug";
 import * as fspath from "@/packages/feature/core/Path";
-import { createNewFile,openPropsWindow } from "@/packages/hook/useContextMenu"
+import { createNewFile,openPropsWindow,createNewDir } from "@/packages/hook/useContextMenu"
 import { basename } from "@/packages/feature/core/Path"
 import { emitEvent, mountEvent } from "../event";
 
@@ -125,6 +125,14 @@ function showOuterMenu(e: MouseEvent) {
                 name: '新建文件',
                 click: () => {
                     createNewFile(router_url.value).then(() => {
+                        refersh(router_url.value);
+                    });
+                }
+            },
+            {
+                name: '新建文件夹',
+                click: () => {
+                    createNewDir(router_url.value).then(() => {
                         refersh(router_url.value);
                     });
                 }

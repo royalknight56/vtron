@@ -28,11 +28,8 @@ function refershAppList() {
                 let tempList = [];
                 for (let j = 0; j < list.length; j++) {
                     const item = list[j];
-                    let app: WinApp = {
-                        icon: item.icon,
-                        path: item.path
-                    }
-                    tempList.push(app);
+
+                    tempList.push(item);
                 }
 
                 switch (element) {

@@ -5,6 +5,7 @@ import { DefineComponent } from "vue";
 import { reactive, ref, UnwrapNestedRefs, watch } from "vue";
 import { SystemStateEnum } from "./enum";
 import { Notify } from "../feature/notification/Notification";
+import { VtronFile } from "@packages/feature/core/fileSystem";
 export interface SystemOptions {
     logo?:string;
     background?:string;
@@ -27,9 +28,9 @@ export type RootState ={
     ref:HTMLElement|undefined;
     system: {
         state:SystemStateEnum;
-        apps:Array<WinApp>;
-        magnet:Array<WinApp>;
-        menulist:Array<WinApp>;
+        apps:Array<VtronFile>;
+        magnet:Array<VtronFile>;
+        menulist:Array<VtronFile>;
         notify:Array<Notify>;
         windowTree:Tree<BrowserWindow>,
         windowOrder:Array<BrowserWindow>,

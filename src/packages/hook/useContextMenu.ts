@@ -22,6 +22,24 @@ async function createNewFile(path: string){
         type: "file"
     })
 }
+async function createNewDir(path: string){
+    let system = useSystem();
+    if(!system) return;
+    let newFilePath = fspath.join(path, '新建文件夹');
+    if(await system.fs.exists(newFilePath)){
+        let i = 1;
+        while(await system.fs.exists(fspath.join(path, `新建文件夹(${i})`))){
+            i++;
+        }
+        newFilePath = fspath.join(path, `新建文件夹(${i})`);
+    }
+    return await system.fs.writeFile(
+        newFilePath, {
+        content: "",
+        icon: 'dir',
+        type: "dir"
+    })
+}
 
 function openPropsWindow(path:string){
     new BrowserWindow({
@@ -38,5 +56,6 @@ function openPropsWindow(path:string){
 
 export {
     createNewFile,
-    openPropsWindow
+    openPropsWindow,
+    createNewDir
 }

@@ -14,4 +14,7 @@ export { VtronFile } from "@/packages/feature/core/fileSystem";
 export { System, useSystem } from "@/packages/feature/system/index";
 export { BrowserWindow } from "@/packages/feature/window/BrowserWindow"
 export { Notify } from "@/packages/feature/notification/Notification";
+export { Dialog } from "@/packages/feature/dialog/Dialog";
 export type { RootState, SystemOptions, WinApp } from "@/packages/type/type";
+import WinButtonVue from "./components/WinButton.vue";
+export { WinButtonVue };

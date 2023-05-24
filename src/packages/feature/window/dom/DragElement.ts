@@ -65,13 +65,15 @@ class DragElement extends DragObj {
         this.ifDraging = false;
         element.addEventListener('mousedown', (ev: any) => {
             if (this.canDrag) {
-                this.startMove(ev.pageX, ev.pageY, this.el.offsetLeft, this.el.offsetTop);
+                let rect = this.el.getBoundingClientRect();
+                this.startMove(ev.pageX, ev.pageY, rect.left, rect.top);
                 this.ifDraging = true;
             }
         })
         element.addEventListener("touchstart", (ev: TouchEvent) => {
             if (this.canDrag) {
-                this.startMove(ev.touches[0].pageX, ev.touches[0].pageY, this.el.offsetLeft, this.el.offsetTop);
+                let rect = this.el.getBoundingClientRect();
+                this.startMove(ev.touches[0].pageX, ev.touches[0].pageY, rect.left, rect.top);
                 this.ifDraging = true;
             }
         }, {
@@ -91,7 +93,6 @@ class DragElement extends DragObj {
                 this.notify(posX, posY)
             } else if (this.ifDraging && ev.buttons == 0) {
                 this.ifDraging = false
-
             }
         })
         document.body.addEventListener("touchmove", (ev) => {

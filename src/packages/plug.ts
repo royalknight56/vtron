@@ -1,6 +1,10 @@
 import type { App } from "vue";
 import { ScreenComponentVue } from "@/packages/feature/screen/Screen"
 // import { Plugin } from 'vue'
+import WinButtonVue from "./components/WinButton.vue";
+import WinLoadingVue from "./components/WinLoading.vue";
+import WinLogoVue from "./components/WinLogo.vue";
+export { WinButtonVue,WinLoadingVue,WinLogoVue };
 
 let plug = {
     install: function (app: any, ...options: any[]): any {
@@ -16,5 +20,4 @@ export { BrowserWindow } from "@/packages/feature/window/BrowserWindow"
 export { Notify } from "@/packages/feature/notification/Notification";
 export { Dialog } from "@/packages/feature/dialog/Dialog";
 export type { RootState, SystemOptions, WinApp } from "@/packages/type/type";
-import WinButtonVue from "./components/WinButton.vue";
-export { WinButtonVue };
+export { makeDragable } from "./feature/window/MakeDragable";

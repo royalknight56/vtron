@@ -50,13 +50,14 @@ onMounted(() => {
         },
       },
       {
-        name: '测试按钮2',
+        name: '测试无边框拖动2',
         // icon: testicon,
         window: {
           content: TestButton,
           title: "测试按钮",
           icon: testicon,
           center: true,
+          frame: false,
           // backgroundColor: "rgba(0,0,0,1)",
         },
       },

@@ -4,7 +4,7 @@
  * @Description: 
 -->
 <template>
-    <div class="outer">
+    <div class="outer" ref="handle">
         <button @click="test()">Test</button>
         <div class="screen">TEST</div>
         <div class="testright"></div>
@@ -12,8 +12,10 @@
 </template>
 <script lang="ts" setup>
 import { Dialog } from "@/packages/feature/dialog/Dialog";
-import { Notify } from "@/packages/plug";
-// import { system } from "../systeminit";
+import { BrowserWindow, Notify, makeDragable } from "@/packages/plug";
+import { inject, onMounted, ref } from "vue";
+let browserWindow = inject<BrowserWindow>('browserWindow');
+const handle = ref<HTMLElement>();
 async function test(){
     let res = await Dialog.showMessageBox({
         type: 'info',
@@ -26,10 +28,12 @@ async function test(){
         content: JSON.stringify(res),
         timeout: 5000
     });
-
-    // console.log('test') 
-    // system.Notify.notify('test',"testtest")
 }
+onMounted(()=>{
+    if(handle.value && browserWindow){
+        makeDragable(handle.value,browserWindow)
+    }
+})
 </script>
 <style>
 

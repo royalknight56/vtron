@@ -10,7 +10,7 @@ import myComputerLogoIcon from "@/packages/assets/computer.ico?url";
 import infoIcon from "@/packages/assets/info-icon.ico?url";
 import termIcon from "@/packages/assets/term.ico?url";
 import { Shell } from "@/packages/feature/core/Shell";
-
+import { version } from "../../../../package.json";
 import { BrowserWindow } from "@packages/feature/window/BrowserWindow";
 import FileViewer from "../builtin/FileViewer.vue";
 import MyComputerVue from "../builtin/MyComputer.vue";
@@ -31,6 +31,7 @@ class System {
     private _error: ((reason: unknown) => void) | null = null;
     private _readyToUpdata: boolean = false;
     private _flieOpenerMap: Map<string, (path: string, content: string) => void> = new Map();
+    version = version;
     isFirstRun: boolean = true;
     ref!: HTMLElement;
     fs!: VtronFileSystem;
@@ -46,7 +47,7 @@ class System {
     }
     setRef(ref: HTMLElement) {
         this.ref = ref;
-        if(this._options.rootStyle){
+        if (this._options.rootStyle) {
             Object.keys(this._options.rootStyle).forEach((key) => {
                 this.ref.style.setProperty(key, this._options.rootStyle[key]);
             });
@@ -109,17 +110,17 @@ class System {
             pdfwindow.show()
         });
 
-        this.registerFileOpener('ink/url',(path,content)=>{
+        this.registerFileOpener('ink/url', (path, content) => {
             let imgwindow = new BrowserWindow({
                 width: 400,
                 height: 400,
                 icon: infoIcon,
                 center: true,
-                title:'',
+                title: '',
                 content: UrlBrowser,
-                config:{
-                    content:content,
-                    path:path
+                config: {
+                    content: content,
+                    path: path
                 }
             });
             imgwindow.show()
@@ -197,9 +198,9 @@ class System {
                 content: `link:${loc}:${options.name}`
             });
         }
-        if(typeof options.window.content === 'string'){
+        if (typeof options.window.content === 'string') {
 
-        }else{
+        } else {
             options.window.content = markRaw(options.window.content);
         }
         this._rootState.system.windowMap[loc].set(options.name, options.window);
@@ -273,7 +274,7 @@ class System {
     }
     // 状态序列化和反序列化
     async serializeState(): Promise<string> {
-        let serializeFile =await this.fs.serializeFileSystem();
+        let serializeFile = await this.fs.serializeFileSystem();
         return JSON.stringify(serializeFile);
     }
     deserializeState(state: string) {

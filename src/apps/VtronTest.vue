@@ -7,15 +7,16 @@
 <template>
     <div class="outer">
         Test Finished
+        {{ sys?.version }}
     </div>
 </template>
 <script lang="ts" setup>
 import { Notify } from "@/packages/feature/notification/Notification";
-import { BrowserWindow } from "@/packages/plug";
+import { BrowserWindow, useSystem } from "@/packages/plug";
 import { ref, useAttrs, getCurrentInstance, onUnmounted, inject } from "vue";
 
 let browserWindow:BrowserWindow = inject('browserWindow')!;
-
+let sys = useSystem();
 function nextStep(fun: Function,time?:number) {
     return new Promise((resolve, reject) => {
         let res = fun();

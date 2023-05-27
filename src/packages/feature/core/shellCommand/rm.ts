@@ -1,13 +1,13 @@
 import type { Shell } from "../Shell";
 import * as vPath from '../Path';
-async function rm(input: string, output: (text: string) => void,shell:Shell) {
+async function rm(input: string, output: (text: string) => void, shell: Shell) {
     // rm -f test.txt
     // rm -rf testdi
     let path = input.split(' ')[1]
     if (path) {
         let res = await shell.system.fs.stat(vPath.join(shell.router, path))
         if (res) {
-            if (res.type === 'file') {
+            if (res.isDirectory) {
                 await shell.system.fs.unlink(vPath.join(shell.router, path))
             } else {
                 await shell.system.fs.rmdir(vPath.join(shell.router, path))

@@ -47,7 +47,7 @@ class Shell {
                 outPath = vPath.join(this.router,outPath);
                 let res = await this.system.fs.stat(outPath);
                 if(res){
-                    if(res.type==='dir'){
+                    if(res.isDirectory){
                         this.output(`\x1b[31m${outPath}: Not a file\x1b[0m\r\n`)
                         return;
                     }else{

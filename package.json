@@ -20,6 +20,7 @@
     }
   },
   "scripts": {
+    "test": "vitest",
     "dev": "vite --host",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
@@ -47,6 +48,7 @@
     "vite": "^3.0.9",
     "vite-plugin-dts": "^0.8.3",
     "vite-plugin-style-import": "^1.2.1",
+    "vitest": "^0.31.1",
     "vue-tsc": "^0.40.1"
   }
 }

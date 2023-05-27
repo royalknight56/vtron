@@ -61,7 +61,7 @@
             @contextmenu="showMenu(item, index, $event)" @dragstart="startDrag($event, item)" @drop="folderDrop($event, item)"
             @dblclick="openFolder(item)">
             <div class="item_img">
-                <FileIcon :icon="item.icon" />
+                <FileIcon :file="item" />
             </div>
             <div class="item_name">{{ basename(item.path) }}</div>
         </div>
@@ -180,8 +180,8 @@ async function isVia(newVal: string, alert: boolean = false) {
 }
 let currentList = ref<Array<VtronFile>>([]);
 
-function openFolder(item: any) {
-    if (item.type == 'dir') {
+function openFolder(item: VtronFile) {
+    if (item.isDirectory) {
         router_url.value = item.path;
     } else {
         system?.openFile(item.path);
@@ -206,7 +206,7 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
             {
                 name: '删除',
                 click: () => {
-                    if (item.type == 'dir') {
+                    if (item.isDirectory) {
                         system?.fs.rmdir(item.path).then(() => {
                             refersh(router_url.value)
                         });
@@ -309,8 +309,6 @@ async function readFileList(list: FileList | undefined) {
             if (item?.type == 'image/jpeg' || item?.type == 'image/png' || item?.type == 'image/gif' || item?.type == 'image/bmp' || item?.type == 'image/webp') {
                 system?.fs.writeFile(pathJoin(router_url.value, item?.name), {
                     content: reader.result as string,
-                    type: item?.type || 'text/plain',
-                    icon: reader.result as string,
                 }).then((res) => {
                     refersh(router_url.value)
                 });
@@ -319,8 +317,7 @@ async function readFileList(list: FileList | undefined) {
 
                 system?.fs.writeFile(pathJoin(router_url.value, item?.name || 'unknow'), {
                     content: decodeURIComponent(escape(atob((reader.result?.toString() || '').split(',')[1]))),
-                    type: item?.type || 'file',
-                    icon: 'file',
+
                 }).then((res) => {
                     refersh(router_url.value)
                 });

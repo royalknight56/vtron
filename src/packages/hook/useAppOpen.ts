@@ -2,6 +2,7 @@ import { useRootState } from '@packages/feature/state/Root';
 import { WinApp } from '@packages/type/type';
 import { nextTick, UnwrapNestedRefs } from 'vue';
 import { useSystem } from '../plug';
+import { VtronFileInfo,VtronFile } from '../feature/core/fileSystem';
 let isReadyUpdateAppList = false;
 function initAppList() {
 
@@ -54,12 +55,7 @@ function useAppOpen(type: "apps" | "magnet" | "menulist") {
     let rootState = useRootState();
     let system = useSystem();
     let appList = rootState.system[type];
-    function openapp(item: UnwrapNestedRefs<WinApp>) {
-        // system?.openFile(`/C/Users/${{
-        //     apps: 'Desktop',
-        //     magnet: 'Magnet',
-        //     menulist: 'Menulist'
-        // }[type]}/${item.name}`);
+    function openapp(item: VtronFile) {
         system?.openFile(item.path);
     }
     return {

@@ -16,6 +16,7 @@ import FileViewer from "../builtin/FileViewer.vue";
 import MyComputerVue from "../builtin/MyComputer.vue";
 import UrlBrowser from "../builtin/UrlBrowser.vue";
 import Terminal from "../builtin/Terminal.vue";
+import { extname } from "../core/Path";
 let GLOBAL_SYSTEM: System | null = null;
 
 export type VtronPlugin = (system: System, rootState: RootState) => void
@@ -77,9 +78,9 @@ class System {
          */
         this._rootState.system.state = SystemStateEnum.opening;
         initEventListener();
-        this.registerFileOpener('link', this.openLink.bind(this))
+        this.registerFileOpener('.exe', this.openLink.bind(this))
 
-        this.registerFileOpener("file", (path, content) => {
+        this.registerFileOpener(".txt", (path, content) => {
             let pdfwindow = new BrowserWindow({
                 width: 400,
                 height: 400,
@@ -110,7 +111,7 @@ class System {
             pdfwindow.show()
         });
 
-        this.registerFileOpener('ink/url', (path, content) => {
+        this.registerFileOpener('.url', (path, content) => {
             let imgwindow = new BrowserWindow({
                 width: 400,
                 height: 400,
@@ -192,10 +193,8 @@ class System {
     }
     private addWindowSysLink(loc: string, options: WinAppOptions) {
         if (this.isFirstRun) {
-            this.fs.writeFile(`/C/Users/${loc}/` + options.name, {
-                icon: options.icon || vtronLogoIcon,
-                type: 'link',
-                content: `link:${loc}:${options.name}`
+            this.fs.writeFile(`/C/Users/${loc}/` + options.name +'.exe', {
+                content: `link:${loc}:${options.name}:${options.icon?.length}:${options.icon}`
             });
         }
         if (typeof options.window.content === 'string') {
@@ -254,8 +253,14 @@ class System {
         this._flieOpenerMap.set(type, func);
     }
     openLink(path: string, content: string) {
+        console.log(path, content);
+        let exeContent = content.split(':');
+        // exeContent[1]= loc
+        // exeContent[2]= name
+        // exeContent[3]= icon.length
+        // exeContent[4]= icon
         let winopt = this._rootState.system.windowMap[
-            content.split(':')[1]
+            exeContent[1]
         ].get(content.split(':')[2]);
         if (winopt) {
             let win = new BrowserWindow(winopt);
@@ -265,7 +270,12 @@ class System {
     /**打开vtron 文件系统的文件 */
     openFile(path: string) {
         this.fs.stat(path).then((res) => {
-            this._flieOpenerMap.get(res?.type || 'link')?.(path, res?.content || '');
+            if(res?.isDirectory){
+                this._flieOpenerMap.get('dir')?.(path, res?.content || '');
+                return;
+            }else{
+                this._flieOpenerMap.get(extname(res?.path|| "") || 'link')?.(path, res?.content || '');
+            }
         })
     }
     // 插件系统

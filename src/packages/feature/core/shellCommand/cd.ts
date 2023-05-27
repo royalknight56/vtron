@@ -9,7 +9,7 @@ async function cd(input: string, output: (text: string) => void,shell:Shell) {
         }
     } else {
         let res = await shell.system.fs.stat(vPath.join(shell.router, path))
-        if (res && res.type === 'dir') {
+        if (res && res.isDirectory) {
             shell.setRouter(vPath.join(shell.router, path))
         } else {
             output(`\x1b[31m${path}: Not a directory\x1b[0m\r\n`)

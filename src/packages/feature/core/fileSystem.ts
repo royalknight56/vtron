@@ -3,22 +3,72 @@ import { InitFile, InitFileItem } from "./SystemFileConfig"
 import { initAppList } from "@/packages/hook/useAppOpen";
 import * as fspath from "@/packages/feature/core/Path";
 import { Shell } from "./Shell";
-class VtronFile {
+class VtronFileInfo {
+    isFile: boolean = true;
+    isDirectory = false;
+    isSymlink = false;
+    size = 0;
+    mtime = new Date();
+    atime = new Date();
+    birthtime = new Date();
+    constructor(isFile?: boolean, isDirectory?: boolean, isSymlink?: boolean, size?: number, mtime?: Date, atime?: Date, birthtime?: Date) {
+        if (isFile !== undefined) {
+            this.isFile = isFile;
+        }
+        if (isDirectory !== undefined) {
+            this.isDirectory = isDirectory;
+        }
+        if (isSymlink !== undefined) {
+            this.isSymlink = isSymlink;
+        }
+        if (size !== undefined) {
+            this.size = size;
+        }
+        if (mtime !== undefined) {
+            this.mtime = mtime;
+        }
+        if (atime !== undefined) {
+            this.atime = atime;
+        }
+        if (birthtime !== undefined) {
+            this.birthtime = birthtime;
+        }
+    }
+}
+
+class VtronFile extends VtronFileInfo {
+
     path: string;
     parentPath: string;
     content: string;
-    icon: string;
-    type: string;
+    // icon: string;
+    // type: string;
     id?: number;
-    constructor(path: string, parentPath: string,
+    constructor(
+        path: string,
+        // parentPath: string,
         content: string,
-        icon: string, type: string,
+        // icon: string, type: string,
+        info: Partial<VtronFileInfo>,
         id?: number) {
+        if (info.isFile) {
+            info.isDirectory = false;
+            info.isSymlink = false;
+        }
+        if (info.isDirectory) {
+            info.isFile = false;
+            info.isSymlink = false;
+        }
+        if (info.isSymlink) {
+            info.isFile = false;
+            info.isDirectory = false;
+        }
+        super(info.isFile, info.isDirectory, info.isSymlink, info.size, info.mtime, info.atime, info.birthtime);
         this.path = path;
-        this.parentPath = parentPath;
+        this.parentPath = fspath.dirname(path);
         this.content = content;
-        this.icon = icon;
-        this.type = type;
+        // this.icon = icon;
+        // this.type = type;
 
         this.id = id;
 
@@ -50,12 +100,14 @@ class VtronFileSystem {
                 { keyPath: "id", autoIncrement: true });
             objectStore.createIndex("parentPath", "parentPath");
             objectStore.createIndex("path", "path", { unique: true });
+            let rootDir = new VtronFile('/',
+            '',
+            {
+                isDirectory: true,
+            });
+            rootDir.parentPath = '';
             objectStore.add(
-                new VtronFile('/',
-                    '',
-                    "",
-                    "dir",
-                    "dir")
+                rootDir
             );
         };
     }
@@ -79,12 +131,18 @@ class VtronFileSystem {
         let pluginsFile = await this.readdir('/C/System/plugs');
         if (pluginsFile) {
             pluginsFile.forEach((file) => {
-                if (file.type === 'file') {
+                if (file.isFile) {
                     let content = file.content;
                     if (content) {
-                        new Shell(system,"/",'root').exec('node ' + file.path)
+                        new Shell(system, "/", 'root').exec('node ' + file.path)
                     }
                 }
+                // if (file.type === 'file') {
+                //     let content = file.content;
+                //     if (content) {
+                //         new Shell(system, "/", 'root').exec('node ' + file.path)
+                //     }
+                // }
             })
         }
     }
@@ -179,11 +237,10 @@ class VtronFileSystem {
      */
     async writeFile(path: string, par: {
         content: string;
-        icon: string;
-        type: string;
+        // icon?: string;
+        // type?: string;
     }): Promise<void> {
-        let parentPath = path.split("/").slice(0, -1).join("/");
-        if (parentPath === "") parentPath = "/";
+        let parentPath = fspath.dirname(path);
         // judge if file exists
         let exists = await this.exists(parentPath);
         if (!exists) {
@@ -196,10 +253,10 @@ class VtronFileSystem {
         if (!stat) {
             const request = objectStore.add(
                 new VtronFile(path,
-                    parentPath,
                     par.content,
-                    par.icon,
-                    par.type,
+                    {
+                        isFile: true,
+                    }
                 )
             );
             return new Promise((resolve, reject) => {
@@ -216,10 +273,10 @@ class VtronFileSystem {
             const request = objectStore.put(
                 new VtronFile(
                     path,
-                    stat.parentPath,
                     par.content,
-                    par.icon || stat.icon,
-                    par.type || stat.type,
+                    {
+                        isFile: true,
+                    },
                     stat.id
                 )
             );
@@ -296,7 +353,7 @@ class VtronFileSystem {
     }
 
     async exists(path: string): Promise<boolean> {
-        try{
+        try {
             const transaction = this.db.transaction("files", "readonly");
             const objectStore = transaction.objectStore("files");
 
@@ -314,7 +371,7 @@ class VtronFileSystem {
                     resolve(fileArray.length ? true : false);
                 };
             });
-        }catch(e){
+        } catch (e) {
             return false;
         }
     }
@@ -360,7 +417,7 @@ class VtronFileSystem {
             request.onsuccess = () => {
                 let file: VtronFile = request.result;
                 if (file) {
-                    if (file.type === "dir") {
+                    if (file.isDirectory) {
                         reject("Cannot delete a directory");
                     } else {
                         objectStore.delete(request.result.id);
@@ -390,7 +447,7 @@ class VtronFileSystem {
                 const file: VtronFile = request.result;
                 if (file) {
                     function updatePath(vfile: VtronFile, vFileNewPath: string, vParentPath: string) {
-                        if (vfile.type === "dir") {
+                        if (vfile.isDirectory) {
                             objectStore.index("parentPath").openCursor(IDBKeyRange.only(vfile.path)).onsuccess =
                                 (event: any) => {
                                     let cursor: IDBCursorWithValue = event.target.result;
@@ -442,7 +499,7 @@ class VtronFileSystem {
                 const file: VtronFile = request.result;
                 if (file) {
                     function updatePath(vfile: VtronFile) {
-                        if (vfile.type === "dir") {
+                        if (vfile.isDirectory) {
                             objectStore.index("parentPath").openCursor(IDBKeyRange.only(vfile.path)).onsuccess =
                                 (event: any) => {
                                     let cursor: IDBCursorWithValue = event.target.result;
@@ -495,10 +552,12 @@ class VtronFileSystem {
 
 
         const request = objectStore.add(
-            new VtronFile(path, parentPath,
+            new VtronFile(path,
                 "",
-                "dir",
-                "dir")
+                {
+                    isDirectory: true,
+                }
+            )
         );
 
         return new Promise((resolve, reject) => {
@@ -517,5 +576,6 @@ class VtronFileSystem {
 
 export {
     VtronFile,
+    VtronFileInfo,
     VtronFileSystem
 }

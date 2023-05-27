@@ -2,7 +2,7 @@
     <div class="magnet-group scroll-bar">
         <div @click.stop="handle(item)"
          class="magnet-item" v-for="item in appList" :key="basename(item.path)">
-            <img class="magnet-item_img" :src="item.icon" alt="">
+            <FileIcon class="magnet-item_img" :file="item" />
             <span class="magnet-item_title">{{ basename(item.path) }}</span>
         </div>
     </div>
@@ -11,6 +11,7 @@
 import { useAppOpen } from '@/packages/hook/useAppOpen';
 import { emitEvent } from '@packages/feature/event';
 import { basename } from "@/packages/feature/core/Path"
+import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
 
 const { openapp, appList } = useAppOpen('magnet');
 function handle(item: any) {

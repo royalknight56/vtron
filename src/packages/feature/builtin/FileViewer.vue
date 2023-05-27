@@ -43,8 +43,6 @@ function handleButton(e: MouseEvent) {
                     }
                     await system.fs.unlink(file?.path);
                     await system.fs.writeFile(file?.path, {
-                        icon: file?.icon,
-                        type: file.type,
                         content: input.value,
                     });
                     new Notify({

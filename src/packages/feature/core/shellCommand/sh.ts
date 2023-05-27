@@ -1,11 +1,11 @@
 import { Shell } from "../Shell";
 import * as vPath from '../Path';
-async function sh(input: string, output: (text: string) => void,shell:Shell) {
+async function sh(input: string, output: (text: string) => void, shell: Shell) {
     let path = input.split(' ')[1]
     if (path) {
         let res = await shell.system.fs.stat(vPath.join(shell.router, path))
         if (res) {
-            if (res.type !== 'dir') {
+            if (!res.isDirectory) {
                 let file = await shell.system.fs.readFile(vPath.join(shell.router, path))
                 if (file) {
                     let subShell = new Shell(shell.system, shell.router, shell.user);

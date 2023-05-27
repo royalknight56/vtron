@@ -18,8 +18,6 @@ async function createNewFile(path: string){
     return await system.fs.writeFile(
         newFilePath, {
         content: "",
-        icon: 'file',
-        type: "file"
     })
 }
 async function createNewDir(path: string){
@@ -33,12 +31,7 @@ async function createNewDir(path: string){
         }
         newFilePath = fspath.join(path, `新建文件夹(${i})`);
     }
-    return await system.fs.writeFile(
-        newFilePath, {
-        content: "",
-        icon: 'dir',
-        type: "dir"
-    })
+    return await system.fs.mkdir(newFilePath);
 }
 
 function openPropsWindow(path:string){

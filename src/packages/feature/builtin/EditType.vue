@@ -11,35 +11,41 @@ import { VtronFile } from '@/packages/feature/core/fileSystem';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 import { emitEvent } from '../event';
+import { basename,extname } from '../core/Path';
 
-let browserWindow:BrowserWindow = inject('browserWindow')!
-let type = ref((browserWindow.config.content as VtronFile).type);
+let browserWindow: BrowserWindow = inject('browserWindow')!
+let fileBaseName = basename((browserWindow.config.content as VtronFile).path)
+let type = ref(
+    extname(fileBaseName)
+);
 
-function confirm(){
-    useSystem()?.fs.writeFile(browserWindow.config.content.path, {
-        ...browserWindow.config.content,
-        type: type.value
-    }).then(() => {
-        emitEvent('file.props.edit')
-        browserWindow.close();
-    })
+function confirm() {
+    useSystem()?.fs.rename(browserWindow.config.content.path, browserWindow.config.content.path.replace(
+        fileBaseName,
+        fileBaseName.replace(extname(fileBaseName), type.value)
+        )).then(() => {
+            emitEvent('file.props.edit')
+            browserWindow.close();
+        })
 }
 </script>
 <style lang="scss" scoped>
-.outer{
+.outer {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
-    .win-input{
+
+    .win-input {
         font-size: 20px;
         width: 200px;
         height: 40px;
         margin-bottom: 40px;
         outline: none;
         border: 1px solid black;
-        &:focus{
+
+        &:focus {
             border: 1px solid var(--color-blue);
         }
     }

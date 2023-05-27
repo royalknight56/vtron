@@ -40,7 +40,7 @@ onMounted(() => {
     desktop: [
       {
         name: '测试Url',
-        // icon: testicon,
+        icon: testicon,
         window: {
           content: "https://source.unsplash.com/random/1920x1080",
           title: "测试按钮",
@@ -116,11 +116,9 @@ onMounted(() => {
   })
   sys.whenReady().then((system) => {
     setTimeout(() => {
-      system.fs.writeFile('/C/Users/Desktop/看月亮',
+      system.fs.writeFile('/C/Users/Desktop/看月亮.url',
         {
           content: "http://static.myim.online/moon/",
-          icon: testicon,
-          type: 'ink/url'
         }
       )
     }, 3000);

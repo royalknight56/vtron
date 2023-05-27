@@ -3,7 +3,7 @@
         <div @dblclick="openapp(item)" @contextmenu.stop.prevent="handleRightClick($event, item)" class="desk-item"
             v-for="item in appList" :key="basename(item.path)">
             <div class="desk-item_img">
-                <FileIcon :icon="item.icon" />
+                <FileIcon :file="item" />
             </div>
             <span class="desk-item_title">{{ basename(item.path) }}</span>
         </div>
@@ -12,7 +12,6 @@
 <script lang="ts" setup>
 import { useAppOpen } from '@/packages/hook/useAppOpen';
 import { BrowserWindow, useSystem, WinApp } from '@/packages/plug';
-import FileProps from '@/packages/feature/builtin/FileProps.vue.js';
 import { emitEvent } from '@/packages/feature/event';
 import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
 import { createNewFile, openPropsWindow } from "@/packages/hook/useContextMenu"
@@ -39,7 +38,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFile) {
             {
                 name: '删除',
                 click: () => {
-                    if (item.type == 'dir') {
+                    if (item.isDirectory) {
                         sys?.fs.rmdir(item.path)
                     } else {
                         sys?.fs.unlink(item.path)

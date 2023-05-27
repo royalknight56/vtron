@@ -9,7 +9,7 @@
             <div class="propitem">
                 <div class="propname">
                     <div class="file-icon">
-                        <FileIcon :icon="file?.icon || 'file'" />
+                        <FileIcon :file="file" />
                     </div>
                 </div>
                 <div class="propvalue">{{ basename(file?.path||'') }} <WinButton class="some-button" @click="editFileName">重命名</WinButton></div>
@@ -17,7 +17,7 @@
             <div class="split-line"></div>
             <div class="propitem">
                 <div class="propname">文件类型：</div>
-                <div class="propvalue">{{ file?.type }}<WinButton class="some-button" @click="editType">修改类型</WinButton>
+                <div class="propvalue">{{ extname(file?.path ||"") }}
                 </div>
             </div>
             <div class="propitem">
@@ -44,7 +44,7 @@ import unknownicon from "@/packages/assets/unknown.ico";
 import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
 import { mountEvent } from '../event';
 import { VtronFile } from '@/packages/plug';
-import { basename } from "@/packages/feature/core/Path"
+import { basename, extname } from "@/packages/feature/core/Path"
 
 let window: BrowserWindow | undefined = inject('browserWindow');
 const file = ref<VtronFile|null>();

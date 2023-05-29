@@ -62,25 +62,22 @@ function handleClick(key: number, ev: MouseEvent) {
             emitEvent('startMenu.set.click', {
                 mouse: ev,
             });
+            let win = new BrowserWindow({
+                content: Setting,
+                width: 800,
+                height: 600,
+                title: '设置',
+                resizable: false,
+                center: true,
+            })
+            win.show();
+            win.moveTop();
             break;
         default:
             break;
     }
 }
 
-onMounted(()=>{
-    mountEvent('startMenu.set.click', (data) => {
-        let win = new BrowserWindow({
-            content: Setting,
-            width: 800,
-            height: 600,
-            title: '设置',
-            resizable: false,
-            center: true,
-        })
-        win.show();
-    })
-})
 </script>
 <style lang="scss" scoped>
 .s-option {

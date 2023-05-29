@@ -10,8 +10,8 @@ function initEventListener() {
     mountEvent("system.shutdown", (source: string, e: any) => {
         useSystem()?.shutdown();
     });
-    mountEvent("system.reboot", (source: string, e: any) => {
-        useSystem()?.reboot();
+    mountEvent("system.recover", (source: string, e: any) => {
+        useSystem()?.recover();
     });
     eventTransitCenter();
 }
@@ -29,6 +29,7 @@ const eventTranslateMap: {
     'startMenu.click': ['contextMenu.hidden'],
     'magnet.item.click': ['uipop.hidden'],
     'menulist.item.click': ['uipop.hidden'],
+    'startMenu.set.click': ['uipop.hidden'],
     'uipop.hidden': ['contextMenu.hidden', 'startmenu.hidden','datetime.hidden'],
 }
 function eventTransitCenter() {

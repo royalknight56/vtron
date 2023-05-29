@@ -101,10 +101,10 @@ class VtronFileSystem {
             objectStore.createIndex("parentPath", "parentPath");
             objectStore.createIndex("path", "path", { unique: true });
             let rootDir = new VtronFile('/',
-            '',
-            {
-                isDirectory: true,
-            });
+                '',
+                {
+                    isDirectory: true,
+                });
             rootDir.parentPath = '';
             objectStore.add(
                 rootDir
@@ -237,8 +237,6 @@ class VtronFileSystem {
      */
     async writeFile(path: string, par: {
         content: string;
-        // icon?: string;
-        // type?: string;
     }): Promise<void> {
         let parentPath = fspath.dirname(path);
         // judge if file exists

@@ -12,7 +12,7 @@
                     电源
                 </div>
             </div>
-            <!-- <div class="s-option-button">
+            <div class="s-option-button" @click.stop="($ev) => handleClick(1, $ev)">
                 <div class="s-option-button_img">
                     <svg class="icon" viewBox="0 0 1024 1024">
                         <path
@@ -22,7 +22,7 @@
                 <div class="s-option-button_title">
                     设置
                 </div>
-            </div> -->
+            </div>
             <!-- <div class="s-option-button">
                 <div class="s-option-button_img">
                 </div>
@@ -33,8 +33,10 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { emitEvent } from '../../event';
-
+import { onMounted } from 'vue';
+import { emitEvent,mountEvent} from '../../event';
+import Setting from '@/packages/feature/builtin/Setting.vue';
+import { BrowserWindow } from '@/packages/feature/window/BrowserWindow';
 
 function handleClick(key: number, ev: MouseEvent) {
     switch (key) {
@@ -50,16 +52,35 @@ function handleClick(key: number, ev: MouseEvent) {
                 {
                     name: "恢复",
                     click: () => {
-                        emitEvent('system.reboot')
+                        emitEvent('system.recover')
                     }
                 }
                 ]
+            });
+            break;
+        case 1:
+            emitEvent('startMenu.set.click', {
+                mouse: ev,
             });
             break;
         default:
             break;
     }
 }
+
+onMounted(()=>{
+    mountEvent('startMenu.set.click', (data) => {
+        let win = new BrowserWindow({
+            content: Setting,
+            width: 800,
+            height: 600,
+            title: '设置',
+            resizable: false,
+            center: true,
+        })
+        win.show();
+    })
+})
 </script>
 <style lang="scss" scoped>
 .s-option {

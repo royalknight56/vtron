@@ -1,10 +1,10 @@
 import {describe,beforeEach,it,expect} from "vitest";
-import {FileSystem} from "../src/FileSystem";
+import {VtronFileSystem} from "../core/fileSystem";
 describe("FileSystem", () => {
-    let fileSystem: FileSystem;
+    let fileSystem: VtronFileSystem;
   
     beforeEach(() => {
-      fileSystem = new FileSystem();
+      fileSystem = new VtronFileSystem();
     });
   
     describe("writeFile", () => {

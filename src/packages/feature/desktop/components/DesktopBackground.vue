@@ -8,31 +8,38 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRootState } from '../../state/Root';
 let rootState = useRootState();
 let backgroundType = ref('color');
 let background = ref('#3A98CE');
 let loaded = ref(false);
-background.value = rootState.system.options.background || "#3A98CE";
 
-// background = "https://source.unsplash.com/random/1920x1080";
-
-if (background.value.startsWith("#")) {
-    backgroundType.value = 'color';
-} else {
-    backgroundType.value = 'image';
-}
 
 function imgload() {
     loaded.value = true;
 }
+onMounted(() => {
+    refershBack(rootState.system.options.background)
+})
+watch(rootState.system.options, (nv, ov) => {
+        refershBack(nv.background)
+})
+function refershBack(val:string|undefined){
+    background.value = val || "#3A98CE";
 
+    if (background.value.startsWith("#")) {
+        backgroundType.value = 'color';
+    } else {
+        backgroundType.value = 'image';
+    }
+}
 </script>
 <style lang="scss" scoped>
 .background {
     width: 100%;
     height: 100%;
+
     .background_unload {
         width: 100%;
         height: 100%;

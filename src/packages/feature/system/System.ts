@@ -97,8 +97,8 @@ class System {
 
         this.registerFileOpener("dir", (path, content) => {
             let pdfwindow = new BrowserWindow({
-                width: 400,
-                height: 400,
+                width: 800,
+                height: 600,
                 center: true,
                 title: '此电脑',
                 content: MyComputerVue,
@@ -136,8 +136,8 @@ class System {
             name: '此电脑',
             icon: myComputerLogoIcon,
             window: {
-                width: 400,
-                height: 400,
+                width: 800,
+                height: 600,
                 center: true,
                 title: '此电脑',
                 icon: myComputerLogoIcon,
@@ -166,6 +166,17 @@ class System {
         this._rootState.system.state = SystemStateEnum.open;
         this._ready && this._ready(this);
         this.fs.runPlugin(this)
+        // 初始化壁纸
+        this.initBackground()
+    }
+    /**
+   * @description: 初始化壁纸
+   */
+    private async initBackground() {
+        let back = await this.fs.readFile("/C/System/Vtron/background.txt");
+        if (back) {
+            this._rootState.system.options.background = back
+        }
     }
     /**
      * @description: 初始化事件系统
@@ -193,7 +204,7 @@ class System {
     }
     private addWindowSysLink(loc: string, options: WinAppOptions) {
         if (this.isFirstRun) {
-            this.fs.writeFile(`/C/Users/${loc}/` + options.name +'.exe', {
+            this.fs.writeFile(`/C/Users/${loc}/` + options.name + '.exe', {
                 content: `link:${loc}:${options.name}:${options.icon?.length}:${options.icon}`
             });
         }
@@ -257,7 +268,6 @@ class System {
         this._flieOpenerMap.set(type, func);
     }
     openLink(path: string, content: string) {
-        console.log(path, content);
         let exeContent = content.split(':');
         // exeContent[1]= loc
         // exeContent[2]= name
@@ -274,11 +284,11 @@ class System {
     /**打开vtron 文件系统的文件 */
     openFile(path: string) {
         this.fs.stat(path).then((res) => {
-            if(res?.isDirectory){
+            if (res?.isDirectory) {
                 this._flieOpenerMap.get('dir')?.(path, res?.content || '');
                 return;
-            }else{
-                this._flieOpenerMap.get(extname(res?.path|| "") || 'link')?.(path, res?.content || '');
+            } else {
+                this._flieOpenerMap.get(extname(res?.path || "") || 'link')?.(path, res?.content || '');
             }
         })
     }

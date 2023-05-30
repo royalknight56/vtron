@@ -36,7 +36,7 @@ async function restore(){
 onMounted(() => {
   sys =  new System({
     logo: vtronLogoIcon,
-    background: "https://source.unsplash.com/random/1920x1080",
+    background: "https://picsum.photos/1920/1080",
     desktop: [
       {
         name: '测试Url',

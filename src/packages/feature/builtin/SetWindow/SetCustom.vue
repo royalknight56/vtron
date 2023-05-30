@@ -13,28 +13,23 @@
                 </div>
                 <div class="setting-item">
                     <label>设置背景图片</label>
-                    <WinSelect 
-                    v-model="imgtype"
-                    :options="[
+                    <WinSelect v-model="imgtype" :options="[
                         {
-                            label:'来源网络',
-                            value:0
+                            label: '来源网络',
+                            value: 0
                         },
                         {
-                            label:'来源字符串',
-                            value:1
+                            label: '来源字符串',
+                            value: 1
                         }
-                    ]"
-                     placeholder="请选择">
+                    ]" placeholder="请选择">
                     </WinSelect>
                 </div>
                 <div class="setting-item">
                     <label></label>
-                    <WinInput
-                    placeholder=""
-                     v-model="imgurl"></WinInput>
+                    <WinInput placeholder="" v-model="imgurl"></WinInput>
                 </div>
-                
+
                 <div class="setting-item">
                     <label></label>
                     <WinButton @click="submit">确认</WinButton>
@@ -54,10 +49,12 @@ import WinButton from '@/packages/components/WinButton.vue';
 import WinSelect from '@/packages/components/WinSelect.vue';
 import WinInput from '@/packages/components/WinInput.vue';
 
-
 import { defineComponent, ref } from 'vue';
 import { useSystem } from "@packages/feature/system"
-import {Dialog} from '@/packages/feature/dialog/Dialog';
+import { Dialog } from '@/packages/feature/dialog/Dialog';
+import { useRootState } from '../../state/Root';
+
+let rootstate = useRootState();
 
 interface Field {
     name: string;
@@ -100,8 +97,18 @@ const selectItem = (index: number) => {
     activeIndex.value = index;
 };
 
-function submit(){
-    console.log(imgtype.value,imgurl.value)
+async function submit() {
+
+    rootstate.system.options.background = imgurl.value;
+    let res =await system?.fs.writeFile("/C/System/Vtron/background.txt", {
+        content: imgurl.value
+    });
+    Dialog.showMessageBox({
+        message:'保存成功',
+        title:'壁纸',
+        type:"info"
+    })
+    
 }
 </script>
   

@@ -25,6 +25,7 @@ import WinSelect from '@builtin/winComponent/WinSelect.vue'
 import systemset from '@builtin/setApps/SetSystemset.vue'
 // import version from '@builtin/setApps/SetVersion.vue'
 import SetUpdate from './SetWindow/SetUpdate.vue';
+import SetCustom from './SetWindow/SetCustom.vue';
 import appstore from '@builtin/Appstore.vue'
 import e7f8 from '../../../assets/icon/e7f8.png'//系统设置
 import e774 from '../../../assets/icon/e774.png'//网络
@@ -45,7 +46,7 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
     if (browserWindow) {
         if (setMap[title]) {
             setMap[title].show()
-            setMap[title].setPosition(browserWindow.windowInfo.x,browserWindow.windowInfo.y)
+            setMap[title].setPosition(browserWindow.windowInfo.x, browserWindow.windowInfo.y)
             setMap[title].setSize(
                 browserWindow.windowInfo.width,
                 browserWindow.windowInfo.height
@@ -55,9 +56,9 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
                 content: content,
                 title: '系统',
                 x: browserWindow.windowInfo.x,
-                y:browserWindow. windowInfo.y,
+                y: browserWindow.windowInfo.y,
                 height: browserWindow.windowInfo.height,
-                width:browserWindow.windowInfo.width,
+                width: browserWindow.windowInfo.width,
             })
             setMap[title].show()
         }
@@ -74,11 +75,13 @@ let setList = [
     //     title: '网络和Internet',
     //     desc: 'WLAN，飞行模式，VPN',
     //     icon: e774
-    // }, {
-    //     title: '个性化',
-    //     desc: '背景，锁屏，颜色',
-    //     icon: e771
     // }, 
+    {
+        title: '个性化',
+        desc: '背景，锁屏，颜色',
+        icon: e771,
+        content: SetCustom
+    },
     //  {
     //     title: '软件商店',
     //     desc: '获取网络上的应用',

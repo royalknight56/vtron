@@ -4,7 +4,10 @@ import { ScreenComponentVue } from "@/packages/feature/screen/Screen"
 import WinButtonVue from "./components/WinButton.vue";
 import WinLoadingVue from "./components/WinLoading.vue";
 import WinLogoVue from "./components/WinLogo.vue";
-export { WinButtonVue,WinLoadingVue,WinLogoVue };
+import WinSelect from "./components/WinSelect.vue";
+import WinInput from "./components/WinInput.vue";
+
+export { WinButtonVue,WinLoadingVue,WinLogoVue,WinSelect,WinInput };
 
 let plug = {
     install: function (app: any, ...options: any[]): any {

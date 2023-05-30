@@ -9,19 +9,34 @@
         <div class="setting">
             <div v-if="0 === activeIndex">
                 <div class="setting-item">
-                    <h1 class="setting-title">系统备份与导入</h1>
+                    <h1 class="setting-title">背景</h1>
                 </div>
                 <div class="setting-item">
-                    <label>导出系统状态</label>
-                    <WinButton @click="handleClick(0)">导出配置</WinButton>
-                </div>
-                <div class="setting-item">
-                    <label>导入状态文件</label>
-                    <textarea v-model="inputConfig" type="text"></textarea>
+                    <label>设置背景图片</label>
+                    <WinSelect v-model="imgtype"
+                    :options="[
+                        {
+                            label:'来源网络',
+                            value:0
+                        },
+                        {
+                            label:'来源字符串',
+                            value:1
+                        }
+                    ]"
+                     placeholder="请选择">
+                    </WinSelect>
                 </div>
                 <div class="setting-item">
                     <label></label>
-                    <WinButton @click="handleClick(1)">导入配置</WinButton>
+                    <WinInput
+                    placeholder=""
+                     v-model="imgurl"></WinInput>
+                </div>
+                
+                <div class="setting-item">
+                    <label></label>
+                    <WinButton @click="submit">确认</WinButton>
                 </div>
             </div>
             <div v-if="1 === activeIndex">
@@ -32,8 +47,13 @@
         </div>
     </div>
 </template>
+
 <script lang="ts" setup>
 import WinButton from '@/packages/components/WinButton.vue';
+import WinSelect from '@/packages/components/WinSelect.vue';
+import WinInput from '@/packages/components/WinInput.vue';
+
+
 import { defineComponent, ref } from 'vue';
 import { useSystem } from "@packages/feature/system"
 import {Dialog} from '@/packages/feature/dialog/Dialog';
@@ -46,7 +66,7 @@ interface Field {
 }
 let system = useSystem()
 const items = [
-    '备份',
+    '背景',
     // '版本',
 ]
 const fields: Field[] = [
@@ -71,67 +91,17 @@ const fields: Field[] = [
 ]
 const activeIndex = ref(0);
 const formData = ref({});
-const inputConfig = ref('')
+const inputConfig = ref('');
+const imgtype = ref(0)
+const imgurl = ref('');
+
 const selectItem = (index: number) => {
     activeIndex.value = index;
 };
 
-async function handleClick(num: number) {
-    if (num === 0) {//导出配置
-        let cfg = await system?.serializeState();
-        try {
-            await navigator.clipboard.writeText(cfg!);
-            Dialog.showMessageBox({
-                title: '导出配置',
-                message: '导出成功,已保存到粘贴板',
-                type: 'info',
-                buttons: ['确定']
-            })
-        } catch (err) {
-            Dialog.showMessageBox({
-                title: '导出配置',
-                message: '导出失败',
-                type: 'error',
-                buttons: ['确定']
-            })
-        }
-
-    } else if (num === 1) {
-        // 导入配置
-        try {
-            let req = await Dialog.showMessageBox({
-                title: '导入配置',
-                message: '导入会覆盖现有的文件,是否继续?',
-                type: 'warning',
-                buttons: ['确定','取消']
-            });
-            if(req.response === 1) return;
-            await system?.deserializeState(inputConfig.value);
-            setTimeout(() => {
-                system?.reboot();
-            }, 10000);
-            await Dialog.showMessageBox({
-                title: '导入成功',
-                message: '即将重启电脑',
-                type: 'warning',
-                buttons: ['确定']
-            });
-            system?.reboot();
-        } catch (err) {
-            Dialog.showMessageBox({
-                title: '导入配置',
-                message: '导入失败',
-                type: 'error',
-                buttons: ['确定']
-            })
-        }
-    }
-}
-getRemoteVersion()
-function getRemoteVersion() {
+function submit(){
 
 }
-
 </script>
   
 <style scoped>
@@ -192,5 +162,6 @@ function getRemoteVersion() {
     width: 100px;
     flex-shrink: 0;
     text-align: right;
+
 }
 </style>

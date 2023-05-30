@@ -19,7 +19,7 @@ export interface OptionItem {
     value: any;
 }
 let props = defineProps({
-    value: {
+    modelValue : {
         type: [String, Number],
         default: ''
     },
@@ -32,7 +32,7 @@ let props = defineProps({
         default: 'Select an option'
     }
 })
-let emit = defineEmits(['update:value'])
+let emit = defineEmits(['update:modelValue'])
 const isOpen = ref(false);
 const selectedOption = ref<OptionItem | null>(null);
 
@@ -42,17 +42,16 @@ const toggleOpen = () => {
 
 const selectOption = (option: OptionItem) => {
     selectedOption.value = option;
-    emit('update:value', option.value);
+    emit('update:modelValue', option.value);
     isOpen.value = false;
     closeSelect()
 };
 
 const findSelectedOption = () => {
-    const option = props.options.find((option: OptionItem) => option.value === props.value);
+    console.log(props)
+    const option = props.options.find((option: OptionItem) => option.value === props.modelValue );
     selectedOption.value = option || null;
 };
-
-findSelectedOption();
 
 function closeSelect() {
     isOpen.value = false;
@@ -60,6 +59,7 @@ function closeSelect() {
 
 
 onMounted(() => {
+    findSelectedOption();
     window.addEventListener('click', handleClickOutside);
 });
 onUnmounted(() => {

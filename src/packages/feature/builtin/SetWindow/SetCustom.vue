@@ -13,7 +13,8 @@
                 </div>
                 <div class="setting-item">
                     <label>设置背景图片</label>
-                    <WinSelect v-model="imgtype"
+                    <WinSelect 
+                    v-model="imgtype"
                     :options="[
                         {
                             label:'来源网络',
@@ -92,7 +93,7 @@ const fields: Field[] = [
 const activeIndex = ref(0);
 const formData = ref({});
 const inputConfig = ref('');
-const imgtype = ref(0)
+const imgtype = ref(0);
 const imgurl = ref('');
 
 const selectItem = (index: number) => {
@@ -100,7 +101,7 @@ const selectItem = (index: number) => {
 };
 
 function submit(){
-
+    console.log(imgtype.value,imgurl.value)
 }
 </script>
   

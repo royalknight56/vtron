@@ -1,14 +1,14 @@
 <template>
     <div class="win-input">
-        <input type="text" :placeholder="placeholder" v-model="value" />
+        <input type="text" :placeholder="placeholder" v-model="value" @change="" />
     </div>
 </template>
   
 <script setup lang="ts">
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, watch } from 'vue';
 
 const props = defineProps({
-    value: {
+    modelValue: {
         type: String,
         default: ''
     },
@@ -17,22 +17,13 @@ const props = defineProps({
         default: 'Type here'
     }
 });
+let emit = defineEmits(['update:modelValue'])
 
-const value = ref(props.value);
-value.value = props.value;
+const value = ref(props.modelValue);
 
-const updateValue = (event: Event) => {
-    value.value = (event.target as HTMLInputElement).value;
-};
-
-const onFocus = () => {
-    // Add focus styles here
-};
-
-const onBlur = () => {
-    // Remove focus styles here
-};
-
+watch(value,(nv,ov)=>{
+    emit('update:modelValue',nv)
+})
 
 </script>
   

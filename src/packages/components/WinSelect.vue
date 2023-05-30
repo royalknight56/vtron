@@ -11,20 +11,22 @@
         </div>
     </div>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
 
-export interface OptionItem {
+interface OptionItem {
     label: string;
     value: any;
 }
 let props = defineProps({
-    modelValue : {
-        type: [String, Number],
+    modelValue: {
         default: ''
     },
     options: {
-        type: Array<OptionItem>,
+        type: Array<{
+            label: string;
+            value: any;
+        }>,
         default: () => []
     },
     placeholder: {
@@ -49,7 +51,7 @@ const selectOption = (option: OptionItem) => {
 
 const findSelectedOption = () => {
     console.log(props)
-    const option = props.options.find((option: OptionItem) => option.value === props.modelValue );
+    const option = props.options.find((option: OptionItem) => option.value === props.modelValue);
     selectedOption.value = option || null;
 };
 

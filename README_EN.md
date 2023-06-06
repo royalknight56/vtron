@@ -132,10 +132,10 @@ let system = new System({
     {
       name: 'HelloWorld',
       icon: someicon,
-      window: new BrowserWindow({
+      window:{
         content:HelloWorld,
         icon: someicon,
-      })
+      }
     }
   ]
 });

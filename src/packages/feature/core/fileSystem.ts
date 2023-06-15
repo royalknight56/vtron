@@ -137,12 +137,6 @@ class VtronFileSystem {
                         new Shell(system, "/", 'root').exec('node ' + file.path)
                     }
                 }
-                // if (file.type === 'file') {
-                //     let content = file.content;
-                //     if (content) {
-                //         new Shell(system, "/", 'root').exec('node ' + file.path)
-                //     }
-                // }
             })
         }
     }

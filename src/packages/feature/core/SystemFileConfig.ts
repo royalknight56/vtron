@@ -5,8 +5,7 @@ interface InitFileItem {
     content?:  {
         content: string;
         name: string;
-        icon: string;
-        type: string;
+
     }
 }
 const InitFile = {
@@ -39,16 +38,19 @@ const InitFile = {
                     name:'plugs',
                     type: 'dir',
                     children: [
-                        // {
-                        //     name: 'test.ts',
-                        //     type: 'file',
-                        //     content: {
-                        //         name: 'test.ts',
-                        //         icon: 'https://img.alicdn.com/tfs/TB1ZQ9Xb4v1gK0jSZFFXXb0sXXa-256-256.png',
-                        //         type: 'file',
-                        //         content: 'console.log("test")'
-                        //     }
-                        // }
+                        {
+                            name: 'test.ts',
+                            type: 'file',
+                            content: {
+                                name: 'test.ts',
+                                content: `
+                                function main(system) {
+                                    console.log("test")
+                                    console.log(system)
+                                }
+                                `
+                            }
+                        }
                     ]
                 },
                 {

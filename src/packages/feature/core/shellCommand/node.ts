@@ -6,7 +6,7 @@ async function node(input: string, output: (text: string) => void, shell: Shell)
     if (path) {
         let res = await shell.system.fs.stat(vPath.join(shell.router, path))
         if (res) {
-            if (res.isDirectory) {
+            if (res.isFile) {
                 let file = await shell.system.fs.readFile(vPath.join(shell.router, path))
                 if (file) {
                     new Function('system', 'vue', file + '\nmain(system)')(shell.system, ivue)

@@ -29,9 +29,22 @@ vtron, 基于Vue3的 Win10 UI 框架
 本框架可以让你的页面像win10视窗系统一样，运行一个网页上的win10系统。
 
 
-
 ## 开发流程
 
+### 使用Github模版
+1. 创建项目
+https://github.com/royalknight56/vtron-template
+
+从这个模版仓库创建新的项目。
+
+2. clone项目
+
+git clone 已经创建好的项目
+
+3. 修改apps目录下的文件，或者新建app
+
+
+### 使用npm，从创建好的vue项目开始
 
 1. 安装vtron
 

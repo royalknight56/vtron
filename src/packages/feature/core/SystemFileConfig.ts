@@ -38,19 +38,6 @@ const InitFile = {
                     name:'plugs',
                     type: 'dir',
                     children: [
-                        {
-                            name: 'test.ts',
-                            type: 'file',
-                            content: {
-                                name: 'test.ts',
-                                content: `
-                                function main(system) {
-                                    console.log("test")
-                                    console.log(system)
-                                }
-                                `
-                            }
-                        }
                     ]
                 },
                 {

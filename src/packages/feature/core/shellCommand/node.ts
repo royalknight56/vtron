@@ -15,7 +15,10 @@ async function node(input: string, output: (text: string) => void, shell: Shell)
                 output(`\x1b[31m${path}: Not a file\x1b[0m\r\n`)
             }
         } else {
-            output(`\x1b[31m${path}: No such file or directory\x1b[0m\r\n`)
+            // 没有文件，尝试直接运行
+            let nodecontent = input.split(' ').slice(1).join(' ');
+            new Function('system', 'vue', nodecontent + '\nmain(system)')(shell.system, ivue)
+            // output(`\x1b[31m${path}: No such file or directory\x1b[0m\r\n`)
         }
     } else {
         output(`\x1b[31m${path}: No such file or directory\x1b[0m\r\n`)

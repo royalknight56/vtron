@@ -3,6 +3,7 @@
         <template v-if="file">
             <img v-if="file.isDirectory" draggable="false" :src="foldericon" />
             <img v-else-if="extname(file.path) === '.exe'" draggable="false" :src="dealIcon(file)" />
+            <img v-else-if="extname(file.path) === '.url'" draggable="false" :src="dealUrlIcon(file)" />
             <img v-else-if="extname(file.path) === '.png'" draggable="false" :src="file.content" />
             <img v-else draggable="false" :src="unknownicon" />
         </template>
@@ -26,6 +27,7 @@ const props = defineProps<{
     file?: VtronFile | null,
     icon?: string
 }>();
+// content: `link:${loc}:${options.name}:${options.icon?.length}:${options.icon}`
 function dealIcon(file: VtronFile) {
     let exeContent = file.content.split(':');
     let iconImg = exeContent.slice(4).join(':')
@@ -35,6 +37,16 @@ function dealIcon(file: VtronFile) {
         return unknownicon;
     }
 
+}
+// content: `link::${options.name}::icon::${options.icon}`
+function dealUrlIcon(file: VtronFile) {
+    let urlContent = file.content.split('::');
+    let iconImg = urlContent[3];
+    if (iconImg != 'undefined' && iconImg != '' && iconImg != null && iconImg) {
+        return iconImg;
+    } else {
+        return unknownicon;
+    }
 }
 //
 </script>

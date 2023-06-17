@@ -5,18 +5,13 @@ import { RootState, SystemOptions, WinAppOptions } from "@/packages/type/type";
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from "@packages/feature/event";
 import { VtronFileSystem } from "@/packages/feature/core/fileSystem";
 import { initAppList } from "@/packages/hook/useAppOpen";
-import vtronLogoIcon from "@/assets/vtron-icon-nobg.png?url";
-import myComputerLogoIcon from "@/packages/assets/computer.ico?url";
-import infoIcon from "@/packages/assets/info-icon.ico?url";
-import termIcon from "@/packages/assets/term.ico?url";
-import { Shell } from "@/packages/feature/core/Shell";
+
 import { version } from "../../../../package.json";
 import { BrowserWindow } from "@packages/feature/window/BrowserWindow";
-import FileViewer from "../builtin/FileViewer.vue";
-import MyComputerVue from "../builtin/MyComputer.vue";
-import UrlBrowser from "../builtin/UrlBrowser.vue";
-import Terminal from "../builtin/Terminal.vue";
+
 import { extname } from "../core/Path";
+import { initBuiltinApp,initBuiltinFileOpener}   from "./initBuiltin";
+import { Shell } from "../core/Shell";
 let GLOBAL_SYSTEM: System | null = null;
 
 export type VtronPlugin = (system: System, rootState: RootState) => void
@@ -78,91 +73,16 @@ class System {
          */
         this._rootState.system.state = SystemStateEnum.opening;
         initEventListener();
-        this.registerFileOpener('.exe', this.openLink.bind(this))
-
-        this.registerFileOpener(".txt", (path, content) => {
-            let pdfwindow = new BrowserWindow({
-                width: 400,
-                height: 400,
-                center: true,
-                title: '文本文档',
-                content: FileViewer,
-                config: {
-                    content: content,
-                    path: path
-                }
-            });
-            pdfwindow.show()
-        });
-
-        this.registerFileOpener("dir", (path, content) => {
-            let pdfwindow = new BrowserWindow({
-                width: 800,
-                height: 600,
-                center: true,
-                title: '此电脑',
-                content: MyComputerVue,
-                icon: myComputerLogoIcon,
-                config: {
-                    content: content,
-                    path: path
-                }
-            });
-            pdfwindow.show()
-        });
-
-        this.registerFileOpener('.url', (path, content) => {
-            let imgwindow = new BrowserWindow({
-                width: 400,
-                height: 400,
-                icon: infoIcon,
-                center: true,
-                title: '',
-                content: UrlBrowser,
-                config: {
-                    content: content,
-                    path: path
-                }
-            });
-            imgwindow.show()
-        })
-
+        // opener
+        initBuiltinFileOpener(this);
         GLOBAL_SYSTEM = this;
 
         this.fs = await this.initFileSystem();
         this.initApp();
+        // app
+        initBuiltinApp(this);
+        
         initAppList();
-        this.addApp({
-            name: '此电脑',
-            icon: myComputerLogoIcon,
-            window: {
-                width: 800,
-                height: 600,
-                center: true,
-                title: '此电脑',
-                icon: myComputerLogoIcon,
-                content: MyComputerVue,
-                config: {
-                    path: '/'
-                }
-            }
-        });
-        this.addApp({
-            name: '终端',
-            icon: termIcon,
-            window: {
-                width: 700,
-                height: 470,
-                center: true,
-                title: '终端',
-                icon: termIcon,
-                content: Terminal,
-                resizable: false,
-                config: {
-                    path: '/'
-                }
-            }
-        })
         this._rootState.system.state = SystemStateEnum.open;
         this._ready && this._ready(this);
         this.fs.runPlugin(this)
@@ -227,7 +147,9 @@ class System {
     addMenuList(options: WinAppOptions) {
         this.addWindowSysLink('Menulist', options);
     }
-
+    shell(cmd:string){
+        new Shell(this, "/", 'root').exec(cmd)
+    }
     whenReady(): Promise<System> {
         return new Promise<System>((resolve, reject) => {
             this._ready = resolve;

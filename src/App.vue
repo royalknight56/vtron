@@ -114,15 +114,6 @@ onMounted(() => {
       // '--menu-bar-height':'100px'
     }
   })
-  sys.whenReady().then((system) => {
-    setTimeout(() => {
-      system.fs.writeFile('/C/Users/Desktop/看月亮.url',
-        {
-          content: "http://static.myim.online/moon/",
-        }
-      )
-    }, 3000);
-  });
 })
 
 

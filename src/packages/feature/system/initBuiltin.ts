@@ -97,8 +97,8 @@ export function initBuiltinFileOpener(system: System) {
 
     system.registerFileOpener('.url', (path, content) => {
         let imgwindow = new BrowserWindow({
-            width: 400,
-            height: 400,
+            width: 800,
+            height: 600,
             icon: infoIcon,
             center: true,
             title: '',

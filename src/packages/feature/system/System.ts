@@ -147,8 +147,12 @@ class System {
     addMenuList(options: WinAppOptions) {
         this.addWindowSysLink('Menulist', options);
     }
-    shell(cmd:string){
-        new Shell(this, "/", 'root').exec(cmd)
+    async shell(cmd:string){
+        let shello = new Shell(this, "/", 'root')
+        let cmdArr = cmd.split("\n");
+        for(let i = 0;i<cmdArr.length;i++){
+            await shello.exec(cmdArr[i])
+        }
     }
     whenReady(): Promise<System> {
         return new Promise<System>((resolve, reject) => {

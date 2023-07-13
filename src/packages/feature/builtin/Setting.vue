@@ -1,7 +1,8 @@
 <template>
     <div class="outer">
         <div class="uper_tab">
-            <div class="tab">Windows 设置</div>
+            <div class="tab">
+                {{ i18n('windows.setting') }}</div>
         </div>
         <div class="outer_main">
             <div class="main_uper">
@@ -32,7 +33,7 @@ import e774 from '../../../assets/icon/e774.png'//网络
 import e771 from '../../../assets/icon/e771.png'//个性化
 import e895 from '../../../assets/icon/e895.png'//更新
 import { BrowserWindow } from '@/packages/feature/window/BrowserWindow';
-
+import { i18n } from '@/packages/feature/i18n';
 
 
 let browserWindow = inject<BrowserWindow>('browserWindow')
@@ -54,7 +55,7 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
         } else {
             setMap[title] = new BrowserWindow({
                 content: content,
-                title: '系统',
+                title: i18n('system'),
                 x: browserWindow.windowInfo.x,
                 y: browserWindow.windowInfo.y,
                 height: browserWindow.windowInfo.height,
@@ -77,8 +78,8 @@ let setList = [
     //     icon: e774
     // }, 
     {
-        title: '个性化',
-        desc: '背景，锁屏，颜色',
+        title: i18n('personalization'),
+        desc: i18n('background.lockscreen.color'),
         icon: e771,
         content: SetCustom
     },
@@ -89,8 +90,10 @@ let setList = [
     //     content:appstore
     // }, 
     {
-        title: '更新和安全',
-        desc: 'Windows 更新，恢复，备份',
+        // title: '更新和安全',
+        title: i18n('update.security'),
+        // desc: 'Windows 更新，恢复，备份',
+        desc: i18n('windows.update.recover.backup'),
         icon: e895,
         content: SetUpdate
     },

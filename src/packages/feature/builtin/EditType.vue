@@ -1,7 +1,7 @@
 <template>
     <div class="outer">
         <input class="win-input" v-model="type">
-        <WinButton @click="confirm">确定</WinButton>
+        <WinButton @click="confirm">{{ i18n('confirm') }}</WinButton>
     </div>
 </template>
 <script setup lang="ts">
@@ -11,7 +11,8 @@ import { VtronFile } from '@/packages/feature/core/fileSystem';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 import { emitEvent } from '../event';
-import { basename,extname } from '../core/Path';
+import { basename, extname } from '../core/Path';
+import { i18n } from '@/packages/feature/i18n';
 
 let browserWindow: BrowserWindow = inject('browserWindow')!
 let fileBaseName = basename((browserWindow.config.content as VtronFile).path)
@@ -23,10 +24,10 @@ function confirm() {
     useSystem()?.fs.rename(browserWindow.config.content.path, browserWindow.config.content.path.replace(
         fileBaseName,
         fileBaseName.replace(extname(fileBaseName), type.value)
-        )).then(() => {
-            emitEvent('file.props.edit')
-            browserWindow.close();
-        })
+    )).then(() => {
+        emitEvent('file.props.edit')
+        browserWindow.close();
+    })
 }
 </script>
 <style lang="scss" scoped>

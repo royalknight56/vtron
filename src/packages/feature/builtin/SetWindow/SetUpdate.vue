@@ -9,24 +9,35 @@
         <div class="setting">
             <div v-if="0 === activeIndex">
                 <div class="setting-item">
-                    <h1 class="setting-title">系统备份与导入</h1>
+                    <h1 class="setting-title">
+                        {{ i18n('system.backup.and.import') }}</h1>
                 </div>
                 <div class="setting-item">
-                    <label>导出系统状态</label>
-                    <WinButton @click="handleClick(0)">导出配置</WinButton>
+                    <label>
+                        {{ i18n('export.system.status') }}
+                    </label>
+                    <WinButton @click="handleClick(0)">
+                        {{ i18n('export') }}
+                    </WinButton>
                 </div>
                 <div class="setting-item">
-                    <label>导入状态文件</label>
+                    <label>
+                        {{ i18n('import.status.file') }}
+                    </label>
                     <textarea v-model="inputConfig" type="text"></textarea>
                 </div>
                 <div class="setting-item">
                     <label></label>
-                    <WinButton @click="handleClick(1)">导入配置</WinButton>
+                    <WinButton @click="handleClick(1)">
+                        {{ i18n('import') }}
+                    </WinButton>
                 </div>
             </div>
             <div v-if="1 === activeIndex">
                 <div class="setting-item">
-                    <h1 class="setting-title">系统版本</h1>
+                    <h1 class="setting-title">
+                        {{ i18n('system.version') }}
+                    </h1>
                 </div>
             </div>
         </div>
@@ -36,7 +47,8 @@
 import WinButton from '@/packages/components/WinButton.vue';
 import { defineComponent, ref } from 'vue';
 import { useSystem } from "@packages/feature/system"
-import {Dialog} from '@/packages/feature/dialog/Dialog';
+import { Dialog } from '@/packages/feature/dialog/Dialog';
+import { i18n } from '@/packages/feature/i18n';
 
 interface Field {
     name: string;
@@ -46,7 +58,7 @@ interface Field {
 }
 let system = useSystem()
 const items = [
-    '备份',
+    i18n('backup'), // '备份',
     // '版本',
 ]
 const fields: Field[] = [
@@ -82,17 +94,21 @@ async function handleClick(num: number) {
         try {
             await navigator.clipboard.writeText(cfg!);
             Dialog.showMessageBox({
-                title: '导出配置',
-                message: '导出成功,已保存到粘贴板',
+                title: i18n('export.config'),
+                message: i18n('export.success.saved.to.clipboard'),
                 type: 'info',
-                buttons: ['确定']
+                buttons: [
+                    i18n('confirm')
+                ]
             })
         } catch (err) {
             Dialog.showMessageBox({
-                title: '导出配置',
-                message: '导出失败',
+                title: i18n('export.config'),
+                message: i18n('export.failed'),
                 type: 'error',
-                buttons: ['确定']
+                buttons: [
+                    i18n('confirm')
+                ]
             })
         }
 
@@ -100,29 +116,33 @@ async function handleClick(num: number) {
         // 导入配置
         try {
             let req = await Dialog.showMessageBox({
-                title: '导入配置',
-                message: '导入会覆盖现有的文件,是否继续?',
+                title: i18n('import.config'),
+                // message: '导入会覆盖现有的文件,是否继续?',
+                message: i18n('import.config.will.cover.existing.files.continue'),
                 type: 'warning',
-                buttons: ['确定','取消']
+                buttons: [
+                    i18n('confirm'),
+                    i18n('cancel')
+                ]
             });
-            if(req.response === 1) return;
+            if (req.response === 1) return;
             await system?.deserializeState(inputConfig.value);
             setTimeout(() => {
                 system?.reboot();
             }, 10000);
             await Dialog.showMessageBox({
-                title: '导入成功',
-                message: '即将重启电脑',
+                title: i18n('import.success'),
+                message: i18n('import.success.reboot.soon'),
                 type: 'warning',
-                buttons: ['确定']
+                buttons: [i18n('confirm')]
             });
             system?.reboot();
         } catch (err) {
             Dialog.showMessageBox({
-                title: '导入配置',
-                message: '导入失败',
+                title: i18n('import.config'),
+                message: i18n('import.failed'),
                 type: 'error',
-                buttons: ['确定']
+                buttons: [i18n('confirm')]
             })
         }
     }
@@ -189,7 +209,7 @@ function getRemoteVersion() {
 
 .setting-item label {
     display: block;
-    width: 100px;
+    width: 150px;
     flex-shrink: 0;
     text-align: right;
 }

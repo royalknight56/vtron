@@ -2,7 +2,7 @@
     <div class="txt">
         <div class="txt-upper">
             <div class="txt-button" @click="handleButton">
-                文件(F)
+                {{ i18n('file') }}(F)
             </div>
         </div>
         <div class="txt-content">
@@ -16,6 +16,7 @@ import { inject, ref } from 'vue';
 import { Notify } from '../notification/Notification';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
+import { i18n } from '@/packages/feature/i18n';
 
 let browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
@@ -31,13 +32,13 @@ function handleButton(e: MouseEvent) {
         mouse: e,
         menuList: [
             {
-                name: '保存',
+                name: i18n('save'),
                 click: async () => {
                     let file = await system.fs.stat(browserWindow?.config.path);
                     if (!file) {
                         new Notify({
-                            title: '提示',
-                            content: '文件不存在',
+                            title: i18n('tips'),
+                            content: i18n('file.not.exist'),
                         })
                         return;
                     }
@@ -46,8 +47,8 @@ function handleButton(e: MouseEvent) {
                         content: input.value,
                     });
                     new Notify({
-                        title: '提示',
-                        content: '文件保存成功',
+                        title: i18n('tips'),
+                        content: i18n('file.save.success'),
                     })
                 }
             }
@@ -97,4 +98,5 @@ function handleButton(e: MouseEvent) {
     border: none;
     outline: none;
     resize: none;
-}</style>
+}
+</style>

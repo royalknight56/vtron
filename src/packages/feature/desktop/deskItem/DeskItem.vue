@@ -17,26 +17,27 @@ import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
 import { createNewFile, openPropsWindow } from "@/packages/hook/useContextMenu"
 import { basename } from "@/packages/feature/core/Path"
 import { VtronFile } from "@packages/feature/core/fileSystem";
+import { i18n } from '@/packages/feature/i18n';
 
 const { openapp, appList } = useAppOpen('apps');
 
-const sys  = useSystem()
+const sys = useSystem()
 function handleRightClick(mouse: MouseEvent, item: VtronFile) {
     emitEvent('contextMenu.show', {
         mouse: mouse,
         menuList: [
             {
-                name: '打开',
+                name: i18n('open'),
                 click: () => openapp(item)
             },
             {
-                name: '属性',
+                name: i18n('props'),
                 click: () => {
                     openPropsWindow(item.path)
                 }
             },
             {
-                name: '删除',
+                name: i18n('delete'),
                 click: () => {
                     if (item.isDirectory) {
                         sys?.fs.rmdir(item.path)

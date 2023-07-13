@@ -12,16 +12,17 @@ import Terminal from "../builtin/Terminal.vue";
 import AppStore from "../builtin/AppStore.vue";
 import type { System } from "./System";
 import { BrowserWindow } from "@packages/feature/window/BrowserWindow";
+import { i18n } from '@/packages/feature/i18n';
 
 export function initBuiltinApp(system: System) {
     system.addApp({
-        name: '此电脑',
+        name: i18n('computer'),
         icon: myComputerLogoIcon,
         window: {
             width: 800,
             height: 600,
             center: true,
-            title: '此电脑',
+            title: i18n('computer'),
             icon: myComputerLogoIcon,
             content: MyComputerVue,
             config: {
@@ -30,13 +31,13 @@ export function initBuiltinApp(system: System) {
         }
     });
     system.addApp({
-        name: '终端',
+        name: i18n('terminal'),
         icon: termIcon,
         window: {
             width: 700,
             height: 470,
             center: true,
-            title: '终端',
+            title: i18n('terminal'),
             icon: termIcon,
             content: Terminal,
             resizable: false,
@@ -46,13 +47,13 @@ export function initBuiltinApp(system: System) {
         }
     })
     system.addApp({
-        name: '应用商店',
+        name: i18n('appstore'),
         icon: vtronStoreLogoIcon,
         window: {
             width: 700,
             height: 470,
             center: true,
-            title: '应用商店',
+            title: i18n('appstore'),
             icon: vtronStoreLogoIcon,
             content: AppStore,
             config: {
@@ -69,7 +70,7 @@ export function initBuiltinFileOpener(system: System) {
             width: 400,
             height: 400,
             center: true,
-            title: '文本文档',
+            title: i18n('text.document'),
             content: FileViewer,
             config: {
                 content: content,
@@ -84,7 +85,7 @@ export function initBuiltinFileOpener(system: System) {
             width: 800,
             height: 600,
             center: true,
-            title: '此电脑',
+            title: i18n('computer'),
             content: MyComputerVue,
             icon: myComputerLogoIcon,
             config: {

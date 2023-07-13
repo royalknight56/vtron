@@ -22,19 +22,21 @@ import { onMounted, ref } from "vue";
 import { System } from "./packages/plug";
 import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
 import vtronLogoIcon from "./assets/vtron-icon-nobg.png"
-let sys:System|null = null;
-async function save(){
+let sys: System | null = null;
+async function save() {
   let state = await sys?.serializeState();
   localStorage.setItem('vtron-state', JSON.stringify(state));
 }
-async function restore(){
+async function restore() {
   let state = localStorage.getItem('vtron-state');
-  if(state){
+  if (state) {
     await sys?.deserializeState(JSON.parse(state));
   }
 }
 onMounted(() => {
-  sys =  new System({
+  sys = new System({
+    lang: "en-US",
+    // lang: "zh-CN",
     logo: vtronLogoIcon,
     background: "https://picsum.photos/1920/1080",
     desktop: [
@@ -108,7 +110,7 @@ onMounted(() => {
         }
       }
     ],
-    rootStyle:{
+    rootStyle: {
       '--color-ui-desk-item-title': '#a30',
       '--window-border-radius': '4px',
       // '--menu-bar-height':'100px'

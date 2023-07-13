@@ -1,7 +1,7 @@
 <template>
     <div class="outer">
         <input class="win-input" v-model="name">
-        <WinButton @click="confirm">确定</WinButton>
+        <WinButton @click="confirm">{{ i18n('confirm') }}</WinButton>
     </div>
 </template>
 <script setup lang="ts">
@@ -14,12 +14,13 @@ import { emitEvent } from '../event';
 import { join } from '../core/Path';
 import { basename } from "@/packages/feature/core/Path"
 import { Notify } from '../notification/Notification';
+import { i18n } from '@/packages/feature/i18n';
 
 let browserWindow: BrowserWindow = inject('browserWindow')!
 let name = ref(basename((browserWindow.config.content as VtronFile).path));
 
 function confirm() {
-    if( name.value.length>40 ){
+    if (name.value.length > 40) {
         new Notify({
             title: '提示',
             content: '文件名过长',

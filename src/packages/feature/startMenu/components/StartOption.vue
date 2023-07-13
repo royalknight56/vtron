@@ -9,7 +9,7 @@
                     </svg>
                 </div>
                 <div class="s-option-button_title">
-                    电源
+                    {{ i18n('startMenu.power') }}
                 </div>
             </div>
             <div class="s-option-button" @click.stop="($ev) => handleClick(1, $ev)">
@@ -20,7 +20,7 @@
                     </svg>
                 </div>
                 <div class="s-option-button_title">
-                    设置
+                    {{ i18n('startMenu.setting') }}
                 </div>
             </div>
             <!-- <div class="s-option-button">
@@ -34,23 +34,23 @@
 </template>
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { emitEvent,mountEvent} from '../../event';
+import { emitEvent, mountEvent } from '../../event';
 import Setting from '@/packages/feature/builtin/Setting.vue';
 import { BrowserWindow } from '@/packages/feature/window/BrowserWindow';
-
+import { i18n } from '@/packages/feature/i18n';
 function handleClick(key: number, ev: MouseEvent) {
     switch (key) {
         case 0:
             emitEvent('startMenu.close.click', {
                 mouse: ev,
                 menuList: [{
-                    name: "关机",
+                    name: i18n('startMenu.shutdown'),
                     click: () => {
                         emitEvent('system.shutdown')
                     }
                 },
                 {
-                    name: "恢复",
+                    name: i18n('startMenu.recover'),
                     click: () => {
                         emitEvent('system.recover')
                     }
@@ -66,7 +66,7 @@ function handleClick(key: number, ev: MouseEvent) {
                 content: Setting,
                 width: 800,
                 height: 600,
-                title: '设置',
+                title: i18n('startMenu.setting'),
                 resizable: false,
                 center: true,
             })

@@ -10,8 +10,8 @@
             <!-- <div class="button">文件</div> -->
             <!-- <div class="button">计算机</div> -->
             <!-- <div class="button">查看</div> -->
-            <div class="button" @click="createFolder()">新建</div>
-            <div class="button" @click="backFolder()">返回</div>
+            <div class="button" @click="createFolder()">{{ i18n('new') }}</div>
+            <div class="button" @click="backFolder()">{{ i18n('back') }}</div>
             <!-- <div class="button" @click="newFolder()">新建</div> -->
         </div>
         <div class="uper_nav">
@@ -58,8 +58,8 @@
     </div>
     <div class="desk-outer" ref="compu" @contextmenu.self="showOuterMenu($event)">
         <div draggable="true" class="desk-item" v-for="(item, index) in currentList"
-            @contextmenu="showMenu(item, index, $event)" @dragstart="startDrag($event, item)" @drop="folderDrop($event, item)"
-            @dblclick="openFolder(item)">
+            @contextmenu="showMenu(item, index, $event)" @dragstart="startDrag($event, item)"
+            @drop="folderDrop($event, item)" @dblclick="openFolder(item)">
             <div class="item_img">
                 <FileIcon :file="item" />
             </div>
@@ -84,9 +84,10 @@ import { Notify } from "../notification/Notification";
 import { useSystem } from "../system";
 import { BrowserWindow, VtronFile } from "@/packages/plug";
 import * as fspath from "@/packages/feature/core/Path";
-import { createNewFile,openPropsWindow,createNewDir } from "@/packages/hook/useContextMenu"
+import { createNewFile, openPropsWindow, createNewDir } from "@/packages/hook/useContextMenu"
 import { basename } from "@/packages/feature/core/Path"
 import { emitEvent, mountEvent } from "../event";
+import { i18n } from '@/packages/feature/i18n';
 
 let browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
@@ -98,7 +99,7 @@ function pathJoin(...paths: string[]) {
     return fspath.join(...paths);
 }
 
-const createInput = ref("新建文件夹");
+const createInput = ref(i18n('new.folder'));
 const creating = ref(false);
 function creatingEditEnd() {
     if (creating.value) {
@@ -112,7 +113,7 @@ function creatingEditEnd() {
             });
         });
         creating.value = false;
-        createInput.value = "新建文件夹";
+        createInput.value = i18n('new.folder');
 
     }
 }
@@ -122,7 +123,7 @@ function showOuterMenu(e: MouseEvent) {
         mouse: e,
         menuList: [
             {
-                name: '新建文件',
+                name: i18n('new.file'),
                 click: () => {
                     createNewFile(router_url.value).then(() => {
                         refersh(router_url.value);
@@ -130,7 +131,7 @@ function showOuterMenu(e: MouseEvent) {
                 }
             },
             {
-                name: '新建文件夹',
+                name: i18n('new.folder'),
                 click: () => {
                     createNewDir(router_url.value).then(() => {
                         refersh(router_url.value);
@@ -171,7 +172,8 @@ async function isVia(newVal: string, alert: boolean = false) {
     let isExist = await system?.fs.exists(newVal);
     if (!isExist) {
         if (alert) new Notify({
-            title: "路径不存在",
+            // title: "路径不存在",
+            title: i18n('path.not.exist'),
             content: newVal,
         });
         return false;
@@ -192,19 +194,19 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
         mouse: ev,
         menuList: [
             {
-                name: '打开',
+                name: i18n('open'),
                 click: () => {
                     openFolder(item)
                 }
             },
             {
-                name: '属性',
+                name: i18n('props'),
                 click: () => {
                     openPropsWindow(item.path);
                 }
             },
             {
-                name: '删除',
+                name: i18n('delete'),
                 click: () => {
                     if (item.isDirectory) {
                         system?.fs.rmdir(item.path).then(() => {
@@ -243,7 +245,8 @@ function folderDrop(ev: DragEvent, item: VtronFile) {
         emitEvent('file.props.edit');
     }, (err) => {
         new Notify({
-            title: "移动失败",
+            title: i18n('failed'),
+
             content: err,
         });
     });

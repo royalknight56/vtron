@@ -2,7 +2,7 @@
     <div class="outer">
         <div class="tab">
             <div class="tab-item">
-                常规
+                {{ i18n('general') }}
             </div>
         </div>
         <div class="content">
@@ -12,22 +12,34 @@
                         <FileIcon :file="file" />
                     </div>
                 </div>
-                <div class="propvalue">{{ basename(file?.path||'') }} <WinButton class="some-button" @click="editFileName">重命名</WinButton></div>
+                <div class="propvalue">{{ basename(file?.path || '') }}
+                    <WinButton class="some-button" @click="editFileName">
+                        {{ i18n('rename') }}
+                    </WinButton>
+                </div>
             </div>
             <div class="split-line"></div>
             <div class="propitem">
-                <div class="propname">文件类型：</div>
-                <div class="propvalue">{{ extname(file?.path ||"") }}
+                <div class="propname">
+                    {{ i18n('file.type') }}：
+                </div>
+                <div class="propvalue">{{ extname(file?.path || "") }}
                 </div>
             </div>
             <div class="propitem">
-                <div class="propname">位置：</div>
+                <div class="propname">
+                    {{ i18n('location') }}：
+                </div>
                 <div class="propvalue">{{ file?.path }}</div>
             </div>
         </div>
         <div class="button-group">
-            <WinButton @click="confirm">确定</WinButton>
-            <WinButton @click="confirm">取消</WinButton>
+            <WinButton @click="confirm">
+                {{ i18n('confirm') }}
+            </WinButton>
+            <WinButton @click="confirm">
+                {{ i18n('cancel') }}
+            </WinButton>
         </div>
     </div>
 </template>
@@ -45,9 +57,10 @@ import FileIcon from "@/packages/feature/builtin/FileIcon.vue";
 import { mountEvent } from '../event';
 import { VtronFile } from '@/packages/plug';
 import { basename, extname } from "@/packages/feature/core/Path"
+import { i18n } from '@/packages/feature/i18n';
 
 let window: BrowserWindow | undefined = inject('browserWindow');
-const file = ref<VtronFile|null>();
+const file = ref<VtronFile | null>();
 file.value = await useSystem()?.fs.stat(window?.config.content);
 
 // mountEvent('file.props.edit', async (source: string, data: any) => {
@@ -59,7 +72,8 @@ function confirm() {
 }
 function editType() {
     let win = new BrowserWindow({
-        title: '修改类型',
+        // title: '修改类型',
+        title: i18n('edit.type'),
         content: EditType,
         config: {
             content: file
@@ -77,7 +91,7 @@ function editType() {
 
 function editFileName() {
     let win = new BrowserWindow({
-        title: '重命名',
+        title: i18n('rename'),
         content: EditFileName,
         config: {
             content: file
@@ -87,7 +101,7 @@ function editFileName() {
         center: true,
         resizable: false,
     })
-    win.on('file.props.edit',async (source: string, data: any) => {
+    win.on('file.props.edit', async (source: string, data: any) => {
         file.value = await useSystem()?.fs.stat(data);
     })
     // win.on('closed', async () => {
@@ -177,4 +191,5 @@ function editFileName() {
         margin-left: 10px;
     }
 
-}</style>
+}
+</style>

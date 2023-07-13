@@ -1,5 +1,5 @@
 <template>
-    <div class="desktop" >
+    <div class="desktop">
         <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown.left="backgroundDown">
             <DeskItem class="userarea-upper zhighher"></DeskItem>
             <DesktopBackground class="userarea-upper"></DesktopBackground>
@@ -24,7 +24,8 @@ import NotificationGroup from '../notification/NotifyGroup.vue';
 import DateTimePop from '../popover/DateTimePop.vue';
 import { useSystem } from '../system';
 import vtronicon from '@packages/assets/vtron-icon-nobg.png';
-import { createNewFile,createNewDir,openPropsWindow } from "@/packages/hook/useContextMenu"
+import { createNewFile, createNewDir, openPropsWindow } from "@/packages/hook/useContextMenu"
+import { i18n } from '@/packages/feature/i18n';
 
 function backgroundDown(e: MouseEvent) {
     emitEvent('desktop.background.leftClick', e);
@@ -35,18 +36,18 @@ function handleRightClick(e: MouseEvent) {
         mouse: e,
         menuList: [
             {
-                name: '刷新',
+                name: i18n('refresh'),
                 click: () => {
                 }
             },
             {
-                name: '新建文件',
+                name: i18n('new.file'),
                 click: () => {
                     createNewFile('/C/Users/Desktop')
                 }
             },
             {
-                name: '新建文件夹',
+                name: i18n('new.folder'),
                 click: () => {
                     createNewDir('/C/Users/Desktop')
                 }

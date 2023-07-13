@@ -20,7 +20,8 @@ interface OptionItem {
 }
 let props = defineProps({
     modelValue: {
-        default: ''
+        default: '',
+        type: [String, Number, Boolean, Symbol]
     },
     options: {
         type: Array<{

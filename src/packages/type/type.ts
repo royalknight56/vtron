@@ -7,6 +7,7 @@ import { SystemStateEnum } from "./enum";
 import { Notify } from "../feature/notification/Notification";
 import { VtronFile } from "@packages/feature/core/fileSystem";
 export interface SystemOptions {
+    lang?:string;
     logo?:string;
     background?:string;
     desktop?:WinAppOptions[];

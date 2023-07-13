@@ -9,20 +9,21 @@
         <div class="setting">
             <div v-if="0 === activeIndex">
                 <div class="setting-item">
-                    <h1 class="setting-title">背景</h1>
+                    <h1 class="setting-title">{{ i18n('background') }}</h1>
                 </div>
                 <div class="setting-item">
-                    <label>设置背景图片</label>
+                    <label> {{ i18n('set.background') }}
+                    </label>
                     <WinSelect v-model="imgtype" :options="[
                         {
-                            label: '来源网络',
+                            label: i18n('from.network'),
                             value: 0
                         },
                         {
-                            label: '来源字符串',
+                            label: i18n('from.string'),
                             value: 1
                         }
-                    ]" placeholder="请选择">
+                    ]" :placeholder="i18n('please.select')">
                     </WinSelect>
                 </div>
                 <div class="setting-item">
@@ -32,12 +33,15 @@
 
                 <div class="setting-item">
                     <label></label>
-                    <WinButton @click="submit">确认</WinButton>
+                    <WinButton @click="submit">{{ i18n('confirm') }}
+                    </WinButton>
                 </div>
             </div>
             <div v-if="1 === activeIndex">
                 <div class="setting-item">
-                    <h1 class="setting-title">系统版本</h1>
+                    <h1 class="setting-title">
+                        {{ i18n('system.version') }}
+                    </h1>
                 </div>
             </div>
         </div>
@@ -53,6 +57,7 @@ import { defineComponent, ref } from 'vue';
 import { useSystem } from "@packages/feature/system"
 import { Dialog } from '@/packages/feature/dialog/Dialog';
 import { useRootState } from '../../state/Root';
+import { i18n } from '@/packages/feature/i18n';
 
 let rootstate = useRootState();
 
@@ -64,7 +69,7 @@ interface Field {
 }
 let system = useSystem()
 const items = [
-    '背景',
+    i18n('background'),
     // '版本',
 ]
 const fields: Field[] = [
@@ -100,15 +105,15 @@ const selectItem = (index: number) => {
 async function submit() {
 
     rootstate.system.options.background = imgurl.value;
-    let res =await system?.fs.writeFile("/C/System/Vtron/background.txt", {
+    let res = await system?.fs.writeFile("/C/System/Vtron/background.txt", {
         content: imgurl.value
     });
     Dialog.showMessageBox({
-        message:'保存成功',
-        title:'壁纸',
-        type:"info"
+        message: i18n('save.success'),
+        title: i18n('wallpaper'),
+        type: "info"
     })
-    
+
 }
 </script>
   
@@ -167,7 +172,7 @@ async function submit() {
 
 .setting-item label {
     display: block;
-    width: 100px;
+    width: 150px;
     flex-shrink: 0;
     text-align: right;
 

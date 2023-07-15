@@ -69,4 +69,6 @@ export const enUS: AllText = {
     'terminal': 'Terminal',
     'appstore': 'App Store',
     'text.document': 'Text Document',
+    'language':"Language",
+    'style':"Style",
 }

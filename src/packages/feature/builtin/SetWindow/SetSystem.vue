@@ -9,49 +9,27 @@
         <div class="setting">
             <div v-if="0 === activeIndex">
                 <div class="setting-item">
-                    <h1 class="setting-title">{{ i18n('background') }}</h1>
+                    <h1 class="setting-title">{{ i18n('language') }}</h1>
                 </div>
                 <div class="setting-item">
-                    <label> {{ i18n('set.background') }}
+                    <label> {{ i18n('language') }}
                     </label>
-                    <WinSelect v-model="imgtype" :options="[
+                    <WinSelect v-model="modelvalue" :options="[
                         {
-                            label: i18n('from.network'),
+                            label: 'zh-CN',
                             value: 0
                         },
                         {
-                            label: i18n('from.string'),
+                            label: 'en-US',
                             value: 1
                         }
                     ]" :placeholder="i18n('please.select')">
                     </WinSelect>
                 </div>
-                <div class="setting-item">
-                    <label></label>
-                    <WinInput placeholder="" v-model="imgurl"></WinInput>
-                </div>
 
                 <div class="setting-item">
                     <label></label>
                     <WinButton @click="submit">{{ i18n('confirm') }}
-                    </WinButton>
-                </div>
-            </div>
-            <div v-if="1 === activeIndex">
-                <div class="setting-item">
-                    <h1 class="setting-title">
-                        {{ i18n('style') }}
-                    </h1>
-                </div>
-
-                <div class="setting-item">
-                    <label></label>
-                    <textarea placeholder="" v-model="rootstyle"></textarea>
-                </div>
-
-                <div class="setting-item">
-                    <label></label>
-                    <WinButton @click="submitStyle">{{ i18n('confirm') }}
                     </WinButton>
                 </div>
             </div>
@@ -69,54 +47,40 @@ import { useSystem } from "@packages/feature/system"
 import { Dialog } from '@/packages/feature/dialog/Dialog';
 import { useRootState } from '../../state/Root';
 import { i18n } from '@/packages/feature/i18n';
-import { json } from 'stream/consumers';
 
 let rootstate = useRootState();
-let system = useSystem()
+let system = useSystem();
+
 const items = [
-    i18n('background'),
-    i18n('style')
-    // '版本',
+    i18n('language'),
 ]
 
 const activeIndex = ref(0);
-const formData = ref({});
-const inputConfig = ref('');
-const imgtype = ref(0);
-const imgurl = ref('');
-const rootstyle = ref(JSON.stringify(rootstate.system.options.rootStyle))
+
+const modelvalue = ref(rootstate.system.options.lang === 'zh-CN' ? 0 : 1);
+
 const selectItem = (index: number) => {
     activeIndex.value = index;
 };
-async function submitStyle() {
+
+async function submit() {
     let config = await system?.fs.readFile('/C/System/Vtron/config.json');
     let configObj = JSON.parse(config||'{}');
-    configObj.rootStyle = JSON.parse(rootstyle.value);
+    configObj.lang = modelvalue.value === 0 ? 'zh-CN' : 'en-US';
     await system?.fs.writeFile('/C/System/Vtron/config.json', {
         content:JSON.stringify(configObj)
     });
-
     Dialog.showMessageBox({
         message: i18n('save.success'),
-        title: i18n('style'),
+        title: i18n('language'),
         type: "info"
-    })
-}
-async function submit() {
-
-    rootstate.system.options.background = imgurl.value;
-    let res = await system?.fs.writeFile("/C/System/Vtron/background.txt", {
-        content: imgurl.value
-    });
-    Dialog.showMessageBox({
-        message: i18n('save.success'),
-        title: i18n('wallpaper'),
-        type: "info"
+    }).then(()=>{
+        system?.reboot();
     })
 
 }
+
 </script>
-  
 <style scoped>
 @import "./setStyle.css";
 </style>

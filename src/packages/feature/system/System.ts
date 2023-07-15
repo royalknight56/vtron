@@ -44,8 +44,13 @@ class System {
     setRef(ref: HTMLElement) {
         this.ref = ref;
         if (this._options.rootStyle) {
-            Object.keys(this._options.rootStyle).forEach((key) => {
-                this.ref.style.setProperty(key, this._options.rootStyle[key]);
+            this.setRootStyle(this._options.rootStyle);
+        }
+    }
+    setRootStyle(obj:any) {
+        if(obj){
+            Object.keys(obj).forEach((key) => {
+                this.ref.style.setProperty(key, obj[key]);
             });
         }
     }
@@ -87,7 +92,11 @@ class System {
         this._ready && this._ready(this);
         this.fs.runPlugin(this)
         // 初始化壁纸
-        this.initBackground()
+        this.initBackground();
+
+        await this.initSavedConfig();
+
+        this.setRootStyle(this._rootState.system.options.rootStyle);
     }
     /**
    * @description: 初始化壁纸
@@ -121,6 +130,12 @@ class System {
     private async initFileSystem() {
         let res = await new VtronFileSystem().initFileSystem()
         return res;
+    }
+    private async initSavedConfig(){
+        let config = await this.fs.readFile("/C/System/Vtron/config.json");
+        if(config){
+            this._rootState.system.options = Object.assign(this._rootState.system.options,JSON.parse(config))
+        }
     }
     private addWindowSysLink(loc: string, options: WinAppOptions) {
         if (this.isFirstRun) {

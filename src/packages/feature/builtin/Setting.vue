@@ -27,6 +27,7 @@ import systemset from '@builtin/setApps/SetSystemset.vue'
 // import version from '@builtin/setApps/SetVersion.vue'
 import SetUpdate from './SetWindow/SetUpdate.vue';
 import SetCustom from './SetWindow/SetCustom.vue';
+import SetSystem from './SetWindow/SetSystem.vue';
 import appstore from '@builtin/Appstore.vue'
 import e7f8 from '../../../assets/icon/e7f8.png'//系统设置
 import e774 from '../../../assets/icon/e774.png'//网络
@@ -34,6 +35,7 @@ import e771 from '../../../assets/icon/e771.png'//个性化
 import e895 from '../../../assets/icon/e895.png'//更新
 import { BrowserWindow } from '@/packages/feature/window/BrowserWindow';
 import { i18n } from '@/packages/feature/i18n';
+
 
 
 let browserWindow = inject<BrowserWindow>('browserWindow')
@@ -66,12 +68,13 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
     }
 }
 let setList = [
-    // {
-    //     title: '系统',
-    //     desc: '显示，声音，通知，电源',
-    //     icon: e7f8,
-    //     content: systemset
-    // },
+    {
+        title: i18n('system'),
+        // desc: '显示，声音，通知，电源',
+        desc: i18n('language'),
+        icon: e7f8,
+        content: SetSystem
+    },
     // {
     //     title: '网络和Internet',
     //     desc: 'WLAN，飞行模式，VPN',
@@ -142,7 +145,8 @@ let setList = [
     width: 200px;
     display: flex;
     align-items: center;
-    border: 2px solid #99999900;
+    border: 1px solid #99999900;
+    transition: all 0.1s;
 
     .set_item-img {
         width: 30px;
@@ -166,7 +170,7 @@ let setList = [
 }
 
 .set_item:hover {
-    border: 2px solid #9999998a;
+    border: 1px solid #9999998a;
 }
 
 .uper_tab {

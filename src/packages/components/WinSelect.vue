@@ -3,6 +3,8 @@
         <div class="selected-item">
             <span v-if="selectedOption">{{ selectedOption.label }}</span>
             <span v-else>{{ placeholder }}</span>
+            <div class="iconfont icon-arrow-down" :class="{'open-arrow':isOpen}">
+            </div>
         </div>
         <div class="options" v-if="isOpen">
             <div class="option" v-for="option in options" :key="option.value" @click.stop="selectOption(option)">
@@ -51,7 +53,6 @@ const selectOption = (option: OptionItem) => {
 };
 
 const findSelectedOption = () => {
-    console.log(props)
     const option = props.options.find((option: OptionItem) => option.value === props.modelValue);
     selectedOption.value = option || null;
 };
@@ -125,7 +126,19 @@ let handleClickOutside = (event: MouseEvent) => {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+.icon-arrow-down{
+    display: block;
+    width: 6px;
+    height: 6px;
+    transform: translateY(-2px) rotate(45deg);
+    border: 2px solid rgba(0, 0, 0, 0.465);
+    border-left: none;
+    border-top: none;
+    transition: all 0.1s;
+}
+.open-arrow{
+    transform: translateY(2px)rotate(225deg);
+}
 .options {
     position: absolute;
     top: 100%;

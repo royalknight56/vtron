@@ -69,4 +69,6 @@ export const zhCN: AllText = {
     'terminal': '终端',
     'appstore': '应用商店',
     'text.document': '文本文档',
+    'language':"语言",
+    'style':"样式",
 }

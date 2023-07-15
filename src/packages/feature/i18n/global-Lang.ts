@@ -68,4 +68,6 @@ export interface AllText {
     'terminal': string,
     'appstore': string,
     'text.document': string,
+    'language': string,
+    'style':string
 }

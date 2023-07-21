@@ -1,7 +1,15 @@
 <template>
     <div class="desk-group">
-        <div @dblclick="openapp(item)" @contextmenu.stop.prevent="handleRightClick($event, item)" class="desk-item"
-            v-for="item in appList" :key="basename(item.path)">
+        <div  draggable="true" 
+        class="desk-item"
+        v-for="item in appList" :key="item.path"
+        @dblclick="openapp(item)"
+        @contextmenu.stop.prevent="handleRightClick($event, item)" 
+        @drop="folderDrop($event, item.path)" 
+        @dragenter.prevent
+        @dragover.prevent
+        @dragstart="startDrag($event, item)" >
+
             <div class="desk-item_img">
                 <FileIcon :file="item" />
             </div>
@@ -18,10 +26,11 @@ import { createNewFile, openPropsWindow } from "@/packages/hook/useContextMenu"
 import { basename } from "@/packages/feature/core/Path"
 import { VtronFile } from "@packages/feature/core/fileSystem";
 import { i18n } from '@/packages/feature/i18n';
-
+import { useFileDrag } from "@packages/hook/useFileDrag"
 const { openapp, appList } = useAppOpen('apps');
 
-const sys = useSystem()
+const sys = useSystem();
+const {startDrag,folderDrop} = useFileDrag(sys);
 function handleRightClick(mouse: MouseEvent, item: VtronFile) {
     emitEvent('contextMenu.show', {
         mouse: mouse,
@@ -57,9 +66,10 @@ function handleRightClick(mouse: MouseEvent, item: VtronFile) {
     flex-direction: column;
     flex-wrap: wrap;
     height: 100%;
-    user-select: none;
+    // user-select: none;
 
     .desk-item {
+        position: relative;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -73,6 +83,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFile) {
             width: 60%;
             height: 60%;
             margin: 4px auto;
+            user-select: none;
         }
 
         .desk-item_title {

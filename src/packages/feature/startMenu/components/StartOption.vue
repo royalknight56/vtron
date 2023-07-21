@@ -123,6 +123,7 @@ function handleClick(key: number, ev: MouseEvent) {
                 display: flex;
                 justify-content: flex-start;
                 align-items: center;
+                opacity: 0.8;
             }
         }
 

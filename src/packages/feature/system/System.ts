@@ -247,6 +247,6 @@ class System {
     }
 }
 function useSystem() {
-    return GLOBAL_SYSTEM;
+    return GLOBAL_SYSTEM!;
 }
 export { System, useSystem };

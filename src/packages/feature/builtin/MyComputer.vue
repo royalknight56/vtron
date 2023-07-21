@@ -57,9 +57,15 @@
         </div>
     </div>
     <div class="desk-outer" ref="compu" @contextmenu.self="showOuterMenu($event)">
-        <div draggable="true" class="desk-item" v-for="(item, index) in currentList"
-            @contextmenu="showMenu(item, index, $event)" @dragstart="startDrag($event, item)"
-            @drop="folderDrop($event, item)" @dblclick="openFolder(item)">
+        <div draggable="true"
+         class="desk-item"
+          v-for="(item, index) in currentList"
+            @contextmenu="showMenu(item, index, $event)"
+            @dragstart="startDrag($event, item)"
+            @dragenter.prevent
+            @dragover.prevent
+            @drop="folderDrop($event, item.path)" 
+            @dblclick="openFolder(item)">
             <div class="item_img">
                 <FileIcon :file="item" />
             </div>
@@ -88,12 +94,15 @@ import { createNewFile, openPropsWindow, createNewDir } from "@/packages/hook/us
 import { basename } from "@/packages/feature/core/Path"
 import { emitEvent, mountEvent } from "../event";
 import { i18n } from '@/packages/feature/i18n';
+import { useFileDrag } from "@packages/hook/useFileDrag"
+
+
 
 let browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
 const config = browserWindow?.config;
 let system = useSystem();
-
+const {startDrag,folderDrop} = useFileDrag(system);
 
 function pathJoin(...paths: string[]) {
     return fspath.join(...paths);
@@ -229,28 +238,28 @@ function backFolder() {
     router_url.value = fspath.join(path, '..');
 }
 
-function startDrag(ev: DragEvent, item: VtronFile) {
-    ev?.dataTransfer?.setData('fromobj', 'web');
-    ev?.dataTransfer?.setData('frompath', item.path);
-}
+// function startDrag(ev: DragEvent, item: VtronFile) {
+//     ev?.dataTransfer?.setData('fromobj', 'web');
+//     ev?.dataTransfer?.setData('frompath', item.path);
+// }
 
-// 拖到文件放下时
-function folderDrop(ev: DragEvent, item: VtronFile) {
-    let frompath = ev?.dataTransfer?.getData('frompath')
-    if (!frompath) return;
-    if (frompath == item.path) {
-        return;
-    }
-    system?.fs.rename(frompath, pathJoin(item.path, fspath.basename(frompath))).then(() => {
-        emitEvent('file.props.edit');
-    }, (err) => {
-        new Notify({
-            title: i18n('failed'),
+// // 拖到文件放下时
+// function folderDrop(ev: DragEvent, item: VtronFile) {
+//     let frompath = ev?.dataTransfer?.getData('frompath')
+//     if (!frompath) return;
+//     if (frompath == item.path) {
+//         return;
+//     }
+//     system?.fs.rename(frompath, pathJoin(item.path, fspath.basename(frompath))).then(() => {
+//         emitEvent('file.props.edit');
+//     }, (err) => {
+//         new Notify({
+//             title: i18n('failed'),
 
-            content: err,
-        });
-    });
-}
+//             content: err,
+//         });
+//     });
+// }
 // 拖动文件上传
 let compu = ref(null);
 onMounted(() => {
@@ -280,11 +289,13 @@ onMounted(() => {
     oBox.ondragleave = function () {
         // oBox.innerHTML = '请将文件拖拽到此区域';
     };
-    oBox.ondrop = function (ev: DragEvent) {
+    oBox.ondrop =async function (ev: DragEvent) {
         let fromobj = ev?.dataTransfer?.getData('fromobj');
+        let fromPath = ev?.dataTransfer?.getData('frompath');
+        console.log(fromobj,fromPath,ev)
         if (fromobj == 'web') {
             // 无效
-
+            folderDrop(ev,router_url.value)
         } else {
             var oFileList = ev?.dataTransfer?.files;
             readFileList(oFileList);

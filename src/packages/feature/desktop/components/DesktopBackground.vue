@@ -23,9 +23,9 @@ onMounted(() => {
     refershBack(rootState.system.options.background)
 })
 watch(rootState.system.options, (nv, ov) => {
-        refershBack(nv.background)
+    refershBack(nv.background)
 })
-function refershBack(val:string|undefined){
+function refershBack(val: string | undefined) {
     background.value = val || "#3A98CE";
 
     if (background.value.startsWith("#")) {
@@ -39,6 +39,7 @@ function refershBack(val:string|undefined){
 .background {
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0.704);
 
     .background_unload {
         width: 100%;

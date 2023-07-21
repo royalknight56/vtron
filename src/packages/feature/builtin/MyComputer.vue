@@ -56,16 +56,10 @@
             </div>
         </div>
     </div>
-    <div class="desk-outer" ref="compu" @contextmenu.self="showOuterMenu($event)">
-        <div draggable="true"
-         class="desk-item"
-          v-for="(item, index) in currentList"
-            @contextmenu="showMenu(item, index, $event)"
-            @dragstart="startDrag($event, item)"
-            @dragenter.prevent
-            @dragover.prevent
-            @drop="folderDrop($event, item.path)" 
-            @dblclick="openFolder(item)">
+    <div class="desk-outer" ref="compu" @contextmenu.self="showOuterMenu($event)" @click.self="onBackClick">
+        <div draggable="true" class="desk-item" v-for="(item, index) in currentList"
+            @contextmenu="showMenu(item, index, $event)" @dragstart="startDrag($event, item)" @dragenter.prevent
+            @dragover.prevent @drop="folderDrop($event, item.path)" @dblclick="openFolder(item)">
             <div class="item_img">
                 <FileIcon :file="item" />
             </div>
@@ -102,7 +96,7 @@ let browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
 const config = browserWindow?.config;
 let system = useSystem();
-const {startDrag,folderDrop} = useFileDrag(system);
+const { startDrag, folderDrop } = useFileDrag(system);
 
 function pathJoin(...paths: string[]) {
     return fspath.join(...paths);
@@ -126,7 +120,9 @@ function creatingEditEnd() {
 
     }
 }
-
+function onBackClick() {
+    creatingEditEnd();
+}
 function showOuterMenu(e: MouseEvent) {
     system?.emitEvent('contextMenu.show', {
         mouse: e,
@@ -238,28 +234,6 @@ function backFolder() {
     router_url.value = fspath.join(path, '..');
 }
 
-// function startDrag(ev: DragEvent, item: VtronFile) {
-//     ev?.dataTransfer?.setData('fromobj', 'web');
-//     ev?.dataTransfer?.setData('frompath', item.path);
-// }
-
-// // 拖到文件放下时
-// function folderDrop(ev: DragEvent, item: VtronFile) {
-//     let frompath = ev?.dataTransfer?.getData('frompath')
-//     if (!frompath) return;
-//     if (frompath == item.path) {
-//         return;
-//     }
-//     system?.fs.rename(frompath, pathJoin(item.path, fspath.basename(frompath))).then(() => {
-//         emitEvent('file.props.edit');
-//     }, (err) => {
-//         new Notify({
-//             title: i18n('failed'),
-
-//             content: err,
-//         });
-//     });
-// }
 // 拖动文件上传
 let compu = ref(null);
 onMounted(() => {
@@ -289,13 +263,12 @@ onMounted(() => {
     oBox.ondragleave = function () {
         // oBox.innerHTML = '请将文件拖拽到此区域';
     };
-    oBox.ondrop =async function (ev: DragEvent) {
+    oBox.ondrop = async function (ev: DragEvent) {
         let fromobj = ev?.dataTransfer?.getData('fromobj');
-        let fromPath = ev?.dataTransfer?.getData('frompath');
-        console.log(fromobj,fromPath,ev)
+
         if (fromobj == 'web') {
             // 无效
-            folderDrop(ev,router_url.value)
+            folderDrop(ev, router_url.value)
         } else {
             var oFileList = ev?.dataTransfer?.files;
             readFileList(oFileList);

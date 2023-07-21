@@ -20,15 +20,18 @@ setInterval(() => {
 }, 5000);
 </script>
 <style lang="scss" scoped>
-.date-time{
+.date-time {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    .time{
+    flex-shrink: 0;
+
+    .time {
         font-size: 12px;
     }
-    .date{
+
+    .date {
         font-size: 12px;
     }
 }

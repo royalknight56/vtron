@@ -18,6 +18,8 @@ import brow from "./assets/浏览器.png"
 import testicon from "./assets/终端.png"
 import TestButton from "./apps/TestButton.vue"
 import VtronTest from "./apps/VtronTest.vue";
+import VtronPerfTest from "./apps/VtronPerfTest.vue";
+
 import { onMounted, ref } from "vue";
 import { System } from "./packages/plug";
 import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
@@ -105,6 +107,16 @@ onMounted(() => {
         window: {
           content: VtronTest,
           title: "Vtron自动测试",
+          icon: testicon,
+          center: true,
+        }
+      },
+      {
+        name: 'Vtron自动性能测试',
+        icon: testicon,
+        window: {
+          content: VtronPerfTest,
+          title: "Vtron自动性能测试",
           icon: testicon,
           center: true,
         }

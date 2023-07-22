@@ -136,6 +136,9 @@ let system = new System();
 
 其中 desktop是桌面的配置项，可以配置多个app
 
+如果新加了app，而桌面没有显示，请点击 开始->电源->恢复
+
+进行系统的刷新
 
 ```vue
 <Screen></Screen>

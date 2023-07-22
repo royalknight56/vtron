@@ -26,12 +26,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { inject, ref, defineComponent } from 'vue';
+import { inject, defineComponent } from 'vue';
 import SetUpdate from './SetWindow/SetUpdate.vue';
 import SetCustom from './SetWindow/SetCustom.vue';
 import SetSystem from './SetWindow/SetSystem.vue';
 import e7f8 from '../../../assets/icon/e7f8.png'; //系统设置
-import e774 from '../../../assets/icon/e774.png'; //网络
+// import e774 from '../../../assets/icon/e774.png'; //网络
 import e771 from '../../../assets/icon/e771.png'; //个性化
 import e895 from '../../../assets/icon/e895.png'; //更新
 import { BrowserWindow } from '@feature/window/BrowserWindow';
@@ -150,9 +150,6 @@ const setList = [
     img {
       width: 100%;
     }
-  }
-
-  .set_item-right {
   }
 
   .set_item-title {

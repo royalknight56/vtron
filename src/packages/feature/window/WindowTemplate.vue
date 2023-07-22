@@ -21,7 +21,7 @@
     @mousedown="onFocus"
     ref="$win_outer"
   >
-    <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
+    <div class="wintmp_uper" @contextmenu.prevent>
       <MenuBar :browser-window="browserWindow"></MenuBar>
     </div>
     <div
@@ -96,7 +96,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { inject, provide, ref, watch } from 'vue';
+import { provide, ref, watch } from 'vue';
 import { onMounted, computed, UnwrapNestedRefs } from 'vue';
 import { WindowStateEnum } from './BrowserWindow';
 import WindowInner from './components/WindowInner.vue';
@@ -123,9 +123,7 @@ function predown() {
   emitEvent('window.content.click', browserWindow);
 }
 
-function uperRightClick(e: MouseEvent) {}
-
-const customerStyle = ref<any>({});
+const customerStyle = ref<NonNullable<unknown>>({});
 
 function onFocus(e: MouseEvent | TouchEvent): void {
   browserWindow?.moveTop();
@@ -167,7 +165,7 @@ onMounted(() => {
   const dragAble = new DragElement($win_outer.value, windowInfo.x, windowInfo.y);
   watch(
     () => windowInfo.state === WindowStateEnum.maximize,
-    (n, o) => {
+    (n) => {
       if (n) {
         dragAble.canDrag = false;
       } else {

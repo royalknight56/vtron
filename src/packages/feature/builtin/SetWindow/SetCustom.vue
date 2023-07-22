@@ -71,12 +71,11 @@ import WinButton from '@packages/components/WinButton.vue';
 import WinSelect from '@packages/components/WinSelect.vue';
 import WinInput from '@packages/components/WinInput.vue';
 
-import { defineComponent, ref } from 'vue';
+import { ref } from 'vue';
 import { useSystem } from '@feature/system';
 import { Dialog } from '@feature/dialog/Dialog';
 import { useRootState } from '../../state/Root';
 import { i18n } from '@feature/i18n';
-import { json } from 'stream/consumers';
 
 const rootstate = useRootState();
 const system = useSystem();
@@ -87,8 +86,7 @@ const items = [
 ];
 
 const activeIndex = ref(0);
-const formData = ref({});
-const inputConfig = ref('');
+
 const imgtype = ref(0);
 const imgurl = ref('');
 const rootstyle = ref(JSON.stringify(rootstate.system.options.rootStyle));
@@ -111,7 +109,7 @@ async function submitStyle() {
 }
 async function submit() {
   rootstate.system.options.background = imgurl.value;
-  const res = await system?.fs.writeFile('/C/System/Vtron/background.txt', {
+  await system?.fs.writeFile('/C/System/Vtron/background.txt', {
     content: imgurl.value,
   });
   Dialog.showMessageBox({

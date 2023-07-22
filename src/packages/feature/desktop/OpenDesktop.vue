@@ -17,14 +17,13 @@
 import DeskItem from './deskItem/DeskItem.vue';
 import Taskbar from '../taskbar/Taskbar.vue';
 import DesktopBackground from './components/DesktopBackground.vue';
-import { emitEvent, mountEvent } from '@feature/event';
+import { emitEvent } from '@feature/event';
 import WindowGroup from '../window/WindowGroup.vue';
 import ContextMenu from '../contextMenu/ContextMenu.vue';
 import NotificationGroup from '../notification/NotifyGroup.vue';
 import DateTimePop from '../popover/DateTimePop.vue';
-import { useSystem } from '../system';
-import vtronicon from '@packages/assets/vtron-icon-nobg.png';
-import { createNewFile, createNewDir, openPropsWindow } from '@packages/hook/useContextMenu';
+
+import { createNewFile, createNewDir } from '@packages/hook/useContextMenu';
 import { i18n } from '@feature/i18n';
 
 function backgroundDown(e: MouseEvent) {
@@ -37,7 +36,9 @@ function handleRightClick(e: MouseEvent) {
     menuList: [
       {
         name: i18n('refresh'),
-        click: () => {},
+        click: () => {
+          //
+        },
       },
       {
         name: i18n('new.file'),

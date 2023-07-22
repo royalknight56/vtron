@@ -5,13 +5,12 @@
   <WindowNode v-for="node in window.children" :key="node.id" :window="node" />
 </template>
 <script lang="ts" setup>
-import { Tree } from '@packages/util/Tree';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
-import { UnwrapNestedRefs, watch } from 'vue';
+import { UnwrapNestedRefs } from 'vue';
 import WindowNode from './WindowNode.vue';
 import WindowTemplate from './WindowTemplate.vue';
 
-const props = defineProps<{
+defineProps<{
   window: UnwrapNestedRefs<BrowserWindow>;
 }>();
 </script>

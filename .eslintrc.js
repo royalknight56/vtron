@@ -26,5 +26,9 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['vue'],
-  rules: {},
+  rules: {
+    'vue/no-setup-props-destructure': 'off',
+    'vue/no-multiple-template-root': 'off',
+    'vue/multi-word-component-names': 'off',
+  },
 };

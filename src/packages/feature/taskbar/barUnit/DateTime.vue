@@ -5,8 +5,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
-import { useRootState } from '../../state/Root';
+import { ref } from 'vue';
 
 const timeDisplay = ref(`00:00`);
 const dateDisplay = ref(`0000-00-00`);

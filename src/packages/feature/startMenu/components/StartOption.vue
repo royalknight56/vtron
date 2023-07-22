@@ -35,8 +35,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import { emitEvent, mountEvent } from '../../event';
+import { emitEvent } from '../../event';
 import Setting from '@feature/builtin/Setting.vue';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
@@ -61,7 +60,7 @@ function handleClick(key: number, ev: MouseEvent) {
         ],
       });
       break;
-    case 1:
+    case 1: {
       emitEvent('startMenu.set.click', {
         mouse: ev,
       });
@@ -76,6 +75,8 @@ function handleClick(key: number, ev: MouseEvent) {
       win.show();
       win.moveTop();
       break;
+    }
+
     default:
       break;
   }

@@ -13,12 +13,12 @@
 <script lang="ts" setup>
 import { Notify } from '@feature/notification/Notification';
 import { BrowserWindow, useSystem } from '@packages/plug';
-import { ref, useAttrs, getCurrentInstance, onUnmounted, inject } from 'vue';
+import { onUnmounted, inject } from 'vue';
 
-const browserWindow: BrowserWindow = inject('browserWindow')!;
+const browserWindow: BrowserWindow = inject('browserWindow') as BrowserWindow;
 const sys = useSystem();
-function nextStep(fun: Function, time?: number) {
-  return new Promise((resolve, reject) => {
+function nextStep(fun: () => void, time?: number) {
+  return new Promise((resolve) => {
     const res = fun();
     setTimeout(() => {
       resolve(res);
@@ -89,9 +89,9 @@ await nextStep(() => {
 // await nextStep(() => {
 //     props.window.restore();
 // },100)
-let timer: any;
+let timer: number;
 await nextStep(() => {
-  timer = setInterval(() => {
+  timer = window.setInterval(() => {
     new Notify({
       title: 'title' + Math.random(),
       content: 'content' + Math.random(),

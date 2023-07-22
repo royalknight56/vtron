@@ -11,9 +11,10 @@ import { useAppOpen } from '@packages/hook/useAppOpen';
 import { emitEvent } from '../../event';
 import { basename } from '@feature/core/Path';
 import FileIcon from '@feature/builtin/FileIcon.vue';
+import { VtronFile } from '@feature/core/fileSystem';
 
 const { openapp, appList } = useAppOpen('menulist');
-function handle(item: any) {
+function handle(item: VtronFile) {
   emitEvent('menulist.item.click', item);
   openapp(item);
 }

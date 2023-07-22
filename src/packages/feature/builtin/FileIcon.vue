@@ -22,7 +22,7 @@ import unknownicon from '@packages/assets/unknown.ico';
 import { VtronFile } from '../core/fileSystem';
 import { extname } from '../core/Path';
 
-const props = defineProps<{
+defineProps<{
   file?: VtronFile | null;
   icon?: string;
 }>();

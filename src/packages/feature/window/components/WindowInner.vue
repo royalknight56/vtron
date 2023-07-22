@@ -1,17 +1,19 @@
 <template>
-  <template v-if="typeof window.content === 'string'">
-    <iframe :src="window.content" frameborder="0" width="100%" height="100%"></iframe>
-  </template>
-  <template v-else>
-    <Suspense>
-      <component :is="window.content"></component>
-    </Suspense>
-  </template>
+  <iframe
+    v-if="typeof window.content === 'string'"
+    :src="window.content"
+    frameborder="0"
+    width="100%"
+    height="100%"
+  ></iframe>
+  <Suspense v-else>
+    <component :is="window.content"></component>
+  </Suspense>
 </template>
 <script setup lang="ts">
 import { UnwrapNestedRefs } from 'vue';
 import { BrowserWindow } from '../BrowserWindow';
-const props = defineProps<{
+defineProps<{
   window: UnwrapNestedRefs<BrowserWindow>;
 }>();
 </script>

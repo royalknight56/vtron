@@ -8,14 +8,14 @@
     </div>
     <div class="date-middle">
       <div class="week">
-        <div class="day" v-for="item in weeks">
+        <div class="day" v-for="item in weeks" :key="item">
           <span>{{ item }}</span>
         </div>
       </div>
       <div class="month">
-        <div class="week" v-for="week in month">
-          <div class="day" v-for="day in week">
-            <span>{{ day }}</span>
+        <div class="week" v-for="perweek in month" :key="perweek[0]">
+          <div class="day" v-for="perday in week" :key="perday">
+            <span>{{ perday }}</span>
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@ const month = ref<Array<Array<string>>>([]);
 const date = new Date();
 const year = date.getFullYear();
 const monthNum = date.getMonth() + 1;
-const day = date.getDate();
+
 const firstDay = new Date(year, monthNum - 1, 1).getDay();
 const lastDay = new Date(year, monthNum, 0).getDate();
 const weekNum = Math.ceil((firstDay + lastDay) / 7);

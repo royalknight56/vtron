@@ -17,7 +17,7 @@ const charMap = {
     7: `\uE857`,
     8: `\uE858`,
     9: `\uE859`,
-  },
+  } as Record<number, string>,
   isC: {
     0: `\uE85A`,
     1: `\uE85B`,
@@ -29,7 +29,7 @@ const charMap = {
     7: `\uE861`,
     8: `\uE862`,
     9: `\uE859`,
-  },
+  } as Record<number, string>,
 };
 const iconDisplay = ref(`\uE850`);
 
@@ -39,7 +39,7 @@ watchEffect(() => {
     iconDisplay.value = charMap[`noC`][9];
   } else {
     const level = Math.floor(props.system.info.battery.chargeLevel * 10);
-    iconDisplay.value = (charMap[props.system.info.battery.isCharging ? `isC` : `noC`] as any)[level];
+    iconDisplay.value = charMap[props.system.info.battery.isCharging ? `isC` : `noC`][level];
   }
 });
 </script>

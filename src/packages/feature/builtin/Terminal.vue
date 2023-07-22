@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { Terminal } from 'xterm';
-// @ts-ignore
+
 import { FitAddon } from 'xterm-addon-fit';
 import { useSystem } from '../system';
 import { Shell } from '../core/Shell';
@@ -46,7 +46,7 @@ onMounted(() => {
     inputTextList = (JSON.parse(localStorage.getItem('vtronCommandHistory') || '[]') as string[]) || [];
     currentIndex = inputTextList.length;
     const fitAddon = new FitAddon();
-    var term = new Terminal({
+    const term = new Terminal({
       cols: 70,
     });
     term.loadAddon(fitAddon);
@@ -140,22 +140,24 @@ onMounted(() => {
           break;
         // tab:
         case 9:
-          const splitArr = inputText.split(' ');
-          const unready = splitArr[splitArr.length - 1] || inputText;
-          const res = await sys?.fs.readdir(shell.router);
-          const list: string[] = [];
-          res?.forEach((item) => {
-            list.push(basename(item.path));
-          });
-          const matchList = list.filter((item: any) => {
-            return item.startsWith(unready);
-          });
-          if (matchList.length) {
-            inputText += matchList[0].slice(unready.length);
-            term.write('\x1b[?K' + matchList[0].slice(unready.length));
+          {
+            const splitArr = inputText.split(' ');
+            const unready = splitArr[splitArr.length - 1] || inputText;
+            const res = await sys?.fs.readdir(shell.router);
+            const list: string[] = [];
+            res?.forEach((item) => {
+              list.push(basename(item.path));
+            });
+            const matchList = list.filter((item: string) => {
+              return item.startsWith(unready);
+            });
+            if (matchList.length) {
+              inputText += matchList[0].slice(unready.length);
+              term.write('\x1b[?K' + matchList[0].slice(unready.length));
+            }
           }
           break;
-        default:
+        default: {
           if (!printAble) break;
           if (totalOffsetLength >= term.cols) break;
           if (currentOffsetLength >= totalOffsetLength) {
@@ -172,6 +174,7 @@ onMounted(() => {
             inputText.slice(0, currentOffsetLength - shell.prefix.length) +
             key +
             inputText.slice(currentOffsetLength - shell.prefix.length);
+        }
       }
     });
   }

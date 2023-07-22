@@ -7,35 +7,32 @@
 <template>
   <div class="outer">
     <Screen></Screen>
-    <!-- <button @click="save">save</button>
-    <button @click="restore">restore</button> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import brow from './assets/浏览器.png';
+// import brow from './assets/浏览器.png';
 import testicon from './assets/终端.png';
 import TestButton from './apps/TestButton.vue';
 import VtronTest from './apps/VtronTest.vue';
 import VtronPerfTest from './apps/VtronPerfTest.vue';
 
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { System } from './packages/plug';
-import { BrowserWindow } from './packages/feature/window/BrowserWindow';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
-let sys: System | null = null;
-async function save() {
-  const state = await sys?.serializeState();
-  localStorage.setItem('vtron-state', JSON.stringify(state));
-}
-async function restore() {
-  const state = localStorage.getItem('vtron-state');
-  if (state) {
-    await sys?.deserializeState(JSON.parse(state));
-  }
-}
+
+// async function save() {
+//   const state = await sys?.serializeState();
+//   localStorage.setItem('vtron-state', JSON.stringify(state));
+// }
+// async function restore() {
+//   const state = localStorage.getItem('vtron-state');
+//   if (state) {
+//     await sys?.deserializeState(JSON.parse(state));
+//   }
+// }
 onMounted(() => {
-  sys = new System({
+  new System({
     lang: 'en-US',
     // lang: "zh-CN",
     logo: vtronLogoIcon,

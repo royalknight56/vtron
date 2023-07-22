@@ -1,6 +1,6 @@
 <template>
   <div class="win-input">
-    <input type="text" :placeholder="placeholder" v-model="value" @change="" />
+    <input type="text" :placeholder="placeholder" v-model="value" />
   </div>
 </template>
 
@@ -21,7 +21,7 @@ const emit = defineEmits(['update:modelValue']);
 
 const value = ref(props.modelValue);
 
-watch(value, (nv, ov) => {
+watch(value, (nv) => {
   emit('update:modelValue', nv);
 });
 </script>

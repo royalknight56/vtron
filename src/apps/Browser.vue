@@ -70,8 +70,8 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
-let urlinput = ref('');
-let urlsrc = ref('');
+const urlinput = ref('');
+const urlsrc = ref('');
 function urlkey(e: KeyboardEvent) {
   if (e.code == 'Enter') {
     changeUrl();
@@ -85,7 +85,6 @@ function changeUrl() {
   }
   // urlsrc.value=urlinput.value
 }
-window.open = <any>function (e: any) {};
 </script>
 <style>
 iframe {

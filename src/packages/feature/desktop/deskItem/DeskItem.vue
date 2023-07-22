@@ -21,10 +21,10 @@
 </template>
 <script lang="ts" setup>
 import { useAppOpen } from '@packages/hook/useAppOpen';
-import { BrowserWindow, useSystem, WinApp } from '@packages/plug';
+import { useSystem } from '@packages/plug';
 import { emitEvent } from '@feature/event';
 import FileIcon from '@feature/builtin/FileIcon.vue';
-import { createNewFile, openPropsWindow } from '@packages/hook/useContextMenu';
+import { openPropsWindow } from '@packages/hook/useContextMenu';
 import { basename } from '@feature/core/Path';
 import { VtronFile } from '@feature/core/fileSystem';
 import { i18n } from '@feature/i18n';

@@ -48,9 +48,8 @@
 <script lang="ts" setup>
 import WinButton from '@packages/components/WinButton.vue';
 import WinSelect from '@packages/components/WinSelect.vue';
-import WinInput from '@packages/components/WinInput.vue';
 
-import { defineComponent, ref } from 'vue';
+import { ref } from 'vue';
 import { useSystem } from '@feature/system';
 import { Dialog } from '@feature/dialog/Dialog';
 import { useRootState } from '../../state/Root';

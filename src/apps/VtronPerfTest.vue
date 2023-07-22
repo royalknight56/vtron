@@ -13,13 +13,14 @@
 <script lang="ts" setup>
 import { Notify } from '@feature/notification/Notification';
 import { BrowserWindow, useSystem } from '@packages/plug';
-import { ref, useAttrs, getCurrentInstance, onUnmounted, inject } from 'vue';
+import { onUnmounted, inject } from 'vue';
 import TestButton from './TestButton.vue';
 
-const browserWindow: BrowserWindow = inject('browserWindow')!;
+const browserWindow = inject<BrowserWindow>('browserWindow');
+if (!browserWindow) throw new Error('browserWindow is null');
 const sys = useSystem();
-function nextStep(fun: Function, time?: number) {
-  return new Promise((resolve, reject) => {
+function nextStep(fun: () => void, time?: number) {
+  return new Promise((resolve) => {
     const res = fun();
     setTimeout(() => {
       resolve(res);
@@ -36,11 +37,11 @@ await nextStep(() => {
   });
 }, 100);
 
-let timer: any;
-let timer2: any;
+let timer: number;
+let timer2: number;
 
 await nextStep(() => {
-  timer = setInterval(() => {
+  timer = window.setInterval(() => {
     new Notify({
       title: 'title' + Math.random(),
       content: 'content' + Math.random(),
@@ -48,9 +49,9 @@ await nextStep(() => {
     });
   }, 10);
 }, 1000);
-const winarr: any = [];
+const winarr: BrowserWindow[] = [];
 await nextStep(() => {
-  timer2 = setInterval(() => {
+  timer2 = window.setInterval(() => {
     const win = new BrowserWindow({
       content: TestButton,
       title: '测试无边框拖动',

@@ -3,7 +3,6 @@
   <span v-else class="segoicon SEGOEUIMDL">&#xEB55;</span>
 </template>
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { useRootState } from '@feature/state/Root';
 const sysInfo = useRootState().system.info;
 </script>

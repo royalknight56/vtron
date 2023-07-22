@@ -1,7 +1,11 @@
 <template>
   <div class="appicon-group">
-    <template v-for="node in treeRoot" :key="node.value?.id">
-      <AppIcon v-if="node.windowInfo.isCreated && !node.windowInfo.skipTaskbar" :window-node="node" />
+    <template v-for="node in treeRoot">
+      <AppIcon
+        :key="node.id"
+        v-if="node.windowInfo.isCreated && !node.windowInfo.skipTaskbar"
+        :window-node="node"
+      />
     </template>
   </div>
 </template>

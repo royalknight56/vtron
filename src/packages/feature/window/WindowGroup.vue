@@ -3,7 +3,6 @@
 </template>
 <script lang="ts" setup>
 import { useRootState } from '@feature/state/Root';
-import { Tree } from '@packages/util/Tree';
 import WindowNode from './WindowNode.vue';
 
 const rootState = useRootState();

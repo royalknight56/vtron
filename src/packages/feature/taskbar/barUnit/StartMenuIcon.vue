@@ -8,7 +8,6 @@
 </template>
 <script lang="ts" setup>
 import winimg from '@/assets/win.png';
-import WinLogo from '@packages/components/WinLogo.vue';
 import { emitEvent, mountEvent } from '@feature/event';
 import { ref } from 'vue';
 import StartMenu from '../../startMenu/StartMenu.vue';
@@ -16,10 +15,10 @@ import { useSystem } from '../../system';
 
 const system = useSystem();
 const isStartmenuShow = ref(false);
-mountEvent('startmenu.changeVisible', function (e: string, data: any) {
+mountEvent('startmenu.changeVisible', function () {
   isStartmenuShow.value = !isStartmenuShow.value;
 });
-mountEvent('startmenu.hidden', function (e: string, data: any) {
+mountEvent('startmenu.hidden', function () {
   isStartmenuShow.value = false;
 });
 function emitClick(e: MouseEvent) {

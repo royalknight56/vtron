@@ -1,6 +1,6 @@
 <template>
   <div class="notify">
-    <div class="notify-item" v-for="notify in notifyGroup">
+    <div class="notify-item" v-for="notify in notifyGroup" :key="notify.id">
       <div class="notify-item-title">
         <span>{{ notify.title }}</span>
       </div>

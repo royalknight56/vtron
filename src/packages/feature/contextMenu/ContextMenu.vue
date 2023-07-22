@@ -51,7 +51,7 @@ mountEvent('contextMenu.show', (source, data) => {
   y.value = contextmenuY;
   menuList.value = data.menuList;
 });
-mountEvent('contextMenu.hidden', (e) => {
+mountEvent('contextMenu.hidden', () => {
   isVisiable.value = false;
 });
 

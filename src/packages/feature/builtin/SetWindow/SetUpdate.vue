@@ -52,44 +52,18 @@
 </template>
 <script lang="ts" setup>
 import WinButton from '@packages/components/WinButton.vue';
-import { defineComponent, ref } from 'vue';
+import { ref } from 'vue';
 import { useSystem } from '@feature/system';
 import { Dialog } from '@feature/dialog/Dialog';
 import { i18n } from '@feature/i18n';
 
-interface Field {
-  name: string;
-  label: string;
-  type: string;
-  placeholder: string;
-}
 const system = useSystem();
 const items = [
   i18n('backup'), // '备份',
   // '版本',
 ];
-const fields: Field[] = [
-  {
-    name: 'name',
-    label: 'Name',
-    type: 'text',
-    placeholder: 'Enter your name',
-  },
-  {
-    name: 'email',
-    label: 'Email',
-    type: 'email',
-    placeholder: 'Enter your email',
-  },
-  {
-    name: 'password',
-    label: 'Password',
-    type: 'password',
-    placeholder: 'Enter your password',
-  },
-];
+
 const activeIndex = ref(0);
-const formData = ref({});
 const inputConfig = ref('');
 const selectItem = (index: number) => {
   activeIndex.value = index;
@@ -147,8 +121,6 @@ async function handleClick(num: number) {
     }
   }
 }
-getRemoteVersion();
-function getRemoteVersion() {}
 </script>
 
 <style scoped>

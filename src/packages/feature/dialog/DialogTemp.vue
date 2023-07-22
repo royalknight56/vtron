@@ -2,14 +2,17 @@
   <div class="dialog">
     <div class="dialog-content">
       <div class="dialog-icon">
-        <img class="dialog-icon_img" :src="iconMap[win.config.option.type]" alt="" />
+        <img class="dialog-icon_img" :src="iconMap[win?.config.option.type]" alt="" />
       </div>
-      {{ win.config.option.message }}
+      {{ win?.config.option.message }}
     </div>
     <div class="dialog-button">
-      <template v-for="(item, index) in win.config.option.buttons" :key="item">
-        <WinButton @click="handleClick(index)">{{ item }}</WinButton>
-      </template>
+      <WinButton
+        v-for="(item, index) in win?.config.option.buttons"
+        :key="item"
+        @click="handleClick(index)"
+        >{{ item }}</WinButton
+      >
     </div>
   </div>
 </template>
@@ -31,12 +34,15 @@ const iconMap: {
   warning: warningIcon,
 };
 
-const win: BrowserWindow = inject('browserWindow')!;
+const win: BrowserWindow | undefined = inject<BrowserWindow>('browserWindow');
+
 function handleClick(index: number) {
-  win.config.res({
-    response: index,
-  });
-  win.close();
+  if (win) {
+    win.config.res({
+      response: index,
+    });
+    win.close();
+  }
 }
 </script>
 <style lang="scss" scoped>

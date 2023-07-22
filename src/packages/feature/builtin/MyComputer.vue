@@ -91,6 +91,7 @@
       draggable="true"
       class="desk-item"
       v-for="(item, index) in currentList"
+      :key="item.id"
       @contextmenu="showMenu(item, index, $event)"
       @dragstart="startDrag($event, item)"
       @dragenter.prevent
@@ -112,10 +113,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, watch, inject } from 'vue';
+import { ref, onMounted, watch, inject } from 'vue';
 // import folderimg from "../assets/newFolder.ico";
 import foldericon from '@packages/assets/folder.ico';
-import unknownicon from '@packages/assets/unknown.ico';
+// import unknownicon from '@packages/assets/unknown.ico';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 
 import { Notify } from '../notification/Notification';
@@ -124,14 +125,14 @@ import { BrowserWindow, VtronFile } from '@packages/plug';
 import * as fspath from '@feature/core/Path';
 import { createNewFile, openPropsWindow, createNewDir } from '@packages/hook/useContextMenu';
 import { basename } from '@feature/core/Path';
-import { emitEvent, mountEvent } from '../event';
+import { mountEvent } from '../event';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 
-let browserWindow: BrowserWindow | undefined = inject('browserWindow');
+const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
 const config = browserWindow?.config;
-let system = useSystem();
+const system = useSystem();
 const { startDrag, folderDrop } = useFileDrag(system);
 
 function pathJoin(...paths: string[]) {
@@ -187,8 +188,8 @@ function showOuterMenu(e: MouseEvent) {
 function createFolder() {
   creating.value = true;
 }
-let router_url = ref('');
-watch(router_url, async (newVal, oldVal) => {
+const router_url = ref('');
+watch(router_url, async (newVal) => {
   refersh(newVal);
 });
 
@@ -198,21 +199,21 @@ onMounted(() => {
   } else {
     router_url.value = '/';
   }
-  mountEvent('file.props.edit', async (source: string, data: any) => {
+  mountEvent('file.props.edit', async () => {
     refersh(router_url.value);
   });
 });
 
 async function refersh(newVal: string) {
   if (!(await isVia(newVal))) return;
-  let result = await system?.fs.readdir(newVal);
+  const result = await system?.fs.readdir(newVal);
   if (result) currentList.value = result;
 }
-async function isVia(newVal: string, alert: boolean = false) {
+async function isVia(newVal: string, alert = false) {
   if (newVal === '') newVal = '/';
   else if (newVal === '/') newVal = '/';
   else if (newVal.endsWith('/')) newVal = newVal.substr(0, newVal.length - 1);
-  let isExist = await system?.fs.exists(newVal);
+  const isExist = await system?.fs.exists(newVal);
   if (!isExist) {
     if (alert)
       new Notify({
@@ -224,7 +225,7 @@ async function isVia(newVal: string, alert: boolean = false) {
   }
   return true;
 }
-let currentList = ref<Array<VtronFile>>([]);
+const currentList = ref<Array<VtronFile>>([]);
 
 function openFolder(item: VtronFile) {
   if (item.isDirectory) {
@@ -267,18 +268,17 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
   });
 }
 function backFolder() {
-  let path = router_url.value;
+  const path = router_url.value;
   if (path === '/') return;
 
   router_url.value = fspath.join(path, '..');
 }
 
 // 拖动文件上传
-let compu = ref(null);
+const compu = ref(null);
 onMounted(() => {
-  var oBox = (<any>compu.value) as HTMLElement;
+  const oBox = compu.value as unknown as HTMLElement;
   if (!oBox) {
-    console.log('获取失败');
     return;
   }
   // var oM = document.getElementById('m1');
@@ -302,13 +302,13 @@ onMounted(() => {
     // oBox.innerHTML = '请将文件拖拽到此区域';
   };
   oBox.ondrop = async function (ev: DragEvent) {
-    let fromobj = ev?.dataTransfer?.getData('fromobj');
+    const fromobj = ev?.dataTransfer?.getData('fromobj');
 
     if (fromobj == 'web') {
       // 无效
       folderDrop(ev, router_url.value);
     } else {
-      var oFileList = ev?.dataTransfer?.files;
+      const oFileList = ev?.dataTransfer?.files;
       readFileList(oFileList);
     }
 
@@ -316,12 +316,12 @@ onMounted(() => {
   };
 });
 async function readFileList(list: FileList | undefined) {
-  let len = list?.length || 0;
+  const len = list?.length || 0;
   for (let i = 0; i < len; i++) {
-    let item = list?.[i];
+    const item = list?.[i];
 
     // let oFile = null;
-    let reader = new FileReader();
+    const reader = new FileReader();
     //读取成功
     reader.onload = function () {
       // console.log(reader);
@@ -341,7 +341,7 @@ async function readFileList(list: FileList | undefined) {
           .writeFile(pathJoin(router_url.value, item?.name), {
             content: reader.result as string,
           })
-          .then((res) => {
+          .then(() => {
             refersh(router_url.value);
           });
       } else {
@@ -349,7 +349,7 @@ async function readFileList(list: FileList | undefined) {
           .writeFile(pathJoin(router_url.value, item?.name || 'unknow'), {
             content: decodeURIComponent(escape(atob((reader.result?.toString() || '').split(',')[1]))),
           })
-          .then((res) => {
+          .then(() => {
             refersh(router_url.value);
           });
       }
@@ -361,7 +361,7 @@ async function readFileList(list: FileList | undefined) {
       // console.log('读取失败');
     };
     reader.onprogress = function (ev) {
-      var scale = ev.loaded / ev.total;
+      const scale = ev.loaded / ev.total;
       if (scale >= 0.5) {
         reader.abort();
       }
@@ -370,7 +370,7 @@ async function readFileList(list: FileList | undefined) {
   }
 }
 
-let path_state = ref('pendding');
+const path_state = ref('pendding');
 function start_input() {
   path_state.value = 'inputing';
 }

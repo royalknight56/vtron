@@ -15,7 +15,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { emitEvent } from '../../event';
-import DateTimePop from '../../popover/DateTimePop.vue';
 import Battery from './Battery.vue';
 import DateTime from './DateTime.vue';
 import NetWork from './NetWork.vue';

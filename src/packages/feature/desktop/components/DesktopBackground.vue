@@ -20,7 +20,7 @@ function imgload() {
 onMounted(() => {
   refershBack(rootState.system.options.background);
 });
-watch(rootState.system.options, (nv, ov) => {
+watch(rootState.system.options, (nv) => {
   refershBack(nv.background);
 });
 function refershBack(val: string | undefined) {

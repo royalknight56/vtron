@@ -5,13 +5,13 @@ import { useSystem } from '../plug';
 import { VtronFileInfo, VtronFile } from '../feature/core/fileSystem';
 let isReadyUpdateAppList = false;
 function initAppList() {
-  isReadyUpdateAppList = true;
+  isReadyUpdateAppList = true
   nextTick(() => {
     if (isReadyUpdateAppList) {
-      isReadyUpdateAppList = false;
+      isReadyUpdateAppList = false
       refershAppList();
     }
-  });
+  })
 }
 function refershAppList() {
   const APP_TYPE = ['apps', 'magnet', 'menulist'];
@@ -20,12 +20,11 @@ function refershAppList() {
     const element = APP_TYPE[i];
     system?.fs
       .readdir(
-        `/C/Users/${
-          {
-            apps: 'Desktop',
-            magnet: 'Magnet',
-            menulist: 'Menulist',
-          }[element]
+        `/C/Users/${{
+          apps: 'Desktop',
+          magnet: 'Magnet',
+          menulist: 'Menulist',
+        }[element]
         }`
       )
       .then((res) => {

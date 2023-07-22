@@ -55,5 +55,8 @@
     "vite-plugin-style-import": "^1.2.1",
     "vitest": "^0.31.1",
     "vue-tsc": "^0.40.1"
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }

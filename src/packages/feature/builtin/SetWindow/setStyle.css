@@ -1,60 +1,59 @@
-
 .container {
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    user-select: none;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  user-select: none;
 }
 
 .nav {
-    width: 200px;
-    background-color: #f0f0f0;
-    /* padding: 20px; */
-    flex-shrink: 0;
+  width: 200px;
+  background-color: #f0f0f0;
+  /* padding: 20px; */
+  flex-shrink: 0;
 }
 
 .nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .nav li {
-    cursor: pointer;
-    padding: 10px 20px;
+  cursor: pointer;
+  padding: 10px 20px;
 }
 
 .nav li.active {
-    background-color: #ccc;
+  background-color: #ccc;
 }
 
 .setting {
-    /* flex: 1; */
-    padding: 20px;
-    width: 100%;
+  /* flex: 1; */
+  padding: 20px;
+  width: 100%;
 }
 
 .setting-title {
-    font-size: 24px;
-    font-weight: 300;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
+  font-size: 24px;
+  font-weight: 300;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .setting-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-bottom: 20px;
-    gap: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 20px;
 }
 
 .setting-item label {
-    display: block;
-    width: 130px;
-    flex-shrink: 0;
-    text-align: right;
+  display: block;
+  width: 130px;
+  flex-shrink: 0;
+  text-align: right;
 }

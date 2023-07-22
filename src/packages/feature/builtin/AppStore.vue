@@ -1,12 +1,12 @@
 <template>
   <iframe class="store" ref="storeRef" :key="frameKey" :src="storeUrl"></iframe>
 </template>
-  
+
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import { useSystem } from '../system';
-import { Dialog, basename } from '@/packages/plug';
-import { i18n } from '@/packages/feature/i18n';
+import { Dialog, basename } from '@packages/plug';
+import { i18n } from '@feature/i18n';
 
 const storeRef = ref<HTMLIFrameElement | null>(null);
 const frameKey = ref(0);
@@ -33,8 +33,6 @@ const handleMessage = (event: MessageEvent) => {
   }
 };
 
-
-
 const handleInstall = (data: any) => {
   const system = useSystem();
   if (!system) {
@@ -47,7 +45,7 @@ const handleInstall = (data: any) => {
     const dialogPromise = Dialog.showMessageBox({
       message: i18n('install.success'),
       type: 'info',
-      buttons: [i18n('confirm')]
+      buttons: [i18n('confirm')],
     });
     Promise.all([writeFilePromise, dialogPromise]).then(() => {
       frameKey.value++;
@@ -55,12 +53,12 @@ const handleInstall = (data: any) => {
   } else if (data.type === 'once') {
     const shellPromise = system.shell('node ' + data.file.content);
     const writeFilePromise = system.fs.writeFile(data.path, {
-      content: "function main(){\n\n}",
+      content: 'function main(){\n\n}',
     });
     const dialogPromise = Dialog.showMessageBox({
       message: i18n('install.success'),
       type: 'info',
-      buttons: [i18n('confirm')]
+      buttons: [i18n('confirm')],
     });
     Promise.all([shellPromise, writeFilePromise, dialogPromise]).then(() => {
       frameKey.value++;
@@ -78,7 +76,7 @@ const handleUninstall = (data: any) => {
     const dialogPromise = Dialog.showMessageBox({
       message: i18n('uninstall.success'),
       type: 'info',
-      buttons: [i18n('confirm')]
+      buttons: [i18n('confirm')],
     });
     Promise.all([unlinkPromise, dialogPromise]).then(() => {
       frameKey.value++;
@@ -89,7 +87,7 @@ const handleUninstall = (data: any) => {
     const dialogPromise = Dialog.showMessageBox({
       message: i18n('uninstall.success'),
       type: 'info',
-      buttons: [i18n('confirm')]
+      buttons: [i18n('confirm')],
     });
     Promise.all([shellPromise, unlinkPromise, dialogPromise]).then(() => {
       frameKey.value++;
@@ -110,19 +108,21 @@ const handleReady = () => {
     });
   });
   readdirPromise.then((data) => {
-    storeRef.value?.contentWindow?.postMessage({
-      type: 'init',
-      data: data,
-    }, '*');
+    storeRef.value?.contentWindow?.postMessage(
+      {
+        type: 'init',
+        data: data,
+      },
+      '*'
+    );
   });
 };
 
 onMounted(() => {
   window.addEventListener('message', handleMessage);
 });
-
 </script>
-  
+
 <style scoped>
 .store {
   width: 100%;

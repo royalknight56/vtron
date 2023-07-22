@@ -6,82 +6,129 @@
  Need CodeReview 
 -->
 <template>
-  <div class="wintmp_outer dragwin" :class="{
-    topwin: istop,
-    max: windowInfo.state == WindowStateEnum.maximize,
-    min: windowInfo.state == WindowStateEnum.minimize,
-    fullscreen: windowInfo.state == WindowStateEnum.fullscreen,
-    noframe: !windowInfo.frame,
-    disable: windowInfo.disable,
-  }" :style="customerStyle" @touchstart.passive="onFocus" @mousedown="onFocus" ref="$win_outer">
+  <div
+    class="wintmp_outer dragwin"
+    :class="{
+      topwin: istop,
+      max: windowInfo.state == WindowStateEnum.maximize,
+      min: windowInfo.state == WindowStateEnum.minimize,
+      fullscreen: windowInfo.state == WindowStateEnum.fullscreen,
+      noframe: !windowInfo.frame,
+      disable: windowInfo.disable,
+    }"
+    :style="customerStyle"
+    @touchstart.passive="onFocus"
+    @mousedown="onFocus"
+    ref="$win_outer"
+  >
     <div class="wintmp_uper" @contextmenu.prevent="uperRightClick">
       <MenuBar :browser-window="browserWindow"></MenuBar>
     </div>
-    <div class="wintmp_main" :class="{ resizeing: resizemode != 'null' }" @mousedown.stop="predown"
-      @touchstart.stop.passive="predown" @contextmenu.stop.prevent>
+    <div
+      class="wintmp_main"
+      :class="{ resizeing: resizemode != 'null' }"
+      @mousedown.stop="predown"
+      @touchstart.stop.passive="predown"
+      @contextmenu.stop.prevent
+    >
       <WindowInner :window="browserWindow"></WindowInner>
     </div>
-    <div class="right_border win_drag_border" :class="{ isChoseMode: resizemode == 'r' }" v-if="resizable"
-      @mousedown.stop.prevent="startScale($event, 'r')" @touchstart.stop.passive="startScale($event, 'r')"></div>
-    <div class="bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'b' }" v-if="resizable"
-      @mousedown.stop.prevent="startScale($event, 'b')" @touchstart.stop.passive="startScale($event, 'b')"></div>
-    <div class="left_border win_drag_border" :class="{ isChoseMode: resizemode == 'l' }" v-if="resizable"
-      @mousedown.stop.prevent="startScale($event, 'l')" @touchstart.stop.passive="startScale($event, 'l')"></div>
-    <div class="top_border win_drag_border" :class="{ isChoseMode: resizemode == 't' }" v-if="resizable"
-      @mousedown.stop.prevent="startScale($event, 't')" @touchstart.stop.passive="startScale($event, 't')"></div>
-    <div class="right_bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'rb' }" v-if="resizable"
-      draggable="false" @mousedown.stop.prevent="startScale($event, 'rb')"
-      @touchstart.stop.passive="startScale($event, 'rb')"></div>
-    <div class="left_bottom_border win_drag_border" :class="{ isChoseMode: resizemode == 'lb' }" v-if="resizable"
-      draggable="false" @mousedown.stop.prevent="startScale($event, 'lb')"
-      @touchstart.stop.passive="startScale($event, 'lb')"></div>
-    <div class="left_top_border win_drag_border" :class="{ isChoseMode: resizemode == 'lt' }" v-if="resizable"
-      draggable="false" @mousedown.stop.prevent="startScale($event, 'lt')"
-      @touchstart.stop.passive="startScale($event, 'lt')"></div>
-    <div class="right_top_border win_drag_border" :class="{ isChoseMode: resizemode == 'rt' }" v-if="resizable"
-      draggable="false" @mousedown.stop.prevent="startScale($event, 'rt')"
-      @touchstart.stop.passive="startScale($event, 'rt')"></div>
-
-
+    <div
+      class="right_border win_drag_border"
+      :class="{ isChoseMode: resizemode == 'r' }"
+      v-if="resizable"
+      @mousedown.stop.prevent="startScale($event, 'r')"
+      @touchstart.stop.passive="startScale($event, 'r')"
+    ></div>
+    <div
+      class="bottom_border win_drag_border"
+      :class="{ isChoseMode: resizemode == 'b' }"
+      v-if="resizable"
+      @mousedown.stop.prevent="startScale($event, 'b')"
+      @touchstart.stop.passive="startScale($event, 'b')"
+    ></div>
+    <div
+      class="left_border win_drag_border"
+      :class="{ isChoseMode: resizemode == 'l' }"
+      v-if="resizable"
+      @mousedown.stop.prevent="startScale($event, 'l')"
+      @touchstart.stop.passive="startScale($event, 'l')"
+    ></div>
+    <div
+      class="top_border win_drag_border"
+      :class="{ isChoseMode: resizemode == 't' }"
+      v-if="resizable"
+      @mousedown.stop.prevent="startScale($event, 't')"
+      @touchstart.stop.passive="startScale($event, 't')"
+    ></div>
+    <div
+      class="right_bottom_border win_drag_border"
+      :class="{ isChoseMode: resizemode == 'rb' }"
+      v-if="resizable"
+      draggable="false"
+      @mousedown.stop.prevent="startScale($event, 'rb')"
+      @touchstart.stop.passive="startScale($event, 'rb')"
+    ></div>
+    <div
+      class="left_bottom_border win_drag_border"
+      :class="{ isChoseMode: resizemode == 'lb' }"
+      v-if="resizable"
+      draggable="false"
+      @mousedown.stop.prevent="startScale($event, 'lb')"
+      @touchstart.stop.passive="startScale($event, 'lb')"
+    ></div>
+    <div
+      class="left_top_border win_drag_border"
+      :class="{ isChoseMode: resizemode == 'lt' }"
+      v-if="resizable"
+      draggable="false"
+      @mousedown.stop.prevent="startScale($event, 'lt')"
+      @touchstart.stop.passive="startScale($event, 'lt')"
+    ></div>
+    <div
+      class="right_top_border win_drag_border"
+      :class="{ isChoseMode: resizemode == 'rt' }"
+      v-if="resizable"
+      draggable="false"
+      @mousedown.stop.prevent="startScale($event, 'rt')"
+      @touchstart.stop.passive="startScale($event, 'rt')"
+    ></div>
   </div>
 </template>
 <script lang="ts" setup>
-import { inject, provide, ref, watch } from "vue";
-import { onMounted, computed, UnwrapNestedRefs } from "vue";
-import { WindowStateEnum } from "./BrowserWindow";
-import WindowInner from "./components/WindowInner.vue";
+import { inject, provide, ref, watch } from 'vue';
+import { onMounted, computed, UnwrapNestedRefs } from 'vue';
+import { WindowStateEnum } from './BrowserWindow';
+import WindowInner from './components/WindowInner.vue';
 // import type { PropType } from "vue";
-//   import { WindowInfo, defaultWinInfo } from "@/packages/window/libs/DragWindow/option";
-import { DragElement } from "@packages/feature/window/dom/DragElement";
-import { ScaleElement } from "@packages/feature/window/dom/ScaleElement";
-// import WindowInner from "@/packages/window/structure/windowContent/windowInner.vue";
-import { BrowserWindow } from '@packages/feature/window/BrowserWindow';
-import MenuBar from "./components/MenuBar.vue";
-import { emitEvent } from "../event";
+//   import { WindowInfo, defaultWinInfo } from "@packages/window/libs/DragWindow/option";
+import { DragElement } from '@feature/window/dom/DragElement';
+import { ScaleElement } from '@feature/window/dom/ScaleElement';
+// import WindowInner from "@packages/window/structure/windowContent/windowInner.vue";
+import { BrowserWindow } from '@feature/window/BrowserWindow';
+import MenuBar from './components/MenuBar.vue';
+import { emitEvent } from '../event';
 
 let props = defineProps<{
-  browserWindow: UnwrapNestedRefs<BrowserWindow>
-}>()
+  browserWindow: UnwrapNestedRefs<BrowserWindow>;
+}>();
 
 let browserWindow = props.browserWindow;
 let windowInfo = browserWindow.windowInfo;
 // 传递windowid
-provide("browserWindow", browserWindow);
+provide('browserWindow', browserWindow);
 
 function predown() {
   browserWindow.moveTop();
-  emitEvent("window.content.click", browserWindow);
+  emitEvent('window.content.click', browserWindow);
 }
 
-
-function uperRightClick(e: MouseEvent) {
-
-}
+function uperRightClick(e: MouseEvent) {}
 
 let customerStyle = ref<any>({});
 
 function onFocus(e: MouseEvent | TouchEvent): void {
-  browserWindow?.moveTop()
+  browserWindow?.moveTop();
   if (windowInfo.state === WindowStateEnum.maximize) {
     if (e instanceof MouseEvent) {
       e.preventDefault();
@@ -97,21 +144,19 @@ let istop = computed(() => windowInfo.istop);
  */
 onMounted(() => {
   customerStyle.value = {
-    width: computed(() => windowInfo.width + "px"),
-    height: computed(() => windowInfo.height + "px"),
-    left: computed(() => windowInfo.x + "px"),
-    top: computed(() => windowInfo.y + "px"),
+    width: computed(() => windowInfo.width + 'px'),
+    height: computed(() => windowInfo.height + 'px'),
+    left: computed(() => windowInfo.x + 'px'),
+    top: computed(() => windowInfo.y + 'px'),
 
     zIndex: computed(() => {
       if (windowInfo.alwaysOnTop) {
-        return 9999
+        return 9999;
       }
       return windowInfo.zindex;
     }),
     backgroundColor: computed(() => windowInfo.backgroundColor),
   };
-
-
 });
 
 /*
@@ -145,7 +190,7 @@ onMounted(() => {
 挂载缩放事件
 */
 let resizable = ref(windowInfo.resizable);
-let resizemode = ref("null");
+let resizemode = ref('null');
 let scaleAble: ScaleElement;
 onMounted(() => {
   scaleAble = new ScaleElement(resizemode, windowInfo.width, windowInfo.height, windowInfo.x, windowInfo.y);
@@ -155,14 +200,13 @@ onMounted(() => {
     windowInfo.x = x || windowInfo.x;
     windowInfo.y = y || windowInfo.y;
   });
-})
+});
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
   if (windowInfo.disable) {
     return;
   }
   scaleAble?.startScale(e, dire, windowInfo.x, windowInfo.y, windowInfo.width, windowInfo.height);
 }
-
 </script>
 <style>
 .dragwin {
@@ -186,7 +230,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   flex-direction: column;
   box-shadow: var(--window-box-shadow);
   border-radius: var(--window-border-radius);
-  
+
   overflow: hidden;
 
   .wintmp_main {
@@ -197,12 +241,11 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
     overflow: hidden;
     contain: content;
   }
-
 }
 
 .topwin {
   border: 1px solid #0078d7;
-  box-shadow:  var(--window-top-box-shadow);
+  box-shadow: var(--window-top-box-shadow);
 }
 
 .icon {
@@ -216,14 +259,17 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   top: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  transition: width 0.1s ease-in-out, height 0.1s ease-in-out;
+  transition:
+    width 0.1s ease-in-out,
+    height 0.1s ease-in-out;
 }
 
 .disable {
-  .wintmp_uper{
+  .wintmp_uper {
     pointer-events: none;
   }
-  .wintmp_main{
+
+  .wintmp_main {
     pointer-events: none;
   }
 }
@@ -268,7 +314,6 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 
   .wintmp_uper {
     background-color: rgba(255, 255, 255, 0.774);
-
   }
 }
 

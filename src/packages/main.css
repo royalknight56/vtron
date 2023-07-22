@@ -1,26 +1,47 @@
-
 @font-face {
-  font-family: "SEGOEUIMDL";
-  src:url("SegMDL2.ttf") format("truetype");
-    /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
-      /* url("LXGWWenKai-Bold.svg#LXGWWenKai-Bold") format("svg"); iOS 4.1- */
+  font-family: 'SEGOEUIMDL';
+  src: url('SegMDL2.ttf') format('truetype');
+  /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+  /* url("LXGWWenKai-Bold.svg#LXGWWenKai-Bold") format("svg"); iOS 4.1- */
   font-style: normal;
   font-weight: normal;
 }
 .SEGOEUIMDL {
-  font-family: "SEGOEUIMDL";
+  font-family: 'SEGOEUIMDL';
   font-style: normal;
   font-weight: normal;
 }
 /*公共样式--开始*/
-html, body, div, ul, li, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ol, form, input, textarea, th, td, select {
+html,
+body,
+div,
+ul,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+dl,
+dt,
+dd,
+ol,
+form,
+input,
+textarea,
+th,
+td,
+select {
   margin: 0;
   padding: 0;
 }
-*{
-  box-sizing:content-box;
+* {
+  box-sizing: content-box;
 }
-html, body {
+html,
+body {
   min-height: 100%;
 }
 
@@ -29,11 +50,20 @@ body {
   /* font-size:14px; */
   /* color:#333; */
 }
-h1, h2, h3, h4, h5, h6{font-weight:normal;}
-ul,ol {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: normal;
+}
+ul,
+ol {
   list-style: none;
 }
-img, svg{
+img,
+svg {
   margin: 0 auto;
   vertical-align: unset;
   display: inline-block;
@@ -49,7 +79,8 @@ table {
   table-layout: fixed;
 }
 
-input, textarea {
+input,
+textarea {
   outline: none;
   border: none;
 }
@@ -64,21 +95,21 @@ textarea {
 }
 
 .clearfix:after {
-  content: ".";
+  content: '.';
   width: 0;
   height: 0;
   visibility: hidden;
   display: block;
   clear: both;
-  overflow:hidden;
+  overflow: hidden;
 }
 
 .fl {
-  float: left
+  float: left;
 }
 
 .fr {
-  float: right
+  float: right;
 }
 
 .tl {
@@ -86,7 +117,7 @@ textarea {
 }
 
 .tc {
-  text-align: center
+  text-align: center;
 }
 
 .tr {
@@ -98,81 +129,158 @@ textarea {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.inline{
+.inline {
   display: inline-block;
 }
 
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
 }
 body {
-	line-height: 1;
+  line-height: 1;
 }
-ol, ul {
-	list-style: none;
+ol,
+ul {
+  list-style: none;
 }
-blockquote, q {
-	quotes: none;
+blockquote,
+q {
+  quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 /*定义滚动条高宽及背景
  高宽分别对应横竖滚动条的尺寸*/
- ::-webkit-scrollbar
- {
-     width:5px;
-     height:16px;
-     background-color:#ffffff;
- }
- /*定义滚动条轨道
+::-webkit-scrollbar {
+  width: 5px;
+  height: 16px;
+  background-color: #ffffff;
+}
+/*定义滚动条轨道
   内阴影+圆角*/
- ::-webkit-scrollbar-track
- {
-     -webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.3);
-     border-radius:10px;
-     background-color:#ffffff;
- }
- /*定义滑块
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+/*定义滑块
   内阴影+圆角*/
- ::-webkit-scrollbar-thumb
- {
-     border-radius:10px;
-     -webkit-box-shadow:inset 0 0 6px rgba(0,0,0,.3);
-     background-color:rgba(132, 132, 132, 0.537);
- }
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgba(132, 132, 132, 0.537);
+}
 
 * {
-  scrollbar-color:rgba(74, 74, 74, 0.363) rgb(255, 255, 255);
-  scrollbar-width:thin;
+  scrollbar-color: rgba(74, 74, 74, 0.363) rgb(255, 255, 255);
+  scrollbar-width: thin;
 }

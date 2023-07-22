@@ -1,6 +1,3 @@
-import {System,useSystem} from "./System";
+import { System, useSystem } from './System';
 
-export {
-    System,
-    useSystem
-}
+export { System, useSystem };

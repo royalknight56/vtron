@@ -1,43 +1,43 @@
-.screen{
-    --window-border:1px solid #0078d7;
-    --window-border-radius:0px;
-    --window-box-shadow:0  0px 10px 1px rgb(0 0 0 / 40%);
-    --window-top-box-shadow: 0 0px 13px 1px rgb(0 0 0 / 60%);
+.screen {
+  --window-border: 1px solid #0078d7;
+  --window-border-radius: 0px;
+  --window-box-shadow: 0 0px 10px 1px rgb(0 0 0 / 40%);
+  --window-top-box-shadow: 0 0px 13px 1px rgb(0 0 0 / 60%);
 
-    --ui-font-size: 12px;
-    --ui-list-item-height: 20px;
-    --ui-button-width: 80px;
-    --ui-button-height: 26px;
-    
-    --task-bar-height: 40px;
-    --menu-bar-height: 30px;
-    --menu-bar-button-size:12px;
-    --startmenu-icon-size:40px;
-    --startmenu-icon-size-hover: 200px;
-    --start-option-size: 50px;
-    --menulist-width: 160px;
-    --menulist-item-height: 30px;
-    --magnet-width: 360px;
-    --magnet-item-size:80px;
-    --desk-item-size: 80px;
-    --contextmenu-width: 160px;
-    --notify-width: 240px;
-    --notify-height: 60px;
+  --ui-font-size: 12px;
+  --ui-list-item-height: 20px;
+  --ui-button-width: 80px;
+  --ui-button-height: 26px;
 
-    --color-notify: #333333e3;
-    --color-magnet:#e5e5e5ad;
-    --color-magnet-item: #f2f2f2bb;
-    --color-startmenu-opacity:#d0d0d0da;
-    --color-startmenu:#d0d0d0;
-    --color-gray: #ededed;
-    --color-gray-hover : #f2f2f2;
-    --color-gray-active: #ffffff;
-    --color-white:#FFF;
-    --color-ui-gray: #F0F0F0;
-    --color-red: #ff0000;
-    --color-blue: #0078D7;
-    --color-light-blue: #E5F1FB;
-    --color-ui-desk-item-title: #000000;
+  --task-bar-height: 40px;
+  --menu-bar-height: 30px;
+  --menu-bar-button-size: 12px;
+  --startmenu-icon-size: 40px;
+  --startmenu-icon-size-hover: 200px;
+  --start-option-size: 50px;
+  --menulist-width: 160px;
+  --menulist-item-height: 30px;
+  --magnet-width: 360px;
+  --magnet-item-size: 80px;
+  --desk-item-size: 80px;
+  --contextmenu-width: 160px;
+  --notify-width: 240px;
+  --notify-height: 60px;
 
-    --light-border:1px solid #00000028;
+  --color-notify: #333333e3;
+  --color-magnet: #e5e5e5ad;
+  --color-magnet-item: #f2f2f2bb;
+  --color-startmenu-opacity: #d0d0d0da;
+  --color-startmenu: #d0d0d0;
+  --color-gray: #ededed;
+  --color-gray-hover: #f2f2f2;
+  --color-gray-active: #ffffff;
+  --color-white: #fff;
+  --color-ui-gray: #f0f0f0;
+  --color-red: #ff0000;
+  --color-blue: #0078d7;
+  --color-light-blue: #e5f1fb;
+  --color-ui-desk-item-title: #000000;
+
+  --light-border: 1px solid #00000028;
 }

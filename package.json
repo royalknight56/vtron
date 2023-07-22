@@ -27,7 +27,9 @@
     "build-lib-tsc": "vue-tsc --noEmit && vite build --config vitelib.config.ts",
     "build-lib": "vite build --config vitelib.config.ts",
     "tsc": "vue-tsc",
-    "tag": "node script/auto_tag.js"
+    "tag": "node script/auto_tag.js",
+    "prepare": "husky install",
+    "pre": "lint-staged"
   },
   "dependencies": {
     "vue": "^3.2.37",
@@ -41,6 +43,9 @@
     "@types/rollup-plugin-visualizer": "^4.2.1",
     "@vitejs/plugin-vue": "^3.0.3",
     "@vue/compiler-sfc": "^3.2.20",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "prettier": "^3.0.0",
     "rollup-plugin-typescript2": "^0.34.1",
     "rollup-plugin-visualizer": "^5.8.0",
     "sass": "^1.45.1",

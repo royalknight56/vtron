@@ -9,21 +9,20 @@
     <Screen></Screen>
     <!-- <button @click="save">save</button>
     <button @click="restore">restore</button> -->
-
   </div>
 </template>
 
 <script setup lang="ts">
-import brow from "./assets/浏览器.png"
-import testicon from "./assets/终端.png"
-import TestButton from "./apps/TestButton.vue"
-import VtronTest from "./apps/VtronTest.vue";
-import VtronPerfTest from "./apps/VtronPerfTest.vue";
+import brow from './assets/浏览器.png';
+import testicon from './assets/终端.png';
+import TestButton from './apps/TestButton.vue';
+import VtronTest from './apps/VtronTest.vue';
+import VtronPerfTest from './apps/VtronPerfTest.vue';
 
-import { onMounted, ref } from "vue";
-import { System } from "./packages/plug";
-import { BrowserWindow } from "./packages/feature/window/BrowserWindow";
-import vtronLogoIcon from "./assets/vtron-icon-nobg.png"
+import { onMounted, ref } from 'vue';
+import { System } from './packages/plug';
+import { BrowserWindow } from './packages/feature/window/BrowserWindow';
+import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 let sys: System | null = null;
 async function save() {
   let state = await sys?.serializeState();
@@ -37,17 +36,17 @@ async function restore() {
 }
 onMounted(() => {
   sys = new System({
-    lang: "en-US",
+    lang: 'en-US',
     // lang: "zh-CN",
     logo: vtronLogoIcon,
-    background: "https://picsum.photos/1920/1080",
+    background: 'https://picsum.photos/1920/1080',
     desktop: [
       {
         name: '测试Url',
         icon: testicon,
         window: {
-          content: "https://source.unsplash.com/random/1920x1080",
-          title: "测试按钮",
+          content: 'https://source.unsplash.com/random/1920x1080',
+          title: '测试按钮',
           icon: testicon,
           center: true,
           // backgroundColor: "rgba(0,0,0,1)",
@@ -58,7 +57,7 @@ onMounted(() => {
         // icon: testicon,
         window: {
           content: TestButton,
-          title: "测试按钮",
+          title: '测试按钮',
           icon: testicon,
           center: true,
           frame: false,
@@ -70,7 +69,7 @@ onMounted(() => {
         // icon: testicon,
         window: {
           content: TestButton,
-          title: "测试按钮",
+          title: '测试按钮',
           icon: testicon,
           center: true,
           // backgroundColor: "rgba(0,0,0,1)",
@@ -81,7 +80,7 @@ onMounted(() => {
         // icon: testicon,
         window: {
           content: TestButton,
-          title: "测试按钮",
+          title: '测试按钮',
           icon: testicon,
           center: true,
           // backgroundColor: "rgba(0,0,0,1)",
@@ -92,45 +91,43 @@ onMounted(() => {
         icon: testicon,
         window: {
           content: TestButton,
-          title: "测试不可缩放",
+          title: '测试不可缩放',
           icon: testicon,
           center: true,
           frame: false,
           fullscreen: true,
           resizable: false,
-          backgroundColor: "rgba(0,0,0,0)",
-        }
+          backgroundColor: 'rgba(0,0,0,0)',
+        },
       },
       {
         name: 'Vtron自动测试',
         icon: testicon,
         window: {
           content: VtronTest,
-          title: "Vtron自动测试",
+          title: 'Vtron自动测试',
           icon: testicon,
           center: true,
-        }
+        },
       },
       {
         name: 'Vtron自动性能测试',
         icon: testicon,
         window: {
           content: VtronPerfTest,
-          title: "Vtron自动性能测试",
+          title: 'Vtron自动性能测试',
           icon: testicon,
           center: true,
-        }
-      }
+        },
+      },
     ],
     rootStyle: {
       '--color-ui-desk-item-title': '#a30',
       '--window-border-radius': '4px',
       // '--menu-bar-height':'100px'
-    }
-  })
-})
-
-
+    },
+  });
+});
 </script>
 <style scoped>
 .outer {

@@ -1,5 +1,3 @@
-import ScreenComponentVue from "./ScreenComponent.vue";
+import ScreenComponentVue from './ScreenComponent.vue';
 
-export {
-    ScreenComponentVue
-}
+export { ScreenComponentVue };

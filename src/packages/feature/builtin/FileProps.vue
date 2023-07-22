@@ -55,7 +55,7 @@ import { VtronFile } from '@packages/plug';
 import { basename, extname } from '@feature/core/Path';
 import { i18n } from '@feature/i18n';
 
-let window: BrowserWindow | undefined = inject('browserWindow');
+const window: BrowserWindow | undefined = inject('browserWindow');
 const file = ref<VtronFile | null>();
 file.value = await useSystem()?.fs.stat(window?.config.content);
 
@@ -67,7 +67,7 @@ function confirm() {
   window?.close();
 }
 function editType() {
-  let win = new BrowserWindow({
+  const win = new BrowserWindow({
     // title: '修改类型',
     title: i18n('edit.type'),
     content: EditType,
@@ -86,7 +86,7 @@ function editType() {
 }
 
 function editFileName() {
-  let win = new BrowserWindow({
+  const win = new BrowserWindow({
     title: i18n('rename'),
     content: EditFileName,
     config: {

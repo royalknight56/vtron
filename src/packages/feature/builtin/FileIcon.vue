@@ -28,8 +28,8 @@ const props = defineProps<{
 }>();
 // content: `link:${loc}:${options.name}:${options.icon?.length}:${options.icon}`
 function dealIcon(file: VtronFile) {
-  let exeContent = file.content.split(':');
-  let iconImg = exeContent.slice(4).join(':');
+  const exeContent = file.content.split(':');
+  const iconImg = exeContent.slice(4).join(':');
   if (iconImg != 'undefined' && iconImg != '' && iconImg != null && iconImg) {
     return iconImg;
   } else {
@@ -38,8 +38,8 @@ function dealIcon(file: VtronFile) {
 }
 // content: `link::${options.name}::icon::${options.icon}`
 function dealUrlIcon(file: VtronFile) {
-  let urlContent = file.content.split('::');
-  let iconImg = urlContent[3];
+  const urlContent = file.content.split('::');
+  const iconImg = urlContent[3];
   if (iconImg != 'undefined' && iconImg != '' && iconImg != null && iconImg) {
     return iconImg;
   } else {

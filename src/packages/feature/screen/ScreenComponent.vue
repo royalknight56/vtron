@@ -19,8 +19,8 @@ import { SystemStateEnum } from '@packages/type/enum';
 import { useRootState } from '@feature/state/Root';
 import { onMounted, ref } from 'vue';
 
-let rootState = useRootState();
-let screen = ref<HTMLElement>();
+const rootState = useRootState();
+const screen = ref<HTMLElement>();
 onMounted(() => {
   rootState.ref = screen.value;
 });

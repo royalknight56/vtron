@@ -15,19 +15,19 @@ import { Notify } from '@feature/notification/Notification';
 import { BrowserWindow, useSystem } from '@packages/plug';
 import { ref, useAttrs, getCurrentInstance, onUnmounted, inject } from 'vue';
 
-let browserWindow: BrowserWindow = inject('browserWindow')!;
-let sys = useSystem();
+const browserWindow: BrowserWindow = inject('browserWindow')!;
+const sys = useSystem();
 function nextStep(fun: Function, time?: number) {
   return new Promise((resolve, reject) => {
-    let res = fun();
+    const res = fun();
     setTimeout(() => {
       resolve(res);
     }, time || 50);
   });
 }
 await nextStep(() => {
-  let [x, y] = browserWindow.getPosition();
-  let [width, height] = browserWindow.getSize();
+  const [x, y] = browserWindow.getPosition();
+  const [width, height] = browserWindow.getSize();
   new Notify({
     title: 'title',
     content: `${x},${y},${width},${height}`,
@@ -39,8 +39,8 @@ await nextStep(() => {
   browserWindow.setSize(500, 500);
 }, 100);
 await nextStep(() => {
-  let [x, y] = browserWindow.getPosition();
-  let [width, height] = browserWindow.getSize();
+  const [x, y] = browserWindow.getPosition();
+  const [width, height] = browserWindow.getSize();
   new Notify({
     title: 'title',
     content: `${x},${y},${width},${height}`,
@@ -51,7 +51,7 @@ await nextStep(() => {
   browserWindow.center();
 }, 100);
 await nextStep(() => {
-  let title = browserWindow.getTitle();
+  const title = browserWindow.getTitle();
   new Notify({
     title: 'title',
     content: `${title}`,
@@ -60,7 +60,7 @@ await nextStep(() => {
 }, 100);
 await nextStep(() => {
   browserWindow.setTitle('新标题');
-  let title = browserWindow.getTitle();
+  const title = browserWindow.getTitle();
   new Notify({
     title: 'title',
     content: `${title}`,

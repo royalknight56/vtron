@@ -7,7 +7,12 @@
     </div>
     <div class="outer_main">
       <div class="main_uper">
-        <div class="set_item" v-for="item in setList" @click="openSet(item.content, item.title)">
+        <div
+          class="set_item"
+          v-for="item in setList"
+          :key="item.title"
+          @click="openSet(item.content, item.title)"
+        >
           <div class="set_item-img">
             <img class="set_item-img-img" :src="item.icon" />
           </div>
@@ -22,13 +27,9 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref, defineComponent } from 'vue';
-import WinSelect from '@builtin/winComponent/WinSelect.vue';
-import systemset from '@builtin/setApps/SetSystemset.vue';
-// import version from '@builtin/setApps/SetVersion.vue'
 import SetUpdate from './SetWindow/SetUpdate.vue';
 import SetCustom from './SetWindow/SetCustom.vue';
 import SetSystem from './SetWindow/SetSystem.vue';
-import appstore from '@builtin/Appstore.vue';
 import e7f8 from '../../../assets/icon/e7f8.png'; //系统设置
 import e774 from '../../../assets/icon/e774.png'; //网络
 import e771 from '../../../assets/icon/e771.png'; //个性化
@@ -36,9 +37,9 @@ import e895 from '../../../assets/icon/e895.png'; //更新
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 
-let browserWindow = inject<BrowserWindow>('browserWindow');
+const browserWindow = inject<BrowserWindow>('browserWindow');
 
-let setMap: {
+const setMap: {
   [key: string]: BrowserWindow;
 } = {};
 // let windowInfo = system.getWindow(id)?.windowInfo
@@ -61,7 +62,7 @@ function openSet(content: ReturnType<typeof defineComponent>, title: string) {
     }
   }
 }
-let setList = [
+const setList = [
   {
     title: i18n('system'),
     // desc: '显示，声音，通知，电源',

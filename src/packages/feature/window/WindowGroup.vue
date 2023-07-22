@@ -6,8 +6,8 @@ import { useRootState } from '@feature/state/Root';
 import { Tree } from '@packages/util/Tree';
 import WindowNode from './WindowNode.vue';
 
-let rootState = useRootState();
-let winArray = rootState.system.windowOrder;
+const rootState = useRootState();
+const winArray = rootState.system.windowOrder;
 </script>
 <style lang="scss" scoped>
 .window-node {

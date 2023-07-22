@@ -17,7 +17,7 @@ const props = defineProps({
     default: 'Type here',
   },
 });
-let emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
 
 const value = ref(props.modelValue);
 

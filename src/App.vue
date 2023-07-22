@@ -25,11 +25,11 @@ import { BrowserWindow } from './packages/feature/window/BrowserWindow';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 let sys: System | null = null;
 async function save() {
-  let state = await sys?.serializeState();
+  const state = await sys?.serializeState();
   localStorage.setItem('vtron-state', JSON.stringify(state));
 }
 async function restore() {
-  let state = localStorage.getItem('vtron-state');
+  const state = localStorage.getItem('vtron-state');
   if (state) {
     await sys?.deserializeState(JSON.parse(state));
   }

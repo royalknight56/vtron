@@ -25,35 +25,35 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { mountEvent } from '../event';
-let isDataPopShow = ref(false);
+const isDataPopShow = ref(false);
 mountEvent('datetime.show', () => {
   isDataPopShow.value = true;
 });
 mountEvent('datetime.hidden', () => {
   isDataPopShow.value = false;
 });
-let timeDisplay = ref(`00:00:00`);
-let dateDisplay = ref(`0000/00/00`);
+const timeDisplay = ref(`00:00:00`);
+const dateDisplay = ref(`0000/00/00`);
 
 setInterval(() => {
-  let date = new Date();
-  let time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-  let dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+  const date = new Date();
+  const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
   timeDisplay.value = time;
   dateDisplay.value = dateStr;
 }, 500);
 
-let weeks = ['日', '一', '二', '三', '四', '五', '六'];
+const weeks = ['日', '一', '二', '三', '四', '五', '六'];
 
-let month = ref<Array<Array<string>>>([]);
-let date = new Date();
-let year = date.getFullYear();
-let monthNum = date.getMonth() + 1;
-let day = date.getDate();
-let firstDay = new Date(year, monthNum - 1, 1).getDay();
-let lastDay = new Date(year, monthNum, 0).getDate();
-let weekNum = Math.ceil((firstDay + lastDay) / 7);
-let week: Array<string> = [];
+const month = ref<Array<Array<string>>>([]);
+const date = new Date();
+const year = date.getFullYear();
+const monthNum = date.getMonth() + 1;
+const day = date.getDate();
+const firstDay = new Date(year, monthNum - 1, 1).getDay();
+const lastDay = new Date(year, monthNum, 0).getDate();
+const weekNum = Math.ceil((firstDay + lastDay) / 7);
+const week: Array<string> = [];
 for (let i = 0; i < weekNum; i++) {
   month.value[i] = [];
   for (let j = 0; j < 7; j++) {

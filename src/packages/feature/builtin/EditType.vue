@@ -14,9 +14,9 @@ import { emitEvent } from '../event';
 import { basename, extname } from '../core/Path';
 import { i18n } from '@feature/i18n';
 
-let browserWindow: BrowserWindow = inject('browserWindow')!;
-let fileBaseName = basename((browserWindow.config.content as VtronFile).path);
-let type = ref(extname(fileBaseName));
+const browserWindow: BrowserWindow = inject('browserWindow')!;
+const fileBaseName = basename((browserWindow.config.content as VtronFile).path);
+const type = ref(extname(fileBaseName));
 
 function confirm() {
   useSystem()

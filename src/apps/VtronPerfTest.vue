@@ -16,19 +16,19 @@ import { BrowserWindow, useSystem } from '@packages/plug';
 import { ref, useAttrs, getCurrentInstance, onUnmounted, inject } from 'vue';
 import TestButton from './TestButton.vue';
 
-let browserWindow: BrowserWindow = inject('browserWindow')!;
-let sys = useSystem();
+const browserWindow: BrowserWindow = inject('browserWindow')!;
+const sys = useSystem();
 function nextStep(fun: Function, time?: number) {
   return new Promise((resolve, reject) => {
-    let res = fun();
+    const res = fun();
     setTimeout(() => {
       resolve(res);
     }, time || 50);
   });
 }
 await nextStep(() => {
-  let [x, y] = browserWindow.getPosition();
-  let [width, height] = browserWindow.getSize();
+  const [x, y] = browserWindow.getPosition();
+  const [width, height] = browserWindow.getSize();
   new Notify({
     title: 'title',
     content: `${x},${y},${width},${height}`,
@@ -48,10 +48,10 @@ await nextStep(() => {
     });
   }, 10);
 }, 1000);
-let winarr: any = [];
+const winarr: any = [];
 await nextStep(() => {
   timer2 = setInterval(() => {
-    let win = new BrowserWindow({
+    const win = new BrowserWindow({
       content: TestButton,
       title: '测试无边框拖动',
       center: true,

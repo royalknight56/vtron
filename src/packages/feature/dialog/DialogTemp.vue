@@ -31,7 +31,7 @@ const iconMap: {
   warning: warningIcon,
 };
 
-let win: BrowserWindow = inject('browserWindow')!;
+const win: BrowserWindow = inject('browserWindow')!;
 function handleClick(index: number) {
   win.config.res({
     response: index,

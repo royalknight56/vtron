@@ -63,7 +63,7 @@ interface Field {
   type: string;
   placeholder: string;
 }
-let system = useSystem();
+const system = useSystem();
 const items = [
   i18n('backup'), // '备份',
   // '版本',
@@ -98,7 +98,7 @@ const selectItem = (index: number) => {
 async function handleClick(num: number) {
   if (num === 0) {
     //导出配置
-    let cfg = await system?.serializeState();
+    const cfg = await system?.serializeState();
     try {
       await navigator.clipboard.writeText(cfg!);
       Dialog.showMessageBox({
@@ -118,7 +118,7 @@ async function handleClick(num: number) {
   } else if (num === 1) {
     // 导入配置
     try {
-      let req = await Dialog.showMessageBox({
+      const req = await Dialog.showMessageBox({
         title: i18n('import.config'),
         // message: '导入会覆盖现有的文件,是否继续?',
         message: i18n('import.config.will.cover.existing.files.continue'),

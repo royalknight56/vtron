@@ -277,8 +277,8 @@ function backFolder() {
 let compu = ref(null);
 onMounted(() => {
   var oBox = (<any>compu.value) as HTMLElement;
-  if (oBox) {
-  } else {
+  if (!oBox) {
+    console.log('获取失败');
     return;
   }
   // var oM = document.getElementById('m1');

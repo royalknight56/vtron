@@ -50,7 +50,7 @@ import { UnwrapNestedRefs } from 'vue';
 import { emitEvent } from '../../event';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 
-let props = defineProps<{
+const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
 }>();
 function handleEvent(event: string) {

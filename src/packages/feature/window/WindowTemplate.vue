@@ -109,12 +109,12 @@ import { BrowserWindow } from '@feature/window/BrowserWindow';
 import MenuBar from './components/MenuBar.vue';
 import { emitEvent } from '../event';
 
-let props = defineProps<{
+const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
 }>();
 
-let browserWindow = props.browserWindow;
-let windowInfo = browserWindow.windowInfo;
+const browserWindow = props.browserWindow;
+const windowInfo = browserWindow.windowInfo;
 // 传递windowid
 provide('browserWindow', browserWindow);
 
@@ -125,7 +125,7 @@ function predown() {
 
 function uperRightClick(e: MouseEvent) {}
 
-let customerStyle = ref<any>({});
+const customerStyle = ref<any>({});
 
 function onFocus(e: MouseEvent | TouchEvent): void {
   browserWindow?.moveTop();
@@ -137,7 +137,7 @@ function onFocus(e: MouseEvent | TouchEvent): void {
   }
 }
 
-let istop = computed(() => windowInfo.istop);
+const istop = computed(() => windowInfo.istop);
 
 /*
  *计算样式
@@ -162,9 +162,9 @@ onMounted(() => {
 /*
 挂载拖动事件
 */
-let $win_outer = ref(null);
+const $win_outer = ref(null);
 onMounted(() => {
-  let dragAble = new DragElement($win_outer.value, windowInfo.x, windowInfo.y);
+  const dragAble = new DragElement($win_outer.value, windowInfo.x, windowInfo.y);
   watch(
     () => windowInfo.state === WindowStateEnum.maximize,
     (n, o) => {
@@ -189,8 +189,8 @@ onMounted(() => {
 /*
 挂载缩放事件
 */
-let resizable = ref(windowInfo.resizable);
-let resizemode = ref('null');
+const resizable = ref(windowInfo.resizable);
+const resizemode = ref('null');
 let scaleAble: ScaleElement;
 onMounted(() => {
   scaleAble = new ScaleElement(resizemode, windowInfo.width, windowInfo.height, windowInfo.x, windowInfo.y);

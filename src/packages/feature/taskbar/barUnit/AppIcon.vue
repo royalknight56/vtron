@@ -12,7 +12,7 @@ import { BrowserWindow } from '../../window/BrowserWindow';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { i18n } from '@feature/i18n';
 
-let props = defineProps<{
+const props = defineProps<{
   windowNode: UnwrapNestedRefs<BrowserWindow>;
 }>();
 function handleRightClick(e: MouseEvent) {

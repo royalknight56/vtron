@@ -5,6 +5,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { useRootState } from '@feature/state/Root';
-let sysInfo = useRootState().system.info;
+const sysInfo = useRootState().system.info;
 </script>
 <style scoped></style>

@@ -15,7 +15,7 @@ import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 
-let browserWindow: BrowserWindow | undefined = inject('browserWindow');
+const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
 const base64String = browserWindow?.config.content;
 const binaryData = base64String;
@@ -31,7 +31,7 @@ function handleButton(e: MouseEvent) {
       {
         name: i18n('save'),
         click: async () => {
-          let file = await system.fs.stat(browserWindow?.config.path);
+          const file = await system.fs.stat(browserWindow?.config.path);
           if (!file) {
             new Notify({
               title: i18n('tips'),

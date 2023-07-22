@@ -14,8 +14,8 @@ import { ref } from 'vue';
 import StartMenu from '../../startMenu/StartMenu.vue';
 import { useSystem } from '../../system';
 
-let system = useSystem();
-let isStartmenuShow = ref(false);
+const system = useSystem();
+const isStartmenuShow = ref(false);
 mountEvent('startmenu.changeVisible', function (e: string, data: any) {
   isStartmenuShow.value = !isStartmenuShow.value;
 });

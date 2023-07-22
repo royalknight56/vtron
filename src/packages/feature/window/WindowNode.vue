@@ -1,6 +1,6 @@
 <template>
   <Transition name="window-animate">
-    <WindowTemplate v-if="window.windowInfo.isCreated" :browserWindow="window"></WindowTemplate>
+    <WindowTemplate v-if="window.windowInfo.isCreated" :browser-window="window"></WindowTemplate>
   </Transition>
   <WindowNode v-for="node in window.children" :key="node.id" :window="node" />
 </template>
@@ -11,7 +11,7 @@ import { UnwrapNestedRefs, watch } from 'vue';
 import WindowNode from './WindowNode.vue';
 import WindowTemplate from './WindowTemplate.vue';
 
-let props = defineProps<{
+const props = defineProps<{
   window: UnwrapNestedRefs<BrowserWindow>;
 }>();
 </script>

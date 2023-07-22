@@ -3,9 +3,9 @@
  * @LastEditTime: 2021-12-06 14:52:41
  * @Description:
  */
-let date = new Date();
+const date = new Date();
 
-let dateStr =
+const dateStr =
   date.getFullYear() +
   '-' +
   (date.getMonth() + 1) +
@@ -19,7 +19,7 @@ console.log(dateStr);
 
 //运行shell命令
 const exec = require('child_process').exec;
-let command = `git add . && git commit -m "auto_tag" && git tag ${dateStr} && git push`;
+const command = `git add . && git commit -m "auto_tag" && git tag ${dateStr} && git push`;
 // let command = `git`
 
 exec(command, (err, stdout, stderr) => {

@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { useRootState } from '../state/Root';
 
-let notifyGroup = useRootState().system.notify;
+const notifyGroup = useRootState().system.notify;
 </script>
 <style lang="scss" scoped>
 .notify {

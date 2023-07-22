@@ -16,8 +16,8 @@ import { basename } from '@feature/core/Path';
 import { Notify } from '../notification/Notification';
 import { i18n } from '@feature/i18n';
 
-let browserWindow: BrowserWindow = inject('browserWindow')!;
-let name = ref(basename((browserWindow.config.content as VtronFile).path));
+const browserWindow: BrowserWindow = inject('browserWindow')!;
+const name = ref(basename((browserWindow.config.content as VtronFile).path));
 
 function confirm() {
   if (name.value.length > 40) {
@@ -27,7 +27,7 @@ function confirm() {
     });
     return;
   }
-  let newPath = join(browserWindow.config.content.path, '..', name.value);
+  const newPath = join(browserWindow.config.content.path, '..', name.value);
   useSystem()
     ?.fs.rename(browserWindow.config.content.path, newPath)
     .then(() => {

@@ -17,10 +17,10 @@ import { ref } from 'vue';
 import { mountEvent, emitEvent } from '../event';
 import { useRootState } from '../state/Root';
 import { useSystem } from '../system';
-let isVisiable = ref(false);
-let x = ref(0);
-let y = ref(0);
-let menuList = ref<
+const isVisiable = ref(false);
+const x = ref(0);
+const y = ref(0);
+const menuList = ref<
   {
     name: string;
     click: () => void;
@@ -32,20 +32,20 @@ mountEvent('contextMenu.show', (source, data) => {
   }
   isVisiable.value = true;
   // get window inner width and height
-  let innerWidth = useRootState().system.info.screenWidth;
-  let innerHeight = useRootState().system.info.screenHeight;
+  const innerWidth = useRootState().system.info.screenWidth;
+  const innerHeight = useRootState().system.info.screenHeight;
   // get contextmenu width
-  let contextmenuWidth = 160;
+  const contextmenuWidth = 160;
   // get contextmenu height
-  let contextmenuHeight = 24 * data.menuList.length;
+  const contextmenuHeight = 24 * data.menuList.length;
   // get mouse position
-  let outer = useSystem()?.ref;
-  let mouseX = data.mouse.x - (outer?.offsetLeft || 0);
-  let mouseY = data.mouse.y - (outer?.offsetTop || 0);
+  const outer = useSystem()?.ref;
+  const mouseX = data.mouse.x - (outer?.offsetLeft || 0);
+  const mouseY = data.mouse.y - (outer?.offsetTop || 0);
 
   // get contextmenu position
-  let contextmenuX = mouseX + contextmenuWidth > innerWidth ? mouseX - contextmenuWidth : mouseX;
-  let contextmenuY = mouseY + contextmenuHeight > innerHeight ? mouseY - contextmenuHeight : mouseY;
+  const contextmenuX = mouseX + contextmenuWidth > innerWidth ? mouseX - contextmenuWidth : mouseX;
+  const contextmenuY = mouseY + contextmenuHeight > innerHeight ? mouseY - contextmenuHeight : mouseY;
 
   x.value = contextmenuX;
   y.value = contextmenuY;

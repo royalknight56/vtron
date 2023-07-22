@@ -19,7 +19,7 @@ interface OptionItem {
   label: string;
   value: any;
 }
-let props = defineProps({
+const props = defineProps({
   modelValue: {
     default: '',
     type: [String, Number, Boolean, Symbol],
@@ -36,7 +36,7 @@ let props = defineProps({
     default: 'Select an option',
   },
 });
-let emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
 const isOpen = ref(false);
 const selectedOption = ref<OptionItem | null>(null);
 
@@ -67,7 +67,7 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('click', handleClickOutside);
 });
-let handleClickOutside = (event: MouseEvent) => {
+const handleClickOutside = (event: MouseEvent) => {
   if (!event.target || !(event.target instanceof Element)) {
     return;
   }

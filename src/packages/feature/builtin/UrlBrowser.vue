@@ -7,7 +7,7 @@
 import { BrowserWindow } from '@packages/plug';
 import { inject } from 'vue';
 
-let window: BrowserWindow | undefined = inject('browserWindow');
+const window: BrowserWindow | undefined = inject('browserWindow');
 
 // content: `link::${options.name}::icon::${options.icon}`
 const urlsrc = window?.config.content.split('::')[1];

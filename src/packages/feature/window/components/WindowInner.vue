@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { UnwrapNestedRefs } from 'vue';
 import { BrowserWindow } from '../BrowserWindow';
-let props = defineProps<{
+const props = defineProps<{
   window: UnwrapNestedRefs<BrowserWindow>;
 }>();
 </script>

@@ -5,7 +5,7 @@
 import { ref, watchEffect } from 'vue';
 import { useRootState } from '../../state/Root';
 
-let charMap = {
+const charMap = {
   noC: {
     0: `\uE850`,
     1: `\uE851`,
@@ -31,14 +31,14 @@ let charMap = {
     9: `\uE859`,
   },
 };
-let iconDisplay = ref(`\uE850`);
+const iconDisplay = ref(`\uE850`);
 
 watchEffect(() => {
-  let props = useRootState();
+  const props = useRootState();
   if (props.system.info.battery.chargeLevel == 1) {
     iconDisplay.value = charMap[`noC`][9];
   } else {
-    let level = Math.floor(props.system.info.battery.chargeLevel * 10);
+    const level = Math.floor(props.system.info.battery.chargeLevel * 10);
     iconDisplay.value = (charMap[props.system.info.battery.isCharging ? `isC` : `noC`] as any)[level];
   }
 });

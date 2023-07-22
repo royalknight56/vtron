@@ -65,7 +65,7 @@ function handleClick(key: number, ev: MouseEvent) {
       emitEvent('startMenu.set.click', {
         mouse: ev,
       });
-      let win = new BrowserWindow({
+      const win = new BrowserWindow({
         content: Setting,
         width: 800,
         height: 600,

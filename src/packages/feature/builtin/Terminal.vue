@@ -13,7 +13,7 @@ import { useSystem } from '../system';
 import { Shell } from '../core/Shell';
 import { basename } from '@feature/core/Path';
 
-let sys = useSystem();
+const sys = useSystem();
 
 let currentIndex = 0;
 let inputText = '';
@@ -28,7 +28,7 @@ const TERMINAL_INPUT_KEY = {
   RIGHT: 39, // 方向盘右键
 };
 
-const getCursorOffsetLength = (offsetLength: number, subString: string = '') => {
+const getCursorOffsetLength = (offsetLength: number, subString = '') => {
   let cursorOffsetLength = '';
   for (let offset = 0; offset < offsetLength; offset++) {
     cursorOffsetLength += subString;
@@ -38,7 +38,7 @@ const getCursorOffsetLength = (offsetLength: number, subString: string = '') => 
 
 onMounted(() => {
   if (sys) {
-    let shell = new Shell(sys);
+    const shell = new Shell(sys);
     shell.on('message', (msg) => {
       term.write(`${msg}`);
     });
@@ -140,14 +140,14 @@ onMounted(() => {
           break;
         // tab:
         case 9:
-          let splitArr = inputText.split(' ');
-          let unready = splitArr[splitArr.length - 1] || inputText;
-          let res = await sys?.fs.readdir(shell.router);
-          let list: string[] = [];
+          const splitArr = inputText.split(' ');
+          const unready = splitArr[splitArr.length - 1] || inputText;
+          const res = await sys?.fs.readdir(shell.router);
+          const list: string[] = [];
           res?.forEach((item) => {
             list.push(basename(item.path));
           });
-          let matchList = list.filter((item: any) => {
+          const matchList = list.filter((item: any) => {
             return item.startsWith(unready);
           });
           if (matchList.length) {

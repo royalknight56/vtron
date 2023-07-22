@@ -9,10 +9,10 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
 import { useRootState } from '../../state/Root';
-let rootState = useRootState();
-let backgroundType = ref('color');
-let background = ref('#3A98CE');
-let loaded = ref(false);
+const rootState = useRootState();
+const backgroundType = ref('color');
+const background = ref('#3A98CE');
+const loaded = ref(false);
 
 function imgload() {
   loaded.value = true;

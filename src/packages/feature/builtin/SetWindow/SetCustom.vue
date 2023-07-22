@@ -78,8 +78,8 @@ import { useRootState } from '../../state/Root';
 import { i18n } from '@feature/i18n';
 import { json } from 'stream/consumers';
 
-let rootstate = useRootState();
-let system = useSystem();
+const rootstate = useRootState();
+const system = useSystem();
 const items = [
   i18n('background'),
   i18n('style'),
@@ -96,8 +96,8 @@ const selectItem = (index: number) => {
   activeIndex.value = index;
 };
 async function submitStyle() {
-  let config = await system?.fs.readFile('/C/System/Vtron/config.json');
-  let configObj = JSON.parse(config || '{}');
+  const config = await system?.fs.readFile('/C/System/Vtron/config.json');
+  const configObj = JSON.parse(config || '{}');
   configObj.rootStyle = JSON.parse(rootstyle.value);
   await system?.fs.writeFile('/C/System/Vtron/config.json', {
     content: JSON.stringify(configObj),
@@ -111,7 +111,7 @@ async function submitStyle() {
 }
 async function submit() {
   rootstate.system.options.background = imgurl.value;
-  let res = await system?.fs.writeFile('/C/System/Vtron/background.txt', {
+  const res = await system?.fs.writeFile('/C/System/Vtron/background.txt', {
     content: imgurl.value,
   });
   Dialog.showMessageBox({

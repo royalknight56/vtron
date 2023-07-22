@@ -1,15 +1,15 @@
 <template>
   <div class="appicon-group">
     <template v-for="node in treeRoot" :key="node.value?.id">
-      <AppIcon v-if="node.windowInfo.isCreated && !node.windowInfo.skipTaskbar" :windowNode="node" />
+      <AppIcon v-if="node.windowInfo.isCreated && !node.windowInfo.skipTaskbar" :window-node="node" />
     </template>
   </div>
 </template>
 <script lang="ts" setup>
 import AppIcon from './AppIcon.vue';
 import { useRootState } from '@feature/state/Root';
-let rootState = useRootState();
-let treeRoot = rootState.system.windowOrder;
+const rootState = useRootState();
+const treeRoot = rootState.system.windowOrder;
 </script>
 <style lang="scss" scoped>
 .appicon-group {

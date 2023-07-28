@@ -5,7 +5,7 @@ interface NotifyConstructorOptions {
   timeout?: number;
 }
 class Notify {
-  public static idcount: number = 0;
+  public static idcount = 0;
   id: number;
   title: string;
   content: string;

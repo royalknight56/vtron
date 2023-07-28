@@ -1,21 +1,21 @@
 import { Shell } from '../Shell';
 import * as vPath from '../Path';
 async function sh(input: string, output: (text: string) => void, shell: Shell) {
-  let path = input.split(' ')[1];
+  const path = input.split(' ')[1];
   if (path) {
-    let res = await shell.system.fs.stat(vPath.join(shell.router, path));
+    const res = await shell.system.fs.stat(vPath.join(shell.router, path));
     if (res) {
       if (!res.isDirectory) {
-        let file = await shell.system.fs.readFile(vPath.join(shell.router, path));
+        const file = await shell.system.fs.readFile(vPath.join(shell.router, path));
         if (file) {
-          let subShell = new Shell(shell.system, shell.router, shell.user);
+          const subShell = new Shell(shell.system, shell.router, shell.user);
           // subShell.run(file, output)
           subShell.on('message', (text) => {
             output(text);
           });
-          let lines = file.split('\n');
+          const lines = file.split('\n');
           for (let i = 0; i < lines.length; i++) {
-            let line = lines[i];
+            const line = lines[i];
             await subShell.exec(line);
           }
         }

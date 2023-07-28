@@ -13,14 +13,14 @@ class Tree<T> {
   }
   findNode(value: T, callBack?: (val: Tree<T>) => void): Tree<T> | undefined {
     // find node by dfs in children
-    for (let child of this.children) {
+    for (const child of this.children) {
       if (child.value === value) {
         if (callBack) {
           callBack(child);
         }
         return child;
       } else {
-        let node = child.findNode(value, callBack);
+        const node = child.findNode(value, callBack);
         if (node) return node;
       }
     }
@@ -37,7 +37,7 @@ class Tree<T> {
   findIndex(value: T, filter: (value: Tree<T>, index: number, array: Tree<T>[]) => boolean): number {
     // nth children index
     let index = 0;
-    for (let child of this.children.filter(filter)) {
+    for (const child of this.children.filter(filter)) {
       if (child.value === value) {
         return index;
       } else {

@@ -2,9 +2,9 @@ import type { Shell } from '../Shell';
 import * as vPath from '../Path';
 
 async function open(input: string, output: (text: string) => void, shell: Shell) {
-  let path = input.split(' ')[1];
+  const path = input.split(' ')[1];
   if (path) {
-    let res = await shell.system.fs.stat(vPath.join(shell.router, path));
+    const res = await shell.system.fs.stat(vPath.join(shell.router, path));
     if (res) {
       shell.system.openFile(res.path);
     } else {

@@ -12,7 +12,7 @@ class Dialog {
   }): Promise<{
     response: number;
   }> {
-    let opt = Object.assign(
+    const opt = Object.assign(
       {
         message: '',
         type: 'info',
@@ -24,13 +24,13 @@ class Dialog {
 
     let promres: (value: { response: number }) => void = () => {};
 
-    let porm = new Promise<{
+    const porm = new Promise<{
       response: number;
     }>((resolve, reject) => {
       promres = resolve;
     });
 
-    let dialogwin = new BrowserWindow({
+    const dialogwin = new BrowserWindow({
       width: 300,
       height: 150,
       content: DialogVue,

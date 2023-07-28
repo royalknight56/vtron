@@ -82,7 +82,7 @@ class BrowserWindow {
     } else {
       this.content = this._option.content;
     }
-    let rootState = useRootState();
+    const rootState = useRootState();
     this.id = rootState.system.winnum;
     rootState.system.winnum++;
 
@@ -107,7 +107,7 @@ class BrowserWindow {
     this.windowInfo.state = state;
   }
   private _getWinInner() {
-    let rootState = useRootState();
+    const rootState = useRootState();
     return {
       width: rootState.system.info.screenWidth,
       height: rootState.system.info.screenHeight,
@@ -118,8 +118,8 @@ class BrowserWindow {
     if (this.windowInfo) {
       if (this.windowInfo.resizable) {
         //只有可缩放窗口
-        let { x, y, width, height } = this.windowInfo;
-        let { width: winWidth, height: winHeight } = this._getWinInner(); //获取窗口大小
+        const { x, y, width, height } = this.windowInfo;
+        const { width: winWidth, height: winHeight } = this._getWinInner(); //获取窗口大小
 
         if (winWidth == 0 && winHeight == 0) {
           return;
@@ -141,9 +141,9 @@ class BrowserWindow {
   }
   moveTop() {
     // 窗口置顶
-    let rootState = useRootState();
-    let tree = rootState.system.windowTree;
-    let treeNode = tree.findNode(this);
+    const rootState = useRootState();
+    const tree = rootState.system.windowTree;
+    const treeNode = tree.findNode(this);
     if (treeNode) {
       tree.removeChild(treeNode.value);
     }
@@ -160,7 +160,7 @@ class BrowserWindow {
   }
   show() {
     if (!this.windowInfo.isCreated) {
-      let rootState = useRootState();
+      const rootState = useRootState();
       rootState.system.windowTree.addChild(this);
       rootState.system.windowOrder.push(this);
       this.windowInfo.isCreated = true;
@@ -182,7 +182,7 @@ class BrowserWindow {
   close() {
     // 关闭窗口
     this.windowInfo.isCreated = false;
-    let rootState = useRootState();
+    const rootState = useRootState();
     rootState.system.windowOrder.splice(
       rootState.system.windowOrder.findIndex((val) => {
         return val === this;
@@ -196,7 +196,7 @@ class BrowserWindow {
    * Moves window to the center of the screen.
    */
   center() {
-    let { width, height } = this._getWinInner();
+    const { width, height } = this._getWinInner();
     this.windowInfo.x = (width - this.windowInfo.width) / 2;
     this.windowInfo.y = (height - this.windowInfo.height) / 2;
     if (this.windowInfo.x < 0) {

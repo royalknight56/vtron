@@ -75,7 +75,7 @@ const commandMap = [
     usage: 'help',
     callback: (input: string, output: (text: string) => void) => {
       let outputString = '';
-      for (let command of commandMap) {
+      for (const command of commandMap) {
         outputString += `${command.name}: ${command.description}\r\n`;
       }
       output(outputString);

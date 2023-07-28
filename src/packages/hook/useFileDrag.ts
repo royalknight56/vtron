@@ -9,12 +9,12 @@ export function useFileDrag(system: System) {
   }
   // 拖到文件放下时
   async function folderDrop(ev: DragEvent, toPath: string) {
-    let frompath = ev?.dataTransfer?.getData('frompath');
+    const frompath = ev?.dataTransfer?.getData('frompath');
     if (!frompath) return;
     if (frompath == toPath) {
       return;
     }
-    let toFile = await system?.fs.stat(toPath);
+    const toFile = await system?.fs.stat(toPath);
     if (toFile?.isDirectory) {
       system?.fs.rename(frompath, FsPath.join(toPath, FsPath.basename(frompath))).then(() => {
         emitEvent('file.props.edit');

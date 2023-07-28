@@ -4,7 +4,7 @@ import { initAppList } from '@packages/hook/useAppOpen';
 import * as fspath from '@feature/core/Path';
 import { Shell } from './Shell';
 class VtronFileInfo {
-  isFile: boolean = true;
+  isFile = true;
   isDirectory = false;
   isSymlink = false;
   size = 0;
@@ -106,14 +106,14 @@ class VtronFileSystem {
       const objectStore = this.db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
       objectStore.createIndex('parentPath', 'parentPath');
       objectStore.createIndex('path', 'path', { unique: true });
-      let rootDir = new VtronFile('/', '', {
+      const rootDir = new VtronFile('/', '', {
         isDirectory: true,
       });
       rootDir.parentPath = '';
       objectStore.add(rootDir);
     };
   }
-  private async createDir(fileItem: InitFileItem, path: string = '') {
+  private async createDir(fileItem: InitFileItem, path = '') {
     if (fileItem.type === 'file') {
       if (fileItem.content) {
         await this.writeFile(path + '/' + fileItem.name, fileItem.content);
@@ -129,11 +129,11 @@ class VtronFileSystem {
     }
   }
   async runPlugin(system: System) {
-    let pluginsFile = await this.readdir('/C/System/plugs');
+    const pluginsFile = await this.readdir('/C/System/plugs');
     if (pluginsFile) {
       pluginsFile.forEach((file) => {
         if (file.isFile) {
-          let content = file.content;
+          const content = file.content;
           if (content) {
             new Shell(system, '/', 'root').exec('node ' + file.path);
           }
@@ -235,13 +235,13 @@ class VtronFileSystem {
       content: string;
     }
   ): Promise<void> {
-    let parentPath = fspath.dirname(path);
+    const parentPath = fspath.dirname(path);
     // judge if file exists
-    let exists = await this.exists(parentPath);
+    const exists = await this.exists(parentPath);
     if (!exists) {
       return Promise.reject('Cannot write file to a non-exist path:' + path);
     }
-    let stat = await this.stat(path);
+    const stat = await this.stat(path);
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
 
@@ -404,7 +404,7 @@ class VtronFileSystem {
         reject('Failed to delete file');
       };
       request.onsuccess = () => {
-        let file: VtronFile = request.result;
+        const file: VtronFile = request.result;
         if (file) {
           if (file.isDirectory) {
             reject('Cannot delete a directory');
@@ -439,11 +439,11 @@ class VtronFileSystem {
               objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (
                 event: any
               ) => {
-                let cursor: IDBCursorWithValue = event.target.result;
+                const cursor: IDBCursorWithValue = event.target.result;
                 if (cursor) {
-                  let tempfile = cursor.value;
+                  const tempfile = cursor.value;
                   // let tempNewPath = vFileNewPath + '/' + tempfile.path.split('/').slice(-1)[0];
-                  let tempNewPath = fspath.join(vFileNewPath, tempfile.path.split('/').slice(-1)[0]);
+                  const tempNewPath = fspath.join(vFileNewPath, tempfile.path.split('/').slice(-1)[0]);
                   updatePath(tempfile, tempNewPath, vFileNewPath);
                   cursor.continue();
                 }
@@ -489,16 +489,16 @@ class VtronFileSystem {
               objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (
                 event: any
               ) => {
-                let cursor: IDBCursorWithValue = event.target.result;
+                const cursor: IDBCursorWithValue = event.target.result;
                 if (cursor) {
-                  let tempfile = cursor.value;
+                  const tempfile = cursor.value;
                   updatePath(tempfile);
                   cursor.continue();
                 }
               };
             }
             objectStore.index('path').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
-              let cursor: IDBCursorWithValue = event.target.result;
+              const cursor: IDBCursorWithValue = event.target.result;
               if (cursor) {
                 objectStore.delete(cursor.value.id);
                 cursor.continue();
@@ -521,13 +521,13 @@ class VtronFileSystem {
     let parentPath = path.split('/').slice(0, -1).join('/');
     if (parentPath === '') parentPath = '/';
     // judge if file exists
-    let exists = await this.exists(parentPath);
+    const exists = await this.exists(parentPath);
     if (!exists) {
       console.error('Cannot create directory to a non-exist path:' + parentPath);
       return Promise.reject('Cannot create directory to a non-exist path:' + parentPath);
     }
 
-    let res = await this.exists(path);
+    const res = await this.exists(path);
     if (res) {
       // console.error("Directory already exists");
       return Promise.resolve();

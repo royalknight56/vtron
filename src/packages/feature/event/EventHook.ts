@@ -7,9 +7,9 @@ function useEventer() {
   return eventer;
 }
 function emitEvent(event: string, data?: any) {
-  let eventArray = event.split('.');
+  const eventArray = event.split('.');
   eventArray.forEach((item, index) => {
-    let tempEvent = eventArray.slice(0, index + 1).join('.');
+    const tempEvent = eventArray.slice(0, index + 1).join('.');
     eventer.emit(tempEvent, event, data);
   });
   eventer.emit('system', event, data);

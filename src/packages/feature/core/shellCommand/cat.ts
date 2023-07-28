@@ -1,12 +1,12 @@
 import type { Shell } from '../Shell';
 import * as vPath from '../Path';
 async function cat(input: string, output: (text: string) => void, shell: Shell) {
-  let path = input.split(' ')[1];
+  const path = input.split(' ')[1];
   if (path) {
-    let res = await shell.system.fs.stat(vPath.join(shell.router, path));
+    const res = await shell.system.fs.stat(vPath.join(shell.router, path));
     if (res) {
       if (!res.isDirectory) {
-        let file = await shell.system.fs.readFile(vPath.join(shell.router, path));
+        const file = await shell.system.fs.readFile(vPath.join(shell.router, path));
         // output(file||'')
         output('\x1b[32m' + (file || '') + '\x1b[0m\r\n');
       } else {

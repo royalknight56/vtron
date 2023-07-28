@@ -61,12 +61,31 @@ class DragElement extends DragObj {
     }
     return [posX, posY];
   }
+  onMouseupEvent = () => {
+    this.ifDraging = false;
+  };
+  onMousemoveEvent = (ev: MouseEvent) => {
+    if (this.ifDraging && ev.buttons == 1) {
+      this.onMoving(ev.pageX, ev.pageY);
+      const [posX, posY] = this.sorption(this.posX, this.posY);
+      this.notify(posX, posY);
+    } else if (this.ifDraging && ev.buttons == 0) {
+      this.ifDraging = false;
+    }
+  };
+  onTouchmoveEvent = (ev: TouchEvent) => {
+    if (this.ifDraging) {
+      this.onMoving(ev.touches[0].pageX, ev.touches[0].pageY);
+      const [posX, posY] = this.sorption(this.posX, this.posY);
+      this.notify(posX, posY);
+    }
+  };
   mountDomEvent(element: any) {
     this.el = element;
     this.ifDraging = false;
     element.addEventListener('mousedown', (ev: any) => {
       if (this.canDrag) {
-        let rect = this.el.getBoundingClientRect();
+        const rect = this.el.getBoundingClientRect();
         this.startMove(ev.pageX, ev.pageY, rect.left, rect.top);
         this.ifDraging = true;
       }
@@ -75,7 +94,7 @@ class DragElement extends DragObj {
       'touchstart',
       (ev: TouchEvent) => {
         if (this.canDrag) {
-          let rect = this.el.getBoundingClientRect();
+          const rect = this.el.getBoundingClientRect();
           this.startMove(ev.touches[0].pageX, ev.touches[0].pageY, rect.left, rect.top);
           this.ifDraging = true;
         }
@@ -84,30 +103,16 @@ class DragElement extends DragObj {
         passive: true,
       }
     );
-    document.body.addEventListener('mouseup', (ev) => {
-      this.ifDraging = false;
-    });
-    document.body.addEventListener('touchend', (ev) => {
-      this.ifDraging = false;
-    });
-    document.body.addEventListener('mousemove', (ev) => {
-      if (this.ifDraging && ev.buttons == 1) {
-        this.onMoving(ev.pageX, ev.pageY);
-        let [posX, posY] = this.sorption(this.posX, this.posY);
-        this.notify(posX, posY);
-      } else if (this.ifDraging && ev.buttons == 0) {
-        this.ifDraging = false;
-      }
-    });
-    document.body.addEventListener('touchmove', (ev) => {
-      if (this.ifDraging) {
-        this.onMoving(ev.touches[0].pageX, ev.touches[0].pageY);
-        let [posX, posY] = this.sorption(this.posX, this.posY);
-        this.notify(posX, posY);
-      } else if (this.ifDraging) {
-        this.ifDraging = false;
-      }
-    });
+    document.body.addEventListener('mouseup', this.onMouseupEvent);
+    document.body.addEventListener('touchend', this.onMouseupEvent);
+    document.body.addEventListener('mousemove', this.onMousemoveEvent);
+    document.body.addEventListener('touchmove', this.onTouchmoveEvent);
+  }
+  unMount() {
+    document.body.removeEventListener('mouseup', this.onMouseupEvent);
+    document.body.removeEventListener('touchend', this.onMouseupEvent);
+    document.body.removeEventListener('mousemove', this.onMousemoveEvent);
+    document.body.removeEventListener('touchmove', this.onTouchmoveEvent);
   }
 }
 

@@ -15,7 +15,7 @@ function initAppList() {
 }
 function refershAppList() {
   const APP_TYPE = ['apps', 'magnet', 'menulist'];
-  let system = useSystem();
+  const system = useSystem();
   for (let i = 0; i < APP_TYPE.length; i++) {
     const element = APP_TYPE[i];
     system?.fs
@@ -30,8 +30,8 @@ function refershAppList() {
       )
       .then((res) => {
         if (res) {
-          let list = res;
-          let tempList = [];
+          const list = res;
+          const tempList = [];
           for (let j = 0; j < list.length; j++) {
             const item = list[j];
 
@@ -56,9 +56,9 @@ function refershAppList() {
   }
 }
 function useAppOpen(type: 'apps' | 'magnet' | 'menulist') {
-  let rootState = useRootState();
-  let system = useSystem();
-  let appList = rootState.system[type];
+  const rootState = useRootState();
+  const system = useSystem();
+  const appList = rootState.system[type];
   function openapp(item: VtronFile) {
     system?.openFile(item.path);
   }

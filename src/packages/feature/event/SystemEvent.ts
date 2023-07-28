@@ -3,7 +3,7 @@ import type { RootState } from '@packages/type/type';
 import { useRootState } from '../state/Root';
 
 function initSizeEvent() {
-  let rootState = useRootState();
+  const rootState = useRootState();
   function refreshDesktopSize(rootState: RootState) {
     rootState.system.info.screenWidth = window?.innerWidth || 0;
     rootState.system.info.screenHeight = window?.innerHeight || 0;
@@ -17,8 +17,8 @@ function initSizeEvent() {
 }
 
 function initBatteryEvent() {
-  let rootState = useRootState();
-  let nav = navigator as any;
+  const rootState = useRootState();
+  const nav = navigator as any;
   if (!nav || !nav.connection) {
     return;
   }
@@ -39,14 +39,14 @@ function initBatteryEvent() {
     });
 }
 function initNetworkEvent() {
-  let rootState = useRootState();
+  const rootState = useRootState();
 
-  let nav = navigator as any;
+  const nav = navigator as any;
   if (!nav || !nav.connection) {
     return;
   }
 
-  let connection = nav.connection as any;
+  const connection = nav.connection as any;
   rootState.system.info.connection = connection.rtt;
 
   connection.addEventListener('change', () => {

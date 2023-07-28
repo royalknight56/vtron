@@ -20,7 +20,7 @@ class Shell {
     callback: (input: string, output: (text: string) => void, shell: Shell) => void;
   }[] = commandMap;
 
-  constructor(system: System, router: string = '/C', user: string = 'root') {
+  constructor(system: System, router = '/C', user = 'root') {
     this.system = system;
     this.router = router;
     this.user = user;
@@ -40,18 +40,18 @@ class Shell {
   private async handleCommand(input: string) {
     input = input.trim();
     if (!input) return;
-    let command = this.innerCommand.find((item) => item.name === input.split(' ')[0]);
+    const command = this.innerCommand.find((item) => item.name === input.split(' ')[0]);
     if (command) {
       if (input.split('>').length > 1) {
         let outPath = input.split('>')[1].trim();
         outPath = vPath.join(this.router, outPath);
-        let res = await this.system.fs.stat(outPath);
+        const res = await this.system.fs.stat(outPath);
         if (res) {
           if (res.isDirectory) {
             this.output(`\x1b[31m${outPath}: Not a file\x1b[0m\r\n`);
             return;
           } else {
-            let _this = this;
+            const _this = this;
             function pipeoutput(text: string) {
               _this.system.fs.appendFile(outPath, text);
             }

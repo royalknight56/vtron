@@ -96,7 +96,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { provide, ref, watch } from 'vue';
+import { onUnmounted, provide, ref, watch } from 'vue';
 import { onMounted, computed, UnwrapNestedRefs } from 'vue';
 import { WindowStateEnum } from './BrowserWindow';
 import WindowInner from './components/WindowInner.vue';
@@ -161,8 +161,9 @@ onMounted(() => {
 挂载拖动事件
 */
 const $win_outer = ref(null);
+let dragAble: DragElement;
 onMounted(() => {
-  const dragAble = new DragElement($win_outer.value, windowInfo.x, windowInfo.y);
+  dragAble = new DragElement($win_outer.value, windowInfo.x, windowInfo.y);
   watch(
     () => windowInfo.state === WindowStateEnum.maximize,
     (n) => {
@@ -205,6 +206,11 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
   }
   scaleAble?.startScale(e, dire, windowInfo.x, windowInfo.y, windowInfo.width, windowInfo.height);
 }
+
+onUnmounted(() => {
+  scaleAble.unMount();
+  dragAble.unMount();
+});
 </script>
 <style>
 .dragwin {

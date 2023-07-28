@@ -16,7 +16,7 @@ class ScaleElement {
   mosStartY: number;
   posStartX: number;
   posStartY: number;
-  resizeEvent: Function;
+  resizeEvent: (a0: number, a1: number, x: number, y: number) => void;
   resizeDirection: {
     x: string;
     y: string;
@@ -39,20 +39,22 @@ class ScaleElement {
       y: 'null',
     };
   }
+  moveEnd = () => {
+    this.resizemode.value = 'null';
+  };
+
+  moveStart = (e: TouchEvent | MouseEvent) => {
+    this.moveListener(e);
+    document.body.addEventListener('touchend', this.moveEnd, { once: true });
+    document.body.addEventListener('mouseup', this.moveEnd, { once: true });
+  };
   mount() {
-    let _this = this;
-    function moveEnd() {
-      _this.resizemode.value = 'null';
-      document.body.removeEventListener('mousemove', moveStart);
-      document.body.removeEventListener('mouseup', moveEnd);
-    }
-    function moveStart(e: TouchEvent | MouseEvent) {
-      _this.moveListener(e);
-      document.addEventListener('touchend', moveEnd, { once: true });
-      document.addEventListener('mouseup', moveEnd, { once: true });
-    }
-    document.body.addEventListener('touchmove', moveStart, { passive: false });
-    document.body.addEventListener('mousemove', moveStart, { passive: false });
+    document.body.addEventListener('touchmove', this.moveStart, { passive: false });
+    document.body.addEventListener('mousemove', this.moveStart, { passive: false });
+  }
+  unMount() {
+    document.body.removeEventListener('touchmove', this.moveStart);
+    document.body.removeEventListener('mousemove', this.moveStart);
   }
   startScale(e: MouseEvent | TouchEvent, dire: string, x: number, y: number, width: number, height: number) {
     this.resizemode.value = dire;
@@ -75,7 +77,7 @@ class ScaleElement {
   onResize(fun: (a0: number, a1: number, x: number, y: number) => void) {
     this.resizeEvent = fun;
   }
-  notify(width: number, height: number, x?: number, y?: number) {
+  notify(width: number, height: number, x: number, y: number) {
     if (this.resizeEvent) {
       this.resizeEvent(width, height, x, y);
     }

@@ -1,11 +1,10 @@
 import { BrowserWindow } from './BrowserWindow';
 import { DragElement } from '@feature/window/dom/DragElement';
-import { inject, provide, ref, watch } from 'vue';
 import { WindowStateEnum } from './BrowserWindow';
 
 function makeDragable(ref: HTMLElement, browserWindow: BrowserWindow) {
-  let rect = ref.getBoundingClientRect();
-  let dragAble = new DragElement(ref, rect.left, rect.top);
+  const rect = ref.getBoundingClientRect();
+  const dragAble = new DragElement(ref, rect.left, rect.top);
   dragAble.onDrag((x, y) => {
     if (browserWindow.windowInfo.disable) {
       return;
@@ -15,5 +14,8 @@ function makeDragable(ref: HTMLElement, browserWindow: BrowserWindow) {
       browserWindow.windowInfo.y = y;
     }
   });
+  return () => {
+    dragAble.unMount();
+  };
 }
 export { makeDragable };

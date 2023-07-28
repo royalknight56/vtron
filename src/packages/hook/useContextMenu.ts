@@ -6,7 +6,7 @@ import { VtronFile } from '@feature/core/fileSystem';
 import { i18n } from '@feature/i18n';
 
 async function createNewFile(path: string) {
-  let system = useSystem();
+  const system = useSystem();
   if (!system) return;
   let newFilePath = fspath.join(path, i18n('new.file') + '.txt');
   if (await system.fs.exists(newFilePath)) {
@@ -21,7 +21,7 @@ async function createNewFile(path: string) {
   });
 }
 async function createNewDir(path: string) {
-  let system = useSystem();
+  const system = useSystem();
   if (!system) return;
   let newFilePath = fspath.join(path, i18n('new.folder'));
   if (await system.fs.exists(newFilePath)) {

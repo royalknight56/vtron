@@ -32,9 +32,9 @@ const eventTranslateMap: {
   'uipop.hidden': ['contextMenu.hidden', 'startmenu.hidden', 'datetime.hidden'],
 };
 function eventTransitCenter() {
-  for (let key in eventTranslateMap) {
-    let targetArr = eventTranslateMap[key];
-    for (let target of targetArr) {
+  for (const key in eventTranslateMap) {
+    const targetArr = eventTranslateMap[key];
+    for (const target of targetArr) {
       redirectEvent(key, target);
     }
   }

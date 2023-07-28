@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { Dialog } from '@feature/dialog/Dialog';
 import { BrowserWindow, Notify, makeDragable } from '@packages/plug';
-import { inject, onMounted, ref } from 'vue';
+import { inject, onMounted, onUnmounted, ref } from 'vue';
 const browserWindow = inject<BrowserWindow>('browserWindow');
 const handle = ref<HTMLElement>();
 async function test() {
@@ -29,10 +29,14 @@ async function test() {
     timeout: 5000,
   });
 }
+let unMount: () => void;
 onMounted(() => {
   if (handle.value && browserWindow) {
-    makeDragable(handle.value, browserWindow);
+    unMount = makeDragable(handle.value, browserWindow);
   }
+});
+onUnmounted(() => {
+  unMount();
 });
 </script>
 <style></style>

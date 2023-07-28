@@ -9,7 +9,7 @@ import WinInput from './components/WinInput.vue';
 
 export { WinButtonVue, WinLoadingVue, WinLogoVue, WinSelect, WinInput };
 
-let plug = {
+const plug = {
   install: function (app: any, ...options: any[]): any {
     app.component('Screen', ScreenComponentVue);
   },

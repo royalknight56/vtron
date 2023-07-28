@@ -25,10 +25,10 @@ class System {
   private _eventer: Eventer;
   private _ready: ((value: System) => void) | null = null;
   private _error: ((reason: unknown) => void) | null = null;
-  private _readyToUpdata: boolean = false;
+  private _readyToUpdata = false;
   private _flieOpenerMap: Map<string, (path: string, content: string) => void> = new Map();
   version = version;
-  isFirstRun: boolean = true;
+  isFirstRun = true;
   ref!: HTMLElement;
   fs!: VtronFileSystem;
   constructor(options?: SystemOptions) {
@@ -41,6 +41,10 @@ class System {
     this.firstRun();
     this.setRef(this._rootState.ref!);
   }
+  mountGlobalSystem(system: System) {
+    GLOBAL_SYSTEM = system;
+  }
+
   setRef(ref: HTMLElement) {
     this.ref = ref;
     if (this._options.rootStyle) {
@@ -58,9 +62,10 @@ class System {
    * @description: pure 初始化配置选项
    */
   private initOptions(options?: SystemOptions) {
-    let tempOptions = Object.assign(
+    const tempOptions = Object.assign(
       {
         background: '#3A98CE',
+        lang: 'zh-CN',
       },
       options
     );
@@ -83,8 +88,8 @@ class System {
     initEventListener();
     // opener
     initBuiltinFileOpener(this);
-    GLOBAL_SYSTEM = this;
-
+    // GLOBAL_SYSTEM = this;
+    this.mountGlobalSystem(this);
     this.fs = await this.initFileSystem();
     this.initApp();
     // app
@@ -105,7 +110,7 @@ class System {
    * @description: 初始化壁纸
    */
   private async initBackground() {
-    let back = await this.fs.readFile('/C/System/Vtron/background.txt');
+    const back = await this.fs.readFile('/C/System/Vtron/background.txt');
     if (back) {
       this._rootState.system.options.background = back;
     }
@@ -131,11 +136,11 @@ class System {
     });
   }
   private async initFileSystem() {
-    let res = await new VtronFileSystem().initFileSystem();
+    const res = await new VtronFileSystem().initFileSystem();
     return res;
   }
   private async initSavedConfig() {
-    let config = await this.fs.readFile('/C/System/Vtron/config.json');
+    const config = await this.fs.readFile('/C/System/Vtron/config.json');
     if (config) {
       this._rootState.system.options = Object.assign(this._rootState.system.options, JSON.parse(config));
     }
@@ -147,6 +152,7 @@ class System {
       });
     }
     if (typeof options.window.content === 'string') {
+      // TODO: 当content是string的时候
     } else {
       options.window.content = markRaw(options.window.content);
     }
@@ -165,8 +171,8 @@ class System {
     this.addWindowSysLink('Menulist', options);
   }
   async shell(cmd: string) {
-    let shello = new Shell(this, '/', 'root');
-    let cmdArr = cmd.split('\n');
+    const shello = new Shell(this, '/', 'root');
+    const cmdArr = cmd.split('\n');
     for (let i = 0; i < cmdArr.length; i++) {
       await shello.exec(cmdArr[i]);
     }
@@ -211,14 +217,14 @@ class System {
     this._flieOpenerMap.set(type, func);
   }
   openLink(path: string, content: string) {
-    let exeContent = content.split(':');
+    const exeContent = content.split(':');
     // exeContent[1]= loc
     // exeContent[2]= name
     // exeContent[3]= icon.length
     // exeContent[4]= icon
-    let winopt = this._rootState.system.windowMap[exeContent[1]].get(content.split(':')[2]);
+    const winopt = this._rootState.system.windowMap[exeContent[1]].get(content.split(':')[2]);
     if (winopt) {
-      let win = new BrowserWindow(winopt);
+      const win = new BrowserWindow(winopt);
       win.show();
     }
   }
@@ -239,7 +245,7 @@ class System {
   }
   // 状态序列化和反序列化
   async serializeState(): Promise<string> {
-    let serializeFile = await this.fs.serializeFileSystem();
+    const serializeFile = await this.fs.serializeFileSystem();
     return JSON.stringify(serializeFile);
   }
   deserializeState(state: string) {

@@ -33,7 +33,7 @@ import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 // }
 onMounted(() => {
   new System({
-    lang: 'en-US',
+    // lang: 'en-US',
     // lang: "zh-CN",
     logo: vtronLogoIcon,
     background: 'https://picsum.photos/1920/1080',

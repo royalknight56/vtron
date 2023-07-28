@@ -66,7 +66,7 @@ export function initBuiltinFileOpener(system: System) {
   system.registerFileOpener('.exe', system.openLink.bind(system));
 
   system.registerFileOpener('.txt', (path, content) => {
-    let pdfwindow = new BrowserWindow({
+    const pdfwindow = new BrowserWindow({
       width: 400,
       height: 400,
       center: true,
@@ -81,7 +81,7 @@ export function initBuiltinFileOpener(system: System) {
   });
 
   system.registerFileOpener('dir', (path, content) => {
-    let pdfwindow = new BrowserWindow({
+    const pdfwindow = new BrowserWindow({
       width: 800,
       height: 600,
       center: true,
@@ -97,7 +97,7 @@ export function initBuiltinFileOpener(system: System) {
   });
 
   system.registerFileOpener('.url', (path, content) => {
-    let imgwindow = new BrowserWindow({
+    const imgwindow = new BrowserWindow({
       width: 800,
       height: 600,
       icon: infoIcon,

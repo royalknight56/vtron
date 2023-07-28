@@ -15,7 +15,7 @@
       <div class="desk-item_img">
         <FileIcon :file="item" />
       </div>
-      <span class="desk-item_title">{{ basename(item.path) }}</span>
+      <span class="desk-item_title">{{ dealI18nName(basename(item.path)) }}</span>
     </div>
   </div>
 </template>
@@ -59,6 +59,9 @@ function handleRightClick(mouse: MouseEvent, item: VtronFile) {
       },
     ],
   });
+}
+function dealI18nName(name: string) {
+  return name;
 }
 </script>
 <style lang="scss" scoped>

@@ -12,6 +12,7 @@ import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { extname } from '../core/Path';
 import { initBuiltinApp, initBuiltinFileOpener } from './initBuiltin';
 import { Shell } from '../core/Shell';
+import { defaultConfig } from './initConfig';
 let GLOBAL_SYSTEM: System | null = null;
 
 export type VtronPlugin = (system: System, rootState: RootState) => void;
@@ -32,9 +33,10 @@ class System {
   ref!: HTMLElement;
   fs!: VtronFileSystem;
   constructor(options?: SystemOptions) {
+    this.mountGlobalSystem(this); // 挂载全局系统
+
     this._options = this.initOptions(options);
     this._rootState = this.initRootState(options);
-
     this._eventer = this.initEvent(options);
 
     this.initSystem(options);
@@ -62,13 +64,7 @@ class System {
    * @description: pure 初始化配置选项
    */
   private initOptions(options?: SystemOptions) {
-    const tempOptions = Object.assign(
-      {
-        background: '#3A98CE',
-        lang: 'zh-CN',
-      },
-      options
-    );
+    const tempOptions = Object.assign({}, defaultConfig, options);
     return tempOptions;
   }
   /**
@@ -85,26 +81,21 @@ class System {
      * 过程：激活屏幕，桥接事件。
      */
     this._rootState.system.state = SystemStateEnum.opening;
-    initEventListener();
-    // opener
-    initBuiltinFileOpener(this);
-    // GLOBAL_SYSTEM = this;
-    this.mountGlobalSystem(this);
-    this.fs = await this.initFileSystem();
-    this.initApp();
-    // app
-    initBuiltinApp(this);
+    initEventListener(); // 初始化事件侦听
+    initBuiltinFileOpener(this); // 注册内建文件打开器
+    this.fs = await this.initFileSystem(); // 初始化文件系统
+    initBuiltinApp(this); // 初始化内建应用
+    this.initApp(); // 初始化配置应用到app文件夹中
+    initAppList(); // 刷新app文件夹，展示应用
 
-    initAppList();
     this._rootState.system.state = SystemStateEnum.open;
     this._ready && this._ready(this);
-    this.fs.runPlugin(this);
-    // 初始化壁纸
-    this.initBackground();
 
-    await this.initSavedConfig();
+    this.fs.runPlugin(this); // 运行fs中插件
+    this.initBackground(); // 初始化壁纸
+    await this.initSavedConfig(); // 初始化保存的配置
 
-    this.setRootStyle(this._rootState.system.options.rootStyle);
+    this.setRootStyle(this._rootState.system.options.rootStyle); // 设置根样式
   }
   /**
    * @description: 初始化壁纸

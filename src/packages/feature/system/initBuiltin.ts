@@ -6,7 +6,7 @@ import infoIcon from '@packages/assets/info-icon.ico?url';
 import termIcon from '@packages/assets/term.ico?url';
 import { Shell } from '@feature/core/Shell';
 import FileViewer from '../builtin/FileViewer.vue';
-import MyComputerVue from '../builtin/MyComputer.vue';
+import MyComputerVue from '../builtin/MyComputer/MyComputer.vue';
 import UrlBrowser from '../builtin/UrlBrowser.vue';
 import Terminal from '../builtin/Terminal.vue';
 import AppStore from '../builtin/AppStore.vue';

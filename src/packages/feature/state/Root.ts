@@ -9,7 +9,6 @@ const rootState: RootState = reactive({
   system: {
     state: SystemStateEnum.close,
     apps: [],
-    // 磁贴:magnet
     magnet: [],
     menulist: [],
     notify: [],

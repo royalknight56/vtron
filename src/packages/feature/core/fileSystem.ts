@@ -419,6 +419,30 @@ class VtronFileSystem {
       };
     });
   }
+  private async dfsRename(vfile: VtronFile, objectStore: IDBObjectStore, newPath: string) {
+    if (vfile.isDirectory) {
+      objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
+        const cursor: IDBCursorWithValue = event.target.result;
+        if (cursor) {
+          const tempfile = cursor.value;
+          const tempNewPath = fspath.join(newPath, fspath.basename(tempfile.path));
+          this.dfsRename(tempfile, objectStore, tempNewPath);
+          cursor.continue();
+        }
+      };
+    }
+    objectStore.index('path').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
+      const cursor: IDBCursorWithValue = event.target.result;
+      if (cursor) {
+        const tempfile = cursor.value;
+        const tempNewPath = fspath.join(newPath, fspath.basename(tempfile.path));
+        tempfile.path = tempNewPath;
+        tempfile.parentPath = newPath;
+        objectStore.put(tempfile);
+        cursor.continue();
+      }
+    };
+  }
   async rename(path: string, newPath: string): Promise<void> {
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
@@ -434,37 +458,56 @@ class VtronFileSystem {
       request.onsuccess = () => {
         const file: VtronFile = request.result;
         if (file) {
-          function updatePath(vfile: VtronFile, vFileNewPath: string, vParentPath: string) {
-            if (vfile.isDirectory) {
-              objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (
-                event: any
-              ) => {
-                const cursor: IDBCursorWithValue = event.target.result;
-                if (cursor) {
-                  const tempfile = cursor.value;
-                  // let tempNewPath = vFileNewPath + '/' + tempfile.path.split('/').slice(-1)[0];
-                  const tempNewPath = fspath.join(vFileNewPath, tempfile.path.split('/').slice(-1)[0]);
-                  updatePath(tempfile, tempNewPath, vFileNewPath);
-                  cursor.continue();
-                }
-              };
-              vfile.path = vFileNewPath;
-              vfile.parentPath = vParentPath;
-              objectStore.put(vfile);
-            } else {
-              vfile.path = vFileNewPath;
-              vfile.parentPath = vParentPath;
-              objectStore.put(vfile);
-            }
-          }
-          updatePath(file, newPath, newPath.split('/').slice(0, -1).join('/'));
+          // function updatePath(vfile: VtronFile, vFileNewPath: string, vParentPath: string) {
+          //   if (vfile.isDirectory) {
+          //     objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (
+          //       event: any
+          //     ) => {
+          //       const cursor: IDBCursorWithValue = event.target.result;
+          //       if (cursor) {
+          //         const tempfile = cursor.value;
+          //         // let tempNewPath = vFileNewPath + '/' + tempfile.path.split('/').slice(-1)[0];
+          //         const tempNewPath = fspath.join(vFileNewPath, tempfile.path.split('/').slice(-1)[0]);
+          //         updatePath(tempfile, tempNewPath, vFileNewPath);
+          //         cursor.continue();
+          //       }
+          //     };
+          //     vfile.path = vFileNewPath;
+          //     vfile.parentPath = vParentPath;
+          //     objectStore.put(vfile);
+          //   } else {
+          //     vfile.path = vFileNewPath;
+          //     vfile.parentPath = vParentPath;
+          //     objectStore.put(vfile);
+          //   }
+          // }
+          this.dfsRename(file, objectStore, newPath);
+          this.commitWatch(path, file.content);
         }
-        this.commitWatch(path, file.content);
+
         resolve();
       };
     });
   }
-
+  private async dfsRmdir(vfile: VtronFile, objectStore: IDBObjectStore) {
+    if (vfile.isDirectory) {
+      objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
+        const cursor: IDBCursorWithValue = event.target.result;
+        if (cursor) {
+          const tempfile = cursor.value;
+          this.dfsRmdir(tempfile, objectStore);
+          cursor.continue();
+        }
+      };
+    }
+    objectStore.index('path').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
+      const cursor: IDBCursorWithValue = event.target.result;
+      if (cursor) {
+        objectStore.delete(cursor.value.id);
+        cursor.continue();
+      }
+    };
+  }
   /**
    * 删除指定路径的文件夹及其内容
    * @param path 文件夹路径
@@ -484,28 +527,28 @@ class VtronFileSystem {
       request.onsuccess = () => {
         const file: VtronFile = request.result;
         if (file) {
-          function updatePath(vfile: VtronFile) {
-            if (vfile.isDirectory) {
-              objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (
-                event: any
-              ) => {
-                const cursor: IDBCursorWithValue = event.target.result;
-                if (cursor) {
-                  const tempfile = cursor.value;
-                  updatePath(tempfile);
-                  cursor.continue();
-                }
-              };
-            }
-            objectStore.index('path').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
-              const cursor: IDBCursorWithValue = event.target.result;
-              if (cursor) {
-                objectStore.delete(cursor.value.id);
-                cursor.continue();
-              }
-            };
-          }
-          updatePath(file);
+          // function updatePath(vfile: VtronFile) {
+          //   if (vfile.isDirectory) {
+          //     objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (
+          //       event: any
+          //     ) => {
+          //       const cursor: IDBCursorWithValue = event.target.result;
+          //       if (cursor) {
+          //         const tempfile = cursor.value;
+          //         updatePath(tempfile);
+          //         cursor.continue();
+          //       }
+          //     };
+          //   }
+          //   objectStore.index('path').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
+          //     const cursor: IDBCursorWithValue = event.target.result;
+          //     if (cursor) {
+          //       objectStore.delete(cursor.value.id);
+          //       cursor.continue();
+          //     }
+          //   };
+          // }
+          this.dfsRmdir(file, objectStore);
         }
         this.commitWatch(path, file.content);
         resolve();

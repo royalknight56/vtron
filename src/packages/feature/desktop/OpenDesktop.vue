@@ -22,9 +22,10 @@ import WindowGroup from '../window/WindowGroup.vue';
 import ContextMenu from '../contextMenu/ContextMenu.vue';
 import NotificationGroup from '../notification/NotifyGroup.vue';
 import DateTimePop from '../popover/DateTimePop.vue';
-
-import { createNewFile, createNewDir } from '@packages/hook/useContextMenu';
+import { useContextMenu } from '@packages/hook/useContextMenu';
 import { i18n } from '@feature/i18n';
+
+const { createNewFile, openPropsWindow, createNewDir } = useContextMenu();
 
 function backgroundDown(e: MouseEvent) {
   emitEvent('desktop.background.leftClick', e);

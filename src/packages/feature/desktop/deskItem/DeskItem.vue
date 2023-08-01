@@ -24,13 +24,13 @@ import { useAppOpen } from '@packages/hook/useAppOpen';
 import { useSystem } from '@packages/plug';
 import { emitEvent } from '@feature/event';
 import FileIcon from '@feature/builtin/FileIcon.vue';
-import { openPropsWindow } from '@packages/hook/useContextMenu';
+import { useContextMenu } from '@packages/hook/useContextMenu';
 import { basename } from '@feature/core/Path';
 import { VtronFile } from '@feature/core/fileSystem';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 const { openapp, appList } = useAppOpen('apps');
-
+const { createNewFile, openPropsWindow, createNewDir } = useContextMenu();
 const sys = useSystem();
 const { startDrag, folderDrop } = useFileDrag(sys);
 function handleRightClick(mouse: MouseEvent, item: VtronFile) {

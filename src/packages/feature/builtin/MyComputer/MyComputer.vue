@@ -10,7 +10,7 @@
       <!-- <div class="button">文件</div> -->
       <!-- <div class="button">计算机</div> -->
       <!-- <div class="button">查看</div> -->
-      <div class="button" @click="createFolder()">{{ i18n('new') }}</div>
+      <div class="button" @click="createFolderStart()">{{ i18n('new') }}</div>
       <div class="button" @click="backFolder()">{{ i18n('back') }}</div>
       <!-- <div class="button" @click="newFolder()">新建</div> -->
     </div>
@@ -82,7 +82,7 @@
         <span>{{ router_url }}</span>
       </div>
       <div @focusout="end_input()" v-if="path_state == 'inputing'" class="path_inputing">
-        <input v-model="router_url" @blur="isVia(router_url, true)" />
+        <input v-model="router_url" @blur="isVia(router_url)" />
       </div>
     </div>
   </div>
@@ -123,38 +123,67 @@ import { Notify } from '@feature/notification/Notification';
 import { useSystem } from '@feature/system';
 import { BrowserWindow, VtronFile } from '@packages/plug';
 import * as fspath from '@feature/core/Path';
-import { createNewFile, openPropsWindow, createNewDir } from '@packages/hook/useContextMenu';
+import { useContextMenu } from '@packages/hook/useContextMenu';
 import { basename } from '@feature/core/Path';
 import { mountEvent } from '@feature/event';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
+import { useComputer } from './hooks/useComputer';
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
-
 const config = browserWindow?.config;
+
+const router_url = ref('');
+const currentList = ref<Array<VtronFile>>([]);
+
 const system = useSystem();
-const { startDrag, folderDrop } = useFileDrag(system);
+const { startDrag, folderDrop, outerFileDrop } = useFileDrag(system);
+const { createNewFile, openPropsWindow, createNewDir, deleteFile } = useContextMenu();
+const { isVia, refersh, createFolder, backFolder, openFolder, onComputerMount } = useComputer({
+  setRouter(path) {
+    router_url.value = path;
+  },
+  getRouter() {
+    return router_url.value;
+  },
+  setFileList(list) {
+    currentList.value = list;
+  },
+  openFile(path) {
+    system?.openFile(path);
+  },
+  rmdir(path) {
+    return system.fs.rmdir(path);
+  },
+  mkdir(path) {
+    return system.fs.mkdir(path);
+  },
+  readdir(path) {
+    return system.fs.readdir(path);
+  },
+  exists(path) {
+    return system.fs.exists(path);
+  },
+  isDirectory(file) {
+    return file.isDirectory;
+  },
+  notify(title, content) {
+    new Notify({
+      title,
+      content,
+    });
+  },
+});
 
-function pathJoin(...paths: string[]) {
-  return fspath.join(...paths);
-}
-
+/* ------------ 新建文件夹 ------------*/
 const createInput = ref(i18n('new.folder'));
 const creating = ref(false);
+function createFolderStart() {
+  creating.value = true;
+}
 function creatingEditEnd() {
   if (creating.value) {
-    // judge if the name is valid
-    system?.fs.mkdir(pathJoin(router_url.value, createInput.value)).then(
-      () => {
-        refersh(router_url.value);
-      },
-      (err) => {
-        new Notify({
-          title: '新建文件夹失败',
-          content: err,
-        });
-      }
-    );
+    createFolder(createInput.value);
     creating.value = false;
     createInput.value = i18n('new.folder');
   }
@@ -162,6 +191,8 @@ function creatingEditEnd() {
 function onBackClick() {
   creatingEditEnd();
 }
+/* ------------ 新建文件夹end ---------*/
+
 function showOuterMenu(e: MouseEvent) {
   system?.emitEvent('contextMenu.show', {
     mouse: e,
@@ -170,7 +201,7 @@ function showOuterMenu(e: MouseEvent) {
         name: i18n('new.file'),
         click: () => {
           createNewFile(router_url.value).then(() => {
-            refersh(router_url.value);
+            refersh();
           });
         },
       },
@@ -178,20 +209,23 @@ function showOuterMenu(e: MouseEvent) {
         name: i18n('new.folder'),
         click: () => {
           createNewDir(router_url.value).then(() => {
-            refersh(router_url.value);
+            refersh();
           });
         },
       },
     ],
   });
 }
-function createFolder() {
-  creating.value = true;
+/* ------------ 路径输入框 ------------*/
+const path_state = ref('pendding');
+function start_input() {
+  path_state.value = 'inputing';
 }
-const router_url = ref('');
-watch(router_url, async (newVal) => {
-  refersh(newVal);
-});
+function end_input() {
+  path_state.value = 'pendding';
+  refersh();
+}
+/* ------------ 路径输入框end ---------*/
 
 onMounted(() => {
   if (config) {
@@ -199,41 +233,12 @@ onMounted(() => {
   } else {
     router_url.value = '/';
   }
+  onComputerMount();
   mountEvent('file.props.edit', async () => {
-    refersh(router_url.value);
+    refersh();
   });
 });
 
-async function refersh(newVal: string) {
-  if (!(await isVia(newVal))) return;
-  const result = await system?.fs.readdir(newVal);
-  if (result) currentList.value = result;
-}
-async function isVia(newVal: string, alert = false) {
-  if (newVal === '') newVal = '/';
-  else if (newVal === '/') newVal = '/';
-  else if (newVal.endsWith('/')) newVal = newVal.substr(0, newVal.length - 1);
-  const isExist = await system?.fs.exists(newVal);
-  if (!isExist) {
-    if (alert)
-      new Notify({
-        // title: "路径不存在",
-        title: i18n('path.not.exist'),
-        content: newVal,
-      });
-    return false;
-  }
-  return true;
-}
-const currentList = ref<Array<VtronFile>>([]);
-
-function openFolder(item: VtronFile) {
-  if (item.isDirectory) {
-    router_url.value = item.path;
-  } else {
-    system?.openFile(item.path);
-  }
-}
 function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
   system?.emitEvent('contextMenu.show', {
     mouse: ev,
@@ -253,27 +258,14 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
       {
         name: i18n('delete'),
         click: () => {
-          if (item.isDirectory) {
-            system?.fs.rmdir(item.path).then(() => {
-              refersh(router_url.value);
-            });
-          } else {
-            system?.fs.unlink(item.path).then(() => {
-              refersh(router_url.value);
-            });
-          }
+          deleteFile(item)?.then(() => {
+            refersh();
+          });
         },
       },
     ],
   });
 }
-function backFolder() {
-  const path = router_url.value;
-  if (path === '/') return;
-
-  router_url.value = fspath.join(path, '..');
-}
-
 // 拖动文件上传
 const compu = ref(null);
 onMounted(() => {
@@ -302,6 +294,7 @@ onMounted(() => {
     // oBox.innerHTML = '请将文件拖拽到此区域';
   };
   oBox.ondrop = async function (ev: DragEvent) {
+    ev.preventDefault();
     const fromobj = ev?.dataTransfer?.getData('fromobj');
 
     if (fromobj == 'web') {
@@ -309,74 +302,14 @@ onMounted(() => {
       folderDrop(ev, router_url.value);
     } else {
       const oFileList = ev?.dataTransfer?.files;
-      readFileList(oFileList);
+      outerFileDrop(router_url.value, oFileList, () => {
+        refersh();
+      });
     }
 
     return false;
   };
 });
-async function readFileList(list: FileList | undefined) {
-  const len = list?.length || 0;
-  for (let i = 0; i < len; i++) {
-    const item = list?.[i];
-
-    // let oFile = null;
-    const reader = new FileReader();
-    //读取成功
-    reader.onload = function () {
-      // console.log(reader);
-    };
-    reader.onloadstart = function () {
-      // console.log('读取开始');
-    };
-    reader.onloadend = function () {
-      if (
-        item?.type == 'image/jpeg' ||
-        item?.type == 'image/png' ||
-        item?.type == 'image/gif' ||
-        item?.type == 'image/bmp' ||
-        item?.type == 'image/webp'
-      ) {
-        system?.fs
-          .writeFile(pathJoin(router_url.value, item?.name), {
-            content: reader.result as string,
-          })
-          .then(() => {
-            refersh(router_url.value);
-          });
-      } else {
-        system?.fs
-          .writeFile(pathJoin(router_url.value, item?.name || 'unknow'), {
-            content: decodeURIComponent(escape(atob((reader.result?.toString() || '').split(',')[1]))),
-          })
-          .then(() => {
-            refersh(router_url.value);
-          });
-      }
-    };
-    reader.onabort = function () {
-      // console.log('中断');
-    };
-    reader.onerror = function () {
-      // console.log('读取失败');
-    };
-    reader.onprogress = function (ev) {
-      const scale = ev.loaded / ev.total;
-      if (scale >= 0.5) {
-        reader.abort();
-      }
-    };
-    reader.readAsDataURL(new Blob([item as BlobPart]));
-  }
-}
-
-const path_state = ref('pendding');
-function start_input() {
-  path_state.value = 'inputing';
-}
-function end_input() {
-  path_state.value = 'pendding';
-}
 </script>
 <style scoped>
 .desk-outer {

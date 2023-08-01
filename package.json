@@ -1,6 +1,6 @@
 {
   "name": "vtron",
-  "version": "0.3.4",
+  "version": "0.3.6",
   "files": [
     "distlib",
     "distlib/*.css"
@@ -29,7 +29,8 @@
     "tsc": "vue-tsc",
     "tag": "node script/auto_tag.js",
     "prepare": "husky install",
-    "pre": "lint-staged"
+    "pre": "lint-staged",
+    "update": "node script/update.js"
   },
   "dependencies": {
     "vue": "^3.2.37",

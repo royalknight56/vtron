@@ -231,7 +231,7 @@ onMounted(() => {
   if (config) {
     router_url.value = config.path;
   } else {
-    router_url.value = '/';
+    router_url.value = '/C';
   }
   onComputerMount();
   mountEvent('file.props.edit', async () => {

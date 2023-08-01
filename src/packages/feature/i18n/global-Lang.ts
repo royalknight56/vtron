@@ -70,4 +70,5 @@ export interface AllText {
   'text.document': string;
   language: string;
   style: string;
+  'is.recover': string;
 }

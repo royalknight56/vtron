@@ -71,4 +71,5 @@ export const zhCN: AllText = {
   'text.document': '文本文档',
   language: '语言',
   style: '样式',
+  'is.recover': '是否恢复出厂设置？',
 };

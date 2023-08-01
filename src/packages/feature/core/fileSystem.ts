@@ -1,24 +1,22 @@
-import { System } from '../system';
-import { InitFile, InitFileItem } from './SystemFileConfig';
-import { initAppList } from '@packages/hook/useAppOpen';
 import * as fspath from '@feature/core/Path';
-import { Shell } from './Shell';
+import { VtronFileInterface } from './FIleInterface';
+type DateLike = Date | string | number;
 class VtronFileInfo {
   isFile = true;
   isDirectory = false;
   isSymlink = false;
   size = 0;
-  mtime = new Date();
-  atime = new Date();
-  birthtime = new Date();
+  mtime: DateLike = new Date();
+  atime: DateLike = new Date();
+  birthtime: DateLike = new Date();
   constructor(
     isFile?: boolean,
     isDirectory?: boolean,
     isSymlink?: boolean,
     size?: number,
-    mtime?: Date,
-    atime?: Date,
-    birthtime?: Date
+    mtime?: DateLike,
+    atime?: DateLike,
+    birthtime?: DateLike
   ) {
     if (isFile !== undefined) {
       this.isFile = isFile;
@@ -85,7 +83,7 @@ class VtronFile extends VtronFileInfo {
     }
   }
 }
-class VtronFileSystem {
+class VtronFileSystem implements VtronFileInterface {
   private db!: IDBDatabase;
   private _ready: ((value: VtronFileSystem) => void) | null = null;
   private _watchMap: Map<RegExp, (path: string, content: string) => void> = new Map();
@@ -113,40 +111,9 @@ class VtronFileSystem {
       objectStore.add(rootDir);
     };
   }
-  private async createDir(fileItem: InitFileItem, path = '') {
-    if (fileItem.type === 'file') {
-      if (fileItem.content) {
-        await this.writeFile(path + '/' + fileItem.name, fileItem.content);
-      }
-    } else if (fileItem.type === 'dir') {
-      await this.mkdir(path + '/' + fileItem.name);
 
-      if (fileItem.children?.length) {
-        for (let i = 0; i < fileItem.children.length; i++) {
-          await this.createDir(fileItem.children[i], path + '/' + fileItem.name);
-        }
-      }
-    }
-  }
-  async runPlugin(system: System) {
-    const pluginsFile = await this.readdir('/C/System/plugs');
-    if (pluginsFile) {
-      pluginsFile.forEach((file) => {
-        if (file.isFile) {
-          const content = file.content;
-          if (content) {
-            new Shell(system, '/', 'root').exec('node ' + file.path);
-          }
-        }
-      });
-    }
-  }
   async initFileSystem() {
     await this.whenReady();
-    await this.createDir(InitFile);
-    this.registerWatcher(/^\/C\/Users\//, (path, content) => {
-      initAppList();
-    });
     return this;
   }
   serializeFileSystem() {
@@ -196,8 +163,9 @@ class VtronFileSystem {
       }
     });
   }
-  removeFileSystem() {
+  async removeFileSystem() {
     window.indexedDB.deleteDatabase('FileSystemDB');
+    return Promise.resolve();
   }
 
   /**
@@ -458,29 +426,6 @@ class VtronFileSystem {
       request.onsuccess = () => {
         const file: VtronFile = request.result;
         if (file) {
-          // function updatePath(vfile: VtronFile, vFileNewPath: string, vParentPath: string) {
-          //   if (vfile.isDirectory) {
-          //     objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (
-          //       event: any
-          //     ) => {
-          //       const cursor: IDBCursorWithValue = event.target.result;
-          //       if (cursor) {
-          //         const tempfile = cursor.value;
-          //         // let tempNewPath = vFileNewPath + '/' + tempfile.path.split('/').slice(-1)[0];
-          //         const tempNewPath = fspath.join(vFileNewPath, tempfile.path.split('/').slice(-1)[0]);
-          //         updatePath(tempfile, tempNewPath, vFileNewPath);
-          //         cursor.continue();
-          //       }
-          //     };
-          //     vfile.path = vFileNewPath;
-          //     vfile.parentPath = vParentPath;
-          //     objectStore.put(vfile);
-          //   } else {
-          //     vfile.path = vFileNewPath;
-          //     vfile.parentPath = vParentPath;
-          //     objectStore.put(vfile);
-          //   }
-          // }
           this.dfsRename(file, objectStore, newPath);
           this.commitWatch(path, file.content);
         }
@@ -527,27 +472,6 @@ class VtronFileSystem {
       request.onsuccess = () => {
         const file: VtronFile = request.result;
         if (file) {
-          // function updatePath(vfile: VtronFile) {
-          //   if (vfile.isDirectory) {
-          //     objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (
-          //       event: any
-          //     ) => {
-          //       const cursor: IDBCursorWithValue = event.target.result;
-          //       if (cursor) {
-          //         const tempfile = cursor.value;
-          //         updatePath(tempfile);
-          //         cursor.continue();
-          //       }
-          //     };
-          //   }
-          //   objectStore.index('path').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
-          //     const cursor: IDBCursorWithValue = event.target.result;
-          //     if (cursor) {
-          //       objectStore.delete(cursor.value.id);
-          //       cursor.continue();
-          //     }
-          //   };
-          // }
           this.dfsRmdir(file, objectStore);
         }
         this.commitWatch(path, file.content);

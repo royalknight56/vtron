@@ -39,6 +39,7 @@ import { emitEvent } from '../../event';
 import Setting from '@feature/builtin/Setting.vue';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
+import { Dialog } from '../../dialog/Dialog';
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
     case 0:
@@ -54,7 +55,15 @@ function handleClick(key: number, ev: MouseEvent) {
           {
             name: i18n('startMenu.recover'),
             click: () => {
-              emitEvent('system.recover');
+              Dialog.showMessageBox({
+                title: i18n('startMenu.recover'),
+                message: i18n('is.recover'),
+                buttons: [i18n('startMenu.recover'), i18n('cancel')],
+              }).then((res) => {
+                if (res.response === 0) {
+                  emitEvent('system.recover');
+                }
+              });
             },
           },
         ],

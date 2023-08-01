@@ -1,11 +1,9 @@
 import { BrowserWindow, BrowserWindowOption } from '../feature/window/BrowserWindow';
 import { Tree } from '@packages/util/Tree';
-
-import { DefineComponent } from 'vue';
-import { reactive, ref, UnwrapNestedRefs, watch } from 'vue';
 import { SystemStateEnum } from './enum';
 import { Notify } from '../feature/notification/Notification';
 import { VtronFile } from '@feature/core/fileSystem';
+import { VtronFileInterface } from '@feature/core/FIleInterface';
 export interface SystemOptions {
   lang?: string;
   logo?: string;
@@ -14,6 +12,7 @@ export interface SystemOptions {
   magnet?: WinAppOptions[];
   menulist?: WinAppOptions[];
   rootStyle?: any;
+  fs?: VtronFileInterface;
 }
 export interface WinApp {
   icon: string;

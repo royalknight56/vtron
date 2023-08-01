@@ -3,11 +3,26 @@
     <WinLogo></WinLogo>
     <div id="text"></div>
     <WinLoading></WinLoading>
+    <button v-if="isEmergencyRepair" @click="emergencyRepair">长时间无法开机？点击紧急恢复</button>
   </div>
 </template>
 <script lang="ts" setup>
 import WinLoading from '@packages/components/WinLoading.vue';
 import WinLogo from '@packages/components/WinLogo.vue';
+import { onMounted, ref } from 'vue';
+
+const isEmergencyRepair = ref(false);
+onMounted(() => {
+  setTimeout(() => {
+    isEmergencyRepair.value = true;
+  }, 10000);
+});
+
+function emergencyRepair() {
+  localStorage.clear();
+  window.indexedDB.deleteDatabase('FileSystemDB');
+  window.location.reload();
+}
 </script>
 <style scoped>
 .loading {

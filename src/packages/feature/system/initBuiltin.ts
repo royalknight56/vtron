@@ -26,7 +26,7 @@ export function initBuiltinApp(system: System) {
       icon: myComputerLogoIcon,
       content: MyComputerVue,
       config: {
-        path: '/',
+        path: '/C',
       },
     },
   });

@@ -18,7 +18,7 @@ import VtronTest from './apps/VtronTest.vue';
 import VtronPerfTest from './apps/VtronPerfTest.vue';
 
 import { onMounted } from 'vue';
-import { System, VtronFile } from './packages/plug';
+import { System } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 // async function save() {
 //   const state = await sys?.serializeState();
@@ -30,7 +30,7 @@ import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 //     await sys?.deserializeState(JSON.parse(state));
 //   }
 // }
-const memoryFs: Record<string, VtronFile> = {};
+// const memoryFs: Record<string, VtronFile> = {};
 onMounted(() => {
   new System({
     // lang: 'en-US',

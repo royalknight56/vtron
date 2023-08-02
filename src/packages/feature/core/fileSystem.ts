@@ -399,17 +399,10 @@ class VtronFileSystem implements VtronFileInterface {
         }
       };
     }
-    objectStore.index('path').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
-      const cursor: IDBCursorWithValue = event.target.result;
-      if (cursor) {
-        const tempfile = cursor.value;
-        const tempNewPath = fspath.join(newPath, fspath.basename(tempfile.path));
-        tempfile.path = tempNewPath;
-        tempfile.parentPath = newPath;
-        objectStore.put(tempfile);
-        cursor.continue();
-      }
-    };
+    const vParentPath = fspath.dirname(newPath);
+    vfile.path = newPath;
+    vfile.parentPath = vParentPath;
+    objectStore.put(vfile);
   }
   async rename(path: string, newPath: string): Promise<void> {
     const transaction = this.db.transaction('files', 'readwrite');

@@ -1,8 +1,7 @@
 import { useRootState } from '@feature/state/Root';
-import { WinApp } from '@packages/type/type';
-import { nextTick, UnwrapNestedRefs } from 'vue';
+import { nextTick } from 'vue';
 import { useSystem } from '../plug';
-import { VtronFileInfo, VtronFile } from '../feature/core/fileSystem';
+import { VtronFile } from '../feature/core/fileSystem';
 let isReadyUpdateAppList = false;
 function initAppList() {
   isReadyUpdateAppList = true;

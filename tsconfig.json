@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution":"Bundler",
+    "moduleResolution": "Bundler",
     "strict": true,
     // "jsx": "preserve",
     "sourceMap": true,

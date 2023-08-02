@@ -14,6 +14,9 @@ export function useFileDrag(system: System) {
     if (frompath == toPath) {
       return;
     }
+    if (frompath === FsPath.join(toPath, FsPath.basename(frompath))) {
+      return;
+    }
     const toFile = await system?.fs.stat(toPath);
     if (toFile?.isDirectory) {
       system?.fs.rename(frompath, FsPath.join(toPath, FsPath.basename(frompath))).then(() => {
@@ -76,9 +79,22 @@ export function useFileDrag(system: System) {
       reader.readAsDataURL(new Blob([item as BlobPart]));
     }
   }
+  async function refFileDrop(ev: DragEvent, path: string) {
+    const fromobj = ev?.dataTransfer?.getData('fromobj');
+    console.log(fromobj, path);
+    if (fromobj == 'web') {
+      folderDrop(ev, path);
+    } else {
+      const oFileList = ev?.dataTransfer?.files;
+      outerFileDrop(path, oFileList, () => {
+        emitEvent('file.props.edit');
+      });
+    }
+  }
   return {
     startDrag,
     folderDrop,
     outerFileDrop,
+    refFileDrop,
   };
 }

@@ -30,5 +30,7 @@ module.exports = {
     'vue/no-setup-props-destructure': 'off',
     'vue/no-multiple-template-root': 'off',
     'vue/multi-word-component-names': 'off',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'error',
   },
 };

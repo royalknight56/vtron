@@ -20,7 +20,7 @@ async function updateVersion() {
     version[2] = 0;
     version[1] = parseInt(version[1]) + 1;
   }
-  let nextVersion = version.join('.');
+  const nextVersion = version.join('.');
   packagejson.version = nextVersion;
   fs.writeFileSync('./package.json', JSON.stringify(packagejson, null, 2));
 

@@ -57,6 +57,7 @@ onMounted(() => {
     onUnmounted(() => {
       term.dispose();
     });
+    // eslint-disable-next-line no-inner-declarations
     async function prompt(term: any) {
       currentIndex = inputTextList.length;
       await shell.exec(inputText);

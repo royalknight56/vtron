@@ -86,7 +86,14 @@
       </div>
     </div>
   </div>
-  <div class="desk-outer" ref="compu" @contextmenu.self="showOuterMenu($event)" @click.self="onBackClick">
+  <div
+    class="desk-outer"
+    @contextmenu.self="showOuterMenu($event)"
+    @dragenter.prevent
+    @dragover.prevent
+    @drop.stop="refFileDrop($event, router_url)"
+    @click.self="onBackClick"
+  >
     <div
       draggable="true"
       class="desk-item"
@@ -96,7 +103,7 @@
       @dragstart="startDrag($event, item)"
       @dragenter.prevent
       @dragover.prevent
-      @drop="folderDrop($event, item.path)"
+      @drop.stop="refFileDrop($event, item.path)"
       @dblclick="openFolder(item)"
     >
       <div class="item_img">
@@ -113,7 +120,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted, watch, inject } from 'vue';
+import { ref, onMounted, inject } from 'vue';
 // import folderimg from "../assets/newFolder.ico";
 import foldericon from '@packages/assets/folder.ico';
 // import unknownicon from '@packages/assets/unknown.ico';
@@ -122,7 +129,6 @@ import FileIcon from '@feature/builtin/FileIcon.vue';
 import { Notify } from '@feature/notification/Notification';
 import { useSystem } from '@feature/system';
 import { BrowserWindow, VtronFile } from '@packages/plug';
-import * as fspath from '@feature/core/Path';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { basename } from '@feature/core/Path';
 import { mountEvent } from '@feature/event';
@@ -137,7 +143,7 @@ const router_url = ref('');
 const currentList = ref<Array<VtronFile>>([]);
 
 const system = useSystem();
-const { startDrag, folderDrop, outerFileDrop } = useFileDrag(system);
+const { startDrag, refFileDrop } = useFileDrag(system);
 const { createNewFile, openPropsWindow, createNewDir, deleteFile } = useContextMenu();
 const { isVia, refersh, createFolder, backFolder, openFolder, onComputerMount } = useComputer({
   setRouter(path) {
@@ -266,50 +272,6 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
     ],
   });
 }
-// 拖动文件上传
-const compu = ref(null);
-onMounted(() => {
-  const oBox = compu.value as unknown as HTMLElement;
-  if (!oBox) {
-    return;
-  }
-  // var oM = document.getElementById('m1');
-
-  let timer = 0;
-  document.ondragover = function () {
-    clearTimeout(timer);
-    timer = window.setTimeout(function () {
-      // oBox.style.display = 'none';
-    }, 200);
-    //    oBox.style.display = 'block';
-  };
-  //进入子集的时候 会触发ondragover 频繁触发 不给ondrop机会
-  oBox.ondragenter = function () {
-    // oBox.innerHTML = '请释放鼠标';
-  };
-  oBox.ondragover = function () {
-    return false;
-  };
-  oBox.ondragleave = function () {
-    // oBox.innerHTML = '请将文件拖拽到此区域';
-  };
-  oBox.ondrop = async function (ev: DragEvent) {
-    ev.preventDefault();
-    const fromobj = ev?.dataTransfer?.getData('fromobj');
-
-    if (fromobj == 'web') {
-      // 无效
-      folderDrop(ev, router_url.value);
-    } else {
-      const oFileList = ev?.dataTransfer?.files;
-      outerFileDrop(router_url.value, oFileList, () => {
-        refersh();
-      });
-    }
-
-    return false;
-  };
-});
 </script>
 <style scoped>
 .desk-outer {

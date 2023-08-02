@@ -1,5 +1,5 @@
 <template>
-  <div class="desktop">
+  <div class="desktop" @dragenter.prevent @dragover.prevent @drop="refFileDrop($event, '/C/Users/Desktop')">
     <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown.left="backgroundDown">
       <DeskItem class="userarea-upper zhighher"></DeskItem>
       <DesktopBackground class="userarea-upper"></DesktopBackground>
@@ -23,9 +23,13 @@ import ContextMenu from '../contextMenu/ContextMenu.vue';
 import NotificationGroup from '../notification/NotifyGroup.vue';
 import DateTimePop from '../popover/DateTimePop.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
+import { useFileDrag } from '@packages/hook/useFileDrag';
 import { i18n } from '@feature/i18n';
+import { useSystem } from '@feature/system';
 
-const { createNewFile, openPropsWindow, createNewDir } = useContextMenu();
+const { createNewFile, createNewDir } = useContextMenu();
+const system = useSystem();
+const { refFileDrop } = useFileDrag(system);
 
 function backgroundDown(e: MouseEvent) {
   emitEvent('desktop.background.leftClick', e);

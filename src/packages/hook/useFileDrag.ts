@@ -80,8 +80,8 @@ export function useFileDrag(system: System) {
     }
   }
   async function refFileDrop(ev: DragEvent, path: string) {
+    ev.preventDefault();
     const fromobj = ev?.dataTransfer?.getData('fromobj');
-    console.log(fromobj, path);
     if (fromobj == 'web') {
       folderDrop(ev, path);
     } else {

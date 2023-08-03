@@ -1,6 +1,6 @@
 import { initRootState } from '@feature/state/Root';
 import { SystemStateEnum } from '@packages/type/enum';
-import { markRaw, nextTick, reactive, watch } from 'vue';
+import { markRaw } from 'vue';
 import { RootState, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from '@feature/event';
 import { VtronFileSystem } from '@feature/core/fileSystem';
@@ -40,10 +40,10 @@ class System {
     this.mountGlobalSystem(this); // 挂载全局系统
 
     this._options = this.initOptions(options);
-    this._rootState = this.initRootState(options);
-    this._eventer = this.initEvent(options);
+    this._rootState = this.initRootState();
+    this._eventer = this.initEvent();
 
-    this.initSystem(options);
+    this.initSystem();
     this.firstRun();
     this.setRef(this._rootState.ref!);
   }
@@ -74,13 +74,13 @@ class System {
   /**
    * @description: 获取系统配置
    */
-  private initRootState(options?: SystemOptions): RootState {
+  private initRootState(): RootState {
     return initRootState(this._options);
   }
   /**
    * @description: 初始化系统
    */
-  private async initSystem(options?: SystemOptions) {
+  private async initSystem() {
     /**
      * 过程：激活屏幕，桥接事件。
      */
@@ -113,7 +113,7 @@ class System {
   /**
    * @description: 初始化事件系统
    */
-  private initEvent(options?: SystemOptions) {
+  private initEvent() {
     /**
      * 过程：监听事件，处理事件
      */
@@ -138,7 +138,7 @@ class System {
       this.fs = await new VtronFileSystem().initFileSystem();
     }
     await createInitFile(this, InitFile);
-    this.fs.registerWatcher(/^\/C\/Users\//, (path, content) => {
+    this.fs.registerWatcher(/^\/C\/Users\//, () => {
       initAppList();
     });
   }

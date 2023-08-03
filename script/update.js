@@ -24,7 +24,7 @@ async function updateVersion() {
   packagejson.version = nextVersion;
   fs.writeFileSync('./package.json', JSON.stringify(packagejson, null, 2));
 
-  await waitExec('npm run build-lib-tsc');
+  await waitExec('npm run bl');
   console.log('build success');
   await waitExec('git add .');
   console.log('git add success');

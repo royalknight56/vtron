@@ -1,35 +1,37 @@
 <template>
-  <div v-if="isDataPopShow" class="date-pop" @mousedown.stop="">
-    <div class="date-up">
-      <div class="date-time">
-        <span class="time">{{ timeDisplay }}</span>
-        <span class="date">{{ dateDisplay }}</span>
-      </div>
-    </div>
-    <div class="date-middle">
-      <div class="week">
-        <div class="day" v-for="item in weeksPrefix" :key="item">
-          <span>{{ item }}</span>
+  <Transition name="fade">
+    <div v-if="isDataPopShow" class="date-pop" @mousedown.stop="">
+      <div class="date-up">
+        <div class="date-time">
+          <span class="time">{{ timeDisplay }}</span>
+          <span class="date">{{ dateDisplay }}</span>
         </div>
       </div>
-      <div class="month">
-        <div class="week" v-for="(perweek, weekIndex) in month" :key="perweek[0]">
-          <div
-            class="day"
-            :class="{
-              istoday: today.weekIndex === weekIndex && today.dayIndex === dayIndex,
-              chosen: chosen.weekIndex === weekIndex && chosen.dayIndex === dayIndex,
-            }"
-            v-for="(perday, dayIndex) in perweek"
-            :key="perday"
-            @click="onDayClick(weekIndex, dayIndex)"
-          >
-            <span>{{ perday }}</span>
+      <div class="date-middle">
+        <div class="week">
+          <div class="day" v-for="item in weeksPrefix" :key="item">
+            <span>{{ item }}</span>
+          </div>
+        </div>
+        <div class="month">
+          <div class="week" v-for="(perweek, weekIndex) in month" :key="perweek[0]">
+            <div
+              class="day"
+              :class="{
+                istoday: today.weekIndex === weekIndex && today.dayIndex === dayIndex,
+                chosen: chosen.weekIndex === weekIndex && chosen.dayIndex === dayIndex,
+              }"
+              v-for="(perday, dayIndex) in perweek"
+              :key="perday"
+              @click="onDayClick(weekIndex, dayIndex)"
+            >
+              <span>{{ perday }}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
@@ -96,6 +98,7 @@ for (let i = 0; i < lastDay; i++) {
   height: 500px;
   background-color: var(--color-gray);
   border: 1px solid rgba(0, 0, 0, 0.19);
+  user-select: none;
   .date-up {
     width: 100%;
     height: 70px;
@@ -177,5 +180,22 @@ for (let i = 0; i < lastDay; i++) {
       }
     }
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.2s ease;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>

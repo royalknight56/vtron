@@ -21,7 +21,7 @@ import { emitEvent } from '@feature/event';
 import WindowGroup from '@feature/window/WindowGroup.vue';
 import ContextMenu from '@feature/structure/contextMenu/ContextMenu.vue';
 import NotificationGroup from '@feature/notification/NotifyGroup.vue';
-import DateTimePop from '@feature/popover/DateTimePop.vue';
+import DateTimePop from '@feature/structure/popover/DateTimePop.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { i18n } from '@feature/i18n';

@@ -29,7 +29,7 @@ function handle(item: VtronFile) {
   user-select: none;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-top: 30px;
+  padding-top: 10px;
 
   .magnet-item {
     width: var(--menulist-width);

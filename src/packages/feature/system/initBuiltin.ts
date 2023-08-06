@@ -1,10 +1,8 @@
-import vtronLogoIcon from '@/assets/vtron-icon-nobg.png?url';
 import vtronStoreLogoIcon from '@/assets/vtron-stroe-icon-nobg.png?url';
-
 import myComputerLogoIcon from '@packages/assets/computer.ico?url';
 import infoIcon from '@packages/assets/info-icon.ico?url';
 import termIcon from '@packages/assets/term.ico?url';
-import { Shell } from '@feature/core/Shell';
+
 import FileViewer from '../builtin/FileViewer.vue';
 import MyComputerVue from '../builtin/MyComputer/MyComputer.vue';
 import UrlBrowser from '../builtin/UrlBrowser.vue';
@@ -15,7 +13,7 @@ import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 
 export function initBuiltinApp(system: System) {
-  system.addApp({
+  const myComputer = {
     name: i18n('computer'),
     icon: myComputerLogoIcon,
     window: {
@@ -29,8 +27,11 @@ export function initBuiltinApp(system: System) {
         path: '/C',
       },
     },
-  });
-  system.addApp({
+  };
+  system.addApp(myComputer);
+  system.addMagnet(myComputer);
+  system.addMenuList(myComputer);
+  const terminal = {
     name: i18n('terminal'),
     icon: termIcon,
     window: {
@@ -45,8 +46,11 @@ export function initBuiltinApp(system: System) {
         path: '/',
       },
     },
-  });
-  system.addApp({
+  };
+  system.addApp(terminal);
+  system.addMagnet(terminal);
+  system.addMenuList(terminal);
+  const appStore = {
     name: i18n('appstore'),
     icon: vtronStoreLogoIcon,
     window: {
@@ -60,7 +64,10 @@ export function initBuiltinApp(system: System) {
         path: '/',
       },
     },
-  });
+  };
+  system.addApp(appStore);
+  system.addMagnet(appStore);
+  system.addMenuList(appStore);
 }
 export function initBuiltinFileOpener(system: System) {
   system.registerFileOpener('.exe', system.openLink.bind(system));

@@ -8,13 +8,22 @@
     </div>
     <div class="date-middle">
       <div class="week">
-        <div class="day" v-for="item in weeks" :key="item">
+        <div class="day" v-for="item in weeksPrefix" :key="item">
           <span>{{ item }}</span>
         </div>
       </div>
       <div class="month">
-        <div class="week" v-for="perweek in month" :key="perweek[0]">
-          <div class="day" v-for="perday in week" :key="perday">
+        <div class="week" v-for="(perweek, weekIndex) in month" :key="perweek[0]">
+          <div
+            class="day"
+            :class="{
+              istoday: today.weekIndex === weekIndex && today.dayIndex === dayIndex,
+              chosen: chosen.weekIndex === weekIndex && chosen.dayIndex === dayIndex,
+            }"
+            v-for="(perday, dayIndex) in perweek"
+            :key="perday"
+            @click="onDayClick(weekIndex, dayIndex)"
+          >
             <span>{{ perday }}</span>
           </div>
         </div>
@@ -23,8 +32,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
-import { mountEvent } from '../event';
+import { onMounted, reactive, ref } from 'vue';
+import { mountEvent } from '@feature/event';
 const isDataPopShow = ref(false);
 mountEvent('datetime.show', () => {
   isDataPopShow.value = true;
@@ -34,26 +43,40 @@ mountEvent('datetime.hidden', () => {
 });
 const timeDisplay = ref(`00:00:00`);
 const dateDisplay = ref(`0000/00/00`);
-
-setInterval(() => {
-  const date = new Date();
-  const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-  const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-  timeDisplay.value = time;
-  dateDisplay.value = dateStr;
-}, 500);
-
-const weeks = ['日', '一', '二', '三', '四', '五', '六'];
-
+const weeksPrefix = ['一', '二', '三', '四', '五', '六', '日'];
 const month = ref<Array<Array<string>>>([]);
 const date = new Date();
-const year = date.getFullYear();
-const monthNum = date.getMonth() + 1;
-
-const firstDay = new Date(year, monthNum - 1, 1).getDay();
-const lastDay = new Date(year, monthNum, 0).getDate();
+const today = {
+  weekIndex: Math.floor((date.getDay() + date.getDate()) / 7),
+  dayIndex: (date.getDay() + date.getDate()) % 7,
+  day: date.getDate(),
+  month: date.getMonth() + 1,
+  year: date.getFullYear(),
+};
+const chosen = reactive({
+  weekIndex: today.weekIndex,
+  dayIndex: today.dayIndex,
+});
+function onDayClick(weekIndex: number, dayIndex: number) {
+  chosen.weekIndex = weekIndex;
+  chosen.dayIndex = dayIndex;
+}
+function updateTime() {
+  const date = new Date();
+  const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  const dateStr = `${today.year}/${today.month}/${today.day}`;
+  timeDisplay.value = time;
+  dateDisplay.value = dateStr;
+}
+const firstDay = new Date(today.year, today.month - 1, 1).getDay();
+const lastDay = new Date(today.year, today.month, 0).getDate();
 const weekNum = Math.ceil((firstDay + lastDay) / 7);
-const week: Array<string> = [];
+setInterval(() => {
+  updateTime();
+}, 500);
+onMounted(() => {
+  updateTime();
+});
 for (let i = 0; i < weekNum; i++) {
   month.value[i] = [];
   for (let j = 0; j < 7; j++) {
@@ -61,7 +84,7 @@ for (let i = 0; i < weekNum; i++) {
   }
 }
 for (let i = 0; i < lastDay; i++) {
-  month.value[Math.floor((firstDay + i) / 7)][(firstDay + i) % 7] = '' + (i + 1);
+  month.value[Math.floor((firstDay + i - 1) / 7)][(firstDay + i - 1) % 7] = `${i + 1}`;
 }
 </script>
 <style lang="scss" scoped>
@@ -71,13 +94,14 @@ for (let i = 0; i < lastDay; i++) {
   right: 0;
   width: 300px;
   height: 500px;
-  background-color: antiquewhite;
+  background-color: var(--color-gray);
   border: 1px solid rgba(0, 0, 0, 0.19);
   .date-up {
     width: 100%;
     height: 70px;
     padding: 10px;
-    background-color: #fff;
+    margin-bottom: 10px;
+    box-sizing: border-box;
     .date-time {
       display: flex;
       flex-direction: column;
@@ -96,8 +120,8 @@ for (let i = 0; i < lastDay; i++) {
   .date-middle {
     width: 100%;
     height: 430px;
-    padding: 10px;
-    background-color: #fff;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.19);
     .week {
       width: 100%;
       height: 30px;
@@ -124,21 +148,33 @@ for (let i = 0; i < lastDay; i++) {
         height: 56px;
         display: flex;
         .day {
-          width: 14.28%;
-          height: 100%;
+          // width: 14.28%;
+          // height: 100%;
+          height: var(--task-bar-height);
           display: flex;
           align-items: center;
           justify-content: center;
+          border: 3px solid transparent;
           span {
             font-size: 12px;
             font-weight: 100;
           }
         }
+        .day:hover {
+          // background-color: #e6e6e6;
+          user-select: none;
+          border: 3px solid var(--color-gray-active);
+        }
+        .istoday {
+          background-color: var(--color-gray-active);
+        }
+        .chosen {
+          border: 3px solid var(--color-dark);
+        }
+        .chosen:hover {
+          border: 3px solid var(--color-dark-hover);
+        }
       }
-    }
-    .day:hover {
-      background-color: #e6e6e6;
-      user-select: none;
     }
   }
 }

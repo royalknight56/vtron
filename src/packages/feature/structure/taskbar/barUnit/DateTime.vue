@@ -5,18 +5,23 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const timeDisplay = ref(`00:00`);
 const dateDisplay = ref(`0000-00-00`);
-
-setInterval(() => {
+function updateTime() {
   const date = new Date();
   const time = `${date.getHours()}:${date.getMinutes()}`;
   const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
   timeDisplay.value = time;
   dateDisplay.value = dateStr;
+}
+setInterval(() => {
+  updateTime();
 }, 5000);
+onMounted(() => {
+  updateTime();
+});
 </script>
 <style lang="scss" scoped>
 .date-time {

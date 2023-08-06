@@ -1,7 +1,7 @@
 import vtronStoreLogoIcon from '@/assets/vtron-stroe-icon-nobg.png?url';
-import myComputerLogoIcon from '@packages/assets/computer.ico?url';
-import infoIcon from '@packages/assets/info-icon.ico?url';
-import termIcon from '@packages/assets/term.ico?url';
+import myComputerLogoIcon from '@packages/assets/computer.png?url';
+import infoIcon from '@packages/assets/info-icon.png?url';
+import termIcon from '@packages/assets/term.png?url';
 
 import FileViewer from '../builtin/FileViewer.vue';
 import MyComputerVue from '../builtin/MyComputer/MyComputer.vue';

@@ -3,7 +3,8 @@
     <div
       draggable="true"
       class="desk-item"
-      v-for="item in appList"
+      :class="chosenIndex === index ? 'chosen' : 'no-chosen'"
+      v-for="(item, index) in appList"
       :key="item.path"
       @dblclick="openapp(item)"
       @contextmenu.stop.prevent="handleRightClick($event, item)"
@@ -11,6 +12,7 @@
       @dragenter.prevent
       @dragover.prevent
       @dragstart="startDrag($event, item)"
+      @click="handleClick(index)"
     >
       <div class="desk-item_img">
         <FileIcon :file="item" />
@@ -29,7 +31,7 @@ import { basename } from '@feature/core/Path';
 import { VtronFile } from '@feature/core/fileSystem';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 const { openapp, appList } = useAppOpen('apps');
 const { openPropsWindow } = useContextMenu();
 const sys = useSystem();
@@ -39,7 +41,10 @@ onMounted(() => {
     initAppList();
   });
 });
-
+const chosenIndex = ref(-1);
+function handleClick(index: number) {
+  chosenIndex.value = index;
+}
 function handleRightClick(mouse: MouseEvent, item: VtronFile) {
   emitEvent('contextMenu.show', {
     mouse: mouse,
@@ -88,19 +93,36 @@ function dealI18nName(name: string) {
     width: var(--desk-item-size);
     height: var(--desk-item-size);
     font-size: var(--ui-font-size);
+    border: 1px solid transparent;
     margin: 6px;
-
     .desk-item_img {
       width: 60%;
-      height: 60%;
-      margin: 4px auto;
+      height: calc(0.6 * var(--desk-item-size));
+      margin: 0px auto;
       user-select: none;
+      flex-shrink: 0;
     }
 
     .desk-item_title {
       color: var(--color-ui-desk-item-title);
+      height: calc(0.4 * var(--desk-item-size));
       display: block;
       text-align: center;
+      word-break: break-all;
+      flex-grow: 0;
+    }
+  }
+  .chosen {
+    border: 1px dashed #3bdbff3d;
+  }
+  .no-chosen {
+    .desk-item_title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-all;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
     }
   }
 

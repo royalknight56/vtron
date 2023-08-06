@@ -5,6 +5,8 @@
       <img v-else-if="extname(file.path) === '.exe'" draggable="false" :src="dealIcon(file)" />
       <img v-else-if="extname(file.path) === '.url'" draggable="false" :src="dealUrlIcon(file)" />
       <img v-else-if="extname(file.path) === '.png'" draggable="false" :src="file.content" />
+      <img v-else-if="extname(file.path) === '.mp4'" draggable="false" :src="videoicon" />
+      <img v-else-if="extname(file.path) === '.mp3'" draggable="false" :src="audioicon" />
       <img v-else draggable="false" :src="unknownicon" />
     </template>
     <template v-else-if="icon">
@@ -17,8 +19,10 @@
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import foldericon from '@packages/assets/folder.ico';
-import unknownicon from '@packages/assets/unknown.ico';
+import foldericon from '@packages/assets/folder.png';
+import unknownicon from '@packages/assets/unknown.png';
+import audioicon from '@packages/assets/audio.png';
+import videoicon from '@packages/assets/video.png';
 import { VtronFile } from '../core/fileSystem';
 import { extname } from '../core/Path';
 

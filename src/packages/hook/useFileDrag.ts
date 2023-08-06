@@ -24,6 +24,20 @@ export function useFileDrag(system: System) {
       });
     }
   }
+  async function writeFileToInner(
+    path: string,
+    name?: string,
+    content?: string,
+    process?: (path: string) => void
+  ) {
+    system?.fs
+      .writeFile(FsPath.join(path, name || 'unkown'), {
+        content: content || '',
+      })
+      .then(() => {
+        process?.(FsPath.join(path, name || 'unkown'));
+      });
+  }
   // 外部文件拖到文件夹放下时
   async function outerFileDrop(path: string, list: FileList | undefined, process: (path: string) => void) {
     const len = list?.length || 0;
@@ -47,21 +61,18 @@ export function useFileDrag(system: System) {
           item?.type == 'image/bmp' ||
           item?.type == 'image/webp'
         ) {
-          system?.fs
-            .writeFile(FsPath.join(path, item?.name), {
-              content: reader.result as string,
-            })
-            .then(() => {
-              process(FsPath.join(path, item?.name));
-            });
+          writeFileToInner(path, item?.name, reader.result as string, process);
+        } else if (item?.type == 'audio/mpeg') {
+          writeFileToInner(path, item?.name, reader.result as string, process);
+        } else if (item?.type == 'video/mp4') {
+          writeFileToInner(path, item?.name, reader.result as string, process);
         } else {
-          system?.fs
-            .writeFile(FsPath.join(path, item?.name || 'unknow'), {
-              content: decodeURIComponent(escape(atob((reader.result?.toString() || '').split(',')[1]))),
-            })
-            .then(() => {
-              process(FsPath.join(path, item?.name || 'unknow'));
-            });
+          writeFileToInner(
+            path,
+            item?.name,
+            decodeURIComponent(escape(atob((reader.result?.toString() || '').split(',')[1]))),
+            process
+          );
         }
       };
       reader.onabort = function () {

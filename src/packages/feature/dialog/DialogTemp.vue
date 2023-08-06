@@ -20,10 +20,10 @@
 import WinButton from '@packages/components/WinButton.vue';
 import { inject } from 'vue';
 import { BrowserWindow } from '../window/BrowserWindow';
-import errorIcon from '@packages/assets/error-icon.ico';
-import infoIcon from '@packages/assets/info-icon.ico';
-import questionIcon from '@packages/assets/question-icon.ico';
-import warningIcon from '@packages/assets/warning-icon.ico';
+import errorIcon from '@packages/assets/error-icon.png';
+import infoIcon from '@packages/assets/info-icon.png';
+import questionIcon from '@packages/assets/question-icon.png';
+import warningIcon from '@packages/assets/warning-icon.png';
 
 const iconMap: {
   [key: string]: string;

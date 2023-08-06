@@ -121,9 +121,7 @@
 </template>
 <script lang="ts" setup>
 import { ref, onMounted, inject } from 'vue';
-// import folderimg from "../assets/newFolder.ico";
-import foldericon from '@packages/assets/folder.ico';
-// import unknownicon from '@packages/assets/unknown.ico';
+import foldericon from '@packages/assets/folder.png';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 
 import { Notify } from '@feature/notification/Notification';

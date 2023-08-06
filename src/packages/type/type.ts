@@ -28,6 +28,10 @@ export type RootState = {
   ref: HTMLElement | undefined;
   system: {
     state: SystemStateEnum;
+    message: {
+      notify: Array<Notify>;
+      system: Array<Notify>;
+    };
     apps: Array<VtronFile>;
     magnet: Array<VtronFile>;
     menulist: Array<VtronFile>;

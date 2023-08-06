@@ -1,4 +1,4 @@
-import { mountEvent, redirectEvent, emitEvent } from './EventHook';
+import { mountEvent, redirectEvent } from './EventHook';
 
 import { useSystem } from '@feature/system';
 import { initBatteryEvent, initSizeEvent, initNetworkEvent } from './SystemEvent';
@@ -6,10 +6,10 @@ function initEventListener() {
   initBatteryEvent();
   initSizeEvent();
   initNetworkEvent();
-  mountEvent('system.shutdown', (source: string, e: any) => {
+  mountEvent('system.shutdown', () => {
     useSystem()?.shutdown();
   });
-  mountEvent('system.recover', (source: string, e: any) => {
+  mountEvent('system.recover', () => {
     useSystem()?.recover();
   });
   eventTransitCenter();
@@ -29,7 +29,9 @@ const eventTranslateMap: {
   'magnet.item.click': ['uipop.hidden'],
   'menulist.item.click': ['uipop.hidden'],
   'startMenu.set.click': ['uipop.hidden'],
-  'uipop.hidden': ['contextMenu.hidden', 'startmenu.hidden', 'datetime.hidden'],
+  'uipop.hidden': ['contextMenu.hidden', 'startmenu.hidden', 'datetime.hidden', 'messagecenter.hidden'],
+  'datetime.show': ['messagecenter.hidden'],
+  'messagecenter.show': ['datetime.hidden'],
 };
 function eventTransitCenter() {
   for (const key in eventTranslateMap) {

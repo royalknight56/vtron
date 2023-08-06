@@ -14,6 +14,7 @@ class Notify {
     this.content = option.content;
     this.id = Notify.idcount++;
     useRootState().system.notify.push(this);
+    useRootState().system.message.notify.push(this);
     setTimeout(() => {
       this.close();
     }, option.timeout || 5000);

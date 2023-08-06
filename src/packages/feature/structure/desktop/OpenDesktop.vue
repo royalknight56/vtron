@@ -6,6 +6,7 @@
       <WindowGroup></WindowGroup>
       <NotificationGroup></NotificationGroup>
       <DateTimePop></DateTimePop>
+      <MessageCenterPop></MessageCenterPop>
     </div>
     <div class="bottom">
       <Taskbar></Taskbar>
@@ -22,6 +23,8 @@ import WindowGroup from '@feature/window/WindowGroup.vue';
 import ContextMenu from '@feature/structure/contextMenu/ContextMenu.vue';
 import NotificationGroup from '@feature/notification/NotifyGroup.vue';
 import DateTimePop from '@feature/structure/popover/DateTimePop.vue';
+import MessageCenterPop from '@feature/structure/popover/MessageCenterPop.vue';
+
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { i18n } from '@feature/i18n';

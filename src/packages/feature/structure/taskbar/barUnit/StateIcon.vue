@@ -9,6 +9,9 @@
     <div @click="handleClick" class="state-item datetime">
       <DateTime></DateTime>
     </div>
+    <div @click="handleNotifyClick" class="state-item">
+      <MessageIcon></MessageIcon>
+    </div>
     <div class="showdesk"></div>
   </div>
 </template>
@@ -18,12 +21,16 @@ import { emitEvent } from '@feature/event';
 import Battery from './Battery.vue';
 import DateTime from './DateTime.vue';
 import NetWork from './NetWork.vue';
+import MessageIcon from './MessageIcon.vue';
 
 const isDataPopShow = ref(false);
 
 function handleClick() {
   emitEvent('datetime.show');
   isDataPopShow.value = !isDataPopShow.value;
+}
+function handleNotifyClick() {
+  emitEvent('messagecenter.show');
 }
 </script>
 <style lang="scss" scoped>

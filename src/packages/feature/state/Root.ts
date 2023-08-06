@@ -12,6 +12,10 @@ const rootState: RootState = reactive({
     magnet: [],
     menulist: [],
     notify: [],
+    message: {
+      notify: [],
+      system: [],
+    },
     windowTree: new Tree<BrowserWindow>(),
     windowOrder: Array<BrowserWindow>(),
     windowMap: {

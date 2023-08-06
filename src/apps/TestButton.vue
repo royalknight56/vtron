@@ -11,21 +11,21 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Dialog } from '@feature/dialog/Dialog';
+// import { Dialog } from '@feature/dialog/Dialog';
 import { BrowserWindow, Notify, makeDragable } from '@packages/plug';
 import { inject, onMounted, onUnmounted, ref } from 'vue';
 const browserWindow = inject<BrowserWindow>('browserWindow');
 const handle = ref<HTMLElement>();
 async function test() {
-  const res = await Dialog.showMessageBox({
-    type: 'info',
-    title: 'title',
-    message: '无法将文件移动到“C:',
-  });
+  // const res = await Dialog.showMessageBox({
+  //   type: 'info',
+  //   title: 'title',
+  //   message: '无法将文件移动到“C:',
+  // });
 
   new Notify({
     title: 'title',
-    content: JSON.stringify(res),
+    content: '111',
     timeout: 5000,
   });
 }

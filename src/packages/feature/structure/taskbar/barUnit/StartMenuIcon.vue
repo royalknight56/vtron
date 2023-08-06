@@ -10,8 +10,8 @@
 import winimg from '@/assets/win.png';
 import { emitEvent, mountEvent } from '@feature/event';
 import { ref } from 'vue';
-import StartMenu from '../../startMenu/StartMenu.vue';
-import { useSystem } from '../../system';
+import StartMenu from '@feature/structure/taskbar/startMenu/StartMenu.vue';
+import { useSystem } from '@feature/system';
 
 const system = useSystem();
 const isStartmenuShow = ref(false);

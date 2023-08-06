@@ -12,7 +12,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { emitEvent } from '../event';
+import { emitEvent } from '@feature/event';
 import Magnet from './components/Magnet.vue';
 import MenuList from './components/MenuList.vue';
 import StartOption from './components/StartOption.vue';

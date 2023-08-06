@@ -14,9 +14,9 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { mountEvent, emitEvent } from '../event';
-import { useRootState } from '../state/Root';
-import { useSystem } from '../system';
+import { mountEvent, emitEvent } from '@feature/event';
+import { useRootState } from '@feature/state/Root';
+import { useSystem } from '@feature/system';
 const isVisiable = ref(false);
 const x = ref(0);
 const y = ref(0);

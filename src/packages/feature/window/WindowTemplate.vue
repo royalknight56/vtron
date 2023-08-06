@@ -100,14 +100,11 @@ import { onUnmounted, provide, ref, watch } from 'vue';
 import { onMounted, computed, UnwrapNestedRefs } from 'vue';
 import { WindowStateEnum } from './BrowserWindow';
 import WindowInner from './components/WindowInner.vue';
-// import type { PropType } from "vue";
-//   import { WindowInfo, defaultWinInfo } from "@packages/window/libs/DragWindow/option";
 import { DragElement } from '@feature/window/dom/DragElement';
 import { ScaleElement } from '@feature/window/dom/ScaleElement';
-// import WindowInner from "@packages/window/structure/windowContent/windowInner.vue";
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import MenuBar from './components/MenuBar.vue';
-import { emitEvent } from '../event';
+import { emitEvent } from '@feature/event';
 
 const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;

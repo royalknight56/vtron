@@ -8,7 +8,7 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
-import { useRootState } from '../../state/Root';
+import { useRootState } from '@feature/state/Root';
 const rootState = useRootState();
 const backgroundType = ref('color');
 const background = ref('#3A98CE');

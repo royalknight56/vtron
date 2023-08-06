@@ -3,7 +3,7 @@
 </template>
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
-import { useRootState } from '../../state/Root';
+import { useRootState } from '@feature/state/Root';
 
 const charMap = {
   noC: {

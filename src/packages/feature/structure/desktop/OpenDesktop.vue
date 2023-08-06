@@ -14,14 +14,14 @@
   </div>
 </template>
 <script lang="ts" setup>
-import DeskItem from './deskItem/DeskItem.vue';
-import Taskbar from '../taskbar/Taskbar.vue';
-import DesktopBackground from './components/DesktopBackground.vue';
+import DeskItem from '@feature/structure/desktop/deskItem/DeskItem.vue';
+import Taskbar from '@feature/structure/taskbar/Taskbar.vue';
+import DesktopBackground from '@feature/structure/desktop/components/DesktopBackground.vue';
 import { emitEvent } from '@feature/event';
-import WindowGroup from '../window/WindowGroup.vue';
-import ContextMenu from '../contextMenu/ContextMenu.vue';
-import NotificationGroup from '../notification/NotifyGroup.vue';
-import DateTimePop from '../popover/DateTimePop.vue';
+import WindowGroup from '@feature/window/WindowGroup.vue';
+import ContextMenu from '@feature/structure/contextMenu/ContextMenu.vue';
+import NotificationGroup from '@feature/notification/NotifyGroup.vue';
+import DateTimePop from '@feature/popover/DateTimePop.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { i18n } from '@feature/i18n';

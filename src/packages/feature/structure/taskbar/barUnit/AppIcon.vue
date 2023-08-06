@@ -7,8 +7,8 @@
 </template>
 <script lang="ts" setup>
 import { UnwrapNestedRefs } from 'vue';
-import { emitEvent } from '../../event';
-import { BrowserWindow } from '../../window/BrowserWindow';
+import { emitEvent } from '@feature/event';
+import { BrowserWindow } from '@feature/window/BrowserWindow';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { i18n } from '@feature/i18n';
 

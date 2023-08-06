@@ -12,9 +12,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import CloseDesktop from '@feature/desktop/CloseDesktop.vue';
-import OpenDesktop from '@feature/desktop/OpenDesktop.vue';
-import OpeningDesktop from '@feature/desktop/OpeningDesktop.vue';
+import CloseDesktop from '@feature/structure/desktop/CloseDesktop.vue';
+import OpenDesktop from '@feature/structure/desktop/OpenDesktop.vue';
+import OpeningDesktop from '@feature/structure/desktop/OpeningDesktop.vue';
 import { SystemStateEnum } from '@packages/type/enum';
 import { useRootState } from '@feature/state/Root';
 import { onMounted, ref } from 'vue';

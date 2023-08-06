@@ -8,7 +8,7 @@
 </template>
 <script lang="ts" setup>
 import { useAppOpen } from '@packages/hook/useAppOpen';
-import { emitEvent } from '../../event';
+import { emitEvent } from '@feature/event';
 import { basename } from '@feature/core/Path';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { VtronFile } from '@feature/core/fileSystem';

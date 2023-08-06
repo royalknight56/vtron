@@ -35,11 +35,11 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { emitEvent } from '../../event';
+import { emitEvent } from '@feature/event';
 import Setting from '@feature/builtin/Setting.vue';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
-import { Dialog } from '../../dialog/Dialog';
+import { Dialog } from '@feature/dialog/Dialog';
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
     case 0:

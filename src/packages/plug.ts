@@ -1,6 +1,4 @@
-import type { App } from 'vue';
-import { ScreenComponentVue } from '@feature/screen/Screen';
-// import { Plugin } from 'vue'
+import { ScreenComponentVue } from '@feature/structure';
 import WinButtonVue from './components/WinButton.vue';
 import WinLoadingVue from './components/WinLoading.vue';
 import WinLogoVue from './components/WinLogo.vue';
@@ -10,7 +8,7 @@ import WinInput from './components/WinInput.vue';
 export { WinButtonVue, WinLoadingVue, WinLogoVue, WinSelect, WinInput };
 
 const plug = {
-  install: function (app: any, ...options: any[]): any {
+  install: function (app: any): any {
     app.component('Screen', ScreenComponentVue);
   },
 };

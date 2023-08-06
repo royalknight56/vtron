@@ -14,7 +14,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { emitEvent } from '../../event';
+import { emitEvent } from '@feature/event';
 import Battery from './Battery.vue';
 import DateTime from './DateTime.vue';
 import NetWork from './NetWork.vue';

@@ -126,7 +126,7 @@ onMounted(() => {
         name: '测试Url',
         icon: testicon,
         window: {
-          content: 'https://source.unsplash.com/random/1920x1080',
+          content: 'https://shimo.im/desktop',
           title: '测试按钮',
           icon: testicon,
           center: true,

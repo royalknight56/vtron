@@ -72,4 +72,5 @@ export const zhCN: AllText = {
   language: '语言',
   style: '样式',
   'is.recover': '是否恢复出厂设置？',
+  version: '版本',
 };

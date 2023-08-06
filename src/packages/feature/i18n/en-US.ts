@@ -72,4 +72,5 @@ export const enUS: AllText = {
   language: 'Language',
   style: 'Style',
   'is.recover': 'Is Recover?',
+  version: 'Version',
 };

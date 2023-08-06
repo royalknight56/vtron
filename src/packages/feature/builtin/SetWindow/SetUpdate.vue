@@ -46,6 +46,12 @@
             {{ i18n('system.version') }}
           </h1>
         </div>
+        <div class="setting-item">
+          <label>
+            {{ i18n('version') }}
+          </label>
+          <span>{{ version }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -56,13 +62,13 @@ import { ref } from 'vue';
 import { useSystem } from '@feature/system';
 import { Dialog } from '@feature/dialog/Dialog';
 import { i18n } from '@feature/i18n';
-
+import packagejson from '/package.json?raw';
 const system = useSystem();
 const items = [
   i18n('backup'), // '备份',
-  // '版本',
+  i18n('version'), // '版本',
 ];
-
+const version = JSON.parse(packagejson).version;
 const activeIndex = ref(0);
 const inputConfig = ref('');
 const selectItem = (index: number) => {

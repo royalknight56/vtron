@@ -71,4 +71,5 @@ export interface AllText {
   language: string;
   style: string;
   'is.recover': string;
+  version: string;
 }

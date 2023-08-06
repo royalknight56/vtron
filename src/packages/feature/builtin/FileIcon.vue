@@ -44,7 +44,7 @@ function dealIcon(file: VtronFile) {
 const sys = useSystem();
 function dealOpenerIcon(file: VtronFile) {
   const ext = extname(file.path);
-  return sys.getOpener(ext)?.icon;
+  return sys.getOpener(ext)?.icon || unknownicon;
 }
 // content: `link::${options.name}::icon::${options.icon}`
 function dealUrlIcon(file: VtronFile) {

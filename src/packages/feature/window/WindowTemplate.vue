@@ -31,6 +31,7 @@
       @touchstart.stop.passive="predown"
       @contextmenu.stop.prevent
     >
+      <div class="content-mask" v-if="!istop"></div>
       <WindowInner :window="browserWindow"></WindowInner>
     </div>
     <div
@@ -394,5 +395,13 @@ onUnmounted(() => {
 .resizeing {
   user-select: none;
   pointer-events: none;
+}
+
+.content-mask {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 100;
 }
 </style>

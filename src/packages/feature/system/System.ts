@@ -261,10 +261,12 @@ class System {
   openFile(path: string) {
     this.fs.stat(path).then((res) => {
       if (res?.isDirectory) {
-        this._flieOpenerMap.get('dir')?.func(path, res?.content || '');
+        this._flieOpenerMap.get('dir')?.func.call(this, path, res?.content || '');
         return;
       } else {
-        this._flieOpenerMap.get(extname(res?.path || '') || 'link')?.func(path, res?.content || '');
+        this._flieOpenerMap
+          .get(extname(res?.path || '') || 'link')
+          ?.func.call(this, path, res?.content || '');
       }
     });
   }

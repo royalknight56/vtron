@@ -2,13 +2,14 @@ import vtronStoreLogoIcon from '@/assets/vtron-stroe-icon-nobg.png?url';
 import myComputerLogoIcon from '@packages/assets/computer.png?url';
 import infoIcon from '@packages/assets/info-icon.png?url';
 import termIcon from '@packages/assets/term.png?url';
+import unknownIcon from '@packages/assets/unknown.png';
 
-import FileViewer from '../builtin/FileViewer.vue';
-import MyComputerVue from '../builtin/MyComputer/MyComputer.vue';
-import UrlBrowser from '../builtin/UrlBrowser.vue';
-import Terminal from '../builtin/Terminal.vue';
-import AppStore from '../builtin/AppStore.vue';
-import type { System } from './System';
+import FileViewer from '@feature/builtin/FileViewer.vue';
+import MyComputerVue from '@feature/builtin/MyComputer/MyComputer.vue';
+import UrlBrowser from '@feature/builtin/UrlBrowser.vue';
+import Terminal from '@feature/builtin/Terminal.vue';
+import AppStore from '@feature/builtin/AppStore.vue';
+import type { System } from '@feature/system';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 
@@ -70,52 +71,63 @@ export function initBuiltinApp(system: System) {
   system.addMenuList(appStore);
 }
 export function initBuiltinFileOpener(system: System) {
-  system.registerFileOpener('.exe', system.openLink.bind(system));
-
-  system.registerFileOpener('.txt', (path, content) => {
-    const pdfwindow = new BrowserWindow({
-      width: 400,
-      height: 400,
-      center: true,
-      title: i18n('text.document'),
-      content: FileViewer,
-      config: {
-        content: content,
-        path: path,
-      },
-    });
-    pdfwindow.show();
+  system.registerFileOpener('.exe', {
+    icon: unknownIcon,
+    func: system.openLink.bind(system),
+  });
+  system.registerFileOpener('.txt', {
+    icon: unknownIcon,
+    func: (path, content) => {
+      const pdfwindow = new BrowserWindow({
+        width: 400,
+        height: 400,
+        center: true,
+        title: i18n('text.document'),
+        content: FileViewer,
+        config: {
+          content: content,
+          path: path,
+        },
+      });
+      pdfwindow.show();
+    },
   });
 
-  system.registerFileOpener('dir', (path, content) => {
-    const pdfwindow = new BrowserWindow({
-      width: 800,
-      height: 600,
-      center: true,
-      title: i18n('computer'),
-      content: MyComputerVue,
-      icon: myComputerLogoIcon,
-      config: {
-        content: content,
-        path: path,
-      },
-    });
-    pdfwindow.show();
+  system.registerFileOpener('dir', {
+    icon: unknownIcon,
+    func: (path, content) => {
+      const pdfwindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        center: true,
+        title: i18n('computer'),
+        content: MyComputerVue,
+        icon: myComputerLogoIcon,
+        config: {
+          content: content,
+          path: path,
+        },
+      });
+      pdfwindow.show();
+    },
   });
 
-  system.registerFileOpener('.url', (path, content) => {
-    const imgwindow = new BrowserWindow({
-      width: 800,
-      height: 600,
-      icon: infoIcon,
-      center: true,
-      title: '',
-      content: UrlBrowser,
-      config: {
-        content: content,
-        path: path,
-      },
-    });
-    imgwindow.show();
+  system.registerFileOpener('.url', {
+    icon: unknownIcon,
+    func: (path, content) => {
+      const imgwindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        icon: infoIcon,
+        center: true,
+        title: '',
+        content: UrlBrowser,
+        config: {
+          content: content,
+          path: path,
+        },
+      });
+      imgwindow.show();
+    },
   });
 }

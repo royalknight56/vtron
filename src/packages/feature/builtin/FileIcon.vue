@@ -7,7 +7,7 @@
       <img v-else-if="extname(file.path) === '.png'" draggable="false" :src="file.content" />
       <img v-else-if="extname(file.path) === '.mp4'" draggable="false" :src="videoicon" />
       <img v-else-if="extname(file.path) === '.mp3'" draggable="false" :src="audioicon" />
-      <img v-else draggable="false" :src="unknownicon" />
+      <img v-else draggable="false" :src="dealOpenerIcon(file)" />
     </template>
     <template v-else-if="icon">
       <img draggable="false" :src="icon" />
@@ -23,8 +23,9 @@ import foldericon from '@packages/assets/folder.png';
 import unknownicon from '@packages/assets/unknown.png';
 import audioicon from '@packages/assets/audio.png';
 import videoicon from '@packages/assets/video.png';
-import { VtronFile } from '../core/fileSystem';
-import { extname } from '../core/Path';
+import { VtronFile } from '@feature/core/fileSystem';
+import { extname } from '@feature/core/Path';
+import { useSystem } from '@feature/system';
 
 defineProps<{
   file?: VtronFile | null;
@@ -39,6 +40,11 @@ function dealIcon(file: VtronFile) {
   } else {
     return unknownicon;
   }
+}
+const sys = useSystem();
+function dealOpenerIcon(file: VtronFile) {
+  const ext = extname(file.path);
+  return sys.getOpener(ext)?.icon;
 }
 // content: `link::${options.name}::icon::${options.icon}`
 function dealUrlIcon(file: VtronFile) {

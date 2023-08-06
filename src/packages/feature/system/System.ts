@@ -9,18 +9,21 @@ import { initAppList } from '@packages/hook/useAppOpen';
 import { version } from '../../../../package.json';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 
-import { extname } from '../core/Path';
+import { extname } from '@feature/core/Path';
 import { initBuiltinApp, initBuiltinFileOpener } from './initBuiltin';
-import { Shell } from '../core/Shell';
+import { Shell } from '@feature/core/Shell';
 import { defaultConfig } from './initConfig';
-import { VtronFileInterface } from '../core/FIleInterface';
-import { InitFile } from '../core/SystemFileConfig';
+import { VtronFileInterface } from '@feature/core/FIleInterface';
+import { InitFile } from '@feature/core/SystemFileConfig';
 import { createInitFile } from './createInitFile';
-import { Notify } from '../notification/Notification';
+import { Notify } from '@feature/notification/Notification';
 let GLOBAL_SYSTEM: System | null = null;
 
 export type VtronPlugin = (system: System, rootState: RootState) => void;
-
+export type FileOpener = {
+  icon: string;
+  func: (path: string, content: string) => void;
+};
 /**
  * @description: System 类，在初始化的过程中需要提供挂载点，以及一些配置
  */
@@ -31,7 +34,7 @@ class System {
   private _ready: ((value: System) => void) | null = null;
   private _error: ((reason: unknown) => void) | null = null;
   private _readyToUpdata = false;
-  private _flieOpenerMap: Map<string, (path: string, content: string) => void> = new Map();
+  private _flieOpenerMap: Map<string, FileOpener> = new Map();
   version = version;
   isFirstRun = true;
   ref!: HTMLElement;
@@ -239,8 +242,8 @@ class System {
   mountEvent(event: string, callback: (...args: any[]) => void) {
     mountEvent(event, callback);
   }
-  registerFileOpener(type: string, func: (path: string, content: string) => void) {
-    this._flieOpenerMap.set(type, func);
+  registerFileOpener(type: string, opener: FileOpener) {
+    this._flieOpenerMap.set(type, opener);
   }
   openLink(path: string, content: string) {
     const exeContent = content.split(':');
@@ -258,12 +261,15 @@ class System {
   openFile(path: string) {
     this.fs.stat(path).then((res) => {
       if (res?.isDirectory) {
-        this._flieOpenerMap.get('dir')?.(path, res?.content || '');
+        this._flieOpenerMap.get('dir')?.func(path, res?.content || '');
         return;
       } else {
-        this._flieOpenerMap.get(extname(res?.path || '') || 'link')?.(path, res?.content || '');
+        this._flieOpenerMap.get(extname(res?.path || '') || 'link')?.func(path, res?.content || '');
       }
     });
+  }
+  getOpener(type: string) {
+    return this._flieOpenerMap.get(type);
   }
   // 插件系统
   use(func: VtronPlugin): void {

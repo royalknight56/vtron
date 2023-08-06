@@ -66,13 +66,15 @@ export function useFileDrag(system: System) {
           writeFileToInner(path, item?.name, reader.result as string, process);
         } else if (item?.type == 'video/mp4') {
           writeFileToInner(path, item?.name, reader.result as string, process);
-        } else {
+        } else if (item?.type == 'text/plain') {
           writeFileToInner(
             path,
             item?.name,
             decodeURIComponent(escape(atob((reader.result?.toString() || '').split(',')[1]))),
             process
           );
+        } else {
+          writeFileToInner(path, item?.name, reader.result as string, process);
         }
       };
       reader.onabort = function () {

@@ -45,12 +45,14 @@ mountEvent('datetime.hidden', () => {
 });
 const timeDisplay = ref(`00:00:00`);
 const dateDisplay = ref(`0000/00/00`);
-const weeksPrefix = ['一', '二', '三', '四', '五', '六', '日'];
+const weeksPrefix = ['日', '一', '二', '三', '四', '五', '六'];
 const month = ref<Array<Array<string>>>([]);
 const date = new Date();
+const mFirstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+
 const today = {
-  weekIndex: Math.floor((date.getDay() + date.getDate()) / 7),
-  dayIndex: (date.getDay() + date.getDate()) % 7,
+  weekIndex: Math.floor((mFirstDay.getDay() + date.getDate() - 1) / 7),
+  dayIndex: date.getDay(),
   day: date.getDate(),
   month: date.getMonth() + 1,
   year: date.getFullYear(),
@@ -86,7 +88,7 @@ for (let i = 0; i < weekNum; i++) {
   }
 }
 for (let i = 0; i < lastDay; i++) {
-  month.value[Math.floor((firstDay + i - 1) / 7)][(firstDay + i - 1) % 7] = `${i + 1}`;
+  month.value[Math.floor((firstDay + i) / 7)][(firstDay + i) % 7] = `${i + 1}`;
 }
 </script>
 <style lang="scss" scoped>

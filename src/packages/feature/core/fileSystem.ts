@@ -46,8 +46,6 @@ class VtronFile extends VtronFileInfo {
   path: string;
   parentPath: string;
   content: string;
-  // icon: string;
-  // type: string;
   id?: number;
   constructor(
     path: string,

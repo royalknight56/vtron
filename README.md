@@ -26,6 +26,16 @@ vtron, 基于Vue3的 Win10 UI 框架
 
 本框架可以让你的页面像win10视窗系统一样，运行一个网页上的win10系统。
 
+#### 项目相关讨论可以在Discussions中
+
+![GitHub issues](https://img.shields.io/github/issues/royalknight56/vtron)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/royalknight56/vtron)
+![GitHub](https://img.shields.io/github/license/royalknight56/vtron)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/royalknight56/vtron)
+![GitHub last commit](https://img.shields.io/github/last-commit/royalknight56/vtron)
+![GitHub Repo stars](https://img.shields.io/github/stars/royalknight56/vtron?style=social)
+![GitHub forks](https://img.shields.io/github/forks/royalknight56/vtron?style=social)
+
 ## 开发流程
 
 ### 使用Github模版

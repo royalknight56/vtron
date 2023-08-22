@@ -4,6 +4,7 @@ import { SystemStateEnum } from './enum';
 import { Notify } from '../feature/notification/Notification';
 import { VtronFile } from '@feature/core/fileSystem';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
+import { ShellInterface } from '@feature/core/ShellType';
 export interface SystemOptions {
   lang?: string;
   logo?: string;
@@ -13,6 +14,7 @@ export interface SystemOptions {
   menulist?: WinAppOptions[];
   rootStyle?: any;
   fs?: VtronFileInterface;
+  shell?: ShellInterface;
 }
 export interface WinApp {
   icon: string;

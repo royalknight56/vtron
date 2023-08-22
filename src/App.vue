@@ -20,6 +20,33 @@ import VtronPerfTest from './apps/VtronPerfTest.vue';
 import { onMounted } from 'vue';
 import { System } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
+// class TestShell {
+//   prefix = 'vtron@vtron:~$ ';
+//   router = '/';
+//   user = 'root';
+//   messageCallBack: (msg: string) => void;
+//   constructor() {
+//     this.messageCallBack = (msg: string) => {
+//       console.log(msg);
+//     };
+//   }
+//   on = (event: string, callback: (msg: string) => void) => {
+//     if (event === 'message') {
+//       this.messageCallBack = callback;
+//     }
+//   };
+//   emit(event: string, router: string, user: string) {
+//     if (event === 'start') {
+//       this.router = router;
+//       this.user = user;
+//       this.messageCallBack('hello world');
+//     }
+//   }
+//   async exec(input: string) {
+//     console.log(input);
+//     this.messageCallBack('hello world\r\n');
+//   }
+// }
 // async function save() {
 //   const state = await sys?.serializeState();
 //   localStorage.setItem('vtron-state', JSON.stringify(state));
@@ -120,7 +147,7 @@ onMounted(() => {
     //     // console.log(path, callback);
     //   },
     // },
-
+    // shell: new TestShell(),
     desktop: [
       {
         name: '测试Url',

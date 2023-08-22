@@ -147,7 +147,7 @@ class VtronFileSystem implements VtronFileInterface {
     if (this.db) {
       return Promise.resolve(this);
     }
-    return new Promise<VtronFileSystem>((resolve, reject) => {
+    return new Promise<VtronFileSystem>((resolve) => {
       this._ready = resolve;
     });
   }

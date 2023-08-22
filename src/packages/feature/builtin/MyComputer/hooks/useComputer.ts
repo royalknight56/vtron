@@ -43,7 +43,7 @@ export const useComputer = (adpater: {
       () => {
         refersh();
       },
-      (err) => {
+      () => {
         // Notify
       }
     );

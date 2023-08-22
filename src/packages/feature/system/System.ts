@@ -17,6 +17,7 @@ import { VtronFileInterface } from '@feature/core/FIleInterface';
 import { InitFile } from '@feature/core/SystemFileConfig';
 import { createInitFile } from './createInitFile';
 import { Notify } from '@feature/notification/Notification';
+import { ShellInterface } from '@feature/core/ShellType';
 let GLOBAL_SYSTEM: System | null = null;
 
 export type VtronPlugin = (system: System, rootState: RootState) => void;
@@ -39,6 +40,7 @@ class System {
   isFirstRun = true;
   ref!: HTMLElement;
   fs!: VtronFileInterface;
+  _shell!: ShellInterface;
   constructor(options?: SystemOptions) {
     this.mountGlobalSystem(this); // 挂载全局系统
 
@@ -91,6 +93,7 @@ class System {
     initEventListener(); // 初始化事件侦听
     initBuiltinFileOpener(this); // 注册内建文件打开器
     await this.initFileSystem(); // 初始化文件系统
+    await this.initShell(); // 初始化shell
     initBuiltinApp(this); // 初始化内建应用
     this.initApp(); // 初始化配置应用到app文件夹中
     initAppList(); // 刷新app文件夹，展示应用
@@ -144,6 +147,13 @@ class System {
     this.fs.registerWatcher(/^\/C\/Users\//, () => {
       initAppList();
     });
+  }
+  private async initShell() {
+    if (this._options.shell) {
+      this._shell = this._options.shell;
+    } else {
+      this._shell = new Shell(this, '/', 'root');
+    }
   }
   private async initSavedConfig() {
     const config = await this.fs.readFile('/C/System/Vtron/config.json');
@@ -199,8 +209,15 @@ class System {
   addMenuList(options: WinAppOptions) {
     this.addWindowSysLink('Menulist', options);
   }
+  createShell(): ShellInterface {
+    if (this._options.shell) {
+      return this._options.shell;
+    } else {
+      return new Shell(this, '/', 'root');
+    }
+  }
   async shell(cmd: string) {
-    const shello = new Shell(this, '/', 'root');
+    const shello = this.createShell();
     const cmdArr = cmd.split('\n');
     for (let i = 0; i < cmdArr.length; i++) {
       await shello.exec(cmdArr[i]);

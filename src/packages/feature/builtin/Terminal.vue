@@ -10,7 +10,6 @@ import { Terminal } from 'xterm';
 
 import { FitAddon } from 'xterm-addon-fit';
 import { useSystem } from '../system';
-import { Shell } from '../core/Shell';
 import { basename } from '@feature/core/Path';
 
 const sys = useSystem();
@@ -38,7 +37,7 @@ const getCursorOffsetLength = (offsetLength: number, subString = '') => {
 
 onMounted(() => {
   if (sys) {
-    const shell = new Shell(sys);
+    const shell = sys.createShell();
     shell.on('message', (msg) => {
       term.write(`${msg}`);
     });
@@ -51,9 +50,10 @@ onMounted(() => {
     });
     term.loadAddon(fitAddon);
     term.open(document.getElementById('terminal')!);
-    term.write('\x1b[2m' + 'Welcome to Vtron Terminal' + '\x1b[0m\r\n');
+    shell.emit('start', '/', 'root');
+    // term.write('\x1b[2m' + 'Welcome to Vtron Terminal' + '\x1b[0m\r\n');
 
-    term.write(shell.prefix);
+    // term.write(shell.prefix);
     onUnmounted(() => {
       term.dispose();
     });

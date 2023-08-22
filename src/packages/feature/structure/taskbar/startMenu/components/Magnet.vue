@@ -25,6 +25,7 @@ function handle(item: VtronFile) {
 .magnet-group {
   display: flex;
   flex-direction: row;
+  align-content: flex-start;
   flex-wrap: wrap;
   height: 100%;
   width: var(--magnet-width);

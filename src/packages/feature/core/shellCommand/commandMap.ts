@@ -8,6 +8,7 @@ import { sh } from './sh';
 import { pwd } from './pwd';
 import { open } from './open';
 import { node } from './node';
+import { mkdir } from './mkdir';
 const commandMap = [
   {
     name: 'ls',
@@ -38,6 +39,12 @@ const commandMap = [
     description: 'change file timestamps',
     usage: 'touch [OPTION]... FILE...',
     callback: touch,
+  },
+  {
+    name: 'mkdir',
+    description: 'make directories',
+    usage: 'mkdir [OPTION]... DIRECTORY...',
+    callback: mkdir,
   },
   {
     name: 'cat',

@@ -50,6 +50,7 @@ export function initBuiltinApp(system: System) {
   };
   system.addApp(terminal);
   system.addMagnet(terminal);
+
   system.addMenuList(terminal);
   const appStore = {
     name: i18n('appstore'),

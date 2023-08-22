@@ -1,8 +1,9 @@
 import { System } from '../system';
 import * as vPath from './Path';
+import { ShellInterface } from './ShellType';
 import { commandMap } from './shellCommand/commandMap';
 
-class Shell {
+class Shell implements ShellInterface {
   system: System;
   router: string;
   user: string;
@@ -51,11 +52,13 @@ class Shell {
             this.output(`\x1b[31m${outPath}: Not a file\x1b[0m\r\n`);
             return;
           } else {
-            const _this = this;
-            function pipeoutput(text: string) {
-              _this.system.fs.appendFile(outPath, text);
-            }
-            await command.callback(input, pipeoutput, this);
+            await command.callback(
+              input,
+              (text: string) => {
+                this.system.fs.appendFile(outPath, text);
+              },
+              this
+            );
           }
         } else {
           this.output(`\x1b[31m${outPath}: No such file or directory\x1b[0m\r\n`);
@@ -67,6 +70,12 @@ class Shell {
     } else {
       this.output(`\x1b[31m${input}: command not found\x1b[0m\r\n`);
     }
+  }
+  emit(event: 'start', router: string, user: string) {
+    this.user = user;
+    this.setRouter(router);
+    this.output('\x1b[2m' + 'Welcome to Vtron Terminal' + '\x1b[0m\r\n');
+    this.output(this.prefix);
   }
   on(event: 'message', callback: (message: string) => void) {
     this.output = callback;

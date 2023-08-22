@@ -1,5 +1,4 @@
 import type { Shell } from '../Shell';
-import * as vPath from '../Path';
 async function echo(input: string, output: (text: string) => void, shell: Shell) {
   const content = input.split(' ')[1];
   if (content) {

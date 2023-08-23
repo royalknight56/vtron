@@ -302,9 +302,9 @@ onUnmounted(() => {
   border: none;
   box-shadow: none;
 
-  .win_drag_border {
-    display: none;
-  }
+  // .win_drag_border {
+  //   display: none;
+  // }
 }
 
 .transparent {

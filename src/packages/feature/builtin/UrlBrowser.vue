@@ -16,12 +16,13 @@ const urlsrc = window?.config.content.split('::')[1];
 .viewer {
   width: 100%;
   height: 100%;
-  background-color: #000;
+  background-color: #00000000;
 }
 
 .viewer-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  border: none;
 }
 </style>

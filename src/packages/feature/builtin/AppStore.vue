@@ -1,18 +1,32 @@
 <template>
-  <iframe class="store" ref="storeRef" :key="frameKey" :src="storeUrl"></iframe>
+  <div class="store-outer">
+    <div class="store-handle" ref="handleRef">
+      <div v-if="!closing" @click="closeWin" class="close-button">×</div>
+    </div>
+    <iframe
+      class="store"
+      :class="{ closing: closing }"
+      ref="storeRef"
+      :key="frameKey"
+      :src="storeUrl"
+    ></iframe>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { inject, onMounted, ref } from 'vue';
 import { useSystem } from '../system';
-import { Dialog, basename } from '@packages/plug';
+import { BrowserWindow, Dialog, basename, makeDragable } from '@packages/plug';
 import { i18n } from '@feature/i18n';
 
 const storeRef = ref<HTMLIFrameElement | null>(null);
+const handleRef = ref<HTMLIFrameElement | null>(null);
+
 const frameKey = ref(0);
+const closing = ref(false);
 const isProduction = import.meta.env.PROD;
 const storeUrl = isProduction ? 'https://myim.online/store/' : 'http://localhost:3001';
-
+const browserWindow: BrowserWindow = inject('browserWindow')!;
 const handleMessage = (event: MessageEvent) => {
   if (event.source !== storeRef.value?.contentWindow) {
     return;
@@ -120,13 +134,59 @@ const handleReady = () => {
 
 onMounted(() => {
   window.addEventListener('message', handleMessage);
+  return makeDragable(handleRef.value!, browserWindow);
 });
+
+function closeWin() {
+  closing.value = true;
+  setTimeout(() => {
+    browserWindow.close();
+  }, 200);
+}
 </script>
 
 <style scoped>
+.store-outer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.store-handle {
+  width: 100%;
+  height: 40px;
+  background-color: rgba(213, 213, 213, 0.634);
+  user-select: none;
+  display: flex;
+  flex-direction: row-reverse;
+}
+.close-button {
+  user-select: none;
+  width: 60px;
+  height: 100%;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 0, 0, 0);
+  transition: all 0.2s;
+}
+.close-button:hover {
+  background-color: red;
+}
 .store {
   width: 100%;
   height: 100%;
   border: none;
+}
+.closing {
+  animation: closing 0.23s;
+}
+@keyframes closing {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 </style>

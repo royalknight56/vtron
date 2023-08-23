@@ -12,6 +12,7 @@ import AppStore from '@feature/builtin/AppStore.vue';
 import type { System } from '@feature/system';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
+import { WinAppOptions } from '@/packages/type/type';
 
 export function initBuiltinApp(system: System) {
   const myComputer = {
@@ -52,16 +53,18 @@ export function initBuiltinApp(system: System) {
   system.addMagnet(terminal);
 
   system.addMenuList(terminal);
-  const appStore = {
+  const appStore: WinAppOptions = {
     name: i18n('appstore'),
     icon: vtronStoreLogoIcon,
     window: {
       width: 900,
-      height: 600,
+      height: 630,
       center: true,
       title: i18n('appstore'),
       icon: vtronStoreLogoIcon,
       content: AppStore,
+      backgroundColor: '#ffffffaa',
+      frame: false,
       config: {
         path: '/',
       },

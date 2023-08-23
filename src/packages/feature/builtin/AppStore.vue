@@ -168,6 +168,7 @@ function closeWin() {
   justify-content: center;
   align-items: center;
   width: 200px;
+  color: rgba(117, 117, 117, 0.675);
   background-color: white;
   border-top-right-radius: 10px;
   user-select: none;

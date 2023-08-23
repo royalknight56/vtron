@@ -56,10 +56,8 @@ export function initBuiltinApp(system: System) {
     name: i18n('appstore'),
     icon: vtronStoreLogoIcon,
     window: {
-      width: 700,
-      height: 470,
-      // width: 900,
-      // height: 600,
+      width: 900,
+      height: 600,
       center: true,
       title: i18n('appstore'),
       icon: vtronStoreLogoIcon,

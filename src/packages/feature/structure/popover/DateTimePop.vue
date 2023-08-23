@@ -67,7 +67,7 @@ function onDayClick(weekIndex: number, dayIndex: number) {
 }
 function updateTime() {
   const date = new Date();
-  const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  const time = `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   const dateStr = `${today.year}/${today.month}/${today.day}`;
   timeDisplay.value = time;
   dateDisplay.value = dateStr;
@@ -89,6 +89,10 @@ for (let i = 0; i < weekNum; i++) {
 }
 for (let i = 0; i < lastDay; i++) {
   month.value[Math.floor((firstDay + i) / 7)][(firstDay + i) % 7] = `${i + 1}`;
+}
+
+function pad(num: number) {
+  return num.toString().padStart(2, '0');
 }
 </script>
 <style lang="scss" scoped>

@@ -11,7 +11,7 @@ const timeDisplay = ref(`00:00`);
 const dateDisplay = ref(`0000-00-00`);
 function updateTime() {
   const date = new Date();
-  const time = `${date.getHours()}:${date.getMinutes()}`;
+  const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
   const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
   timeDisplay.value = time;
   dateDisplay.value = dateStr;
@@ -22,6 +22,10 @@ setInterval(() => {
 onMounted(() => {
   updateTime();
 });
+// 把数字补齐两位
+function pad(num: number) {
+  return num.toString().padStart(2, '0');
+}
 </script>
 <style lang="scss" scoped>
 .date-time {

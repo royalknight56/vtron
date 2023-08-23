@@ -21,4 +21,4 @@ export { BrowserWindow } from '@feature/window/BrowserWindow';
 export { Notify } from '@feature/notification/Notification';
 export { Dialog } from '@feature/dialog/Dialog';
 export type { RootState, SystemOptions, WinApp } from '@packages/type/type';
-export { makeDragable } from './feature/window/MakeDragable';
+export { makeDragable, vDragable } from './feature/window/MakeDragable';

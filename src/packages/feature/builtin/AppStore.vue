@@ -1,6 +1,10 @@
 <template>
   <div class="store-outer">
-    <div class="store-handle" ref="handleRef">
+    <!-- <div class="store-handle" ref="handleRef">
+      <div class="up-text">VTRON Store</div>
+      <div v-if="!closing" @click="closeWin" class="close-button">×</div>
+    </div> -->
+    <div class="store-handle" v-dragable>
       <div class="up-text">VTRON Store</div>
       <div v-if="!closing" @click="closeWin" class="close-button">×</div>
     </div>
@@ -17,12 +21,10 @@
 <script lang="ts" setup>
 import { inject, onMounted, ref } from 'vue';
 import { useSystem } from '../system';
-import { BrowserWindow, Dialog, basename, makeDragable } from '@packages/plug';
+import { BrowserWindow, Dialog, basename, vDragable } from '@packages/plug';
 import { i18n } from '@feature/i18n';
 
 const storeRef = ref<HTMLIFrameElement | null>(null);
-const handleRef = ref<HTMLIFrameElement | null>(null);
-
 const frameKey = ref(0);
 const closing = ref(false);
 const isProduction = import.meta.env.PROD;
@@ -135,7 +137,7 @@ const handleReady = () => {
 
 onMounted(() => {
   window.addEventListener('message', handleMessage);
-  return makeDragable(handleRef.value!, browserWindow);
+  // return makeDragable(handleRef.value!, browserWindow);
 });
 
 function closeWin() {

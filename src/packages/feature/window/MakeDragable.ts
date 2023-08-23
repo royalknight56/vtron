@@ -1,6 +1,17 @@
 import { BrowserWindow } from './BrowserWindow';
 import { DragElement } from '@feature/window/dom/DragElement';
 import { WindowStateEnum } from './BrowserWindow';
+import { Directive } from 'vue';
+
+const vDragable: Directive = {
+  mounted(el, binding) {
+    const browserWindow = (binding.instance?.$ as any).provides.browserWindow as BrowserWindow;
+    el.unback = makeDragable(el, browserWindow);
+  },
+  beforeUnmount(el) {
+    el.unback?.();
+  },
+};
 
 function makeDragable(ref: HTMLElement, browserWindow: BrowserWindow) {
   const rect = ref.getBoundingClientRect();
@@ -18,4 +29,4 @@ function makeDragable(ref: HTMLElement, browserWindow: BrowserWindow) {
     dragAble.unMount();
   };
 }
-export { makeDragable };
+export { makeDragable, vDragable };

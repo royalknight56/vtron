@@ -41,12 +41,12 @@ function handle(item: VtronFile) {
     height: var(--magnet-item-size);
     font-size: var(--ui-font-size);
     background-color: var(--color-magnet-item);
-    border: 2px solid;
+    border: 1px solid;
     border-color: var(--color-gray-hover);
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-
+    transition: all 0.2s;
     .magnet-item_img {
       width: 40%;
       height: 40%;
@@ -60,6 +60,7 @@ function handle(item: VtronFile) {
   }
 
   .magnet-item:hover {
+    background-color: var(--color-gray-hover);
     border-color: var(--color-gray-active);
   }
 }

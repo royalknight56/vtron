@@ -54,7 +54,7 @@ function handle(item: VtronFile) {
   }
 
   .magnet-item:hover {
-    background-color: var(--color-gray-hover);
+    background-color: var(--color-gray-hover-light);
   }
 }
 </style>

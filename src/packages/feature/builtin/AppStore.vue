@@ -1,6 +1,7 @@
 <template>
   <div class="store-outer">
     <div class="store-handle" ref="handleRef">
+      <div class="up-text">VTRON Store</div>
       <div v-if="!closing" @click="closeWin" class="close-button">×</div>
     </div>
     <iframe
@@ -150,14 +151,26 @@ function closeWin() {
   display: flex;
   flex-direction: column;
   height: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: rgba(233, 233, 233, 0.759);
 }
 .store-handle {
   width: 100%;
   height: 40px;
-  background-color: rgba(213, 213, 213, 0.634);
   user-select: none;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.up-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  background-color: white;
+  border-top-right-radius: 10px;
+  user-select: none;
 }
 .close-button {
   user-select: none;

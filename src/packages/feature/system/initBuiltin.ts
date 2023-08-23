@@ -63,7 +63,7 @@ export function initBuiltinApp(system: System) {
       title: i18n('appstore'),
       icon: vtronStoreLogoIcon,
       content: AppStore,
-      backgroundColor: '#ffffffaa',
+      backgroundColor: '#ffffff00',
       frame: false,
       config: {
         path: '/',

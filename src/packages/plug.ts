@@ -22,5 +22,5 @@ export { Notify } from '@feature/notification/Notification';
 export { Dialog } from '@feature/dialog/Dialog';
 export type { RootState, SystemOptions, WinApp } from '@packages/type/type';
 export { vDragable } from '@feature/window/MakeDragable';
-export { ShellInterface } from '@feature/core/ShellType';
-export { VtronFileInterface } from '@feature/core/FIleInterface';
+export type { ShellInterface } from '@feature/core/ShellType';
+export type { VtronFileInterface } from '@feature/core/FIleInterface';

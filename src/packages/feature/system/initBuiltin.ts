@@ -1,13 +1,13 @@
 import vtronStoreLogoIcon from '@/assets/vtron-stroe-icon-nobg.png?url';
 import myComputerLogoIcon from '@packages/assets/computer.png?url';
 import infoIcon from '@packages/assets/info-icon.png?url';
-import termIcon from '@packages/assets/term.png?url';
+// import termIcon from '@packages/assets/term.png?url';
 import unknownIcon from '@packages/assets/unknown.png';
 
 import FileViewer from '@feature/builtin/FileViewer.vue';
 import MyComputerVue from '@feature/builtin/MyComputer/MyComputer.vue';
 import UrlBrowser from '@feature/builtin/UrlBrowser.vue';
-import Terminal from '@feature/builtin/Terminal.vue';
+// import Terminal from '@feature/builtin/Terminal.vue';
 import AppStore from '@feature/builtin/AppStore.vue';
 import type { System } from '@feature/system';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
@@ -33,26 +33,26 @@ export function initBuiltinApp(system: System) {
   system.addApp(myComputer);
   system.addMagnet(myComputer);
   system.addMenuList(myComputer);
-  const terminal = {
-    name: i18n('terminal'),
-    icon: termIcon,
-    window: {
-      width: 700,
-      height: 470,
-      center: true,
-      title: i18n('terminal'),
-      icon: termIcon,
-      content: Terminal,
-      resizable: false,
-      config: {
-        path: '/',
-      },
-    },
-  };
-  system.addApp(terminal);
-  system.addMagnet(terminal);
+  // const terminal = {
+  //   name: i18n('terminal'),
+  //   icon: termIcon,
+  //   window: {
+  //     width: 700,
+  //     height: 470,
+  //     center: true,
+  //     title: i18n('terminal'),
+  //     icon: termIcon,
+  //     content: Terminal,
+  //     resizable: false,
+  //     config: {
+  //       path: '/',
+  //     },
+  //   },
+  // };
+  // system.addApp(terminal);
+  // system.addMagnet(terminal);
 
-  system.addMenuList(terminal);
+  // system.addMenuList(terminal);
   const appStore: WinAppOptions = {
     name: i18n('appstore'),
     icon: vtronStoreLogoIcon,

@@ -106,6 +106,8 @@ class System {
     await this.initSavedConfig(); // 初始化保存的配置
 
     this.setRootStyle(this._rootState.system.options.rootStyle); // 设置根样式
+
+    this.emit('start');
   }
   /**
    * @description: 初始化壁纸
@@ -236,7 +238,7 @@ class System {
     } else {
       this.isFirstRun = true;
       localStorage.setItem('vtronFirstRun', 'true');
-      emitEvent('firstRun');
+      this.emit('firstRun');
       return true;
     }
   }
@@ -253,8 +255,14 @@ class System {
     this._rootState.system.state = SystemStateEnum.close;
     window.location.reload();
   }
+  emit(event: string, ...args: any[]) {
+    this.emitEvent(event, ...args);
+  }
   emitEvent(event: string, ...args: any[]) {
     emitEvent(event, ...args);
+  }
+  on(event: string, callback: (...args: any[]) => void): void {
+    this.mountEvent(event, callback);
   }
   mountEvent(event: string, callback: (...args: any[]) => void) {
     mountEvent(event, callback);

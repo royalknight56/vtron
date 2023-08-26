@@ -17,6 +17,17 @@ import { onUnmounted, inject } from 'vue';
 
 const browserWindow: BrowserWindow = inject('browserWindow') as BrowserWindow;
 const sys = useSystem();
+
+browserWindow.on('move', (...arg: any) => {
+  console.log('move', arg);
+});
+browserWindow.on('resize', (...arg: any) => {
+  console.log('resize', arg);
+});
+browserWindow.on('state', (...arg: any) => {
+  console.log('state', arg);
+});
+
 function nextStep(fun: () => void, time?: number) {
   return new Promise((resolve) => {
     const res = fun();

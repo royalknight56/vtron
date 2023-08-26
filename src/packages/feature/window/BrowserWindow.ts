@@ -1,4 +1,4 @@
-import { defineComponent, nextTick, reactive, DefineComponent, markRaw } from 'vue';
+import { defineComponent, reactive, markRaw } from 'vue';
 import { useRootState } from '../state/Root';
 import { Tree } from '@packages/util/Tree';
 import { Eventer } from '../event';
@@ -74,7 +74,7 @@ class BrowserWindow {
   content?: ReturnType<typeof defineComponent> | string;
   config: any;
   eventer: Eventer = new Eventer();
-  constructor(option?: BrowserWindowOption, parent?: BrowserWindow) {
+  constructor(option?: BrowserWindowOption) {
     this._option = Object.assign({}, BrowserWindow.defaultOption, option);
     this.config = this._option.config;
     if (typeof this._option.content !== 'string') {
@@ -133,7 +133,7 @@ class BrowserWindow {
       }
     }
   }
-  on(event: string, callback: Function) {
+  on(event: string, callback: (...arg: any) => void) {
     this.eventer.on(event, callback);
   }
   emit(event: string, ...args: any[]) {
@@ -157,6 +157,7 @@ class BrowserWindow {
       }
     });
     this.windowInfo.istop = true;
+    this.emit('moveTop');
   }
   show() {
     if (!this.windowInfo.isCreated) {
@@ -171,16 +172,18 @@ class BrowserWindow {
     // this._setZindex();
     this._makeWindowNotOverSize(); // 使得窗口在生成时，不超过屏幕
     this.moveTop();
-    this.eventer.emit('show', 'show');
+    this.emit('show', 'show');
   }
   destroy() {
     // 销毁窗口
     // TODO:
+
     this.close();
-    this.eventer.emit('closed', 'closed');
   }
   close() {
     // 关闭窗口
+    this.emit('close', 'close');
+    this.emit('state', 'close');
     this.windowInfo.isCreated = false;
     const rootState = useRootState();
     rootState.system.windowOrder.splice(
@@ -190,7 +193,6 @@ class BrowserWindow {
       1
     );
     rootState.system.windowTree.removeNode(this);
-    this.eventer.emit('closed', 'closed');
   }
   /**
    * Moves window to the center of the screen.
@@ -205,24 +207,33 @@ class BrowserWindow {
     if (this.windowInfo.y < 0) {
       this.windowInfo.y = 0;
     }
+    this.emit('move', this.windowInfo.x, this.windowInfo.y);
   }
   /**
    * Restores the window from minimized state to its previous state.
    */
   restore() {
     this.windowInfo.state = this._builtin.previousState;
+    this.emit('restore');
+    this.emit('state', 'restore');
   }
   maximize() {
     // 最大化窗口
     this._setState(WindowStateEnum.maximize);
+    this.emit('maximize');
+    this.emit('state', 'maximize');
   }
   unmaximize() {
     // 取消最大化窗口
     this._setState(WindowStateEnum.normal);
+    this.emit('unmaximize');
+    this.emit('state', 'unmaximize');
   }
   minimize() {
     // 最小化窗口
     this._setState(WindowStateEnum.minimize);
+    this.emit('minimize');
+    this.emit('state', 'minimize');
   }
 
   isVisible() {
@@ -284,20 +295,25 @@ class BrowserWindow {
     } else {
       this._setState(WindowStateEnum.normal);
     }
+    this.emit('fullscreen', flag);
   }
   setSize(width: number, height: number) {
     this.windowInfo.width = width;
     this.windowInfo.height = height;
+    this.emit('resize', width, height);
   }
   setTitle(title: string) {
     this.windowInfo.title = title;
+    this.emit('title', title);
   }
   setPosition(x: number, y: number) {
     this.windowInfo.x = x;
     this.windowInfo.y = y;
+    this.emit('move', x, y);
   }
   setDisable(flag: boolean) {
     this.windowInfo.disable = flag;
+    this.emit('disable', flag);
   }
 }
 export { BrowserWindow, WindowStateEnum, BrowserWindowOption };

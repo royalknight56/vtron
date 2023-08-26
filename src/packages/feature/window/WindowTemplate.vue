@@ -179,6 +179,7 @@ onMounted(() => {
     if (windowInfo.state !== WindowStateEnum.maximize) {
       windowInfo.x = x;
       windowInfo.y = y;
+      browserWindow.emit('move', windowInfo.x, windowInfo.y);
     }
   });
 });
@@ -196,6 +197,7 @@ onMounted(() => {
     windowInfo.height = height || windowInfo.height;
     windowInfo.x = x || windowInfo.x;
     windowInfo.y = y || windowInfo.y;
+    browserWindow.emit('resize', windowInfo.width, windowInfo.height);
   });
 });
 function startScale(e: MouseEvent | TouchEvent, dire: string) {
@@ -232,9 +234,6 @@ onUnmounted(() => {
   flex-direction: column;
   box-shadow: var(--window-box-shadow);
   border-radius: var(--window-border-radius);
-
-  overflow: hidden;
-
   .wintmp_main {
     position: relative;
     width: 100%;

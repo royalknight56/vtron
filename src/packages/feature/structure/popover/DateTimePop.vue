@@ -181,7 +181,8 @@ function pad(num: number) {
           background-color: var(--color-gray-op9);
         }
         .istoday.chosen {
-          box-shadow: inset 0 0 0px 4px var(--color-dark);
+          box-shadow: inset 0 0 0px 3px var(--color-dark);
+          border: 3px solid white;
         }
         .istoday.chosen:hover {
           border: 3px solid var(--color-gray-active);

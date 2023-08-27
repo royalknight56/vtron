@@ -35,10 +35,10 @@ function handle(item: VtronFile) {
     width: var(--menulist-width);
     height: var(--menulist-item-height);
     font-size: var(--ui-font-size);
-    padding: 6px;
+    padding: 2px 6px;
     display: flex;
     align-items: center;
-    margin-left: 10px;
+    // margin-left: 10px;
 
     .magnet-item_img {
       height: 80%;

@@ -120,7 +120,7 @@ function allClear() {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.2s ease;
+  transition: all 0.3s var(--aniline);
 }
 
 .fade-enter-to,

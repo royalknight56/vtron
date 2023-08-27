@@ -56,7 +56,7 @@ function emitClick(e: MouseEvent) {
 }
 
 .startmenu-enter-active {
-  transition: all 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: all 0.3s var(--aniline);
 }
 
 .startmenu-leave-active {

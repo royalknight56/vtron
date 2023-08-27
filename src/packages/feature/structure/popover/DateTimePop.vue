@@ -100,16 +100,17 @@ function pad(num: number) {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 300px;
+  width: 320px;
   height: 500px;
-  background-color: var(--color-gray);
+  background-color: var(--color-gray-dark);
   border: 1px solid rgba(0, 0, 0, 0.19);
   user-select: none;
+  box-sizing: border-box;
   .date-up {
     width: 100%;
-    height: 70px;
-    padding: 10px;
-    margin-bottom: 10px;
+    height: 90px;
+    padding: 20px;
+    margin-bottom: 20px;
     box-sizing: border-box;
     .date-time {
       display: flex;
@@ -117,19 +118,19 @@ function pad(num: number) {
       align-items: flex-start;
       justify-content: center;
       .time {
-        font-size: 30px;
-        font-weight: 100;
+        font-size: 40px;
+        font-weight: 300;
       }
       .date {
-        font-size: 18px;
-        font-weight: 100;
+        font-size: 14px;
+        font-weight: 400;
       }
     }
   }
   .date-middle {
-    width: 100%;
     height: 430px;
     padding-top: 10px;
+    padding: 10px 8px;
     border-top: 1px solid rgba(0, 0, 0, 0.19);
     .week {
       width: 100%;
@@ -143,7 +144,7 @@ function pad(num: number) {
         justify-content: center;
         span {
           font-size: 12px;
-          font-weight: 100;
+          font-weight: 500;
         }
       }
     }
@@ -164,9 +165,10 @@ function pad(num: number) {
           align-items: center;
           justify-content: center;
           border: 3px solid transparent;
+          transition: all 0.1s;
           span {
             font-size: 12px;
-            font-weight: 100;
+            font-weight: 400;
           }
         }
         .day:hover {
@@ -175,10 +177,16 @@ function pad(num: number) {
           border: 3px solid var(--color-gray-active);
         }
         .istoday {
-          background-color: var(--color-gray-active);
+          background-color: var(--color-gray-op9);
+        }
+        .istoday.chosen {
+          box-shadow: inset 0 0 0px 4px var(--color-dark);
+        }
+        .istoday.chosen:hover {
+          border: 3px solid var(--color-gray-active);
         }
         .chosen {
-          border: 3px solid var(--color-dark);
+          border: 3px solid rgba(77, 77, 77, 0.7);
         }
         .chosen:hover {
           border: 3px solid var(--color-dark-hover);
@@ -188,9 +196,11 @@ function pad(num: number) {
   }
 }
 
-.fade-enter-active,
+.fade-enter-active {
+  transition: all 0.4s var(--aniline);
+}
 .fade-leave-active {
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 }
 
 .fade-enter-to,

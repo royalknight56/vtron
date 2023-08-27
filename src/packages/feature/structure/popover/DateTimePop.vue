@@ -75,10 +75,11 @@ function updateTime() {
 const firstDay = new Date(today.year, today.month - 1, 1).getDay();
 const lastDay = new Date(today.year, today.month, 0).getDate();
 const weekNum = Math.ceil((firstDay + lastDay) / 7);
-setInterval(() => {
-  updateTime();
-}, 500);
+
 onMounted(() => {
+  setInterval(() => {
+    updateTime();
+  }, 500);
   updateTime();
 });
 for (let i = 0; i < weekNum; i++) {

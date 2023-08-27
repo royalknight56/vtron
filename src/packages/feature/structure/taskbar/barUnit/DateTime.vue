@@ -16,11 +16,12 @@ function updateTime() {
   timeDisplay.value = time;
   dateDisplay.value = dateStr;
 }
-setInterval(() => {
-  updateTime();
-}, 5000);
+
 onMounted(() => {
   updateTime();
+  setInterval(() => {
+    updateTime();
+  }, 5000);
 });
 // 把数字补齐两位
 function pad(num: number) {

@@ -17,7 +17,7 @@ const rootState: RootState = reactive({
       system: [],
     },
     windowTree: new Tree<BrowserWindow>(),
-    windowOrder: Array<BrowserWindow>(),
+    windowOrder: new Array<BrowserWindow>(),
     windowMap: {
       Desktop: new Map<string, BrowserWindowOption>(),
       Magnet: new Map<string, BrowserWindowOption>(),

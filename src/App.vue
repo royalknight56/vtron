@@ -229,11 +229,11 @@ onMounted(() => {
         },
       },
     ],
-    rootStyle: {
-      '--color-ui-desk-item-title': '#a30',
-      // '--window-border-radius': '4px',
-      // '--menu-bar-height':'100px'
-    },
+    // rootStyle: {
+    //   // '--color-ui-desk-item-title': '#a30',
+    //   // '--window-border-radius': '4px',
+    //   // '--menu-bar-height':'100px'
+    // },
   });
 });
 </script>

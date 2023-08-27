@@ -224,10 +224,10 @@ onUnmounted(() => {
   position: absolute;
   padding: 0;
   margin: 0;
-  left: 0;
-  top: 0;
-  width: 100px;
-  height: 100px;
+  // left: 0;
+  // top: 0;
+  width: max-content;
+  height: max-content;
   background-color: #fff;
   border: var(--window-border);
   display: flex;
@@ -276,6 +276,7 @@ onUnmounted(() => {
 }
 
 .min {
+  visibility: hidden;
   display: none;
 }
 

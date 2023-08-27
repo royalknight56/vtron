@@ -103,7 +103,9 @@ class BrowserWindow {
       });
   }
   private _setState(state: WindowStateEnum) {
-    this._builtin.previousState = this.windowInfo.state;
+    if (state !== WindowStateEnum.minimize) {
+      this._builtin.previousState = state;
+    }
     this.windowInfo.state = state;
   }
   private _getWinInner() {
@@ -184,15 +186,19 @@ class BrowserWindow {
     // 关闭窗口
     this.emit('close', 'close');
     this.emit('state', 'close');
-    this.windowInfo.isCreated = false;
     const rootState = useRootState();
-    rootState.system.windowOrder.splice(
-      rootState.system.windowOrder.findIndex((val) => {
-        return val === this;
-      }),
-      1
-    );
+    this.windowInfo.isCreated = false;
+
+    // rootState.system.windowOrder.splice(ind, 1);
     rootState.system.windowTree.removeNode(this);
+    setTimeout(() => {
+      const ind = rootState.system.windowOrder.findIndex((val) => {
+        return val === this;
+      });
+      rootState.system.windowOrder.splice(ind, 1);
+      // delete this;
+      console.dir(this);
+    }, 500);
   }
   /**
    * Moves window to the center of the screen.

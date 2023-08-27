@@ -30,13 +30,13 @@ function handleRightClick(e: MouseEvent) {
       {
         name: i18n('maximize'),
         click: () => {
-          props.windowNode.minimize();
+          props.windowNode.maximize();
         },
       },
       {
         name: i18n('minimize'),
         click: () => {
-          props.windowNode.maximize();
+          props.windowNode.minimize();
         },
       },
     ],
@@ -46,6 +46,8 @@ function handleClick() {
   props.windowNode.moveTop();
   if (props.windowNode.windowInfo.state === 'minimize') {
     props.windowNode.restore();
+  } else {
+    props.windowNode.minimize();
   }
 }
 </script>

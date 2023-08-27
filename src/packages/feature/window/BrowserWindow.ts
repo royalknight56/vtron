@@ -188,16 +188,12 @@ class BrowserWindow {
     this.emit('state', 'close');
     const rootState = useRootState();
     this.windowInfo.isCreated = false;
-
-    // rootState.system.windowOrder.splice(ind, 1);
     rootState.system.windowTree.removeNode(this);
     setTimeout(() => {
       const ind = rootState.system.windowOrder.findIndex((val) => {
         return val === this;
       });
       rootState.system.windowOrder.splice(ind, 1);
-      // delete this;
-      console.dir(this);
     }, 500);
   }
   /**

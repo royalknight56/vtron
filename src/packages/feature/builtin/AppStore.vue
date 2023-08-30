@@ -153,7 +153,7 @@ function closeWin() {
   display: flex;
   flex-direction: column;
   height: 100%;
-  border-radius: 10px;
+  border-radius: 6px;
   overflow: hidden;
   background-color: rgba(233, 233, 233, 0.759);
 }
@@ -185,9 +185,11 @@ function closeWin() {
   align-items: center;
   background-color: rgba(255, 0, 0, 0);
   transition: all 0.2s;
+  cursor: pointer;
 }
 .close-button:hover {
   background-color: red;
+  color: white;
 }
 .store {
   width: 100%;

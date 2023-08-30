@@ -51,7 +51,7 @@ class Dialog {
         win.setDisable(true);
       }
     });
-    dialogwin.on('closed', () => {
+    dialogwin.on('close', () => {
       useRootState().system.windowOrder.forEach((win) => {
         if (!(toRaw(win) === dialogwin)) {
           win.setDisable(false);

@@ -189,6 +189,7 @@ class BrowserWindow {
     const rootState = useRootState();
     this.windowInfo.isCreated = false;
     rootState.system.windowTree.removeNode(this);
+    // Vue bug
     setTimeout(() => {
       const ind = rootState.system.windowOrder.findIndex((val) => {
         return val === this;

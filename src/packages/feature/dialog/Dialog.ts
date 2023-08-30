@@ -3,7 +3,9 @@ import { useRootState } from '../state/Root';
 import { BrowserWindow } from '../window/BrowserWindow';
 import DialogVue from './DialogTemp.vue';
 class Dialog {
-  constructor() {}
+  constructor() {
+    // static class
+  }
   public static showMessageBox(option: {
     message?: string;
     type?: 'info' | 'error' | 'question' | 'warning';
@@ -26,7 +28,7 @@ class Dialog {
 
     const porm = new Promise<{
       response: number;
-    }>((resolve, reject) => {
+    }>((resolve) => {
       promres = resolve;
     });
 

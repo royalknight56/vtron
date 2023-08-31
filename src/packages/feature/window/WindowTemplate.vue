@@ -261,6 +261,8 @@ onUnmounted(() => {
   width: 100% !important;
   height: 100% !important;
   transition:
+    left 0.1s ease-in-out,
+    top 0.1s ease-in-out,
     width 0.1s ease-in-out,
     height 0.1s ease-in-out;
 }
@@ -268,6 +270,7 @@ onUnmounted(() => {
 .disable {
   .wintmp_uper {
     pointer-events: none;
+    user-select: none;
   }
 
   .wintmp_main {

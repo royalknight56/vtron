@@ -59,7 +59,7 @@ import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 // }
 // const memoryFs: Record<string, VtronFile> = {};
 onMounted(() => {
-  new System({
+  const sys = new System({
     // lang: 'en-US',
     // lang: "zh-CN",
     logo: vtronLogoIcon,
@@ -229,11 +229,31 @@ onMounted(() => {
         },
       },
     ],
+
     // rootStyle: {
     //   // '--color-ui-desk-item-title': '#a30',
     //   // '--window-border-radius': '4px',
     //   // '--menu-bar-height':'100px'
     // },
+  });
+  const testapp = {
+    name: '测试按钮4',
+    // icon: testicon,
+    window: {
+      content: TestButton,
+      title: '测试按钮',
+      icon: testicon,
+      center: true,
+      // backgroundColor: "rgba(0,0,0,1)",
+    },
+  };
+  sys.whenReady().then((readySys) => {
+    for (let i = 0; i < 20; i++) {
+      readySys.addMenuList({
+        ...testapp,
+        name: `测试按钮${i}`,
+      });
+    }
   });
 });
 </script>

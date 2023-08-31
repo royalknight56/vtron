@@ -7,6 +7,6 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import Win10 from './packages/plug';
-import backimg from './assets/back.jpg';
+
 const app = createApp(App).use(Win10);
 app.mount('#app-hash');

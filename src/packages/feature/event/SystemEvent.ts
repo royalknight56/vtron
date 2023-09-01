@@ -1,4 +1,4 @@
-import { mountEvent, redirectEvent, emitEvent } from './EventHook';
+import { mountEvent, emitEvent } from './EventHook';
 import type { RootState } from '@packages/type/type';
 import { useRootState } from '../state/Root';
 
@@ -8,7 +8,7 @@ function initSizeEvent() {
     rootState.system.info.screenWidth = window?.innerWidth || 0;
     rootState.system.info.screenHeight = window?.innerHeight || 0;
   }
-  mountEvent('system.initSize', (source: string, e: any) => {
+  mountEvent('system.initSize', () => {
     refreshDesktopSize(rootState);
   });
   window?.addEventListener('resize', () => {

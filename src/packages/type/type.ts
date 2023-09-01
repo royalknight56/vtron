@@ -16,6 +16,8 @@ export interface SystemOptions {
   rootStyle?: any;
   fs?: VtronFileInterface;
   shell?: ShellInterface;
+  noPassword?: boolean;
+  loginCallback?: (username: string, password: string) => Promise<boolean>;
 }
 export interface WinApp {
   icon: string;

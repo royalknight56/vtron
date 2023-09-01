@@ -98,7 +98,9 @@ class System {
     this.initApp(); // 初始化配置应用到app文件夹中
     initAppList(); // 刷新app文件夹，展示应用
 
-    this._rootState.system.state = SystemStateEnum.open;
+    // 判断是否登录
+    this.isLogin();
+    // this._rootState.system.state = SystemStateEnum.open;
     this._ready && this._ready(this);
 
     this.runPlugin(this); // 运行fs中插件
@@ -109,6 +111,30 @@ class System {
 
     this.emit('start');
   }
+  /**
+   * @description: 判断是否登录
+   */
+  private isLogin() {
+    if (localStorage.getItem('vtron-no-needs-login') === 'true') {
+      this._rootState.system.state = SystemStateEnum.open;
+      return;
+    }
+    if (this._options.loginCallback) {
+      this._rootState.system.state = SystemStateEnum.lock;
+      const tempCallBack = this._options.loginCallback;
+      this._options.loginCallback = async (username: string, password: string) => {
+        const res = await tempCallBack(username, password);
+        if (res) {
+          this._rootState.system.state = SystemStateEnum.open;
+          return true;
+        }
+        return false;
+      };
+    } else {
+      this._rootState.system.state = SystemStateEnum.open;
+    }
+  }
+
   /**
    * @description: 初始化壁纸
    */

@@ -64,6 +64,15 @@ onMounted(() => {
     // lang: "zh-CN",
     logo: vtronLogoIcon,
     background: 'https://picsum.photos/1920/1080',
+    async loginCallback() {
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(true);
+        }, 200);
+      });
+      return true;
+    },
+    noPassword: true,
     // fs: {
     //   readFile: async (path: string) => {
     //     return memoryFs[path]?.content;

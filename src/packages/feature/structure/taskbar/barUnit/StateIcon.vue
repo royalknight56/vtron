@@ -16,18 +16,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
 import { emitEvent } from '@feature/event';
 import Battery from './Battery.vue';
 import DateTime from './DateTime.vue';
 import NetWork from './NetWork.vue';
 import MessageIcon from './MessageIcon.vue';
 
-const isDataPopShow = ref(false);
-
 function handleClick() {
   emitEvent('datetime.show');
-  isDataPopShow.value = !isDataPopShow.value;
 }
 function handleNotifyClick() {
   emitEvent('messagecenter.show');

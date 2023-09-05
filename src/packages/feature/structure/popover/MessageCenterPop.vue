@@ -41,13 +41,12 @@ const notifyGroup = useRootState().system.message.notify;
 const systemGroup = useRootState().system.message.system;
 const isPopShow = ref(false);
 mountEvent('messagecenter.show', () => {
-  isPopShow.value = true;
+  isPopShow.value = !isPopShow.value;
 });
 mountEvent('messagecenter.hidden', () => {
   isPopShow.value = false;
 });
 function allClear() {
-  // notifyGroup.value = [];
   useRootState().system.message.notify.splice(0, notifyGroup.length);
 }
 </script>

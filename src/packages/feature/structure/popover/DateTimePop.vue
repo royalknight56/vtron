@@ -38,7 +38,7 @@ import { onMounted, reactive, ref } from 'vue';
 import { mountEvent } from '@feature/event';
 const isDataPopShow = ref(false);
 mountEvent('datetime.show', () => {
-  isDataPopShow.value = true;
+  isDataPopShow.value = !isDataPopShow.value;
 });
 mountEvent('datetime.hidden', () => {
   isDataPopShow.value = false;

@@ -107,6 +107,7 @@ function pad(num: number) {
   border: 1px solid rgba(0, 0, 0, 0.19);
   user-select: none;
   box-sizing: border-box;
+  z-index: 100;
   .date-up {
     width: 100%;
     height: 90px;

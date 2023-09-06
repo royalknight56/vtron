@@ -15,64 +15,50 @@ import { i18n } from '@feature/i18n';
 import { WinAppOptions } from '@/packages/type/type';
 
 export function initBuiltinApp(system: System) {
-  const myComputer = {
-    name: i18n('computer'),
-    icon: myComputerLogoIcon,
-    window: {
-      width: 800,
-      height: 600,
-      center: true,
-      title: i18n('computer'),
+  if (system._options.builtinApp?.length === 0) return;
+  if (system._options.builtinApp?.includes('MyComputer')) {
+    const myComputer = {
+      name: i18n('computer'),
       icon: myComputerLogoIcon,
-      content: MyComputerVue,
-      config: {
-        path: '/C',
+      window: {
+        width: 800,
+        height: 600,
+        center: true,
+        title: i18n('computer'),
+        icon: myComputerLogoIcon,
+        content: MyComputerVue,
+        config: {
+          path: '/C',
+        },
       },
-    },
-  };
-  system.addApp(myComputer);
-  system.addMagnet(myComputer);
-  system.addMenuList(myComputer);
-  // const terminal = {
-  //   name: i18n('terminal'),
-  //   icon: termIcon,
-  //   window: {
-  //     width: 700,
-  //     height: 470,
-  //     center: true,
-  //     title: i18n('terminal'),
-  //     icon: termIcon,
-  //     content: Terminal,
-  //     resizable: false,
-  //     config: {
-  //       path: '/',
-  //     },
-  //   },
-  // };
-  // system.addApp(terminal);
-  // system.addMagnet(terminal);
+    };
+    system.addApp(myComputer);
+    system.addMagnet(myComputer);
+    system.addMenuList(myComputer);
+  }
 
-  // system.addMenuList(terminal);
-  const appStore: WinAppOptions = {
-    name: i18n('appstore'),
-    icon: vtronStoreLogoIcon,
-    window: {
-      width: 900,
-      height: 630,
-      center: true,
-      title: i18n('appstore'),
+  if (system._options.builtinApp?.includes('AppStore')) {
+    const appStore: WinAppOptions = {
+      name: i18n('appstore'),
       icon: vtronStoreLogoIcon,
-      content: AppStore,
-      backgroundColor: '#ffffff00',
-      frame: false,
-      config: {
-        path: '/',
+      window: {
+        width: 900,
+        height: 630,
+        center: true,
+        title: i18n('appstore'),
+        icon: vtronStoreLogoIcon,
+        content: AppStore,
+        backgroundColor: '#ffffff00',
+        frame: false,
+        config: {
+          path: '/',
+        },
       },
-    },
-  };
-  system.addApp(appStore);
-  system.addMagnet(appStore);
-  system.addMenuList(appStore);
+    };
+    system.addApp(appStore);
+    system.addMagnet(appStore);
+    system.addMenuList(appStore);
+  }
 }
 export function initBuiltinFileOpener(system: System) {
   system.registerFileOpener('.exe', {

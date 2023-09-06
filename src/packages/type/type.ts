@@ -5,11 +5,12 @@ import { Notify } from '../feature/notification/Notification';
 import { VtronFile } from '@feature/core/fileSystem';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
 import { ShellInterface } from '@feature/core/ShellType';
-
+export type BuiltinApp = 'MyComputer' | 'AppStore';
 export interface SystemOptions {
   lang?: string;
   logo?: string;
   background?: string;
+  builtinApp?: BuiltinApp[];
   desktop?: WinAppOptions[];
   magnet?: WinAppOptions[];
   menulist?: WinAppOptions[];

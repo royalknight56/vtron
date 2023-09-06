@@ -61,6 +61,7 @@
     "rollup-plugin-typescript2": "^0.34.1",
     "rollup-plugin-visualizer": "^5.8.0",
     "sass": "^1.45.1",
+    "semantic-release": "^21.1.1",
     "typescript": "^5.1.6",
     "vite": "^3.0.9",
     "vite-plugin-dts": "^0.8.3",

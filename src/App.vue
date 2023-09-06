@@ -72,6 +72,7 @@ onMounted(() => {
       });
       return true;
     },
+    // builtinApp: ['MyComputer', 'AppStore'],
     noPassword: true,
     // fs: {
     //   readFile: async (path: string) => {

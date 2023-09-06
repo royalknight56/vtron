@@ -1,6 +1,6 @@
 {
   "name": "vtron",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "files": [
     "distlib",
     "distlib/*.css"

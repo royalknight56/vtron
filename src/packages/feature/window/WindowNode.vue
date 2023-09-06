@@ -22,14 +22,14 @@ defineProps<{
 .windowanimate-enter-to,
 .windowanimate-leave-from {
   opacity: 1;
-  filter: blur(0px);
+  // filter: blur(0px);
   transform: scale(1);
 }
 
 .windowanimate-enter-from,
 .windowanimate-leave-to {
   opacity: 0;
-  filter: blur(10px);
+  // filter: blur(10px);
   transform: scale(0.9);
 }
 </style>

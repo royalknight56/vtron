@@ -336,6 +336,14 @@ class System {
   deserializeState(state: string) {
     this.fs.deserializeFileSystem(JSON.parse(state));
   }
+
+  outerFileDropCallback:
+    | ((path: string, list: FileList | undefined, process: (path: string) => void) => void)
+    | null = null;
+  // 当从外部拖入文件时
+  onOuterFileDrop(func: (path: string, list: FileList | undefined, process: (path: string) => void) => void) {
+    this.outerFileDropCallback = func;
+  }
 }
 function useSystem() {
   return GLOBAL_SYSTEM!;

@@ -99,9 +99,15 @@ export function useFileDrag(system: System) {
       folderDrop(ev, path);
     } else {
       const oFileList = ev?.dataTransfer?.files;
-      outerFileDrop(path, oFileList, () => {
-        emitEvent('file.props.edit');
-      });
+      if (system.outerFileDropCallback) {
+        system.outerFileDropCallback?.(path, oFileList, () => {
+          emitEvent('file.props.edit');
+        });
+      } else {
+        outerFileDrop(path, oFileList, () => {
+          emitEvent('file.props.edit');
+        });
+      }
     }
   }
   return {

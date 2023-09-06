@@ -246,6 +246,9 @@ onMounted(() => {
     //   // '--menu-bar-height':'100px'
     // },
   });
+  sys.onOuterFileDrop((files) => {
+    console.log(files);
+  });
   const testapp = {
     name: '测试按钮4',
     // icon: testicon,

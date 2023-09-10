@@ -10,8 +10,6 @@ class Shell implements ShellInterface {
 
   prefix: string;
 
-  private inputTextList: string[];
-  private childrenDir: string[];
   private output: (message: string) => void;
   // private innerCommand: string[] = ['ls', 'cd', 'pwd', 'clear', 'help'];
   private innerCommand: {
@@ -28,8 +26,6 @@ class Shell implements ShellInterface {
 
     this.prefix = `${user} ${router}>`;
 
-    this.inputTextList = [];
-    this.childrenDir = [];
     this.output = (message: string) => {
       console.log(message);
     };
@@ -71,11 +67,15 @@ class Shell implements ShellInterface {
       this.output(`\x1b[31m${input}: command not found\x1b[0m\r\n`);
     }
   }
-  emit(event: 'start', router: string, user: string) {
-    this.user = user;
-    this.setRouter(router);
-    this.output('\x1b[2m' + 'Welcome to Vtron Terminal' + '\x1b[0m\r\n');
-    this.output(this.prefix);
+  emit(event: 'start' | 'key') {
+    if (event === 'start') {
+      this.output('\x1b[2m' + 'Welcome to Vtron Terminal' + '\x1b[0m\r\n');
+      this.output(this.prefix);
+    }
+    // this.user = user;
+    // this.setRouter(router);
+    // this.output('\x1b[2m' + 'Welcome to Vtron Terminal' + '\x1b[0m\r\n');
+    // this.output(this.prefix);
   }
   on(event: 'message', callback: (message: string) => void) {
     this.output = callback;

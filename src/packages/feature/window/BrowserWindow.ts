@@ -225,12 +225,18 @@ class BrowserWindow {
     this._setState(WindowStateEnum.maximize);
     this.emit('maximize');
     this.emit('state', 'maximize');
+    setTimeout(() => {
+      this.emit('resize', this.windowInfo.width, this.windowInfo.height);
+    }, 200);
   }
   unmaximize() {
     // 取消最大化窗口
     this._setState(WindowStateEnum.normal);
     this.emit('unmaximize');
     this.emit('state', 'unmaximize');
+    setTimeout(() => {
+      this.emit('resize', this.windowInfo.width, this.windowInfo.height);
+    }, 100);
   }
   minimize() {
     // 最小化窗口

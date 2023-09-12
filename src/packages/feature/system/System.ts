@@ -115,13 +115,20 @@ class System {
    * @description: 判断是否登录
    */
   private isLogin() {
-    if (localStorage.getItem('vtron-no-needs-login') === 'true') {
+    if (!this._options.login) {
       this._rootState.system.state = SystemStateEnum.open;
       return;
-    }
-    if (this._options.loginCallback) {
+    } else {
+      if (this._options.login.init?.()) {
+        this._rootState.system.state = SystemStateEnum.open;
+        return;
+      }
+
       this._rootState.system.state = SystemStateEnum.lock;
       const tempCallBack = this._options.loginCallback;
+      if (!tempCallBack) {
+        throw new Error('没有设置登录回调函数');
+      }
       this._options.loginCallback = async (username: string, password: string) => {
         const res = await tempCallBack(username, password);
         if (res) {
@@ -130,8 +137,6 @@ class System {
         }
         return false;
       };
-    } else {
-      this._rootState.system.state = SystemStateEnum.open;
     }
   }
 

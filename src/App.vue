@@ -64,6 +64,11 @@ onMounted(() => {
     // lang: "zh-CN",
     logo: vtronLogoIcon,
     background: 'https://picsum.photos/1920/1080',
+
+    login: {
+      username: '323dmin',
+      password: 'admin',
+    },
     async loginCallback() {
       await new Promise((resolve) => {
         setTimeout(() => {
@@ -73,7 +78,7 @@ onMounted(() => {
       return true;
     },
     // builtinApp: ['MyComputer', 'AppStore'],
-    noPassword: true,
+    // noPassword: true,
     // fs: {
     //   readFile: async (path: string) => {
     //     return memoryFs[path]?.content;

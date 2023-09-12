@@ -11,19 +11,17 @@
         rootState.system.state == SystemStateEnum.open || rootState.system.state == SystemStateEnum.lock
       "
     >
-      <template v-if="!noNeedsLogin">
-        <Transition name="moveup">
-          <div class="login" v-if="rootState.system.state == SystemStateEnum.lock">
-            <LockDesktop> </LockDesktop>
-          </div>
-        </Transition>
-        <Transition name="fadeout">
-          <DesktopBackground
-            v-if="rootState.system.state == SystemStateEnum.lock"
-            class="mask"
-          ></DesktopBackground>
-        </Transition>
-      </template>
+      <Transition name="moveup">
+        <div class="login" v-if="rootState.system.state == SystemStateEnum.lock">
+          <LockDesktop> </LockDesktop>
+        </div>
+      </Transition>
+      <Transition name="fadeout">
+        <DesktopBackground
+          v-if="rootState.system.state == SystemStateEnum.lock"
+          class="mask"
+        ></DesktopBackground>
+      </Transition>
 
       <OpenDesktop v-if="rootState.system.state == SystemStateEnum.open"></OpenDesktop>
     </template>
@@ -42,7 +40,6 @@ import { onMounted, ref } from 'vue';
 
 const rootState = useRootState();
 const screen = ref<HTMLElement>();
-const noNeedsLogin = localStorage.getItem('vtron-no-needs-login') == 'true';
 onMounted(() => {
   rootState.ref = screen.value;
 });

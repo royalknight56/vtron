@@ -22,8 +22,13 @@ export interface SystemOptions {
   menulist?: WinAppOptions[];
   rootStyle?: any;
   fs?: VtronFileInterface;
-  initFile: InitFileItem;
+  initFile?: InitFileItem;
   shell?: ShellInterface;
+  login?: {
+    username: string;
+    password: string;
+    init?: () => boolean;
+  };
   noPassword?: boolean;
   loginCallback?: (username: string, password: string) => Promise<boolean>;
 }

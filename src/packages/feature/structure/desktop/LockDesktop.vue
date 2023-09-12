@@ -19,8 +19,8 @@ function loginSuccess() {
   //     lockClassName.value = 'screen-hide';
   //   }, 500);
 }
-const userName = ref('admin');
-const userPassword = ref('');
+const userName = ref(sys._options.login?.username || 'admin');
+const userPassword = ref(sys._options.login?.password || '');
 async function onLogin() {
   if (loginCallback) {
     alertMsg.value = '等待确认';

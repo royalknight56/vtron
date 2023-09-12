@@ -1,11 +1,13 @@
+import { InitFileItem } from '@/packages/type/type';
 import { System } from '.';
-import { InitFileItem } from '../core/SystemFileConfig';
 
 export const createInitFile = async (system: System, file: InitFileItem, path = '') => {
   const fs = system.fs;
   if (file.type === 'file') {
     if (file.content) {
-      await fs.writeFile(path + '/' + file.name, file.content);
+      await fs.writeFile(path + '/' + file.name, {
+        content: file.content,
+      });
     }
   } else if (file.type === 'dir') {
     await fs.mkdir(path + '/' + file.name);

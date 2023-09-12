@@ -1,12 +1,3 @@
-interface InitFileItem {
-  type: string;
-  name: string;
-  children?: InitFileItem[];
-  content?: {
-    content: string;
-    name: string;
-  };
-}
 const InitFile = {
   type: 'dir',
   name: 'C',
@@ -59,4 +50,4 @@ const InitFile = {
   ],
 };
 
-export { InitFileItem, InitFile };
+export { InitFile };

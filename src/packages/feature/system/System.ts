@@ -171,7 +171,7 @@ class System {
     } else {
       this.fs = await new VtronFileSystem().initFileSystem();
     }
-    await createInitFile(this, InitFile);
+    await createInitFile(this, this._options.initFile || InitFile);
     this.fs.registerWatcher(/^\/C\/Users\//, () => {
       initAppList();
     });

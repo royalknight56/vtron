@@ -6,6 +6,12 @@ import { VtronFile } from '@feature/core/fileSystem';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
 import { ShellInterface } from '@feature/core/ShellType';
 export type BuiltinApp = 'MyComputer' | 'AppStore';
+export interface InitFileItem {
+  type: string;
+  name: string;
+  children?: InitFileItem[];
+  content?: string;
+}
 export interface SystemOptions {
   lang?: string;
   logo?: string;
@@ -16,6 +22,7 @@ export interface SystemOptions {
   menulist?: WinAppOptions[];
   rootStyle?: any;
   fs?: VtronFileInterface;
+  initFile: InitFileItem;
   shell?: ShellInterface;
   noPassword?: boolean;
   loginCallback?: (username: string, password: string) => Promise<boolean>;

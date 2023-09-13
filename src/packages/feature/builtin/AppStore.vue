@@ -1,11 +1,6 @@
 <template>
   <div class="store-outer">
-    <!-- <div class="store-handle" ref="handleRef">
-      <div class="up-text">VTRON Store</div>
-      <div v-if="!closing" @click="closeWin" class="close-button">×</div>
-    </div> -->
     <div class="store-handle" v-dragable>
-      <div class="up-text">VTRON Store</div>
       <div v-if="!closing" @click="closeWin" class="close-button">×</div>
     </div>
     <iframe
@@ -155,23 +150,27 @@ function closeWin() {
   height: 100%;
   border-radius: 6px;
   overflow: hidden;
-  background-color: rgba(233, 233, 233, 0.759);
+  background-color: rgb(243, 243, 243);
 }
+
 .store-handle {
   width: 100%;
   height: 40px;
   user-select: none;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
+  position: absolute;
 }
 .up-text {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  width: 200px;
+  width: 100%;
+  padding: 0 40px;
+  font-size: 12px;
   color: rgba(117, 117, 117, 0.675);
-  background-color: white;
+  background-color: rgb(243, 243, 243);
   border-top-right-radius: 10px;
   user-select: none;
 }
@@ -195,6 +194,7 @@ function closeWin() {
   width: 100%;
   height: 100%;
   border: none;
+  background-color: white;
 }
 .closing {
   animation: closing 0.23s;

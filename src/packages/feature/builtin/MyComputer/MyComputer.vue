@@ -142,7 +142,7 @@ const currentList = ref<Array<VtronFile>>([]);
 
 const system = useSystem();
 const { startDrag, refFileDrop } = useFileDrag(system);
-const { createNewFile, openPropsWindow, createNewDir, deleteFile } = useContextMenu();
+const { createNewFile, openPropsWindow, createNewDir, deleteFile, copyFile, pasteFile } = useContextMenu();
 const { isVia, refersh, createFolder, backFolder, openFolder, onComputerMount } = useComputer({
   setRouter(path) {
     router_url.value = path;
@@ -217,6 +217,14 @@ function showOuterMenu(e: MouseEvent) {
           });
         },
       },
+      {
+        name: i18n('paste'),
+        click: () => {
+          pasteFile(router_url.value)?.then(() => {
+            refersh();
+          });
+        },
+      },
     ],
   });
 }
@@ -257,6 +265,12 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
         name: i18n('props'),
         click: () => {
           openPropsWindow(item.path);
+        },
+      },
+      {
+        name: i18n('copy'),
+        click: () => {
+          copyFile(item);
         },
       },
       {

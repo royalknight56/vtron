@@ -30,7 +30,10 @@ export type FileOpener = {
  */
 class System {
   readonly _options: SystemOptions;
-  private _rootState: RootState;
+  /**
+   * @internal
+   */
+  _rootState: RootState;
   private _eventer: Eventer;
   private _ready: ((value: System) => void) | null = null;
   private _error: ((reason: unknown) => void) | null = null;

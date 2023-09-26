@@ -72,4 +72,7 @@ export interface AllText {
   style: string;
   'is.recover': string;
   version: string;
+
+  copy: string;
+  paste: string;
 }

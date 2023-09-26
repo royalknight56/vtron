@@ -511,6 +511,50 @@ class VtronFileSystem implements VtronFileInterface {
       };
     });
   }
+
+  private async dfsCopFile(vfile: VtronFile, objectStore: IDBObjectStore, newPath: string) {
+    if (vfile.isDirectory) {
+      objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
+        const cursor: IDBCursorWithValue = event.target.result;
+        if (cursor) {
+          const tempfile = cursor.value;
+          const tempNewPath = fspath.join(newPath, fspath.basename(tempfile.path));
+          this.dfsCopFile(tempfile, objectStore, tempNewPath);
+          cursor.continue();
+        }
+      };
+    }
+    const newFile = {
+      ...vfile,
+      path: newPath,
+      parentPath: fspath.dirname(newPath),
+    };
+    delete newFile.id;
+    objectStore.put(newFile);
+  }
+  async copyFile(src: string, dest: string): Promise<void> {
+    const transaction = this.db.transaction('files', 'readwrite');
+    const objectStore = transaction.objectStore('files');
+
+    const index = objectStore.index('path');
+    const range = IDBKeyRange.only(src);
+    const request = index.get(range);
+
+    return new Promise((resolve, reject) => {
+      request.onerror = () => {
+        reject('Failed to read file');
+      };
+      request.onsuccess = () => {
+        const file: VtronFile = request.result;
+        if (file) {
+          this.dfsCopFile(file, objectStore, dest);
+          this.commitWatch(src, file.content);
+        }
+
+        resolve();
+      };
+    });
+  }
 }
 
 export { VtronFile, VtronFileInfo, VtronFileSystem };

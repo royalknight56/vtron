@@ -73,4 +73,7 @@ export const zhCN: AllText = {
   style: '样式',
   'is.recover': '是否恢复出厂设置？',
   version: '版本',
+
+  copy: '复制',
+  paste: '粘贴',
 };

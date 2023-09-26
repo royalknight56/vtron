@@ -33,7 +33,7 @@ import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { onMounted, ref } from 'vue';
 const { openapp, appList } = useAppOpen('apps');
-const { openPropsWindow } = useContextMenu();
+const { openPropsWindow, copyFile } = useContextMenu();
 const sys = useSystem();
 const { startDrag, folderDrop } = useFileDrag(sys);
 onMounted(() => {
@@ -57,6 +57,12 @@ function handleRightClick(mouse: MouseEvent, item: VtronFile) {
         name: i18n('props'),
         click: () => {
           openPropsWindow(item.path);
+        },
+      },
+      {
+        name: i18n('copy'),
+        click: () => {
+          copyFile(item);
         },
       },
       {

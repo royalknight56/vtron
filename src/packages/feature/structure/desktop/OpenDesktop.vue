@@ -30,7 +30,7 @@ import { useFileDrag } from '@packages/hook/useFileDrag';
 import { i18n } from '@feature/i18n';
 import { useSystem } from '@feature/system';
 
-const { createNewFile, createNewDir } = useContextMenu();
+const { createNewFile, createNewDir, pasteFile } = useContextMenu();
 const system = useSystem();
 const { refFileDrop } = useFileDrag(system);
 
@@ -52,6 +52,12 @@ function handleRightClick(e: MouseEvent) {
         name: i18n('new.file'),
         click: () => {
           createNewFile('/C/Users/Desktop');
+        },
+      },
+      {
+        name: i18n('paste'),
+        click: () => {
+          pasteFile('/C/Users/Desktop');
         },
       },
       {

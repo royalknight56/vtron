@@ -309,3 +309,9 @@ export function extname(path: string): string {
   }
   return path.slice(startDot, end);
 }
+
+export function filename(path: string): string {
+  const base = basename(path);
+  const ext = extname(path);
+  return base.slice(0, base.length - ext.length);
+}

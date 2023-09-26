@@ -16,6 +16,7 @@ export interface VtronFileInterface {
   rename: (oldPath: string, newPath: string) => Promise<void>;
   rmdir: (path: string) => Promise<void>;
   mkdir: (path: string) => Promise<void>;
+  copyFile: (src: string, dest: string) => Promise<void>;
   serializeFileSystem: () => Promise<unknown>;
   deserializeFileSystem: (files: VtronFile[]) => Promise<unknown>;
   removeFileSystem: () => Promise<void>;

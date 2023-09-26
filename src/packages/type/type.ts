@@ -73,6 +73,7 @@ export type RootState = {
       };
       connection: number;
     };
+    clipboard: any;
     options: SystemOptions;
   };
 };

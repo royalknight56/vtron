@@ -56,7 +56,32 @@ function useContextMenu() {
       return system?.fs.unlink(file.path);
     }
   }
-  return { createNewFile, openPropsWindow, createNewDir, deleteFile };
+  async function copyFile(file: VtronFile) {
+    const system = useSystem();
+    if (!system) return;
+    if (system._rootState.system.clipboard) {
+      system._rootState.system.clipboard = file.path;
+    }
+  }
+  async function pasteFile(path: string) {
+    const system = useSystem();
+    if (!system) return;
+    if (system._rootState.system.clipboard) {
+      const clipFile = system._rootState.system.clipboard;
+      let tempName = fspath.filename(clipFile);
+      const ext = fspath.extname(clipFile);
+
+      if (await system.fs.exists(fspath.join(path, tempName) + ext)) {
+        let i = 1;
+        while (await system.fs.exists(fspath.join(path, `${tempName}(${i})`) + ext)) {
+          i++;
+        }
+        tempName = `${tempName}(${i})`;
+      }
+      return system.fs.copyFile(clipFile, fspath.join(path, tempName) + ext);
+    }
+  }
+  return { createNewFile, openPropsWindow, createNewDir, deleteFile, copyFile, pasteFile };
 }
 
 export { useContextMenu };

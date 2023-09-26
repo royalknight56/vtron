@@ -73,4 +73,7 @@ export const enUS: AllText = {
   style: 'Style',
   'is.recover': 'Is Recover?',
   version: 'Version',
+
+  copy: 'Copy',
+  paste: 'Paste',
 };

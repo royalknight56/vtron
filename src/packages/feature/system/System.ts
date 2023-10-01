@@ -178,11 +178,11 @@ class System {
       this.fs = this._options.fs;
     } else {
       this.fs = await new VtronFileSystem().initFileSystem();
+      await createInitFile(this, this._options.initFile || InitFile);
+      this.fs.registerWatcher(/^\/C\/Users\//, () => {
+        initAppList();
+      });
     }
-    await createInitFile(this, this._options.initFile || InitFile);
-    this.fs.registerWatcher(/^\/C\/Users\//, () => {
-      initAppList();
-    });
   }
   private async initShell() {
     if (this._options.shell) {

@@ -50,7 +50,7 @@ onMounted(() => {
     });
     term.loadAddon(fitAddon);
     term.open(document.getElementById('terminal')!);
-    shell.emit('start', '/', 'root');
+    shell.emit('start', '/');
     // term.write('\x1b[2m' + 'Welcome to Vtron Terminal' + '\x1b[0m\r\n');
 
     // term.write(shell.prefix);

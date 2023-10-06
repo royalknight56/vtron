@@ -14,7 +14,7 @@ import { initBuiltinApp, initBuiltinFileOpener } from './initBuiltin';
 import { Shell } from '@feature/core/Shell';
 import { defaultConfig } from './initConfig';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
-import { InitFile } from '@feature/core/SystemFileConfig';
+import { InitSystemFile, InitUserFile } from '@feature/core/SystemFileConfig';
 import { createInitFile } from './createInitFile';
 import { Notify } from '@feature/notification/Notification';
 import { ShellInterface } from '@feature/core/ShellType';
@@ -147,7 +147,7 @@ class System {
    * @description: 初始化壁纸
    */
   private async initBackground() {
-    const back = await this.fs.readFile('/C/System/Vtron/background.txt');
+    const back = await this.fs.readFile(`${this._options.systemLocation}Vtron/background.txt`);
     if (back) {
       this._rootState.system.options.background = back;
     }
@@ -178,8 +178,10 @@ class System {
       this.fs = this._options.fs;
     } else {
       this.fs = await new VtronFileSystem().initFileSystem();
-      await createInitFile(this, this._options.initFile || InitFile);
-      this.fs.registerWatcher(/^\/C\/Users\//, () => {
+      await this.fs.mkdir('/C');
+      await createInitFile(this, this._options.initFile || InitUserFile, this._options.userLocation);
+      await createInitFile(this, this._options.initFile || InitSystemFile, this._options.systemLocation);
+      this.fs.registerWatcher(new RegExp(`^${this._options.userLocation}`), () => {
         initAppList();
       });
     }
@@ -192,7 +194,7 @@ class System {
     }
   }
   private async initSavedConfig() {
-    const config = await this.fs.readFile('/C/System/Vtron/config.json');
+    const config = await this.fs.readFile(`${this._options.systemLocation}Vtron/config.json`);
     if (config) {
       try {
         this._rootState.system.options = Object.assign(this._rootState.system.options, JSON.parse(config));
@@ -206,7 +208,7 @@ class System {
   }
   private addWindowSysLink(loc: string, options: WinAppOptions) {
     if (this.isFirstRun) {
-      this.fs.writeFile(`/C/Users/${loc}/` + options.name + '.exe', {
+      this.fs.writeFile(`${this._options.userLocation}${loc}/` + options.name + '.exe', {
         content: `link:${loc}:${options.name}:${options.icon?.length}:${options.icon}`,
       });
     } else {
@@ -221,7 +223,7 @@ class System {
   }
 
   async runPlugin(system: System) {
-    const pluginsFile = await this.fs.readdir('/C/System/plugs');
+    const pluginsFile = await this.fs.readdir(`${this._options.systemLocation}plugs`);
     if (pluginsFile) {
       pluginsFile.forEach((file) => {
         if (file.isFile) {

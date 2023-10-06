@@ -476,7 +476,8 @@ class VtronFileSystem implements VtronFileInterface {
    * @param path 文件夹路径
    */
   async mkdir(path: string): Promise<void> {
-    let parentPath = path.split('/').slice(0, -1).join('/');
+    const transedPath = fspath.transformPath(path);
+    let parentPath = fspath.dirname(transedPath);
     if (parentPath === '') parentPath = '/';
     // judge if file exists
     const exists = await this.exists(parentPath);
@@ -485,7 +486,7 @@ class VtronFileSystem implements VtronFileInterface {
       return Promise.reject('Cannot create directory to a non-exist path:' + parentPath);
     }
 
-    const res = await this.exists(path);
+    const res = await this.exists(transedPath);
     if (res) {
       // console.error("Directory already exists");
       return Promise.resolve();
@@ -495,7 +496,7 @@ class VtronFileSystem implements VtronFileInterface {
     const objectStore = transaction.objectStore('files');
 
     const request = objectStore.add(
-      new VtronFile(path, '', {
+      new VtronFile(transedPath, '', {
         isDirectory: true,
       })
     );
@@ -506,7 +507,7 @@ class VtronFileSystem implements VtronFileInterface {
         reject('Failed to create directory');
       };
       request.onsuccess = () => {
-        this.commitWatch(path, '');
+        this.commitWatch(transedPath, '');
         resolve();
       };
     });

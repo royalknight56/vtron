@@ -315,3 +315,13 @@ export function filename(path: string): string {
   const ext = extname(path);
   return base.slice(0, base.length - ext.length);
 }
+
+export function transformPath(path: string): string {
+  if (path === '/') {
+    return path;
+  } else if (path.endsWith('/')) {
+    return path.slice(0, path.length - 1);
+  } else {
+    return path;
+  }
+}

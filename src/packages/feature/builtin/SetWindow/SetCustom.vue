@@ -94,10 +94,10 @@ const selectItem = (index: number) => {
   activeIndex.value = index;
 };
 async function submitStyle() {
-  const config = await system?.fs.readFile('/C/System/Vtron/config.json');
+  const config = await system?.fs.readFile(`${system._options.systemLocation}Vtron/config.json`);
   const configObj = JSON.parse(config || '{}');
   configObj.rootStyle = JSON.parse(rootstyle.value);
-  await system?.fs.writeFile('/C/System/Vtron/config.json', {
+  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, {
     content: JSON.stringify(configObj),
   });
 
@@ -109,7 +109,7 @@ async function submitStyle() {
 }
 async function submit() {
   rootstate.system.options.background = imgurl.value;
-  await system?.fs.writeFile('/C/System/Vtron/background.txt', {
+  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/background.txt`, {
     content: imgurl.value,
   });
   Dialog.showMessageBox({

@@ -19,7 +19,7 @@ function refershAppList() {
     const element = APP_TYPE[i];
     system?.fs
       .readdir(
-        `/C/Users/${
+        `${system._options.userLocation}${
           {
             apps: 'Desktop',
             magnet: 'Magnet',

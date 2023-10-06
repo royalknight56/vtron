@@ -4,8 +4,10 @@ import { BrowserWindow } from '@feature/window/BrowserWindow';
 import FileProps from '@feature/builtin/FileProps.vue';
 import { VtronFile } from '@feature/core/fileSystem';
 import { i18n } from '@feature/i18n';
+import { useRootState } from '../feature/state/Root';
 
 function useContextMenu() {
+  const rootState = useRootState();
   async function createNewFile(path: string) {
     const system = useSystem();
     if (!system) return;
@@ -59,15 +61,15 @@ function useContextMenu() {
   async function copyFile(file: VtronFile) {
     const system = useSystem();
     if (!system) return;
-    if (system._rootState.system.clipboard) {
-      system._rootState.system.clipboard = file.path;
+    if (rootState.system.clipboard) {
+      rootState.system.clipboard = file.path;
     }
   }
   async function pasteFile(path: string) {
     const system = useSystem();
     if (!system) return;
-    if (system._rootState.system.clipboard) {
-      const clipFile = system._rootState.system.clipboard;
+    if (rootState.system.clipboard) {
+      const clipFile = rootState.system.clipboard;
       let tempName = fspath.filename(clipFile);
       const ext = fspath.extname(clipFile);
 

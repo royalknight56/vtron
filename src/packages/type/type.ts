@@ -22,6 +22,9 @@ export interface SystemOptions {
   menulist?: WinAppOptions[];
   rootStyle?: any;
   fs?: VtronFileInterface;
+  userLocation?: string;
+  systemLocation?: string;
+
   initFile?: InitFileItem;
   shell?: ShellInterface;
   login?: {

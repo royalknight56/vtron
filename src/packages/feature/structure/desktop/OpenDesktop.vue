@@ -1,5 +1,10 @@
 <template>
-  <div class="desktop" @dragenter.prevent @dragover.prevent @drop="refFileDrop($event, '/C/Users/Desktop')">
+  <div
+    class="desktop"
+    @dragenter.prevent
+    @dragover.prevent
+    @drop="refFileDrop($event, `${system._options.userLocation}Desktop`)"
+  >
     <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown.left="backgroundDown">
       <DeskItem class="userarea-upper zhighher"></DeskItem>
       <DesktopBackground class="userarea-upper"></DesktopBackground>
@@ -51,19 +56,19 @@ function handleRightClick(e: MouseEvent) {
       {
         name: i18n('new.file'),
         click: () => {
-          createNewFile('/C/Users/Desktop');
+          createNewFile(`${system._options.userLocation}Desktop`);
         },
       },
       {
         name: i18n('paste'),
         click: () => {
-          pasteFile('/C/Users/Desktop');
+          pasteFile(`${system._options.userLocation}Desktop`);
         },
       },
       {
         name: i18n('new.folder'),
         click: () => {
-          createNewDir('/C/Users/Desktop');
+          createNewDir(`${system._options.userLocation}Desktop`);
         },
       },
     ],

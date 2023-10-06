@@ -19,6 +19,7 @@ import { useSystem } from '../system';
 import { BrowserWindow, Dialog, basename, vDragable } from '@packages/plug';
 import { i18n } from '@feature/i18n';
 
+const sys = useSystem();
 const storeRef = ref<HTMLIFrameElement | null>(null);
 const frameKey = ref(0);
 const closing = ref(false);
@@ -112,7 +113,7 @@ const handleReady = () => {
   if (!system) {
     return;
   }
-  const readdirPromise = system.fs.readdir('/C/System/plugs').then((res) => {
+  const readdirPromise = system.fs.readdir(`${sys._options.systemLocation}plugs`).then((res) => {
     return res.map((item) => {
       return {
         name: basename(item.path),

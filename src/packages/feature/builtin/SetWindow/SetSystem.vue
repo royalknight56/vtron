@@ -69,10 +69,10 @@ const selectItem = (index: number) => {
 };
 
 async function submit() {
-  const config = await system?.fs.readFile('/C/System/Vtron/config.json');
+  const config = await system?.fs.readFile(`${system._options.systemLocation}Vtron/config.json`);
   const configObj = JSON.parse(config || '{}');
   configObj.lang = modelvalue.value === 0 ? 'zh-CN' : 'en-US';
-  await system?.fs.writeFile('/C/System/Vtron/config.json', {
+  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, {
     content: JSON.stringify(configObj),
   });
   Dialog.showMessageBox({

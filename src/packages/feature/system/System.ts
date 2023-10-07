@@ -206,8 +206,8 @@ class System {
       }
     }
   }
-  private addWindowSysLink(loc: string, options: WinAppOptions) {
-    if (this.isFirstRun) {
+  private addWindowSysLink(loc: string, options: WinAppOptions, force = false) {
+    if (this.isFirstRun || force) {
       this.fs.writeFile(`${this._options.userLocation}${loc}/` + options.name + '.exe', {
         content: `link:${loc}:${options.name}:${options.icon?.length}:${options.icon}`,
       });
@@ -238,14 +238,14 @@ class System {
   /**
    * @description: 添加应用
    */
-  addApp(options: WinAppOptions) {
-    this.addWindowSysLink('Desktop', options);
+  addApp(options: WinAppOptions, force = false) {
+    this.addWindowSysLink('Desktop', options, force);
   }
-  addMagnet(options: WinAppOptions) {
-    this.addWindowSysLink('Magnet', options);
+  addMagnet(options: WinAppOptions, force = false) {
+    this.addWindowSysLink('Magnet', options, force);
   }
-  addMenuList(options: WinAppOptions) {
-    this.addWindowSysLink('Menulist', options);
+  addMenuList(options: WinAppOptions, force = false) {
+    this.addWindowSysLink('Menulist', options, force);
   }
   createShell(): ShellInterface {
     if (this._options.shell) {

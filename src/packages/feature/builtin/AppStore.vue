@@ -56,7 +56,7 @@ const handleInstall = (data: any) => {
       content: data.file.content,
     });
     const dialogPromise = Dialog.showMessageBox({
-      message: i18n('install.success'),
+      message: i18n('install.success') + ',' + i18n('please.reboot'),
       type: 'info',
       buttons: [i18n('confirm')],
     });

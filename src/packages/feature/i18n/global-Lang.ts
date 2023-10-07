@@ -75,4 +75,6 @@ export interface AllText {
 
   copy: string;
   paste: string;
+
+  'please.reboot': string;
 }

@@ -76,4 +76,6 @@ export const enUS: AllText = {
 
   copy: 'Copy',
   paste: 'Paste',
+
+  'please.reboot': 'Please Reboot',
 };

@@ -76,4 +76,6 @@ export const zhCN: AllText = {
 
   copy: '复制',
   paste: '粘贴',
+
+  'please.reboot': '请重启',
 };

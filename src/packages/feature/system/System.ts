@@ -1,7 +1,7 @@
 import { initRootState } from '@feature/state/Root';
 import { SystemStateEnum } from '@packages/type/enum';
 import { markRaw } from 'vue';
-import { RootState, SystemOptions, WinAppOptions } from '@packages/type/type';
+import { RootState, Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from '@feature/event';
 import { VtronFileSystem } from '@feature/core/fileSystem';
 import { initAppList } from '@packages/hook/useAppOpen';
@@ -186,6 +186,10 @@ class System {
       });
     }
   }
+  replaceFileSystem(fs: VtronFileInterface) {
+    this.fs = fs;
+    initAppList();
+  }
   private async initShell() {
     if (this._options.shell) {
       this._shell = this._options.shell;
@@ -305,6 +309,9 @@ class System {
   }
   registerFileOpener(type: string, opener: FileOpener) {
     this._flieOpenerMap.set(type, opener);
+  }
+  registerSetting(setting: Setting) {
+    this._rootState.system.settings?.push(setting);
   }
   openLink(path: string, content: string) {
     const exeContent = content.split(':');

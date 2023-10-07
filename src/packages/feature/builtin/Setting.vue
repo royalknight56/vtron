@@ -27,18 +27,19 @@
 </template>
 <script lang="ts" setup>
 import { inject, defineComponent } from 'vue';
-import SetUpdate from './SetWindow/SetUpdate.vue';
-import SetCustom from './SetWindow/SetCustom.vue';
-import SetSystem from './SetWindow/SetSystem.vue';
+import SetUpdate from '@feature/builtin/SetWindow/SetUpdate.vue';
+import SetCustom from '@feature/builtin/SetWindow/SetCustom.vue';
+import SetSystem from '@feature/builtin/SetWindow/SetSystem.vue';
 import e7f8 from '../../../assets/icon/e7f8.png'; //系统设置
 // import e774 from '../../../assets/icon/e774.png'; //网络
 import e771 from '../../../assets/icon/e771.png'; //个性化
 import e895 from '../../../assets/icon/e895.png'; //更新
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
+import { useSystem } from '@feature/system';
 
 const browserWindow = inject<BrowserWindow>('browserWindow');
-
+const sys = useSystem();
 const setMap: {
   [key: string]: BrowserWindow;
 } = {};
@@ -95,6 +96,7 @@ const setList = [
     icon: e895,
     content: SetUpdate,
   },
+  ...(sys._rootState.system.settings ? sys._rootState.system.settings : []),
 ];
 </script>
 
@@ -146,10 +148,13 @@ const setList = [
   .set_item-img {
     width: 30px;
     margin: 10px 16px;
-
+    flex-shrink: 0;
     img {
       width: 100%;
     }
+  }
+  .set_item-right {
+    flex: 1;
   }
 
   .set_item-title {

@@ -106,7 +106,8 @@ import { ScaleElement } from '@feature/window/dom/ScaleElement';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import MenuBar from './components/MenuBar.vue';
 import { emitEvent } from '@feature/event';
-
+import { useSystem } from '../system';
+const sys = useSystem();
 const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
 }>();
@@ -115,6 +116,7 @@ const browserWindow = props.browserWindow;
 const windowInfo = browserWindow.windowInfo;
 // 传递windowid
 provide('browserWindow', browserWindow);
+provide('system', sys);
 
 function predown() {
   browserWindow.moveTop();

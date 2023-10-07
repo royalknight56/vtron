@@ -12,6 +12,12 @@ export interface InitFileItem {
   children?: InitFileItem[];
   content?: string;
 }
+export interface Setting {
+  title: string;
+  desc: string;
+  icon: string;
+  content: any;
+}
 export interface SystemOptions {
   lang?: string;
   logo?: string;
@@ -77,6 +83,7 @@ export type RootState = {
       connection: number;
     };
     clipboard: any;
+    settings: Setting[];
     options: SystemOptions;
   };
 };

@@ -65,18 +65,18 @@ onMounted(() => {
     logo: vtronLogoIcon,
     background: 'https://picsum.photos/1920/1080',
     userLocation: '/C/TestUser/',
-    login: {
-      username: '323dmin',
-      password: 'admin',
-    },
-    async loginCallback() {
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(true);
-        }, 200);
-      });
-      return true;
-    },
+    // login: {
+    //   username: '323dmin',
+    //   password: 'admin',
+    // },
+    // async loginCallback() {
+    //   await new Promise((resolve) => {
+    //     setTimeout(() => {
+    //       resolve(true);
+    //     }, 200);
+    //   });
+    //   return true;
+    // },
     // builtinApp: ['MyComputer', 'AppStore'],
     // noPassword: true,
     // fs: {

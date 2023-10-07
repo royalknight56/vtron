@@ -36,6 +36,7 @@ const rootState: RootState = reactive({
     },
     options: {},
     clipboard: {},
+    settings: [],
   },
 } as RootState) as unknown as RootState;
 function initRootState(options: SystemOptions): RootState {

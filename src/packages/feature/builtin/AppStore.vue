@@ -52,8 +52,8 @@ const handleInstall = (data: any) => {
     return;
   }
   if (data.type === 'all') {
-    const writeFilePromise = system.fs.writeFile(data.path, {
-      content: data.file.content,
+    const writeFilePromise = system.fs.writeFile(system._options.systemLocation + 'plugs/' + data.name, {
+      content: data.content,
     });
     const dialogPromise = Dialog.showMessageBox({
       message: i18n('install.success') + ',' + i18n('please.reboot'),
@@ -64,8 +64,8 @@ const handleInstall = (data: any) => {
       frameKey.value++;
     });
   } else if (data.type === 'once') {
-    const shellPromise = system.shell('node ' + data.file.content);
-    const writeFilePromise = system.fs.writeFile(data.path, {
+    const shellPromise = system.shell('node ' + data.content);
+    const writeFilePromise = system.fs.writeFile(system._options.systemLocation + 'plugs/' + data.name, {
       content: 'function main(){\n\n}',
     });
     const dialogPromise = Dialog.showMessageBox({
@@ -85,7 +85,7 @@ const handleUninstall = (data: any) => {
     return;
   }
   if (data.type === 'all') {
-    const unlinkPromise = system.fs.unlink(data.path);
+    const unlinkPromise = system.fs.unlink(system._options.systemLocation + 'plugs/' + data.name);
     const dialogPromise = Dialog.showMessageBox({
       message: i18n('uninstall.success'),
       type: 'info',
@@ -95,8 +95,8 @@ const handleUninstall = (data: any) => {
       frameKey.value++;
     });
   } else if (data.type === 'once') {
-    const shellPromise = system.shell('node ' + data.file.uninstallContent);
-    const unlinkPromise = system.fs.unlink(data.path);
+    const shellPromise = system.shell('node ' + data.uninstallContent);
+    const unlinkPromise = system.fs.unlink(system._options.systemLocation + 'plugs/' + data.name);
     const dialogPromise = Dialog.showMessageBox({
       message: i18n('uninstall.success'),
       type: 'info',

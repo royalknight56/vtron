@@ -214,7 +214,7 @@ class System {
   private addWindowSysLink(loc: string, options: WinAppOptions, force = false) {
     if (this.isFirstRun || force) {
       this.fs.writeFile(`${this._options.userLocation}${loc}/` + options.name + '.exe', {
-        content: `link:${loc}:${options.name}:${options.icon?.length}:${options.icon}`,
+        content: `link::${loc}::${options.name}::${options.icon}`,
       });
     } else {
       initAppList();
@@ -225,6 +225,17 @@ class System {
       options.window.content = markRaw(options.window.content);
     }
     this._rootState.system.windowMap[loc].set(options.name, options.window);
+  }
+  openLink(path: string, content: string) {
+    const exeContent = content.split('::');
+    // exeContent[1]= loc
+    // exeContent[2]= name
+    // exeContent[3]= icon
+    const winopt = this._rootState.system.windowMap[exeContent[1]].get(exeContent[2]);
+    if (winopt) {
+      const win = new BrowserWindow(winopt);
+      win.show();
+    }
   }
 
   async runPlugin(system: System) {
@@ -313,18 +324,6 @@ class System {
   }
   registerSetting(setting: Setting) {
     this._rootState.system.settings?.push(setting);
-  }
-  openLink(path: string, content: string) {
-    const exeContent = content.split(':');
-    // exeContent[1]= loc
-    // exeContent[2]= name
-    // exeContent[3]= icon.length
-    // exeContent[4]= icon
-    const winopt = this._rootState.system.windowMap[exeContent[1]].get(content.split(':')[2]);
-    if (winopt) {
-      const win = new BrowserWindow(winopt);
-      win.show();
-    }
   }
   /**打开vtron 文件系统的文件 */
   openFile(path: string) {

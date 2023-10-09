@@ -9,8 +9,8 @@ import { inject } from 'vue';
 
 const window: BrowserWindow | undefined = inject('browserWindow');
 
-// content: `link::${options.name}::icon::${options.icon}`
-const urlsrc = window?.config.content.split('::')[1];
+// content: `link::url::${options.name}::${options.icon}`
+const urlsrc = window?.config.content.split('::')[2];
 </script>
 <style scoped>
 .viewer {

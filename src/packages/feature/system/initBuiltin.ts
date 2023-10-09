@@ -65,7 +65,7 @@ export function initBuiltinFileOpener(system: System) {
     icon: unknownIcon,
     func: system.openLink.bind(system),
   });
-  system.registerFileOpener('.txt', {
+  system.registerFileOpener(['.txt', '.js'], {
     icon: unknownIcon,
     func: (path, content) => {
       const pdfwindow = new BrowserWindow({

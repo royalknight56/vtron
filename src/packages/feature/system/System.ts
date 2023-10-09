@@ -319,7 +319,13 @@ class System {
   mountEvent(event: string, callback: (...args: any[]) => void) {
     mountEvent(event, callback);
   }
-  registerFileOpener(type: string, opener: FileOpener) {
+  registerFileOpener(type: string | string[], opener: FileOpener) {
+    if (Array.isArray(type)) {
+      type.forEach((item) => {
+        this._flieOpenerMap.set(item, opener);
+      });
+      return;
+    }
     this._flieOpenerMap.set(type, opener);
   }
   registerSetting(setting: Setting) {

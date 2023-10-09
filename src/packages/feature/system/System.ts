@@ -7,7 +7,7 @@ import { VtronFileSystem } from '@feature/core/fileSystem';
 import { initAppList } from '@packages/hook/useAppOpen';
 
 import { version } from '../../../../package.json';
-import { BrowserWindow } from '@feature/window/BrowserWindow';
+import { BrowserWindow, BrowserWindowOption } from '@feature/window/BrowserWindow';
 
 import { extname } from '@feature/core/Path';
 import { initBuiltinApp, initBuiltinFileOpener } from './initBuiltin';
@@ -16,8 +16,9 @@ import { defaultConfig } from './initConfig';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
 import { InitSystemFile, InitUserFile } from '@feature/core/SystemFileConfig';
 import { createInitFile } from './createInitFile';
-import { Notify } from '@feature/notification/Notification';
+import { Notify, NotifyConstructorOptions } from '@feature/notification/Notification';
 import { ShellInterface } from '@feature/core/ShellType';
+import { Dialog } from '../dialog/Dialog';
 let GLOBAL_SYSTEM: System | null = null;
 
 export type VtronPlugin = (system: System, rootState: RootState) => void;
@@ -360,6 +361,19 @@ class System {
   // 当从外部拖入文件时
   onOuterFileDrop(func: (path: string, list: FileList | undefined, process: (path: string) => void) => void) {
     this.outerFileDropCallback = func;
+  }
+  /** 方便的通过system创建window */
+  createWindow(options: BrowserWindowOption) {
+    const win = new BrowserWindow(options);
+    return win;
+  }
+  /** 方便的通过system创建notify */
+  createNotify(options: NotifyConstructorOptions) {
+    return new Notify(options);
+  }
+  /** 方便的通过system创建Dialog */
+  createDialog() {
+    return Dialog;
   }
 }
 function useSystem() {

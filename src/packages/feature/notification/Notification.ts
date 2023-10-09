@@ -1,10 +1,10 @@
 import { useRootState } from '../state/Root';
-interface NotifyConstructorOptions {
+export interface NotifyConstructorOptions {
   title: string;
   content: string;
   timeout?: number;
 }
-class Notify {
+export class Notify {
   public static idcount = 0;
   id: number;
   title: string;
@@ -23,4 +23,3 @@ class Notify {
     useRootState().system.notify.splice(useRootState().system.notify.indexOf(this), 1);
   }
 }
-export { Notify };

@@ -24,7 +24,9 @@ class Dialog {
       option
     );
 
-    let promres: (value: { response: number }) => void = () => {};
+    let promres: (value: { response: number }) => void = () => {
+      // do nothing
+    };
 
     const porm = new Promise<{
       response: number;

@@ -39,8 +39,8 @@ class Shell implements ShellInterface {
     if (!input) return;
     const command = this.innerCommand.find((item) => item.name === input.split(' ')[0]);
     if (command) {
-      if (input.split('>').length > 1) {
-        let outPath = input.split('>')[1].trim();
+      if (input.split(' > ').length > 1) {
+        let outPath = input.split(' > ')[1].trim();
         outPath = vPath.join(this.router, outPath);
         const res = await this.system.fs.stat(outPath);
         if (res) {
@@ -57,7 +57,7 @@ class Shell implements ShellInterface {
             );
           }
         } else {
-          this.output(`\x1b[31m${outPath}: No such file or directory\x1b[0m\r\n`);
+          await command.callback(input, this.output, this);
           return;
         }
       } else {

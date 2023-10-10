@@ -31,7 +31,7 @@
       @touchstart.stop.passive="predown"
       @contextmenu.stop.prevent
     >
-      <div class="content-mask" v-if="!istop"></div>
+      <div class="content-mask" v-if="!istop && typeof browserWindow.content === 'string'"></div>
       <WindowInner :window="browserWindow"></WindowInner>
     </div>
     <div

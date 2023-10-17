@@ -26,7 +26,22 @@ vtron, 基于Vue3的 Win10 UI 框架
 
 本框架可以让你的页面像win10视窗系统一样，运行一个网页上的win10系统。
 
-#### 项目相关讨论可以在Discussions中
+
+#### 我们的优势：
+
+文件系统：可以上传文件预览显示编辑。长时间保存。
+
+终端系统：终端控制文件。
+
+js执行：保存的js文件可以执行。
+
+软件商店：下载的软件可以长时间保存。
+
+开发时插件机制，控制system的状态。
+
+#### 项目相关讨论可以在qq群：712921211或Discussions中
+
+qq群：712921211
 
 ![GitHub issues](https://img.shields.io/github/issues/royalknight56/vtron)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/royalknight56/vtron)

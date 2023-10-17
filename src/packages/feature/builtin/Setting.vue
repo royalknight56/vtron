@@ -16,7 +16,16 @@
         <WinUpButtonGroup :browser-window="browserWindow"></WinUpButtonGroup>
       </div>
     </div>
-    <TransitionGroup name="fade">
+    <Transition name="fade" appear>
+      <SetUpdate v-if="currentRouter === 'update'" />
+    </Transition>
+    <Transition name="fade" appear>
+      <SetCustom v-if="currentRouter === 'custom'" />
+    </Transition>
+    <Transition name="fade" appear>
+      <SetSystem v-if="currentRouter === 'system'" />
+    </Transition>
+    <Transition name="fade">
       <div class="outer" v-if="currentRouter === 'main'">
         <div class="uper_tab">
           <div class="tab">
@@ -37,10 +46,7 @@
           </div>
         </div>
       </div>
-      <SetUpdate v-if="currentRouter === 'update'" />
-      <SetCustom v-if="currentRouter === 'custom'" />
-      <SetSystem v-if="currentRouter === 'system'" />
-    </TransitionGroup>
+    </Transition>
   </div>
 </template>
 <script lang="ts" setup>
@@ -124,7 +130,9 @@ const setList = [
   height: 100%;
   border: #0076d758 1px solid;
   box-sizing: border-box;
+  box-shadow: inset -599px 0px 0px 0px #ffffff;
 }
+
 .window-outer.focus {
   background-color: rgba(255, 255, 255, 0.704);
   backdrop-filter: blur(10px);
@@ -293,5 +301,19 @@ const setList = [
   border: 1px solid #0078d7;
   background-color: #e5f1fb;
   box-shadow: 0 0 0 0px #0078d7 inset;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.2s ease;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

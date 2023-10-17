@@ -41,7 +41,7 @@ js执行：保存的js文件可以执行。
 
 #### 项目相关讨论可以在qq群：712921211或Discussions中
 
-#### qq群：712921211
+qq群：712921211
 
 ![GitHub issues](https://img.shields.io/github/issues/royalknight56/vtron)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/royalknight56/vtron)

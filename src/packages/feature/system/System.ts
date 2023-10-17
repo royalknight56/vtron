@@ -21,6 +21,11 @@ import { ShellInterface } from '@feature/core/ShellType';
 import { Dialog } from '../dialog/Dialog';
 let GLOBAL_SYSTEM: System | null = null;
 
+const logger = function (...args: any[]) {
+  if (process.env.NODE_ENV !== 'development') return;
+  console.log(...args);
+};
+
 export type VtronPlugin = (system: System, rootState: RootState) => void;
 export type FileOpener = {
   icon: string;
@@ -46,14 +51,19 @@ class System {
   fs!: VtronFileInterface;
   _shell!: ShellInterface;
   constructor(options?: SystemOptions) {
+    logger('mountGlobalSystem');
     this.mountGlobalSystem(this); // 挂载全局系统
-
+    logger('initOptions');
     this._options = this.initOptions(options);
+    logger('initRootState');
     this._rootState = this.initRootState();
+    logger('initEvent');
     this._eventer = this.initEvent();
-
+    logger('initSystem');
     this.initSystem();
+    logger('firstRun');
     this.firstRun();
+    logger('setRef');
     this.setRef(this._rootState.ref!);
   }
   mountGlobalSystem(system: System) {
@@ -94,23 +104,34 @@ class System {
      * 过程：激活屏幕，桥接事件。
      */
     this._rootState.system.state = SystemStateEnum.opening;
+    logger('initEventListener');
     initEventListener(); // 初始化事件侦听
+    logger('initBuiltinFileOpener');
     initBuiltinFileOpener(this); // 注册内建文件打开器
+    logger('initFileSystem');
     await this.initFileSystem(); // 初始化文件系统
+    logger('initShell');
     await this.initShell(); // 初始化shell
+    logger('initBuiltinApp');
     initBuiltinApp(this); // 初始化内建应用
+    logger('initApp');
     this.initApp(); // 初始化配置应用到app文件夹中
+    logger('initAppList');
     initAppList(); // 刷新app文件夹，展示应用
-
+    logger('isLogin');
     // 判断是否登录
     this.isLogin();
+    logger('_ready');
     // this._rootState.system.state = SystemStateEnum.open;
     this._ready && this._ready(this);
 
+    logger('runPlugin');
     this.runPlugin(this); // 运行fs中插件
+    logger('initBackground');
     this.initBackground(); // 初始化壁纸
+    logger('initSavedConfig');
     await this.initSavedConfig(); // 初始化保存的配置
-
+    logger('initEvent');
     this.setRootStyle(this._rootState.system.options.rootStyle); // 设置根样式
 
     this.emit('start');
@@ -178,7 +199,9 @@ class System {
     if (this._options.fs) {
       this.fs = this._options.fs;
     } else {
+      logger(this.fs);
       this.fs = await new VtronFileSystem().initFileSystem();
+      logger(this.fs);
       await this.fs.mkdir('/C');
       await createInitFile(this, this._options.initFile || InitUserFile, this._options.userLocation);
       await createInitFile(this, this._options.initFile || InitSystemFile, this._options.systemLocation);

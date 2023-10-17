@@ -64,7 +64,7 @@ onMounted(() => {
     // lang: "zh-CN",
     logo: vtronLogoIcon,
     background: 'https://picsum.photos/1920/1080',
-    userLocation: '/C/TestUser/',
+    // userLocation: '/C/TestUser/',
     // login: {
     //   username: '323dmin',
     //   password: 'admin',
@@ -251,9 +251,9 @@ onMounted(() => {
     //   // '--menu-bar-height':'100px'
     // },
   });
-  sys.onOuterFileDrop((files) => {
-    console.log(files);
-  });
+  // sys.onOuterFileDrop((files) => {
+  //   console.log(files);
+  // });
   const testapp = {
     name: '测试按钮4',
     // icon: testicon,

@@ -4,8 +4,9 @@ import WinLoadingVue from './components/WinLoading.vue';
 import WinLogoVue from './components/WinLogo.vue';
 import WinSelect from './components/WinSelect.vue';
 import WinInput from './components/WinInput.vue';
+import WinUpButtonGroupVue from './components/WinUpButtonGroup.vue';
 
-export { WinButtonVue, WinLoadingVue, WinLogoVue, WinSelect, WinInput };
+export { WinButtonVue, WinLoadingVue, WinLogoVue, WinSelect, WinInput, WinUpButtonGroupVue };
 
 const plug = {
   install: function (app: any): any {

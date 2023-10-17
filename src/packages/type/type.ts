@@ -13,6 +13,7 @@ export interface InitFileItem {
   content?: string;
 }
 export interface Setting {
+  key: string;
   title: string;
   desc: string;
   icon: string;

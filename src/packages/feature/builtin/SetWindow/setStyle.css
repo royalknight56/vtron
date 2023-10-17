@@ -7,11 +7,8 @@
 
 .nav {
   width: 200px;
-  background-color: #f0f0f0;
-  /* padding: 20px; */
   flex-shrink: 0;
 }
-
 .nav ul {
   list-style: none;
   margin: 0;
@@ -21,16 +18,18 @@
 .nav li {
   cursor: pointer;
   padding: 10px 20px;
+  font-size: 14px;
 }
 
 .nav li.active {
-  background-color: #ccc;
+  background-color: #cccccc62;
 }
 
 .setting {
   /* flex: 1; */
-  padding: 20px;
+  padding: 0 20px;
   width: 100%;
+  background-color: white;
 }
 
 .setting-title {

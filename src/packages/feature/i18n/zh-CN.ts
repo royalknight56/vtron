@@ -2,7 +2,7 @@ import type { AllText } from './global-Lang';
 export const zhCN: AllText = {
   hello: '你好',
   'startMenu.power': '电源',
-  'startMenu.setting': '设置',
+  setting: '设置',
   'startMenu.shutdown': '关机',
   'startMenu.recover': '恢复',
   'windows.setting': 'Windows 设置',

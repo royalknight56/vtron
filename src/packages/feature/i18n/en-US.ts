@@ -2,7 +2,7 @@ import type { AllText } from './global-Lang';
 export const enUS: AllText = {
   hello: 'hello',
   'startMenu.power': 'Power',
-  'startMenu.setting': 'Setting',
+  setting: 'Setting',
   'startMenu.shutdown': 'Shutdown',
   'startMenu.recover': 'Recover',
   'windows.setting': 'Windows Setting',

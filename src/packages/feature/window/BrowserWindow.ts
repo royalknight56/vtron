@@ -150,16 +150,20 @@ class BrowserWindow {
       tree.removeChild(treeNode.value);
     }
     tree.addChild(this);
-    // this._setZindex();
+
     useRootState().system.topWindow = this;
     useRootState().system.windowTree.traverseBFS((val) => {
       if (val.value.id !== undefined) {
         val.value._setZindex();
         val.value.windowInfo.istop = false;
+        if (val.value.id !== this.id) {
+          val.value.blur();
+        }
       }
     });
     this.windowInfo.istop = true;
     this.emit('moveTop');
+    this.focus();
   }
   show() {
     if (!this.windowInfo.isCreated) {
@@ -171,15 +175,21 @@ class BrowserWindow {
         this.center();
       }
     }
-    // this._setZindex();
     this._makeWindowNotOverSize(); // 使得窗口在生成时，不超过屏幕
-    this.moveTop();
     this.emit('show', 'show');
+    this.moveTop();
+  }
+  focus() {
+    // 窗口获得焦点
+    this.emit('focus');
+  }
+  blur() {
+    // 窗口失去焦点
+    this.emit('blur');
   }
   destroy() {
     // 销毁窗口
     // TODO:
-
     this.close();
   }
   close() {

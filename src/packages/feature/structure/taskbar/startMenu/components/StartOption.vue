@@ -22,7 +22,7 @@
           </svg>
         </div>
         <div class="s-option-button_title">
-          {{ i18n('startMenu.setting') }}
+          {{ i18n('setting') }}
         </div>
       </div>
       <!-- <div class="s-option-button">
@@ -77,9 +77,11 @@ function handleClick(key: number, ev: MouseEvent) {
         content: Setting,
         width: 800,
         height: 600,
-        title: i18n('startMenu.setting'),
+        title: i18n('setting'),
+        frame: false,
         resizable: false,
         center: true,
+        backgroundColor: '#00000000',
       });
       win.show();
       win.moveTop();

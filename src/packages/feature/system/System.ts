@@ -22,6 +22,7 @@ import { Dialog } from '../dialog/Dialog';
 let GLOBAL_SYSTEM: System | null = null;
 
 const logger = function (...args: any[]) {
+  return;
   if (process.env.NODE_ENV !== 'development') return;
   console.log(...args);
 };

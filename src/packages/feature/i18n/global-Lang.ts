@@ -2,7 +2,7 @@ export interface AllText {
   hello: string;
   'startMenu.power': string;
   'startMenu.shutdown': string;
-  'startMenu.setting': string;
+  setting: string;
   'startMenu.recover': string;
   'windows.setting': string;
   system: string;

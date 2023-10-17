@@ -1,35 +1,54 @@
 <template>
-  <div class="outer">
-    <div class="uper_tab">
-      <div class="tab">
-        {{ i18n('windows.setting') }}
+  <div
+    class="window-outer"
+    :class="{
+      focus: focusState && currentRouter !== 'main',
+    }"
+  >
+    <div class="upbar" v-dragable>
+      <div class="upbar-left">
+        <div class="back-arr" v-if="currentRouter !== 'main'" @click="back">←</div>
+        <div class="upbar-text">
+          {{ i18n('setting') }}
+        </div>
+      </div>
+      <div class="upbar-right">
+        <WinUpButtonGroup :browser-window="browserWindow"></WinUpButtonGroup>
       </div>
     </div>
-    <div class="outer_main">
-      <div class="main_uper">
-        <div
-          class="set_item"
-          v-for="item in setList"
-          :key="item.title"
-          @click="openSet(item.content, item.title)"
-        >
-          <div class="set_item-img">
-            <img class="set_item-img-img" :src="item.icon" />
+    <TransitionGroup name="fade">
+      <div class="outer" v-if="currentRouter === 'main'">
+        <div class="uper_tab">
+          <div class="tab">
+            {{ i18n('windows.setting') }}
           </div>
-          <div class="set_item-right">
-            <div class="set_item-title">{{ item.title }}</div>
-            <div class="set_item-desc">{{ item.desc }}</div>
+        </div>
+        <div class="outer_main">
+          <div class="main_uper">
+            <div class="set_item" v-for="item in setList" :key="item.title" @click="openSet(item.key)">
+              <div class="set_item-img">
+                <img class="set_item-img-img" :src="item.icon" />
+              </div>
+              <div class="set_item-right">
+                <div class="set_item-title">{{ item.title }}</div>
+                <div class="set_item-desc">{{ item.desc }}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <SetUpdate v-if="currentRouter === 'update'" />
+      <SetCustom v-if="currentRouter === 'custom'" />
+      <SetSystem v-if="currentRouter === 'system'" />
+    </TransitionGroup>
   </div>
 </template>
 <script lang="ts" setup>
-import { inject, defineComponent } from 'vue';
+import { inject, ref } from 'vue';
 import SetUpdate from '@feature/builtin/SetWindow/SetUpdate.vue';
 import SetCustom from '@feature/builtin/SetWindow/SetCustom.vue';
 import SetSystem from '@feature/builtin/SetWindow/SetSystem.vue';
+import WinUpButtonGroup from '@/packages/components/WinUpButtonGroup.vue';
 import e7f8 from '../../../assets/icon/e7f8.png'; //系统设置
 // import e774 from '../../../assets/icon/e774.png'; //网络
 import e771 from '../../../assets/icon/e771.png'; //个性化
@@ -37,34 +56,29 @@ import e895 from '../../../assets/icon/e895.png'; //更新
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 import { useSystem } from '@feature/system';
-
-const browserWindow = inject<BrowserWindow>('browserWindow');
+import { vDragable } from '../window/MakeDragable';
+const browserWindow = inject<BrowserWindow>('browserWindow')!;
 const sys = useSystem();
-const setMap: {
-  [key: string]: BrowserWindow;
-} = {};
-// let windowInfo = system.getWindow(id)?.windowInfo
-function openSet(content: ReturnType<typeof defineComponent>, title: string) {
-  if (browserWindow) {
-    if (setMap[title]) {
-      setMap[title].show();
-      setMap[title].setPosition(browserWindow.windowInfo.x, browserWindow.windowInfo.y);
-      setMap[title].setSize(browserWindow.windowInfo.width, browserWindow.windowInfo.height);
-    } else {
-      setMap[title] = new BrowserWindow({
-        content: content,
-        title: i18n('system'),
-        x: browserWindow.windowInfo.x,
-        y: browserWindow.windowInfo.y,
-        height: browserWindow.windowInfo.height,
-        width: browserWindow.windowInfo.width,
-      });
-      setMap[title].show();
-    }
-  }
+const currentRouter = ref('main');
+
+const focusState = ref(false);
+browserWindow?.on('focus', () => {
+  focusState.value = true;
+  console.log('focus');
+});
+browserWindow?.on('blur', () => {
+  focusState.value = false;
+  console.log('blur');
+});
+function back() {
+  currentRouter.value = 'main';
+}
+function openSet(key: string) {
+  currentRouter.value = key;
 }
 const setList = [
   {
+    key: 'system',
     title: i18n('system'),
     // desc: '显示，声音，通知，电源',
     desc: i18n('language'),
@@ -77,6 +91,7 @@ const setList = [
   //     icon: e774
   // },
   {
+    key: 'custom',
     title: i18n('personalization'),
     desc: i18n('background.lockscreen.color'),
     icon: e771,
@@ -89,6 +104,7 @@ const setList = [
   //     content:appstore
   // },
   {
+    key: 'update',
     // title: '更新和安全',
     title: i18n('update.security'),
     // desc: 'Windows 更新，恢复，备份',
@@ -102,22 +118,69 @@ const setList = [
 
 <style lang="scss" scoped>
 @import '@packages/main.css';
+.window-outer {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  border: #0076d758 1px solid;
+  box-sizing: border-box;
+}
+.window-outer.focus {
+  background-color: rgba(255, 255, 255, 0.704);
+  backdrop-filter: blur(10px);
+}
+.upbar {
+  height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  .upbar-left {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    height: 100%;
+    .back-arr {
+      padding: 0 6px;
+      margin-right: 3px;
+      font-size: 14px;
+      width: 40px;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .back-arr:hover {
+      color: var(--color-ui-gray);
+      background-color: var(--color-dark);
+    }
+    .upbar-text {
+      font-size: 14px;
+      margin-left: 10px;
+    }
+  }
+  .upbar-right {
+    width: calc(100% - 200px);
+    display: flex;
+    justify-content: flex-end;
+    height: 100%;
+    background-color: white;
+  }
+}
 
 .outer {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  /* background-color: #f0f0f0; */
+  background-color: #ffffff;
   user-select: none;
   /* background-color: rgb(241, 241, 241); */
 }
 
 .outer_main {
   height: 100%;
-  /* width: 100%; */
-  background-color: white;
-  /* border: 1px solid #d9d9d9; */
   margin: 0px 10px 00px 10px;
   display: flex;
   flex-direction: column;
@@ -132,8 +195,6 @@ const setList = [
   align-items: center;
   height: 50px;
   width: 90%;
-
-  /* border-bottom: 1px solid #999999; */
 }
 
 .set_item {
@@ -184,7 +245,6 @@ const setList = [
   text-align: center;
   width: 100%;
   height: 40px;
-  background-color: #fff;
   font-size: 20px;
   font-weight: 200;
   /* border: 1px solid #d9d9d9; */

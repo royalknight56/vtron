@@ -131,6 +131,7 @@ const setList = [
   border: #0076d758 1px solid;
   box-sizing: border-box;
   box-shadow: inset -599px 0px 0px 0px #ffffff;
+  transition: background-color 0.1s;
 }
 
 .window-outer.focus {

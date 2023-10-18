@@ -70,6 +70,10 @@ function useContextMenu() {
     if (!system) return;
     if (rootState.system.clipboard) {
       const clipFiles = rootState.system.clipboard;
+
+      if (!clipFiles.forEach) {
+        return;
+      }
       await clipFiles.forEach(async (clipFile: string) => {
         let tempName = fspath.filename(clipFile);
         const ext = fspath.extname(clipFile);

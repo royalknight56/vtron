@@ -11,7 +11,7 @@
       @drop="folderDrop($event, item.path)"
       @dragenter.prevent
       @dragover.prevent
-      @dragstart.stop="startDrag($event, item)"
+      @dragstart.stop="startDragApp($event, item)"
       @click="handleClick(index)"
       @mousedown.stop
       :ref="
@@ -62,6 +62,7 @@ function handleClick(index: number) {
 onMounted(() => {
   mountEvent('file.props.edit', async () => {
     initAppList();
+    chosenIndexs.value = [];
   });
   props.onChosen(
     throttle((rect: Rect) => {
@@ -85,6 +86,19 @@ onMounted(() => {
     }, 100)
   );
 });
+
+function startDragApp(mouse: DragEvent, item: VtronFile) {
+  if (chosenIndexs.value.length) {
+    startDrag(
+      mouse,
+      chosenIndexs.value.map((index) => {
+        return appList[index];
+      })
+    );
+  } else {
+    startDrag(mouse, [item]);
+  }
+}
 
 function handleRightClick(mouse: MouseEvent, item: VtronFile) {
   if (chosenIndexs.value.length <= 1) {

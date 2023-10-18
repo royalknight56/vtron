@@ -100,7 +100,7 @@
       v-for="(item, index) in currentList"
       :key="item.id"
       @contextmenu="showMenu(item, index, $event)"
-      @dragstart="startDrag($event, item)"
+      @dragstart="startDragApp($event, item)"
       @dragenter.prevent
       @dragover.prevent
       @drop.stop="refFileDrop($event, item.path)"
@@ -133,6 +133,9 @@ import { mountEvent } from '@feature/event';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { useComputer } from './hooks/useComputer';
+// import { Rect, useRectChosen } from '@/packages/hook/useRectChosen';
+
+// const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 const config = browserWindow?.config;
@@ -178,6 +181,47 @@ const { isVia, refersh, createFolder, backFolder, openFolder, onComputerMount } 
     });
   },
 });
+/**------框选--------- */
+// let chosenCallback: (rect: Rect) => void = () => {
+//   //
+// };
+// function onChosen(callback: (rect: Rect) => void) {
+//   chosenCallback = callback;
+// }
+// function backgroundDown(e: MouseEvent) {
+//   choseStart(e);
+//   addEventListener('mousemove', backgroundMove);
+//   addEventListener('mouseup', backgroundUp);
+// }
+// function backgroundMove(e: MouseEvent) {
+//   chosing(e);
+//   const rectValue = getRect();
+//   if (rectValue) {
+//     chosenCallback(rectValue);
+//   }
+// }
+// function backgroundUp() {
+//   choseEnd();
+//   const rectValue = getRect();
+//   if (rectValue) {
+//     chosenCallback(rectValue);
+//   }
+//   removeEventListener('mousemove', backgroundMove);
+//   removeEventListener('mouseup', backgroundUp);
+// }
+
+function startDragApp(mouse: DragEvent, item: VtronFile) {
+  // if (chosenIndexs.value.length) {
+  //   startDrag(
+  //     mouse,
+  //     chosenIndexs.value.map((index) => {
+  //       return appList[index];
+  //     })
+  //   );
+  // } else {
+  startDrag(mouse, [item]);
+  // }
+}
 
 /* ------------ 新建文件夹 ------------*/
 const createInput = ref(i18n('new.folder'));
@@ -270,7 +314,7 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
       {
         name: i18n('copy'),
         click: () => {
-          copyFile(item);
+          copyFile([item]);
         },
       },
       {
@@ -294,6 +338,7 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
   align-items: flex-start;
   align-content: flex-start;
   flex-wrap: wrap;
+  position: relative;
 }
 
 .desk-item {

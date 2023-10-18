@@ -3,23 +3,26 @@ import { System } from '@feature/system';
 import * as FsPath from '@feature/core/Path';
 import { emitEvent } from '@feature/event';
 export function useFileDrag(system: System) {
-  function startDrag(ev: DragEvent, item: VtronFile) {
+  function startDrag(ev: DragEvent, items: VtronFile[]) {
     ev?.dataTransfer?.setData('fromobj', 'web');
-    ev?.dataTransfer?.setData('frompath', item.path);
+    ev?.dataTransfer?.setData('frompath', JSON.stringify(items.map((item) => item.path)));
   }
   // 拖到文件放下时
   async function folderDrop(ev: DragEvent, toPath: string) {
-    const frompath = ev?.dataTransfer?.getData('frompath');
-    if (!frompath) return;
-    if (frompath == toPath) {
+    const frompathArrStr = ev?.dataTransfer?.getData('frompath');
+    if (!frompathArrStr) return;
+    const frompathArr = JSON.parse(frompathArrStr) as string[];
+    if (frompathArr.length === 0) {
       return;
     }
-    if (frompath === FsPath.join(toPath, FsPath.basename(frompath))) {
+    if (frompathArr.includes(toPath)) {
       return;
     }
+
     const toFile = await system?.fs.stat(toPath);
     if (toFile?.isDirectory) {
-      system?.fs.rename(frompath, FsPath.join(toPath, FsPath.basename(frompath))).then(() => {
+      await frompathArr.map(async (frompath) => {
+        await system?.fs.rename(frompath, FsPath.join(toPath, FsPath.basename(frompath)));
         emitEvent('file.props.edit');
       });
     }

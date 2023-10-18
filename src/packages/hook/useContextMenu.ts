@@ -58,29 +58,31 @@ function useContextMenu() {
       return system?.fs.unlink(file.path);
     }
   }
-  async function copyFile(file: VtronFile) {
+  async function copyFile(files: VtronFile[]) {
     const system = useSystem();
     if (!system) return;
     if (rootState.system.clipboard) {
-      rootState.system.clipboard = file.path;
+      rootState.system.clipboard = files.map((file) => file.path);
     }
   }
   async function pasteFile(path: string) {
     const system = useSystem();
     if (!system) return;
     if (rootState.system.clipboard) {
-      const clipFile = rootState.system.clipboard;
-      let tempName = fspath.filename(clipFile);
-      const ext = fspath.extname(clipFile);
+      const clipFiles = rootState.system.clipboard;
+      await clipFiles.forEach(async (clipFile: string) => {
+        let tempName = fspath.filename(clipFile);
+        const ext = fspath.extname(clipFile);
 
-      if (await system.fs.exists(fspath.join(path, tempName) + ext)) {
-        let i = 1;
-        while (await system.fs.exists(fspath.join(path, `${tempName}(${i})`) + ext)) {
-          i++;
+        if (await system.fs.exists(fspath.join(path, tempName) + ext)) {
+          let i = 1;
+          while (await system.fs.exists(fspath.join(path, `${tempName}(${i})`) + ext)) {
+            i++;
+          }
+          tempName = `${tempName}(${i})`;
         }
-        tempName = `${tempName}(${i})`;
-      }
-      return system.fs.copyFile(clipFile, fspath.join(path, tempName) + ext);
+        return system.fs.copyFile(clipFile, fspath.join(path, tempName) + ext);
+      });
     }
   }
   return { createNewFile, openPropsWindow, createNewDir, deleteFile, copyFile, pasteFile };

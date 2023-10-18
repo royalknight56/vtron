@@ -11,8 +11,9 @@
       @drop="folderDrop($event, item.path)"
       @dragenter.prevent
       @dragover.prevent
-      @dragstart="startDrag($event, item)"
+      @dragstart.stop="startDrag($event, item)"
       @click="handleClick(index)"
+      @mousedown.stop
       :ref="
         (ref) => {
           if (ref) {
@@ -109,9 +110,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFile) {
       {
         name: i18n('copy'),
         click: () => {
-          chosenIndexs.value.forEach((index) => {
-            copyFile(appList[index]);
-          });
+          copyFile(chosenIndexs.value.map((index) => appList[index]));
         },
       },
       {
@@ -172,7 +171,7 @@ function dealI18nName(name: string) {
   }
   .chosen {
     border: 1px dashed #3bdbff3d;
-    background-color: #3bdbff28;
+    background-color: #ffffff6b;
   }
   .no-chosen {
     .desk-item_title {
@@ -186,7 +185,7 @@ function dealI18nName(name: string) {
   }
 
   .desk-item:hover {
-    background-color: #3bdbff4c;
+    background-color: #b1f1ff4c;
   }
 }
 </style>

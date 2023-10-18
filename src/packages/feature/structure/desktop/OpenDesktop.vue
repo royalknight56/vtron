@@ -5,12 +5,11 @@
     @dragover.prevent
     @drop="refFileDrop($event, `${system._options.userLocation}Desktop`)"
   >
-    <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown.left="userareaDown">
-      <DeskItem class="userarea-upper zhighher" :onChosen="onChosen"></DeskItem>
-      <div @mousedown.left="backgroundDown">
+    <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown="userareaDown">
+      <div @mousedown="backgroundDown">
+        <DeskItem class="userarea-upper zhighher" :onChosen="onChosen"></DeskItem>
         <DesktopBackground class="userarea-upper"></DesktopBackground>
       </div>
-
       <WindowGroup></WindowGroup>
       <NotificationGroup></NotificationGroup>
       <DateTimePop></DateTimePop>
@@ -54,6 +53,12 @@ function onChosen(callback: (rect: Rect) => void) {
 }
 function userareaDown(e: MouseEvent) {
   emitEvent('desktop.background.leftClick', e);
+  chosenCallback({
+    left: e.clientX,
+    top: e.clientY,
+    width: 0,
+    height: 0,
+  });
 }
 function backgroundDown(e: MouseEvent) {
   choseStart(e);

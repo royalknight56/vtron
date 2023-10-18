@@ -5,15 +5,12 @@
     @dragover.prevent
     @drop="refFileDrop($event, `${system._options.userLocation}Desktop`)"
   >
-    <div
-      class="userarea"
-      @contextmenu.stop="handleRightClick"
-      @mousedown.left="backgroundDown"
-      @mousemove="backgroundMove"
-      @mouseup="backgroundUp"
-    >
-      <DeskItem class="userarea-upper zhighher"></DeskItem>
-      <DesktopBackground class="userarea-upper"></DesktopBackground>
+    <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown.left="userareaDown">
+      <DeskItem class="userarea-upper zhighher" :onChosen="onChosen"></DeskItem>
+      <div @mousedown.left="backgroundDown">
+        <DesktopBackground class="userarea-upper"></DesktopBackground>
+      </div>
+
       <WindowGroup></WindowGroup>
       <NotificationGroup></NotificationGroup>
       <DateTimePop></DateTimePop>
@@ -39,28 +36,50 @@ import MessageCenterPop from '@feature/structure/popover/MessageCenterPop.vue';
 
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
-import { useRectChosen } from '@packages/hook/useRectChosen';
+import { Rect, useRectChosen } from '@packages/hook/useRectChosen';
 
 import { i18n } from '@feature/i18n';
 import { useSystem } from '@feature/system';
 
 const { createNewFile, createNewDir, pasteFile } = useContextMenu();
-const { choseStart, chosing, choseEnd, Chosen } = useRectChosen();
+const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 const system = useSystem();
 const { refFileDrop } = useFileDrag(system);
 
-function backgroundDown(e: MouseEvent) {
+let chosenCallback: (rect: Rect) => void = () => {
+  //
+};
+function onChosen(callback: (rect: Rect) => void) {
+  chosenCallback = callback;
+}
+function userareaDown(e: MouseEvent) {
   emitEvent('desktop.background.leftClick', e);
+}
+function backgroundDown(e: MouseEvent) {
   choseStart(e);
+  addEventListener('mousemove', backgroundMove);
+  addEventListener('mouseup', backgroundUp);
 }
 function backgroundMove(e: MouseEvent) {
   emitEvent('desktop.background.leftMove', e);
   chosing(e);
+  const rectValue = getRect();
+  if (rectValue) {
+    chosenCallback(rectValue);
+  }
 }
 function backgroundUp(e: MouseEvent) {
   emitEvent('desktop.background.leftUp', e);
   choseEnd();
+  const rectValue = getRect();
+  if (rectValue) {
+    chosenCallback(rectValue);
+    emitEvent('desktop.background.rectChosen', rectValue);
+  }
+  removeEventListener('mousemove', backgroundMove);
+  removeEventListener('mouseup', backgroundUp);
 }
+
 function handleRightClick(e: MouseEvent) {
   e.preventDefault();
   emitEvent('desktop.background.rightClick', {

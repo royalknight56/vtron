@@ -25,6 +25,6 @@ defineProps<{
   position: absolute;
   border: 1px solid #0076d7;
   background-color: rgba(0, 118, 215, 0.2);
-  z-index: 999;
+  z-index: 9;
 }
 </style>

@@ -358,6 +358,7 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
   display: flex;
   border-bottom: 1px solid rgba(134, 134, 134, 0.267);
   /* padding: 4px 0px; */
+  user-select: none;
 }
 
 .button {
@@ -371,6 +372,7 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
   padding: 2px 4px;
   transition: 0.1s;
   white-space: nowrap;
+  user-select: none;
 }
 
 .button:hover {

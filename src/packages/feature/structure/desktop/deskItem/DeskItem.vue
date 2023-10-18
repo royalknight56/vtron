@@ -3,7 +3,7 @@
     <div
       draggable="true"
       class="desk-item"
-      :class="chosenIndex === index ? 'chosen' : 'no-chosen'"
+      :class="chosenIndexs.includes(index) ? 'chosen' : 'no-chosen'"
       v-for="(item, index) in appList"
       :key="item.path"
       @dblclick="openapp(item)"
@@ -13,6 +13,13 @@
       @dragover.prevent
       @dragstart="startDrag($event, item)"
       @click="handleClick(index)"
+      :ref="
+        (ref) => {
+          if (ref) {
+            appPositions[index] = ref as Element;
+          }
+        }
+      "
     >
       <div class="desk-item_img">
         <FileIcon :file="item" />
@@ -32,47 +39,92 @@ import { VtronFile } from '@feature/core/fileSystem';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { onMounted, ref } from 'vue';
+import { Rect } from '@/packages/hook/useRectChosen';
+import { throttle } from '@/packages/util/debounce';
 const { openapp, appList } = useAppOpen('apps');
 const { openPropsWindow, copyFile } = useContextMenu();
 const sys = useSystem();
 const { startDrag, folderDrop } = useFileDrag(sys);
+
+const props = defineProps({
+  onChosen: {
+    type: Function,
+    required: true,
+  },
+});
+const appPositions = ref<Array<Element>>([]);
+
+const chosenIndexs = ref<Array<number>>([]);
+function handleClick(index: number) {
+  chosenIndexs.value = [index];
+}
 onMounted(() => {
   mountEvent('file.props.edit', async () => {
     initAppList();
   });
+  props.onChosen(
+    throttle((rect: Rect) => {
+      const tempChosen: number[] = [];
+      appPositions.value.forEach((el, index) => {
+        const rect2 = el.getBoundingClientRect();
+        const rect2Center = {
+          x: rect2.left + rect2.width / 2,
+          y: rect2.top + rect2.height / 2,
+        };
+        if (
+          rect2Center.x > rect.left &&
+          rect2Center.x < rect.left + rect.width &&
+          rect2Center.y > rect.top &&
+          rect2Center.y < rect.top + rect.height
+        ) {
+          tempChosen.push(index);
+        }
+      });
+      chosenIndexs.value = tempChosen;
+    }, 100)
+  );
 });
-const chosenIndex = ref(-1);
-function handleClick(index: number) {
-  chosenIndex.value = index;
-}
+
 function handleRightClick(mouse: MouseEvent, item: VtronFile) {
+  if (chosenIndexs.value.length <= 1) {
+    chosenIndexs.value = [appList.findIndex((app) => app.path === item.path)];
+  }
   emitEvent('contextMenu.show', {
     mouse: mouse,
     menuList: [
       {
         name: i18n('open'),
-        click: () => openapp(item),
+        click: () => {
+          openapp(item);
+        },
       },
       {
         name: i18n('props'),
         click: () => {
-          openPropsWindow(item.path);
+          chosenIndexs.value.forEach((index) => {
+            openPropsWindow(appList[index].path);
+          });
         },
       },
       {
         name: i18n('copy'),
         click: () => {
-          copyFile(item);
+          chosenIndexs.value.forEach((index) => {
+            copyFile(appList[index]);
+          });
         },
       },
       {
         name: i18n('delete'),
         click: () => {
-          if (item.isDirectory) {
-            sys?.fs.rmdir(item.path);
-          } else {
-            sys?.fs.unlink(item.path);
-          }
+          chosenIndexs.value.forEach((index) => {
+            const item = appList[index];
+            if (item.isDirectory) {
+              sys?.fs.rmdir(item.path);
+            } else {
+              sys?.fs.unlink(item.path);
+            }
+          });
         },
       },
     ],
@@ -120,6 +172,7 @@ function dealI18nName(name: string) {
   }
   .chosen {
     border: 1px dashed #3bdbff3d;
+    background-color: #3bdbff28;
   }
   .no-chosen {
     .desk-item_title {

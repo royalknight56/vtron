@@ -1,8 +1,13 @@
 import { defineComponent, h, ref } from 'vue';
 import RectChosenVue from '../components/RectChosen.vue';
-
+export interface Rect {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
 export function useRectChosen() {
-  const rect = ref({
+  const rect = ref<Rect>({
     left: 0,
     top: 0,
     width: 0,
@@ -31,6 +36,9 @@ export function useRectChosen() {
   function choseEnd() {
     isDown.value = false;
   }
+  function getRect() {
+    return rect.value;
+  }
   const Chosen = defineComponent(() => {
     return () => {
       if (isDown.value) {
@@ -46,6 +54,7 @@ export function useRectChosen() {
     choseStart,
     chosing,
     choseEnd,
+    getRect,
     Chosen,
   };
 }

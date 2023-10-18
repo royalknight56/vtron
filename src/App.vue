@@ -63,7 +63,8 @@ onMounted(() => {
     // lang: 'en-US',
     // lang: "zh-CN",
     logo: vtronLogoIcon,
-    background: 'https://picsum.photos/1920/1080',
+    // background: 'https://picsum.photos/1920/1080',
+    background: '#779',
     // userLocation: '/C/TestUser/',
     // login: {
     //   username: '323dmin',

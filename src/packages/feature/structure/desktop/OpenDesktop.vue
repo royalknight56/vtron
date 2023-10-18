@@ -5,13 +5,20 @@
     @dragover.prevent
     @drop="refFileDrop($event, `${system._options.userLocation}Desktop`)"
   >
-    <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown.left="backgroundDown">
+    <div
+      class="userarea"
+      @contextmenu.stop="handleRightClick"
+      @mousedown.left="backgroundDown"
+      @mousemove="backgroundMove"
+      @mouseup="backgroundUp"
+    >
       <DeskItem class="userarea-upper zhighher"></DeskItem>
       <DesktopBackground class="userarea-upper"></DesktopBackground>
       <WindowGroup></WindowGroup>
       <NotificationGroup></NotificationGroup>
       <DateTimePop></DateTimePop>
       <MessageCenterPop></MessageCenterPop>
+      <Chosen></Chosen>
     </div>
     <div class="bottom">
       <Taskbar></Taskbar>
@@ -32,15 +39,27 @@ import MessageCenterPop from '@feature/structure/popover/MessageCenterPop.vue';
 
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
+import { useRectChosen } from '@packages/hook/useRectChosen';
+
 import { i18n } from '@feature/i18n';
 import { useSystem } from '@feature/system';
 
 const { createNewFile, createNewDir, pasteFile } = useContextMenu();
+const { choseStart, chosing, choseEnd, Chosen } = useRectChosen();
 const system = useSystem();
 const { refFileDrop } = useFileDrag(system);
 
 function backgroundDown(e: MouseEvent) {
   emitEvent('desktop.background.leftClick', e);
+  choseStart(e);
+}
+function backgroundMove(e: MouseEvent) {
+  emitEvent('desktop.background.leftMove', e);
+  chosing(e);
+}
+function backgroundUp(e: MouseEvent) {
+  emitEvent('desktop.background.leftUp', e);
+  choseEnd();
 }
 function handleRightClick(e: MouseEvent) {
   e.preventDefault();

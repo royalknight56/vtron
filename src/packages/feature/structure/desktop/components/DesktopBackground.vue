@@ -1,10 +1,11 @@
 <template>
-  <div v-if="backgroundType === 'image'" class="background">
-    <Transition name="fade">
-      <img v-show="loaded" draggable="false" @load="imgload" class="background_load" :src="background" />
-    </Transition>
+  <div class="background" draggable="false" :style="{ backgroundColor: background }">
+    <template v-if="backgroundType === 'image'">
+      <Transition name="fade">
+        <img v-show="loaded" draggable="false" @load="imgload" class="background_load" :src="background" />
+      </Transition>
+    </template>
   </div>
-  <div v-else class="background" :style="{ backgroundColor: background }"></div>
 </template>
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
@@ -38,7 +39,7 @@ function refershBack(val: string | undefined) {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.704);
-
+  user-select: none;
   .background_unload {
     width: 100%;
     height: 100%;

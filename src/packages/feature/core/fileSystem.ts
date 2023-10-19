@@ -1,5 +1,6 @@
 import * as fspath from '@feature/core/Path';
 import { VtronFileInterface } from './FIleInterface';
+import { Dialog } from '@/packages/plug';
 type DateLike = Date | string | number;
 class VtronFileInfo {
   isFile = true;
@@ -403,6 +404,19 @@ class VtronFileSystem implements VtronFileInterface {
     objectStore.put(vfile);
   }
   async rename(path: string, newPath: string): Promise<void> {
+    // cannot rename to child path
+    // /C/Users /C/Users/Desktop/Users
+    if (path === newPath) {
+      return Promise.resolve();
+    }
+    if (newPath.startsWith(path)) {
+      Dialog.showMessageBox({
+        message: 'Cannot rename to child path',
+        type: 'error',
+      });
+      return Promise.reject('Cannot rename to child path');
+    }
+
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
 

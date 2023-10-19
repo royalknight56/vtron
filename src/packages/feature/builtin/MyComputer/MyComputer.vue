@@ -93,49 +93,36 @@
     @dragover.prevent
     @drop.stop="refFileDrop($event, router_url)"
     @click.self="onBackClick"
+    @mousedown="backgroundDown"
   >
-    <div
-      draggable="true"
-      class="desk-item"
-      v-for="(item, index) in currentList"
-      :key="item.id"
-      @contextmenu="showMenu(item, index, $event)"
-      @dragstart="startDragApp($event, item)"
-      @dragenter.prevent
-      @dragover.prevent
-      @drop.stop="refFileDrop($event, item.path)"
-      @dblclick="openFolder(item)"
-    >
-      <div class="item_img">
-        <FileIcon :file="item" />
-      </div>
-      <div class="item_name">{{ basename(item.path) }}</div>
-    </div>
+    <FileList :on-chosen="onChosen" :on-open="openFolder" :file-list="currentList" theme="blue"> </FileList>
+
     <div draggable="true" class="desk-item" v-if="creating">
       <div class="item_img">
         <img draggable="false" width="50" :src="foldericon" />
       </div>
       <input class="item_input" v-model="createInput" @blur="creatingEditEnd" />
     </div>
+    <Chosen></Chosen>
   </div>
 </template>
 <script lang="ts" setup>
 import { ref, onMounted, inject } from 'vue';
 import foldericon from '@packages/assets/folder.png';
-import FileIcon from '@feature/builtin/FileIcon.vue';
+
+import FileList from '@feature/structure/share/FileList.vue';
 
 import { Notify } from '@feature/notification/Notification';
 import { useSystem } from '@feature/system';
 import { BrowserWindow, VtronFile } from '@packages/plug';
 import { useContextMenu } from '@packages/hook/useContextMenu';
-import { basename } from '@feature/core/Path';
 import { mountEvent } from '@feature/event';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { useComputer } from './hooks/useComputer';
-// import { Rect, useRectChosen } from '@/packages/hook/useRectChosen';
+import { Rect, useRectChosen } from '@/packages/hook/useRectChosen';
 
-// const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
+const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 const config = browserWindow?.config;
@@ -144,8 +131,8 @@ const router_url = ref('');
 const currentList = ref<Array<VtronFile>>([]);
 
 const system = useSystem();
-const { startDrag, refFileDrop } = useFileDrag(system);
-const { createNewFile, openPropsWindow, createNewDir, deleteFile, copyFile, pasteFile } = useContextMenu();
+const { refFileDrop } = useFileDrag(system);
+const { createNewFile, createNewDir, pasteFile } = useContextMenu();
 const { isVia, refersh, createFolder, backFolder, openFolder, onComputerMount } = useComputer({
   setRouter(path) {
     router_url.value = path;
@@ -182,45 +169,33 @@ const { isVia, refersh, createFolder, backFolder, openFolder, onComputerMount } 
   },
 });
 /**------框选--------- */
-// let chosenCallback: (rect: Rect) => void = () => {
-//   //
-// };
-// function onChosen(callback: (rect: Rect) => void) {
-//   chosenCallback = callback;
-// }
-// function backgroundDown(e: MouseEvent) {
-//   choseStart(e);
-//   addEventListener('mousemove', backgroundMove);
-//   addEventListener('mouseup', backgroundUp);
-// }
-// function backgroundMove(e: MouseEvent) {
-//   chosing(e);
-//   const rectValue = getRect();
-//   if (rectValue) {
-//     chosenCallback(rectValue);
-//   }
-// }
-// function backgroundUp() {
-//   choseEnd();
-//   const rectValue = getRect();
-//   if (rectValue) {
-//     chosenCallback(rectValue);
-//   }
-//   removeEventListener('mousemove', backgroundMove);
-//   removeEventListener('mouseup', backgroundUp);
-// }
+let chosenCallback: (rect: Rect) => void = () => {
+  //
+};
+function onChosen(callback: (rect: Rect) => void) {
+  chosenCallback = callback;
+}
 
-function startDragApp(mouse: DragEvent, item: VtronFile) {
-  // if (chosenIndexs.value.length) {
-  //   startDrag(
-  //     mouse,
-  //     chosenIndexs.value.map((index) => {
-  //       return appList[index];
-  //     })
-  //   );
-  // } else {
-  startDrag(mouse, [item]);
-  // }
+function backgroundDown(e: MouseEvent) {
+  choseStart(e);
+  addEventListener('mousemove', backgroundMove);
+  addEventListener('mouseup', backgroundUp);
+}
+function backgroundMove(e: MouseEvent) {
+  chosing(e);
+  const rectValue = getRect();
+  if (rectValue) {
+    chosenCallback(rectValue);
+  }
+}
+function backgroundUp() {
+  choseEnd();
+  const rectValue = getRect();
+  if (rectValue) {
+    chosenCallback(rectValue);
+  }
+  removeEventListener('mousemove', backgroundMove);
+  removeEventListener('mouseup', backgroundUp);
 }
 
 /* ------------ 新建文件夹 ------------*/
@@ -294,40 +269,6 @@ onMounted(() => {
     refersh();
   });
 });
-
-function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
-  system?.emitEvent('contextMenu.show', {
-    mouse: ev,
-    menuList: [
-      {
-        name: i18n('open'),
-        click: () => {
-          openFolder(item);
-        },
-      },
-      {
-        name: i18n('props'),
-        click: () => {
-          openPropsWindow(item.path);
-        },
-      },
-      {
-        name: i18n('copy'),
-        click: () => {
-          copyFile([item]);
-        },
-      },
-      {
-        name: i18n('delete'),
-        click: () => {
-          deleteFile(item)?.then(() => {
-            refersh();
-          });
-        },
-      },
-    ],
-  });
-}
 </script>
 <style scoped>
 .desk-outer {
@@ -351,10 +292,13 @@ function showMenu(item: VtronFile, index: number, ev: MouseEvent) {
   color: white;
   border: 1px solid rgba(0, 0, 0, 0);
 }
-
+.chosen {
+  border: 1px dashed #3bdbff3d;
+  background-color: #b9e3fd90;
+}
 .desk-item:hover {
   border: 1px solid rgba(149, 149, 149, 0.233);
-  background-color: rgba(255, 255, 255, 0.281);
+  background-color: #b9e3fd5a;
 }
 
 .item_img {

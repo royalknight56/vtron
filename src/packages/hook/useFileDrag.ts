@@ -2,8 +2,12 @@ import { VtronFile } from '@feature/core/fileSystem';
 import { System } from '@feature/system';
 import * as FsPath from '@feature/core/Path';
 import { emitEvent } from '@feature/event';
+let dragCallback = () => {
+  //
+};
 export function useFileDrag(system: System) {
-  function startDrag(ev: DragEvent, items: VtronFile[]) {
+  function startDrag(ev: DragEvent, items: VtronFile[], callback: () => void) {
+    dragCallback = callback;
     ev?.dataTransfer?.setData('fromobj', 'web');
     ev?.dataTransfer?.setData('frompath', JSON.stringify(items.map((item) => item.path)));
   }
@@ -96,6 +100,7 @@ export function useFileDrag(system: System) {
     }
   }
   async function refFileDrop(ev: DragEvent, path: string) {
+    dragCallback();
     ev.preventDefault();
     const fromobj = ev?.dataTransfer?.getData('fromobj');
     if (fromobj == 'web') {

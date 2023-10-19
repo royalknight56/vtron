@@ -16,7 +16,7 @@ class DragObj implements DragObjInter {
   startX: number;
   startY: number;
 
-  notify: Function;
+  notify: (a0: number, a1: number) => void;
   constructor(x: number, y: number) {
     this.posX = x;
     this.posY = y;
@@ -24,7 +24,9 @@ class DragObj implements DragObjInter {
     this.startY = 0;
     this.posStartX = 0;
     this.posStartY = 0;
-    this.notify = () => {};
+    this.notify = () => {
+      //
+    };
   }
   onMoving(offsetX: number, offsetY: number) {
     this.posX = this.posStartX + offsetX - this.startX;

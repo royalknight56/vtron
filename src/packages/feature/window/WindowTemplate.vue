@@ -20,6 +20,7 @@
     @touchstart.passive="onFocus"
     @mousedown="onFocus"
     ref="$win_outer"
+    v-dragable
   >
     <div class="wintmp_uper" @contextmenu.prevent>
       <MenuBar :browser-window="browserWindow"></MenuBar>
@@ -97,16 +98,17 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onUnmounted, provide, ref, watch } from 'vue';
+import { onUnmounted, provide, ref } from 'vue';
 import { onMounted, computed, UnwrapNestedRefs } from 'vue';
 import { WindowStateEnum } from './BrowserWindow';
 import WindowInner from './components/WindowInner.vue';
-import { DragElement } from '@feature/window/dom/DragElement';
+
 import { ScaleElement } from '@feature/window/dom/ScaleElement';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import MenuBar from './components/MenuBar.vue';
 import { emitEvent } from '@feature/event';
 import { useSystem } from '../system';
+import { vDragable } from './MakeDragable';
 const sys = useSystem();
 const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
@@ -158,35 +160,6 @@ onMounted(() => {
 });
 
 /*
-挂载拖动事件
-*/
-const $win_outer = ref(null);
-let dragAble: DragElement;
-onMounted(() => {
-  dragAble = new DragElement($win_outer.value, windowInfo.x, windowInfo.y);
-  watch(
-    () => windowInfo.state === WindowStateEnum.maximize,
-    (n) => {
-      if (n) {
-        dragAble.canDrag = false;
-      } else {
-        dragAble.canDrag = true;
-      }
-    }
-  );
-  dragAble.onDrag((x, y) => {
-    if (windowInfo.disable) {
-      return;
-    }
-    if (windowInfo.state !== WindowStateEnum.maximize) {
-      windowInfo.x = x;
-      windowInfo.y = y;
-      browserWindow.emit('move', windowInfo.x, windowInfo.y);
-    }
-  });
-});
-
-/*
 挂载缩放事件
 */
 const resizable = ref(windowInfo.resizable);
@@ -211,7 +184,7 @@ function startScale(e: MouseEvent | TouchEvent, dire: string) {
 
 onUnmounted(() => {
   scaleAble.unMount();
-  dragAble.unMount();
+  // dragAble.unMount();
 });
 </script>
 <style>

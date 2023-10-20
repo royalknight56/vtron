@@ -1,4 +1,4 @@
-import { VtronFile } from '../feature/core/fileSystem';
+import { VtronFile } from '../feature/core/FileSystem';
 import foldericon from '@packages/assets/folder.png';
 import unknownicon from '@packages/assets/unknown.png';
 import audioicon from '@packages/assets/audio.png';

@@ -15,6 +15,7 @@ import { join } from '../core/Path';
 import { basename } from '@feature/core/Path';
 import { Notify } from '../notification/Notification';
 import { i18n } from '@feature/i18n';
+import { Dialog } from '../dialog/Dialog';
 
 const browserWindow: BrowserWindow = inject('browserWindow')!;
 const name = ref(basename((browserWindow.config.content as VtronFile).path));
@@ -34,6 +35,12 @@ function confirm() {
       emitEvent('file.props.edit');
       browserWindow.emit('file.props.edit', newPath);
       browserWindow.close();
+    })
+    .catch((e) => {
+      Dialog.showMessageBox({
+        message: e,
+        type: 'error',
+      });
     });
 }
 </script>
@@ -59,3 +66,4 @@ function confirm() {
   }
 }
 </style>
+@/packages/feature/core/FileSystem

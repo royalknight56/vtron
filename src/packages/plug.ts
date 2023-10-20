@@ -16,7 +16,7 @@ const plug = {
 export default plug;
 export * from '@feature/core/Shell';
 export * from '@feature/core/Path';
-export { VtronFile } from '@feature/core/fileSystem';
+export { VtronFile } from '@/packages/feature/core/FileSystem';
 export { System, useSystem } from '@feature/system/index';
 export { BrowserWindow } from '@feature/window/BrowserWindow';
 export { Notify } from '@feature/notification/Notification';

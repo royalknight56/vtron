@@ -2,7 +2,7 @@ import { BrowserWindow, BrowserWindowOption } from '../feature/window/BrowserWin
 import { Tree } from '@packages/util/Tree';
 import { SystemStateEnum } from './enum';
 import { Notify } from '../feature/notification/Notification';
-import { VtronFile } from '@feature/core/fileSystem';
+import { VtronFile } from '@/packages/feature/core/FileSystem';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
 import { ShellInterface } from '@feature/core/ShellType';
 export type BuiltinApp = 'MyComputer' | 'AppStore';

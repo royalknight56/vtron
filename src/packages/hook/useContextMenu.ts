@@ -2,7 +2,7 @@ import * as fspath from '@feature/core/Path';
 import { useSystem } from '@feature/system';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import FileProps from '@feature/builtin/FileProps.vue';
-import { VtronFile } from '@feature/core/fileSystem';
+import { VtronFile } from '@/packages/feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useRootState } from '../feature/state/Root';
 

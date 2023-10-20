@@ -3,7 +3,7 @@ import { SystemStateEnum } from '@packages/type/enum';
 import { markRaw } from 'vue';
 import { RootState, Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from '@feature/event';
-import { VtronFileSystem } from '@feature/core/fileSystem';
+import { VtronFileSystem } from '@/packages/feature/core/FileSystem';
 import { initAppList } from '@packages/hook/useAppOpen';
 
 import { version } from '../../../../package.json';

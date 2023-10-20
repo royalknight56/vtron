@@ -1,5 +1,5 @@
 import { describe, beforeEach, it, expect } from 'vitest';
-import { VtronFileSystem } from '../core/fileSystem';
+import { VtronFileSystem } from './FileSystem';
 describe('FileSystem', () => {
   let fileSystem: VtronFileSystem;
 

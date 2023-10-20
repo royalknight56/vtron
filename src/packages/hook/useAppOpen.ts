@@ -1,7 +1,7 @@
 import { useRootState } from '@feature/state/Root';
 import { nextTick } from 'vue';
 import { useSystem } from '../plug';
-import { VtronFile } from '../feature/core/fileSystem';
+import { VtronFile } from '../feature/core/FileSystem';
 let isReadyUpdateAppList = false;
 function initAppList() {
   isReadyUpdateAppList = true;

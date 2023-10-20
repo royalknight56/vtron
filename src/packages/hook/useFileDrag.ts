@@ -1,7 +1,8 @@
-import { VtronFile } from '@feature/core/fileSystem';
+import { VtronFile } from '@/packages/feature/core/FileSystem';
 import { System } from '@feature/system';
 import * as FsPath from '@feature/core/Path';
 import { emitEvent } from '@feature/event';
+import { Dialog } from '../feature/dialog/Dialog';
 let dragCallback = () => {
   //
 };
@@ -26,7 +27,12 @@ export function useFileDrag(system: System) {
     const toFile = await system?.fs.stat(toPath);
     if (toFile?.isDirectory) {
       await frompathArr.map(async (frompath) => {
-        await system?.fs.rename(frompath, FsPath.join(toPath, FsPath.basename(frompath)));
+        await system?.fs.rename(frompath, FsPath.join(toPath, FsPath.basename(frompath))).catch((e) => {
+          Dialog.showMessageBox({
+            message: e,
+            type: 'error',
+          });
+        });
         emitEvent('file.props.edit');
       });
     }

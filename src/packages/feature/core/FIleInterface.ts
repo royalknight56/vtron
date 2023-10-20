@@ -1,4 +1,4 @@
-import type { VtronFile } from '@feature/core/fileSystem';
+import type { VtronFile } from '@/packages/feature/core/FileSystem';
 
 export interface VtronFileInterface {
   readFile: (path: string) => Promise<string | null>;

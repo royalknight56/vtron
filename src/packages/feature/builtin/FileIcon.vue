@@ -6,7 +6,7 @@
 </template>
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import { VtronFile } from '@feature/core/fileSystem';
+import { VtronFile } from '@feature/core/FileSystem';
 import { useSystem } from '@feature/system';
 import { dealIcon } from '@/packages/util/Icon';
 defineProps<{

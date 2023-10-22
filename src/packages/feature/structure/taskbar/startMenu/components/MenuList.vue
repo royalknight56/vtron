@@ -20,7 +20,7 @@ import { useAppOpen } from '@packages/hook/useAppOpen';
 import { emitEvent } from '@feature/event';
 import { basename } from '@feature/core/Path';
 import FileIcon from '@feature/builtin/FileIcon.vue';
-import { VtronFile } from '@feature/core/fileSystem';
+import { VtronFile } from '@feature/core/FileSystem';
 
 const { openapp, appList } = useAppOpen('menulist');
 function handle(item: VtronFile) {

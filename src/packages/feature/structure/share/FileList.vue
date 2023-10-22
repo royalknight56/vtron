@@ -36,7 +36,7 @@ import { emitEvent } from '@feature/event';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { basename } from '@feature/core/Path';
-import { VtronFile } from '@feature/core/fileSystem';
+import { VtronFile } from '@feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { onMounted, ref } from 'vue';
@@ -61,7 +61,7 @@ const props = defineProps({
     default: () => [],
   },
   theme: {
-    type: String,
+    type: String || Object,
     default: 'light',
   },
 });

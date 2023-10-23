@@ -86,24 +86,44 @@
       </div>
     </div>
   </div>
-  <div
-    class="desk-outer"
-    @contextmenu.self="showOuterMenu($event)"
-    @dragenter.prevent
-    @dragover.prevent
-    @drop.stop="refFileDrop($event, router_url)"
-    @click.self="onBackClick"
-    @mousedown="backgroundDown"
-  >
-    <FileList :on-chosen="onChosen" :on-open="openFolder" :file-list="currentList" theme="blue"> </FileList>
-
-    <div draggable="true" class="desk-item" v-if="creating">
-      <div class="item_img">
-        <img draggable="false" width="50" :src="foldericon" />
-      </div>
-      <input class="item_input" v-model="createInput" @blur="creatingEditEnd" />
+  <div class="main">
+    <div class="left-tree">
+      <FileTree
+        :chosen-path="chosenTreePath"
+        mode="list"
+        :on-open="onTreeOpen"
+        :on-refresh="onListRefresh"
+        :file-list="rootFileList"
+        :key="random"
+      >
+      </FileTree>
     </div>
-    <Chosen></Chosen>
+    <div
+      class="desk-outer"
+      @contextmenu.self="showOuterMenu($event)"
+      @dragenter.prevent
+      @dragover.prevent
+      @drop.stop="refFileDrop($event, router_url)"
+      @click.self="onBackClick"
+      @mousedown="backgroundDown"
+    >
+      <FileList
+        :on-chosen="onChosen"
+        :on-refresh="onListRefresh"
+        :on-open="openFolder"
+        :file-list="currentList"
+        theme="blue"
+      >
+      </FileList>
+
+      <div draggable="true" class="desk-item" v-if="creating">
+        <div class="item_img">
+          <img draggable="false" width="50" :src="foldericon" />
+        </div>
+        <input class="item_input" v-model="createInput" @blur="creatingEditEnd" />
+      </div>
+      <Chosen></Chosen>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -111,6 +131,7 @@ import { ref, onMounted, inject } from 'vue';
 import foldericon from '@packages/assets/folder.png';
 
 import FileList from '@feature/structure/share/FileList.vue';
+import FileTree from '@feature/structure/share/FileTree.vue';
 
 import { Notify } from '@feature/notification/Notification';
 import { useSystem } from '@feature/system';
@@ -168,6 +189,46 @@ const { isVia, refersh, createFolder, backFolder, openFolder, onComputerMount } 
     });
   },
 });
+
+const rootFileList = ref<Array<VtronFile>>([]);
+const random = ref(0);
+onMounted(() => {
+  if (config) {
+    router_url.value = config.path;
+  } else {
+    router_url.value = '/C';
+  }
+  onComputerMount();
+  mountEvent('file.props.edit', async () => {
+    refersh();
+  });
+  system.fs.readdir('/').then((file) => {
+    if (file) {
+      rootFileList.value = [...file];
+      random.value = random.value + 1;
+    }
+  });
+});
+
+function onListRefresh() {
+  refersh();
+  system.fs.readdir('/').then((file) => {
+    if (file) {
+      rootFileList.value = [...file];
+    }
+  });
+}
+
+/**------树状列表打开------ */
+const chosenTreePath = ref('');
+async function onTreeOpen(path: string) {
+  chosenTreePath.value = path;
+  const file = await system.fs.stat(path);
+  if (file) {
+    openFolder(file);
+  }
+}
+
 /**------框选--------- */
 let chosenCallback: (rect: Rect) => void = () => {
   //
@@ -257,29 +318,30 @@ function end_input() {
   refersh();
 }
 /* ------------ 路径输入框end ---------*/
-
-onMounted(() => {
-  if (config) {
-    router_url.value = config.path;
-  } else {
-    router_url.value = '/C';
-  }
-  onComputerMount();
-  mountEvent('file.props.edit', async () => {
-    refersh();
-  });
-});
 </script>
-<style scoped>
-.desk-outer {
-  height: 100%;
-  width: 100%;
+<style lang="scss" scoped>
+.main {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  align-content: flex-start;
-  flex-wrap: wrap;
-  position: relative;
+  height: 100%;
+  .left-tree {
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: var(--menulist-width);
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(134, 134, 134, 0.267);
+  }
+  .desk-outer {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    position: relative;
+  }
 }
 
 .desk-item {

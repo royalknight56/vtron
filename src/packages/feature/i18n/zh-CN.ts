@@ -78,4 +78,7 @@ export const zhCN: AllText = {
   paste: '粘贴',
 
   'please.reboot': '请重启',
+
+  white: '白色',
+  black: '黑色',
 };

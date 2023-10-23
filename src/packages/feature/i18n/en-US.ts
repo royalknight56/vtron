@@ -78,4 +78,7 @@ export const enUS: AllText = {
   paste: 'Paste',
 
   'please.reboot': 'Please Reboot',
+
+  white: 'White',
+  black: 'Black',
 };

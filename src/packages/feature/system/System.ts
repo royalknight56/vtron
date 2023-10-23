@@ -111,6 +111,8 @@ class System {
     initBuiltinFileOpener(this); // 注册内建文件打开器
     logger('initFileSystem');
     await this.initFileSystem(); // 初始化文件系统
+    logger('initSavedConfig');
+    await this.initSavedConfig(); // 初始化保存的配置
     logger('initShell');
     await this.initShell(); // 初始化shell
     logger('initBuiltinApp');
@@ -130,8 +132,6 @@ class System {
     this.runPlugin(this); // 运行fs中插件
     logger('initBackground');
     this.initBackground(); // 初始化壁纸
-    logger('initSavedConfig');
-    await this.initSavedConfig(); // 初始化保存的配置
     logger('initEvent');
     this.setRootStyle(this._rootState.system.options.rootStyle); // 设置根样式
 

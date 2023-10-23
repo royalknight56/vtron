@@ -77,4 +77,7 @@ export interface AllText {
   paste: string;
 
   'please.reboot': string;
+
+  white: string;
+  black: string;
 }

@@ -53,9 +53,28 @@
         </div>
 
         <div class="setting-item">
+          <label>桌面文字颜色：</label>
+          <WinSelect
+            v-model="textColor"
+            :options="[
+              {
+                label: i18n('white'),
+                value: 0,
+              },
+              {
+                label: i18n('black'),
+                value: 1,
+              },
+            ]"
+            :placeholder="i18n('please.select')"
+          >
+          </WinSelect>
+        </div>
+
+        <!-- <div class="setting-item">
           <label></label>
           <textarea placeholder="" v-model="rootstyle"></textarea>
-        </div>
+        </div> -->
 
         <div class="setting-item">
           <label></label>
@@ -89,24 +108,9 @@ const activeIndex = ref(0);
 
 const imgtype = ref(0);
 const imgurl = ref('');
-const rootstyle = ref(JSON.stringify(rootstate.system.options.rootStyle));
-const selectItem = (index: number) => {
-  activeIndex.value = index;
-};
-async function submitStyle() {
-  const config = await system?.fs.readFile(`${system._options.systemLocation}Vtron/config.json`);
-  const configObj = JSON.parse(config || '{}');
-  configObj.rootStyle = JSON.parse(rootstyle.value);
-  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, {
-    content: JSON.stringify(configObj),
-  });
+const textColor = ref(0);
 
-  Dialog.showMessageBox({
-    message: i18n('save.success'),
-    title: i18n('style'),
-    type: 'info',
-  });
-}
+/** 提交背景设置 */
 async function submit() {
   rootstate.system.options.background = imgurl.value;
   await system?.fs.writeFile(`${system._options.systemLocation}Vtron/background.txt`, {
@@ -115,6 +119,35 @@ async function submit() {
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('wallpaper'),
+    type: 'info',
+  });
+}
+
+// const rootstyle = ref(JSON.stringify(rootstate.system.options.rootStyle));
+const selectItem = (index: number) => {
+  activeIndex.value = index;
+};
+async function submitStyle() {
+  const config = await system?.fs.readFile(`${system._options.systemLocation}Vtron/config.json`);
+
+  const configObj = JSON.parse(config || '{}');
+  // configObj.rootStyle = JSON.parse(rootstyle.value);
+  configObj.styleProps = {
+    desktopFileList:
+      textColor.value === 0
+        ? {
+            color: '#fff',
+          }
+        : { color: '#000' },
+  };
+
+  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, {
+    content: JSON.stringify(configObj),
+  });
+
+  Dialog.showMessageBox({
+    message: i18n('save.success'),
+    title: i18n('style'),
     type: 'info',
   });
 }

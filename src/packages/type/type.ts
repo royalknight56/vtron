@@ -28,6 +28,7 @@ export interface SystemOptions {
   magnet?: WinAppOptions[];
   menulist?: WinAppOptions[];
   rootStyle?: any;
+  styleProps?: any;
   fs?: VtronFileInterface;
   userLocation?: string;
   systemLocation?: string;

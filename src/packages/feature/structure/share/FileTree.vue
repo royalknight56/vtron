@@ -1,39 +1,43 @@
 <template>
-  <div
-    draggable="true"
-    class="file-item"
-    :class="{
-      chosen: chosenIndexs.includes(index),
-      'no-chosen': !chosenIndexs.includes(index),
-      'mode-icon': mode === 'icon',
-      'mode-list': mode === 'list',
-    }"
-    :style="{
-      ...styleProps,
-      '--theme-color': theme === 'light' ? '#ffffff6b' : '#3bdbff3d',
-    }"
-    v-for="(item, index) in fileList"
-    :key="item.path"
-    @dblclick="onOpen(item)"
-    @contextmenu.stop.prevent="handleRightClick($event, item)"
-    @drop="folderDrop($event, item.path)"
-    @dragenter.prevent
-    @dragover.prevent
-    @dragstart.stop="startDragApp($event, item)"
-    @click="handleClick(index)"
-    @mousedown.stop
-    :ref="
-      (ref) => {
-        if (ref) {
-          appPositions[index] = ref as Element;
-        }
-      }
-    "
-  >
-    <div class="file-item_img">
-      <FileIcon :file="item" />
+  <div class="item-group" v-for="(item, index) in fileList" :key="item.path + item.isOpen">
+    <div
+      class="file-item"
+      :class="{
+        chosen: chosenPath === item.path,
+        // 'no-chosen': !chosenIndexs.includes(index),
+        'mode-icon': mode === 'icon',
+        'mode-list': mode === 'list',
+      }"
+      :style="{
+        ...styleProps,
+        'padding-left': level * 20 + 'px',
+      }"
+      @contextmenu.stop.prevent="handleRightClick($event, item)"
+      @click="handleClick(item, index)"
+      @mousedown.stop
+    >
+      <div
+        class="iconfont icon-arrow-down"
+        :class="{ 'open-arrow': item.isOpen, 'hide-arrow': item.isOpen && !item.subFileList?.length }"
+        @click.stop="onOpenArrow(item)"
+      ></div>
+      <div class="file-item_img">
+        <FileIcon :file="item" />
+      </div>
+      <span class="file-item_title">{{ dealI18nName(basename(item.path)) }}</span>
     </div>
-    <span class="file-item_title">{{ dealI18nName(basename(item.path)) }}</span>
+    <div class="sub-tree">
+      <FileTree
+        v-if="item.isOpen"
+        :level="level + 1"
+        mode="list"
+        :chosen-path="chosenPath"
+        :on-refresh="() => onSubRefresh(item)"
+        :on-open="onSubOpen"
+        :file-list="item.subFileList"
+      >
+      </FileTree>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -44,17 +48,18 @@ import { useContextMenu } from '@packages/hook/useContextMenu';
 import { basename } from '@feature/core/Path';
 import { VtronFile } from '@feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
-import { useFileDrag } from '@packages/hook/useFileDrag';
 import { onMounted, ref } from 'vue';
-import { Rect } from '@/packages/hook/useRectChosen';
-import { throttle } from '@/packages/util/debounce';
+
 const { openPropsWindow, copyFile } = useContextMenu();
 const sys = useSystem();
-const { startDrag, folderDrop } = useFileDrag(sys);
+type FileWithOpen = VtronFile & {
+  isOpen?: boolean;
+  subFileList?: FileWithOpen[];
+};
 const props = defineProps({
-  onChosen: {
-    type: Function,
-    required: true,
+  level: {
+    type: Number,
+    default: 0,
   },
   onOpen: {
     type: Function,
@@ -68,14 +73,15 @@ const props = defineProps({
       //
     },
   },
+  chosenPath: {
+    type: String,
+    default: '',
+  },
   fileList: {
-    type: Array<VtronFile>,
+    type: Array<FileWithOpen>,
     default: () => [],
   },
-  theme: {
-    type: String || Object,
-    default: 'light',
-  },
+
   mode: {
     type: String,
     default: 'icon',
@@ -87,55 +93,39 @@ const props = defineProps({
     },
   },
 });
-const appPositions = ref<Array<Element>>([]);
-
 const chosenIndexs = ref<Array<number>>([]);
-function handleClick(index: number) {
+function handleClick(item: FileWithOpen, index: number) {
   chosenIndexs.value = [index];
+  props.onOpen(item.path);
 }
+
 onMounted(() => {
   chosenIndexs.value = [];
-  props.onChosen(
-    throttle((rect: Rect) => {
-      const tempChosen: number[] = [];
-      appPositions.value.forEach((el, index) => {
-        const rect2 = el.getBoundingClientRect();
-        const rect2Center = {
-          x: rect2.left + rect2.width / 2,
-          y: rect2.top + rect2.height / 2,
-        };
-        if (
-          rect2Center.x > rect.left &&
-          rect2Center.x < rect.left + rect.width &&
-          rect2Center.y > rect.top &&
-          rect2Center.y < rect.top + rect.height
-        ) {
-          tempChosen.push(index);
-        }
-      });
-      chosenIndexs.value = tempChosen;
-    }, 100)
-  );
+  props.fileList.forEach((item) => {
+    item.isOpen = false;
+  });
 });
 
-function startDragApp(mouse: DragEvent, item: VtronFile) {
-  if (chosenIndexs.value.length) {
-    startDrag(
-      mouse,
-      chosenIndexs.value.map((index) => {
-        return props.fileList[index];
-      }),
-      () => {
-        chosenIndexs.value = [];
-      }
-    );
-  } else {
-    startDrag(mouse, [item], () => {
-      chosenIndexs.value = [];
-    });
-  }
+function onSubOpen(path: string) {
+  props.onOpen(path);
 }
 
+async function onSubRefresh(item: FileWithOpen) {
+  item.subFileList = (await sys.fs.readdir(item.path)).filter((file) => {
+    return file.isDirectory;
+  });
+}
+
+async function onOpenArrow(item: FileWithOpen) {
+  if (item.isOpen && !item.subFileList?.length) {
+    return;
+  }
+  item.isOpen = !item.isOpen;
+
+  item.subFileList = (await sys.fs.readdir(item.path)).filter((file) => {
+    return file.isDirectory;
+  });
+}
 function handleRightClick(mouse: MouseEvent, item: VtronFile) {
   if (chosenIndexs.value.length <= 1) {
     chosenIndexs.value = [props.fileList.findIndex((app) => app.path === item.path)];
@@ -187,17 +177,46 @@ function dealI18nName(name: string) {
 }
 </script>
 <style lang="scss" scoped>
+.icon-arrow-down {
+  display: block;
+  width: 4px;
+  height: 4px;
+  transform: translateY(0px) rotate(-45deg);
+  border: 2px solid rgba(0, 0, 0, 0.465);
+  border-left: none;
+  border-top: none;
+  transition: all 0.1s;
+}
+.icon-arrow-down::after {
+  content: '';
+  display: block;
+  width: 9px;
+  height: 9px;
+  //   background-color: black;
+}
+.hide-arrow {
+  border-color: transparent;
+}
+.open-arrow {
+  transform: translateY(-2px) translateX(2px) rotate(45deg);
+}
+.item-group {
+  .sub-tree {
+    // margin-left: 20px;
+  }
+}
 .file-item {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: var(--desk-item-size);
-  height: var(--desk-item-size);
+  width: 100%;
+
   font-size: var(--ui-font-size);
   border: 1px solid transparent;
-  margin: 6px;
+  margin: 2px;
+  user-select: none;
 }
 
 .file-item:hover {
@@ -205,8 +224,11 @@ function dealI18nName(name: string) {
 }
 .chosen {
   border: 1px dashed #3bdbff3d;
-  // background-color: #ffffff6b;
-  background-color: var(--theme-color);
+  background-color: #9595956b;
+  //   background-color: var(--theme-color);
+}
+.chosen:hover {
+  background-color: #9595956b;
 }
 .no-chosen {
   .file-item_title {
@@ -240,8 +262,8 @@ function dealI18nName(name: string) {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  height: var(--menulist-item-height);
-  width: var(--menulist-width);
+  height: calc(0.8 * var(--menulist-item-height));
+  width: 100%;
 
   .file-item_img {
     width: var(--menulist-item-height);

@@ -128,10 +128,11 @@ const setList = [
   background-color: white;
   width: 100%;
   height: 100%;
-  border: #0076d758 1px solid;
+  border: #0076d795 1px solid;
   box-sizing: border-box;
   box-shadow: inset -599px 0px 0px 0px #ffffff;
   transition: background-color 0.1s;
+  overflow: hidden;
 }
 
 .window-outer.focus {

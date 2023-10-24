@@ -70,11 +70,9 @@ const currentRouter = ref('main');
 const focusState = ref(false);
 browserWindow?.on('focus', () => {
   focusState.value = true;
-  console.log('focus');
 });
 browserWindow?.on('blur', () => {
   focusState.value = false;
-  console.log('blur');
 });
 function back() {
   currentRouter.value = 'main';

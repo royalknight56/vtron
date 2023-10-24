@@ -90,7 +90,7 @@ import WinButton from '@packages/components/WinButton.vue';
 import WinSelect from '@packages/components/WinSelect.vue';
 import WinInput from '@packages/components/WinInput.vue';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useSystem } from '@feature/system';
 import { Dialog } from '@feature/dialog/Dialog';
 import { useRootState } from '../../state/Root';
@@ -110,6 +110,15 @@ const imgtype = ref(0);
 const imgurl = ref('');
 const textColor = ref(0);
 
+/** 获取保存的配置 */
+async function getSavedConfig() {
+  const config = await system?.fs.readFile(`${system._options.systemLocation}Vtron/config.json`);
+  const configObj = JSON.parse(config || '{}');
+  textColor.value = configObj.styleProps?.desktopFileList?.color === '#fff' ? 0 : 1;
+}
+onMounted(() => {
+  getSavedConfig();
+});
 /** 提交背景设置 */
 async function submit() {
   rootstate.system.options.background = imgurl.value;

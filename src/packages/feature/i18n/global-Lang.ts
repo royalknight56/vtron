@@ -64,6 +64,13 @@ export interface AllText {
   maximize: string;
   minimize: string;
 
+  time: string;
+  'time.and.language': string;
+  and: string;
+
+  screen: string; // 屏幕
+  brightness: string; // 亮度
+
   computer: string;
   terminal: string;
   appstore: string;

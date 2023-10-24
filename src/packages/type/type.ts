@@ -76,8 +76,10 @@ export type RootState = {
     winnum: number;
     topWindow: BrowserWindow | undefined;
     info: {
+      // 系统次级信息
       screenWidth: number;
       screenHeight: number;
+      brightness: number; // 亮度
       battery: {
         isCharging: boolean;
         chargeLevel: number;

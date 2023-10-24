@@ -25,6 +25,9 @@
     <Transition name="fade" appear>
       <SetSystem v-if="currentRouter === 'system'" />
     </Transition>
+    <Transition name="fade" appear>
+      <SetLang v-if="currentRouter === 'language'" />
+    </Transition>
     <Transition name="fade">
       <div class="outer" v-if="currentRouter === 'main'">
         <div class="uper_tab">
@@ -59,10 +62,13 @@ import e7f8 from '../../../assets/icon/e7f8.png'; //系统设置
 // import e774 from '../../../assets/icon/e774.png'; //网络
 import e771 from '../../../assets/icon/e771.png'; //个性化
 import e895 from '../../../assets/icon/e895.png'; //更新
+import e775 from '../../../assets/icon/e775.png'; //语言
+
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 import { useSystem } from '@feature/system';
 import { vDragable } from '../window/MakeDragable';
+import SetLang from './SetWindow/SetLang.vue';
 const browserWindow = inject<BrowserWindow>('browserWindow')!;
 const sys = useSystem();
 const currentRouter = ref('main');
@@ -85,7 +91,7 @@ const setList = [
     key: 'system',
     title: i18n('system'),
     // desc: '显示，声音，通知，电源',
-    desc: i18n('language'),
+    desc: i18n('brightness'),
     icon: e7f8,
     content: SetSystem,
   },
@@ -107,6 +113,14 @@ const setList = [
   //     icon: e771,
   //     content:appstore
   // },
+  {
+    key: 'language',
+    title: i18n('time.and.language'),
+    desc: i18n('language'),
+    icon: e775,
+    content: SetLang,
+  },
+
   {
     key: 'update',
     // title: '更新和安全',

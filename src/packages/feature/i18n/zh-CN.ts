@@ -65,6 +65,13 @@ export const zhCN: AllText = {
   maximize: '最大化',
   minimize: '最小化',
 
+  time: '时间',
+  'time.and.language': '时间和语言',
+  and: '和',
+
+  screen: '屏幕',
+  brightness: '亮度',
+
   computer: '此电脑',
   terminal: '终端',
   appstore: '应用商店',

@@ -32,6 +32,7 @@ const rootState: RootState = reactive({
         isCharging: false,
         chargeLevel: 0,
       },
+      brightness: 100,
       connection: 0,
     },
     options: {},

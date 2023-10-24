@@ -65,6 +65,13 @@ export const enUS: AllText = {
   maximize: 'Maximize',
   minimize: 'Minimize',
 
+  time: 'Time',
+  'time.and.language': 'Time and Language',
+  and: 'And',
+
+  screen: 'Screen',
+  brightness: 'Brightness',
+
   computer: 'Computer',
   terminal: 'Terminal',
   appstore: 'App Store',

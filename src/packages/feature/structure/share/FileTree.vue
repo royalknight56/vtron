@@ -10,7 +10,7 @@
       }"
       :style="{
         ...styleProps,
-        'padding-left': level * 20 + 'px',
+        'padding-left': level * 12 + 'px',
       }"
       @contextmenu.stop.prevent="handleRightClick($event, item)"
       @click="handleClick(item, index)"

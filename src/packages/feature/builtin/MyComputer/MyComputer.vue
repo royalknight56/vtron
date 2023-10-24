@@ -263,7 +263,10 @@ function backgroundUp() {
 const createInput = ref(i18n('new.folder'));
 const creating = ref(false);
 function createFolderStart() {
-  creating.value = true;
+  // creating.value = true;
+  createNewFile(router_url.value).then(() => {
+    refersh();
+  });
 }
 function creatingEditEnd() {
   if (creating.value) {

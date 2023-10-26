@@ -215,6 +215,13 @@ class System {
     this.fs = fs;
     initAppList();
   }
+  mountVolume(path: string, fs: VtronFileInterface) {
+    if (this.fs instanceof VtronFileSystem) {
+      this.fs.mountVolume(path, fs);
+    } else {
+      console.error('自定义文件系统不支持挂载卷');
+    }
+  }
   private async initShell() {
     if (this._options.shell) {
       this._shell = this._options.shell;
@@ -277,6 +284,7 @@ class System {
   }
   /**
    * @description: 添加应用
+   * force 表示强制，在每次启动时都会添加
    */
   addApp(options: WinAppOptions, force = false) {
     this.addWindowSysLink('Desktop', options, force);

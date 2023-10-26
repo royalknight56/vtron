@@ -85,6 +85,8 @@ class VtronFileSystem implements VtronFileInterface {
   private db!: IDBDatabase;
   private _ready: ((value: VtronFileSystem) => void) | null = null;
   private _watchMap: Map<RegExp, (path: string, content: string) => void> = new Map();
+
+  private volumeMap: Map<string, VtronFileInterface> = new Map();
   constructor() {
     const request = window.indexedDB.open('FileSystemDB', 1);
 
@@ -166,12 +168,54 @@ class VtronFileSystem implements VtronFileInterface {
     return Promise.resolve();
   }
 
+  mountVolume(path: string, volume: VtronFileInterface) {
+    this.volumeMap.set(path, volume);
+  }
+
+  /**
+   * 判断指定路径是否为卷的路径
+   * @param path
+   * @returns
+   */
+  checkVolumePath(path: string): VtronFileInterface | undefined {
+    if (this.volumeMap.has(path)) {
+      return this.volumeMap.get(path);
+    }
+    let volume: VtronFileInterface | undefined;
+    this.volumeMap.forEach((volumem, key) => {
+      if (fspath.isChildPath(key, path)) {
+        volume = volumem;
+      }
+    });
+    return volume;
+  }
+
+  /**
+   * 使用对应的卷的文件系统
+   */
+  beforeGuard<T extends keyof VtronFileInterface>(
+    volume: VtronFileInterface,
+    opt: T,
+    ...args: Parameters<VtronFileInterface[T]>
+  ) {
+    const func = volume[opt] as (
+      ...args: Parameters<VtronFileInterface[T]>
+    ) => ReturnType<VtronFileInterface[T]>;
+
+    return func(...args);
+  }
+
   /**
    * 读取指定路径的文件内容
    * @param path 文件路径
    * @returns 文件内容
    */
   async readFile(path: string): Promise<string | null> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'readFile', path);
+    }
+
     const transaction = this.db.transaction('files', 'readonly');
     const objectStore = transaction.objectStore('files');
 
@@ -201,6 +245,11 @@ class VtronFileSystem implements VtronFileInterface {
       content: string;
     }
   ): Promise<void> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'writeFile', path, par);
+    }
+
     const parentPath = fspath.dirname(path);
     // judge if file exists
     const exists = await this.exists(parentPath);
@@ -251,6 +300,11 @@ class VtronFileSystem implements VtronFileInterface {
     }
   }
   async appendFile(path: string, content: string): Promise<void> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'appendFile', path, content);
+    }
+
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
 
@@ -289,6 +343,11 @@ class VtronFileSystem implements VtronFileInterface {
    * @returns 文件和文件夹列表
    */
   async readdir(path: string): Promise<VtronFile[]> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'readdir', path);
+    }
+
     const transaction = this.db.transaction('files', 'readonly');
     const objectStore = transaction.objectStore('files');
 
@@ -309,6 +368,11 @@ class VtronFileSystem implements VtronFileInterface {
   }
 
   async exists(path: string): Promise<boolean> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'exists', path);
+    }
+
     try {
       const transaction = this.db.transaction('files', 'readonly');
       const objectStore = transaction.objectStore('files');
@@ -333,6 +397,11 @@ class VtronFileSystem implements VtronFileInterface {
   }
 
   async stat(path: string): Promise<VtronFile | null> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'stat', path);
+    }
+
     const transaction = this.db.transaction('files', 'readonly');
     const objectStore = transaction.objectStore('files');
 
@@ -357,6 +426,11 @@ class VtronFileSystem implements VtronFileInterface {
    * @param path 文件路径
    */
   async unlink(path: string): Promise<void> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'unlink', path);
+    }
+
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
 
@@ -403,14 +477,29 @@ class VtronFileSystem implements VtronFileInterface {
     objectStore.put(vfile);
   }
   async rename(path: string, newPath: string): Promise<void> {
+    const volume = this.checkVolumePath(path);
+    const volume2 = this.checkVolumePath(newPath);
+    if (!!volume && !!volume2) {
+      return this.beforeGuard(volume, 'rename', path, newPath);
+    } else {
+      Promise.reject('Cannot rename between volumes');
+    }
+    // if (volume) {
+    //   return this.beforeGuard(volume,'rename', path,newPath);
+    // }
+
+    // this.beforeGuard('rename', path, newPath);
     // cannot rename to child path
     // /C/Users /C/Users/Desktop/Users
     if (path === newPath) {
       return Promise.resolve();
     }
-    if (newPath.startsWith(path)) {
+    if (fspath.isChildPath(path, newPath)) {
       return Promise.reject('Cannot rename to child path');
     }
+    // if (newPath.startsWith(path)) {//bug
+    //   return Promise.reject('Cannot rename to child path');
+    // }
 
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
@@ -458,6 +547,11 @@ class VtronFileSystem implements VtronFileInterface {
    * @param path 文件夹路径
    */
   async rmdir(path: string): Promise<void> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'rmdir', path);
+    }
+
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
 
@@ -485,6 +579,11 @@ class VtronFileSystem implements VtronFileInterface {
    * @param path 文件夹路径
    */
   async mkdir(path: string): Promise<void> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'mkdir', path);
+    }
+
     const transedPath = fspath.transformPath(path);
     let parentPath = fspath.dirname(transedPath);
     if (parentPath === '') parentPath = '/';
@@ -543,6 +642,14 @@ class VtronFileSystem implements VtronFileInterface {
     objectStore.put(newFile);
   }
   async copyFile(src: string, dest: string): Promise<void> {
+    const volume = this.checkVolumePath(src);
+    const volume2 = this.checkVolumePath(dest);
+    if (!!volume && !!volume2) {
+      return this.beforeGuard(volume, 'copyFile', src, dest);
+    } else {
+      Promise.reject('Cannot copyFile between volumes');
+    }
+
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
 
@@ -565,6 +672,8 @@ class VtronFileSystem implements VtronFileInterface {
       };
     });
   }
+
+  // async mountVolume(path: string, volume: string): Promise<void> {}
 }
 
 export { VtronFile, VtronFileInfo, VtronFileSystem };

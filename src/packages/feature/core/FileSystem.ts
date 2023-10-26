@@ -87,8 +87,8 @@ class VtronFileSystem implements VtronFileInterface {
   private _watchMap: Map<RegExp, (path: string, content: string) => void> = new Map();
 
   private volumeMap: Map<string, VtronFileInterface> = new Map();
-  constructor() {
-    const request = window.indexedDB.open('FileSystemDB', 1);
+  constructor(rootPath = '/', id = '') {
+    const request = window.indexedDB.open('FileSystemDB' + id, 1);
 
     request.onerror = () => {
       console.error('Failed to open database');
@@ -104,10 +104,11 @@ class VtronFileSystem implements VtronFileInterface {
       const objectStore = this.db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
       objectStore.createIndex('parentPath', 'parentPath');
       objectStore.createIndex('path', 'path', { unique: true });
-      const rootDir = new VtronFile('/', '', {
+      const rootDir = new VtronFile(rootPath, '', {
         isDirectory: true,
       });
-      rootDir.parentPath = '';
+
+      rootDir.parentPath = rootPath === '/' ? '' : fspath.dirname(rootPath);
       objectStore.add(rootDir);
     };
   }
@@ -172,6 +173,15 @@ class VtronFileSystem implements VtronFileInterface {
     this.volumeMap.set(path, volume);
   }
 
+  checkVolumeChild(path: string): VtronFileInterface | undefined {
+    let volume: VtronFileInterface | undefined;
+    this.volumeMap.forEach((volumem, key) => {
+      if (fspath.dirname(key) === path) {
+        volume = volumem;
+      }
+    });
+    return volume;
+  }
   /**
    * 判断指定路径是否为卷的路径
    * @param path
@@ -198,11 +208,9 @@ class VtronFileSystem implements VtronFileInterface {
     opt: T,
     ...args: Parameters<VtronFileInterface[T]>
   ) {
-    const func = volume[opt] as (
-      ...args: Parameters<VtronFileInterface[T]>
-    ) => ReturnType<VtronFileInterface[T]>;
-
-    return func(...args);
+    return (volume[opt] as (...args: Parameters<VtronFileInterface[T]>) => ReturnType<VtronFileInterface[T]>)(
+      ...args
+    );
   }
 
   /**
@@ -348,6 +356,12 @@ class VtronFileSystem implements VtronFileInterface {
       return this.beforeGuard(volume, 'readdir', path);
     }
 
+    const volume2 = this.checkVolumeChild(path);
+    let vol: VtronFile[] = [];
+    if (volume2) {
+      vol = await this.beforeGuard(volume2, 'readdir', path);
+    }
+
     const transaction = this.db.transaction('files', 'readonly');
     const objectStore = transaction.objectStore('files');
 
@@ -362,7 +376,7 @@ class VtronFileSystem implements VtronFileInterface {
       };
       request.onsuccess = () => {
         const files = request.result;
-        resolve(files);
+        resolve([...files, ...vol]);
       };
     });
   }
@@ -481,8 +495,8 @@ class VtronFileSystem implements VtronFileInterface {
     const volume2 = this.checkVolumePath(newPath);
     if (!!volume && !!volume2) {
       return this.beforeGuard(volume, 'rename', path, newPath);
-    } else {
-      Promise.reject('Cannot rename between volumes');
+    } else if ((!!volume && !volume2) || (!volume && !!volume2)) {
+      return Promise.reject('Cannot rename between volumes');
     }
     // if (volume) {
     //   return this.beforeGuard(volume,'rename', path,newPath);
@@ -644,10 +658,11 @@ class VtronFileSystem implements VtronFileInterface {
   async copyFile(src: string, dest: string): Promise<void> {
     const volume = this.checkVolumePath(src);
     const volume2 = this.checkVolumePath(dest);
+
     if (!!volume && !!volume2) {
       return this.beforeGuard(volume, 'copyFile', src, dest);
-    } else {
-      Promise.reject('Cannot copyFile between volumes');
+    } else if ((!!volume && !volume2) || (!volume && !!volume2)) {
+      return Promise.reject('Cannot copyFile between volumes');
     }
 
     const transaction = this.db.transaction('files', 'readwrite');

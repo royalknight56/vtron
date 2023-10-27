@@ -7,6 +7,9 @@
       'no-chosen': !chosenIndexs.includes(index),
       'mode-icon': mode === 'icon',
       'mode-list': mode === 'list',
+      'mode-big': mode === 'big',
+      'mode-middle': mode === 'middle',
+      'mode-detail': mode === 'detail',
       'drag-over': hoverIndex === index,
     }"
     :style="{
@@ -17,7 +20,7 @@
     :key="item.path"
     @dblclick="onOpen(item)"
     @contextmenu.stop.prevent="handleRightClick($event, item)"
-    @drop="folderDrop($event, item.path)"
+    @drop="hadnleDrop($event, item.path)"
     @dragenter.prevent="handleDragEnter($event, item, index)"
     @dragover.prevent
     @dragleave="handleDragLeave()"
@@ -36,6 +39,10 @@
       <FileIcon :file="item" />
     </div>
     <span class="file-item_title">{{ dealI18nName(basename(item.path)) }}</span>
+    <div class="file-item_type">
+      <span v-if="item.isDirectory">folder</span>
+      <span v-else>{{ extname(item.path) }}</span>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -43,7 +50,7 @@ import { useSystem } from '@packages/plug';
 import { emitEvent } from '@feature/event';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
-import { basename } from '@feature/core/Path';
+import { basename, extname } from '@feature/core/Path';
 import { VtronFile } from '@feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
@@ -89,6 +96,12 @@ const props = defineProps({
     },
   },
 });
+
+function hadnleDrop(mouse: DragEvent, path: string) {
+  hoverIndex.value = -1;
+  folderDrop(mouse, path);
+}
+
 const hoverIndex = ref<number>(-1);
 const appPositions = ref<Array<Element>>([]);
 
@@ -210,6 +223,13 @@ function dealI18nName(name: string) {
   font-size: var(--ui-font-size);
   border: 1px solid transparent;
   margin: 6px;
+  .file-item_img {
+    width: 60%;
+    height: 60%;
+  }
+  .file-item_type {
+    display: none;
+  }
 }
 
 .file-item:hover {
@@ -276,6 +296,39 @@ function dealI18nName(name: string) {
 
     word-break: break-all;
     // flex-grow: 0;
+  }
+}
+.mode-icon {
+  width: var(--desk-item-size);
+  height: var(--desk-item-size);
+}
+.mode-big {
+  width: calc(var(--desk-item-size) * 2.5);
+  height: calc(var(--desk-item-size) * 2.5);
+}
+.mode-middle {
+  width: calc(var(--desk-item-size) * 1.5);
+  height: calc(var(--desk-item-size) * 1.5);
+}
+.mode-detail {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  height: var(--menulist-item-height);
+  width: 100%;
+  margin: 2px;
+  .file-item_img {
+    width: 30px;
+  }
+  .file-item_title {
+    width: 40%;
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+  }
+  .file-item_type {
+    display: block;
+    color: var(--color-dark-hover);
   }
 }
 </style>

@@ -71,6 +71,14 @@ export interface AllText {
   screen: string; // 屏幕
   brightness: string; // 亮度
 
+  view: string; //查看
+
+  'large.icon': string; // 大图标
+  'middle.icon': string; // 中图标
+  'small.icon': string; // 小图标
+  list: string; // 列表
+  'detail.info': string; // 详细信息
+
   computer: string;
   terminal: string;
   appstore: string;

@@ -9,10 +9,29 @@
     <div class="group">
       <!-- <div class="button">文件</div> -->
       <!-- <div class="button">计算机</div> -->
-      <!-- <div class="button">查看</div> -->
+
       <div class="button" @click="createFolderStart()">{{ i18n('new') }}</div>
       <div class="button" @click="backFolder()">{{ i18n('back') }}</div>
+      <!-- 查看 -->
+      <div class="button" @click="viewChange()">{{ i18n('view') }}</div>
       <!-- <div class="button" @click="newFolder()">新建</div> -->
+    </div>
+    <div v-if="isView" class="up-pop">
+      <div class="up-pop-button" :class="{ chosen: chosenView == 'big' }" @click="changeView('big')">
+        {{ i18n('large.icon') }}
+      </div>
+      <div class="up-pop-button" :class="{ chosen: chosenView == 'middle' }" @click="changeView('middle')">
+        {{ i18n('middle.icon') }}
+      </div>
+      <div class="up-pop-button" :class="{ chosen: chosenView == 'icon' }" @click="changeView('icon')">
+        {{ i18n('small.icon') }}
+      </div>
+      <div class="up-pop-button" :class="{ chosen: chosenView == 'list' }" @click="changeView('list')">
+        {{ i18n('list') }}
+      </div>
+      <div class="up-pop-button" :class="{ chosen: chosenView == 'detail' }" @click="changeView('detail')">
+        {{ i18n('detail.info') }}
+      </div>
     </div>
     <div class="uper_nav">
       <div class="uper_nav_button" @click="backFolder()">
@@ -113,6 +132,7 @@
         :on-open="openFolder"
         :file-list="currentList"
         theme="blue"
+        :mode="chosenView"
       >
       </FileList>
 
@@ -219,6 +239,17 @@ function onListRefresh() {
   });
 }
 
+/**------视图切换------ */
+const isView = ref(false);
+function viewChange() {
+  isView.value = !isView.value;
+}
+
+const chosenView = ref('list');
+function changeView(view: string) {
+  chosenView.value = view;
+}
+
 /**------树状列表打开------ */
 const chosenTreePath = ref('');
 async function onTreeOpen(path: string) {
@@ -323,9 +354,123 @@ function end_input() {
 /* ------------ 路径输入框end ---------*/
 </script>
 <style lang="scss" scoped>
+.uper {
+  /* height: 40px; */
+  background-color: rgba(255, 235, 205, 0);
+  font-size: 12px;
+  font-weight: 300;
+  /* border-bottom: 1px solid black; */
+  --button-item-height: 30px;
+
+  .uper_nav {
+    height: var(--button-item-height);
+    display: flex;
+  }
+
+  .uper_nav_button {
+    width: calc(var(--button-item-height) - 10px);
+    height: var(--button-item-height);
+    line-height: var(--button-item-height);
+    padding: 0px 4px;
+    margin: 0 auto;
+    flex-shrink: 0;
+    text-align: center;
+    filter: brightness(230%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .uper_nav_button_small {
+    width: calc(var(--button-item-height) - 16px);
+  }
+
+  .uper_nav_button svg {
+    width: calc(var(--button-item-height) - 16px);
+    height: calc(var(--button-item-height) - 16px);
+  }
+
+  .path {
+    height: calc(var(--button-item-height));
+    width: 100%;
+    line-height: calc(var(--button-item-height) - 6px);
+    padding: 0px 5px;
+    margin: 0px 2px;
+    border: 1px solid rgba(134, 134, 134, 0.267);
+    transition: all 0.1s;
+    /* text-align: center; */
+    overflow: auto;
+    user-select: none;
+  }
+
+  .path span {
+    height: var(--button-item-height);
+    /* text-align: center; */
+    line-height: var(--button-item-height);
+  }
+
+  .path_inputing {
+    height: calc(var(--button-item-height));
+    width: 100%;
+    line-height: calc(var(--button-item-height) - 6px);
+    padding: 0px 5px;
+    margin: 0px 2px;
+    border: 1px solid rgba(134, 134, 134, 0.267);
+    transition: all 0.1s;
+    user-select: text;
+  }
+
+  .path_inputing input {
+    height: 100%;
+    width: 100%;
+    /* padding: 1px 5px; */
+    /* text-align: center; */
+    line-height: var(--button-item-height);
+    background: none;
+    border: none;
+    outline: none;
+  }
+
+  .path:hover {
+    border: 1px solid rgb(0, 102, 255);
+  }
+
+  .up-pop {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 20;
+    background-color: rgba(208, 208, 208, 0.937);
+    .up-pop-button {
+      width: 70px;
+      height: 20px;
+      background-color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0px 4px;
+      cursor: pointer;
+      transition: all 0.1s;
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+      &.chosen {
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+}
 .main {
   display: flex;
   height: 100%;
+  position: relative;
+  top: 4px;
   .left-tree {
     overflow-x: hidden;
     overflow-y: auto;
@@ -399,19 +544,10 @@ function end_input() {
   width: 100%;
 }
 
-.uper {
-  /* height: 40px; */
-  background-color: rgba(255, 235, 205, 0);
-  font-size: 12px;
-  font-weight: 300;
-  /* border-bottom: 1px solid black; */
-  --button-item-height: 30px;
-}
-
 .group {
   display: flex;
   border-bottom: 1px solid rgba(134, 134, 134, 0.267);
-  /* padding: 4px 0px; */
+
   user-select: none;
 }
 
@@ -423,7 +559,11 @@ function end_input() {
   background: #ffffff;
   font-family: sans-serif;
   font-size: 12px;
-  padding: 2px 4px;
+  padding: 0px 4px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: 0.1s;
   white-space: nowrap;
   user-select: none;
@@ -433,78 +573,5 @@ function end_input() {
   /* background-color: #137bd2; */
   background-color: #1b6bad;
   color: white;
-}
-
-.uper_nav {
-  /* height:var(--button-item-height); */
-  display: flex;
-}
-
-.uper_nav_button {
-  width: calc(var(--button-item-height) - 10px);
-  height: var(--button-item-height);
-  line-height: var(--button-item-height);
-  padding: 4px;
-  margin: 0 auto;
-  flex-shrink: 0;
-  text-align: center;
-  filter: brightness(230%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.uper_nav_button_small {
-  width: calc(var(--button-item-height) - 16px);
-}
-
-.uper_nav_button svg {
-  width: calc(var(--button-item-height) - 16px);
-  height: calc(var(--button-item-height) - 16px);
-}
-
-.path {
-  height: calc(var(--button-item-height));
-  width: 100%;
-  line-height: calc(var(--button-item-height) - 6px);
-  padding: 1px 5px;
-  margin: 2px 2px;
-  border: 1px solid rgba(134, 134, 134, 0.267);
-  transition: all 0.1s;
-  /* text-align: center; */
-  overflow: auto;
-  user-select: none;
-}
-
-.path span {
-  height: var(--button-item-height);
-  /* text-align: center; */
-  line-height: var(--button-item-height);
-}
-
-.path_inputing {
-  height: calc(var(--button-item-height));
-  width: 100%;
-  line-height: calc(var(--button-item-height) - 6px);
-  padding: 1px 5px;
-  margin: 2px 2px;
-  border: 1px solid rgba(134, 134, 134, 0.267);
-  transition: all 0.1s;
-  user-select: text;
-}
-
-.path_inputing input {
-  height: 100%;
-  width: 100%;
-  /* padding: 1px 5px; */
-  /* text-align: center; */
-  line-height: var(--button-item-height);
-  background: none;
-  border: none;
-  outline: none;
-}
-
-.path:hover {
-  border: 1px solid rgb(0, 102, 255);
 }
 </style>

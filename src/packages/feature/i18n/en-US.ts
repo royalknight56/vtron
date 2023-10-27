@@ -72,6 +72,14 @@ export const enUS: AllText = {
   screen: 'Screen',
   brightness: 'Brightness',
 
+  view: 'View',
+
+  'large.icon': 'Large Icon',
+  'middle.icon': 'Middle Icon',
+  'small.icon': 'Small Icon',
+  list: 'List',
+  'detail.info': 'Detail Info',
+
   computer: 'Computer',
   terminal: 'Terminal',
   appstore: 'App Store',

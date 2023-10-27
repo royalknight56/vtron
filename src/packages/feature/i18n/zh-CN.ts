@@ -72,6 +72,14 @@ export const zhCN: AllText = {
   screen: '屏幕',
   brightness: '亮度',
 
+  view: '查看',
+
+  'large.icon': '大图标',
+  'middle.icon': '中图标',
+  'small.icon': '小图标',
+  list: '列表',
+  'detail.info': '详细信息',
+
   computer: '此电脑',
   terminal: '终端',
   appstore: '应用商店',

@@ -7,6 +7,7 @@
       'no-chosen': !chosenIndexs.includes(index),
       'mode-icon': mode === 'icon',
       'mode-list': mode === 'list',
+      'drag-over': hoverIndex === index,
     }"
     :style="{
       ...styleProps,
@@ -17,8 +18,9 @@
     @dblclick="onOpen(item)"
     @contextmenu.stop.prevent="handleRightClick($event, item)"
     @drop="folderDrop($event, item.path)"
-    @dragenter.prevent
+    @dragenter.prevent="handleDragEnter($event, item, index)"
     @dragover.prevent
+    @dragleave="handleDragLeave()"
     @dragstart.stop="startDragApp($event, item)"
     @click="handleClick(index)"
     @mousedown.stop
@@ -87,6 +89,7 @@ const props = defineProps({
     },
   },
 });
+const hoverIndex = ref<number>(-1);
 const appPositions = ref<Array<Element>>([]);
 
 const chosenIndexs = ref<Array<number>>([]);
@@ -182,6 +185,15 @@ function handleRightClick(mouse: MouseEvent, item: VtronFile) {
     ],
   });
 }
+
+function handleDragEnter(mouse: DragEvent, item: VtronFile, index: number) {
+  hoverIndex.value = index;
+}
+
+function handleDragLeave() {
+  hoverIndex.value = -1;
+}
+
 function dealI18nName(name: string) {
   return name;
 }
@@ -218,6 +230,11 @@ function dealI18nName(name: string) {
     -webkit-line-clamp: 2;
   }
 }
+.drag-over {
+  border: 1px dashed #3bdbff3d;
+  // background-color: #ffffff6b;
+  background-color: var(--theme-color);
+}
 .mode-icon {
   .file-item_img {
     width: 60%;
@@ -225,6 +242,7 @@ function dealI18nName(name: string) {
     margin: 0px auto;
     user-select: none;
     flex-shrink: 0;
+    pointer-events: none;
   }
 
   .file-item_title {
@@ -234,6 +252,7 @@ function dealI18nName(name: string) {
     text-align: center;
     word-break: break-all;
     flex-grow: 0;
+    pointer-events: none;
   }
 }
 .mode-list {

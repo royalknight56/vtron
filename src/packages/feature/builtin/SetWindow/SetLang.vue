@@ -72,9 +72,7 @@ async function submit() {
   const config = await system?.fs.readFile(`${system._options.systemLocation}Vtron/config.json`);
   const configObj = JSON.parse(config || '{}');
   configObj.lang = modelvalue.value === 0 ? 'zh-CN' : 'en-US';
-  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, {
-    content: JSON.stringify(configObj),
-  });
+  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, JSON.stringify(configObj));
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('language'),

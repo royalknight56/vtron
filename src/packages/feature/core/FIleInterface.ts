@@ -1,17 +1,12 @@
-import type { VtronFile } from '@/packages/feature/core/FileSystem';
+import type { VtronFile, VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 
 export interface VtronFileInterface {
   readFile: (path: string) => Promise<string | null>;
-  writeFile: (
-    path: string,
-    par: {
-      content: string;
-    }
-  ) => Promise<void>;
+  writeFile: (path: string, data: string, opt?: any) => Promise<void>;
   appendFile: (path: string, content: string) => Promise<void>;
-  readdir: (path: string) => Promise<VtronFile[]>;
+  readdir: (path: string) => Promise<VtronFileWithoutContent[]>;
   exists: (path: string) => Promise<boolean>;
-  stat: (path: string) => Promise<VtronFile | null>;
+  stat: (path: string) => Promise<VtronFileWithoutContent | null>;
   unlink: (path: string) => Promise<void>;
   rename: (oldPath: string, newPath: string) => Promise<void>;
   rmdir: (path: string) => Promise<void>;

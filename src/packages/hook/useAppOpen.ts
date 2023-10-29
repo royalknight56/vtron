@@ -1,7 +1,7 @@
 import { useRootState } from '@feature/state/Root';
 import { nextTick } from 'vue';
 import { useSystem } from '../plug';
-import { VtronFile } from '../feature/core/FileSystem';
+import { VtronFileWithoutContent } from '../feature/core/FileSystem';
 let isReadyUpdateAppList = false;
 function initAppList() {
   isReadyUpdateAppList = true;
@@ -58,7 +58,7 @@ function useAppOpen(type: 'apps' | 'magnet' | 'menulist') {
   const rootState = useRootState();
   const system = useSystem();
   const appList = rootState.system[type];
-  function openapp(item: VtronFile) {
+  function openapp(item: VtronFileWithoutContent) {
     system?.openFile(item.path);
   }
   return {

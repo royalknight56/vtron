@@ -1,19 +1,17 @@
 <template>
   <div class="icon">
-    <img v-if="icon" draggable="false" :src="icon" />
-    <img v-else draggable="false" :src="dealIcon(file, sys)" />
+    <Suspense>
+      <FileIconImg :file="file" :icon="icon" />
+    </Suspense>
   </div>
 </template>
 <script setup lang="ts">
-import { defineProps } from 'vue';
-import { VtronFile } from '@feature/core/FileSystem';
-import { useSystem } from '@feature/system';
-import { dealIcon } from '@/packages/util/Icon';
+import FileIconImg from './components/FileIconImg.vue';
+import { VtronFileWithoutContent } from '@feature/core/FileSystem';
 defineProps<{
-  file?: VtronFile | null;
+  file?: VtronFileWithoutContent | null;
   icon?: string;
 }>();
-const sys = useSystem();
 </script>
 <style lang="scss" scoped>
 .icon {

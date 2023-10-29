@@ -40,9 +40,7 @@ function handleButton(e: MouseEvent) {
             return;
           }
           await system.fs.unlink(file?.path);
-          await system.fs.writeFile(file?.path, {
-            content: input.value,
-          });
+          await system.fs.writeFile(file?.path, input.value);
           new Notify({
             title: i18n('tips'),
             content: i18n('file.save.success'),

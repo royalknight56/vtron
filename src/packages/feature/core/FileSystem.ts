@@ -81,6 +81,7 @@ class VtronFile extends VtronFileInfo {
     }
   }
 }
+export type VtronFileWithoutContent = Omit<VtronFile, 'content'>;
 class VtronFileSystem implements VtronFileInterface {
   private db!: IDBDatabase;
   private _ready: ((value: VtronFileSystem) => void) | null = null;
@@ -247,15 +248,10 @@ class VtronFileSystem implements VtronFileInterface {
    * @param path 文件路径
    * @param content 文件内容
    */
-  async writeFile(
-    path: string,
-    par: {
-      content: string;
-    }
-  ): Promise<void> {
+  async writeFile(path: string, data: string, opt?: any): Promise<void> {
     const volume = this.checkVolumePath(path);
     if (volume) {
-      return this.beforeGuard(volume, 'writeFile', path, par);
+      return this.beforeGuard(volume, 'writeFile', path, data, opt);
     }
 
     const parentPath = fspath.dirname(path);
@@ -270,7 +266,7 @@ class VtronFileSystem implements VtronFileInterface {
 
     if (!stat) {
       const request = objectStore.add(
-        new VtronFile(path, par.content, {
+        new VtronFile(path, data, {
           isFile: true,
         })
       );
@@ -280,7 +276,7 @@ class VtronFileSystem implements VtronFileInterface {
           reject('Failed to write file');
         };
         request.onsuccess = () => {
-          this.commitWatch(path, par.content);
+          this.commitWatch(path, data);
           resolve();
         };
       });
@@ -288,7 +284,7 @@ class VtronFileSystem implements VtronFileInterface {
       const request = objectStore.put(
         new VtronFile(
           path,
-          par.content,
+          data,
           {
             isFile: true,
           },
@@ -301,7 +297,7 @@ class VtronFileSystem implements VtronFileInterface {
           reject('Failed to write file');
         };
         request.onsuccess = () => {
-          this.commitWatch(path, par.content);
+          this.commitWatch(path, data);
           resolve();
         };
       });
@@ -350,14 +346,14 @@ class VtronFileSystem implements VtronFileInterface {
    * @param path 目录路径
    * @returns 文件和文件夹列表
    */
-  async readdir(path: string): Promise<VtronFile[]> {
+  async readdir(path: string): Promise<VtronFileWithoutContent[]> {
     const volume = this.checkVolumePath(path);
     if (volume) {
       return this.beforeGuard(volume, 'readdir', path);
     }
 
     const volume2 = this.checkVolumeChild(path);
-    let vol: VtronFile[] = [];
+    let vol: VtronFileWithoutContent[] = [];
     if (volume2) {
       vol = await this.beforeGuard(volume2, 'readdir', path);
     }
@@ -410,7 +406,7 @@ class VtronFileSystem implements VtronFileInterface {
     }
   }
 
-  async stat(path: string): Promise<VtronFile | null> {
+  async stat(path: string): Promise<VtronFileWithoutContent | null> {
     const volume = this.checkVolumePath(path);
     if (volume) {
       return this.beforeGuard(volume, 'stat', path);

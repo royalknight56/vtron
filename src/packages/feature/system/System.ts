@@ -244,9 +244,10 @@ class System {
   }
   private addWindowSysLink(loc: string, options: WinAppOptions, force = false) {
     if (this.isFirstRun || force) {
-      this.fs.writeFile(`${this._options.userLocation}${loc}/` + options.name + '.exe', {
-        content: `link::${loc}::${options.name}::${options.icon}`,
-      });
+      this.fs.writeFile(
+        `${this._options.userLocation}${loc}/` + options.name + '.exe',
+        `link::${loc}::${options.name}::${options.icon}`
+      );
     } else {
       initAppList();
     }
@@ -272,14 +273,25 @@ class System {
   async runPlugin(system: System) {
     const pluginsFile = await this.fs.readdir(`${this._options.systemLocation}plugs`);
     if (pluginsFile) {
-      pluginsFile.forEach((file) => {
-        if (file.isFile) {
-          const content = file.content;
-          if (content) {
-            new Shell(system, '/', 'root').exec('node ' + file.path);
+      await Promise.all(
+        pluginsFile.map(async (file) => {
+          const fileContent = await this.fs.readFile(file.path);
+          if (file.isFile) {
+            const content = fileContent;
+            if (content) {
+              new Shell(system, '/', 'root').exec('node ' + file.path);
+            }
           }
-        }
-      });
+        })
+      );
+      // pluginsFile.forEach((file) => {
+      //   if (file.isFile) {
+      //     const content = file.content;
+      //     if (content) {
+      //       new Shell(system, '/', 'root').exec('node ' + file.path);
+      //     }
+      //   }
+      // });
     }
   }
   /**
@@ -364,17 +376,19 @@ class System {
     this._rootState.system.settings?.push(setting);
   }
   /**打开vtron 文件系统的文件 */
-  openFile(path: string) {
-    this.fs.stat(path).then((res) => {
-      if (res?.isDirectory) {
-        this._flieOpenerMap.get('dir')?.func.call(this, path, res?.content || '');
-        return;
-      } else {
-        this._flieOpenerMap
-          .get(extname(res?.path || '') || 'link')
-          ?.func.call(this, path, res?.content || '');
-      }
-    });
+  async openFile(path: string) {
+    const fileStat = await this.fs.stat(path);
+    //  .then((res) => {
+    if (fileStat?.isDirectory) {
+      this._flieOpenerMap.get('dir')?.func.call(this, path, '');
+      return;
+    } else {
+      const fileContent = await this.fs.readFile(path);
+      this._flieOpenerMap
+        .get(extname(fileStat?.path || '') || 'link')
+        ?.func.call(this, path, fileContent || '');
+    }
+    // });
   }
   getOpener(type: string) {
     return this._flieOpenerMap.get(type);

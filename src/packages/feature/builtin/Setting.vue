@@ -28,6 +28,11 @@
     <Transition name="fade" appear>
       <SetLang v-if="currentRouter === 'language'" />
     </Transition>
+    <template v-if="sys._rootState.system.settings">
+      <Transition v-for="item in sys._rootState.system.settings" :key="item.key" name="fade" appear>
+        <component :is="item.content" v-if="currentRouter === item.key" />
+      </Transition>
+    </template>
     <Transition name="fade">
       <div class="outer" v-if="currentRouter === 'main'">
         <div class="uper_tab">

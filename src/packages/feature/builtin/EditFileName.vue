@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import WinButton from '@packages/components/WinButton.vue';
 import { inject, ref } from 'vue';
-import { VtronFile } from '@feature/core/FileSystem';
+import { VtronFileWithoutContent } from '@feature/core/FileSystem';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 import { emitEvent } from '../event';
@@ -18,7 +18,7 @@ import { i18n } from '@feature/i18n';
 import { Dialog } from '../dialog/Dialog';
 
 const browserWindow: BrowserWindow = inject('browserWindow')!;
-const name = ref(basename((browserWindow.config.content as VtronFile).path));
+const name = ref(basename((browserWindow.config.content as VtronFileWithoutContent).path));
 
 function confirm() {
   if (name.value.length > 40) {

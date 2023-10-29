@@ -2,7 +2,7 @@ import * as fspath from '@feature/core/Path';
 import { useSystem } from '@feature/system';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import FileProps from '@feature/builtin/FileProps.vue';
-import { VtronFile } from '@/packages/feature/core/FileSystem';
+import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useRootState } from '../feature/state/Root';
 
@@ -19,9 +19,7 @@ function useContextMenu() {
       }
       newFilePath = fspath.join(path, `${i18n('new.file')}(${i}).txt`);
     }
-    return await system.fs.writeFile(newFilePath, {
-      content: '',
-    });
+    return await system.fs.writeFile(newFilePath, '');
   }
   async function createNewDir(path: string) {
     const system = useSystem();
@@ -49,7 +47,7 @@ function useContextMenu() {
       resizable: false,
     }).show();
   }
-  function deleteFile(file: VtronFile) {
+  function deleteFile(file: VtronFileWithoutContent) {
     const system = useSystem();
     if (!system) return;
     if (file.isDirectory) {
@@ -58,7 +56,7 @@ function useContextMenu() {
       return system?.fs.unlink(file.path);
     }
   }
-  async function copyFile(files: VtronFile[]) {
+  async function copyFile(files: VtronFileWithoutContent[]) {
     const system = useSystem();
     if (!system) return;
     if (rootState.system.clipboard) {

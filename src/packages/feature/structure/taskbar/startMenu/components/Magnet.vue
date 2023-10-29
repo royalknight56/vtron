@@ -20,10 +20,10 @@ import { useAppOpen } from '@packages/hook/useAppOpen';
 import { emitEvent } from '@feature/event';
 import { basename } from '@feature/core/Path';
 import FileIcon from '@feature/builtin/FileIcon.vue';
-import { VtronFile } from '@feature/core/FileSystem';
+import { VtronFileWithoutContent } from '@feature/core/FileSystem';
 
 const { openapp, appList } = useAppOpen('magnet');
-function handle(item: VtronFile) {
+function handle(item: VtronFileWithoutContent) {
   emitEvent('magnet.item.click', item);
   openapp(item);
 }

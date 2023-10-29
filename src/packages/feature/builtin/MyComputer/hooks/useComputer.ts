@@ -1,17 +1,17 @@
 import * as fspath from '@feature/core/Path';
-import { VtronFile } from '@/packages/feature/core/FileSystem';
+import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 
 export type RouterPath = string;
 export const useComputer = (adpater: {
   setRouter: (path: RouterPath) => void;
   getRouter: () => RouterPath;
-  setFileList: (list: VtronFile[]) => void;
+  setFileList: (list: VtronFileWithoutContent[]) => void;
   openFile: (path: RouterPath) => void;
   rmdir: (path: RouterPath) => Promise<void>;
   mkdir: (path: RouterPath) => Promise<void>;
-  readdir: (path: RouterPath) => Promise<VtronFile[]>;
+  readdir: (path: RouterPath) => Promise<VtronFileWithoutContent[]>;
   exists: (path: RouterPath) => Promise<boolean>;
-  isDirectory: (file: VtronFile) => boolean;
+  isDirectory: (file: VtronFileWithoutContent) => boolean;
   notify: (title: string, content: string) => void;
 }) => {
   const isVia = async (path: RouterPath) => {
@@ -54,7 +54,7 @@ export const useComputer = (adpater: {
     adpater.setRouter(fspath.join(path, '..'));
     refersh();
   };
-  const openFolder = (file: VtronFile) => {
+  const openFolder = (file: VtronFileWithoutContent) => {
     if (adpater.isDirectory(file)) {
       adpater.setRouter(file.path);
       refersh();

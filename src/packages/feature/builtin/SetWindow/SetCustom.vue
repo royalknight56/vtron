@@ -122,9 +122,7 @@ onMounted(() => {
 /** 提交背景设置 */
 async function submit() {
   rootstate.system.options.background = imgurl.value;
-  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/background.txt`, {
-    content: imgurl.value,
-  });
+  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/background.txt`, imgurl.value);
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('wallpaper'),
@@ -150,9 +148,7 @@ async function submitStyle() {
         : { color: '#000' },
   };
 
-  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, {
-    content: JSON.stringify(configObj),
-  });
+  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, JSON.stringify(configObj));
 
   Dialog.showMessageBox({
     message: i18n('save.success'),

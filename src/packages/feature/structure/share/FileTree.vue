@@ -46,13 +46,13 @@ import { emitEvent } from '@feature/event';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { basename } from '@feature/core/Path';
-import { VtronFile } from '@feature/core/FileSystem';
+import { VtronFileWithoutContent } from '@feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { onMounted, ref } from 'vue';
 
 const { openPropsWindow, copyFile } = useContextMenu();
 const sys = useSystem();
-type FileWithOpen = VtronFile & {
+type FileWithOpen = VtronFileWithoutContent & {
   isOpen?: boolean;
   subFileList?: FileWithOpen[];
 };
@@ -126,7 +126,7 @@ async function onOpenArrow(item: FileWithOpen) {
     return file.isDirectory;
   });
 }
-function handleRightClick(mouse: MouseEvent, item: VtronFile) {
+function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent) {
   if (chosenIndexs.value.length <= 1) {
     chosenIndexs.value = [props.fileList.findIndex((app) => app.path === item.path)];
   }

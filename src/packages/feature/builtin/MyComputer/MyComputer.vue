@@ -155,7 +155,7 @@ import FileTree from '@feature/structure/share/FileTree.vue';
 
 import { Notify } from '@feature/notification/Notification';
 import { useSystem } from '@feature/system';
-import { BrowserWindow, VtronFile } from '@packages/plug';
+import { BrowserWindow, VtronFileWithoutContent } from '@packages/plug';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { mountEvent } from '@feature/event';
 import { i18n } from '@feature/i18n';
@@ -169,7 +169,7 @@ const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 const config = browserWindow?.config;
 
 const router_url = ref('');
-const currentList = ref<Array<VtronFile>>([]);
+const currentList = ref<Array<VtronFileWithoutContent>>([]);
 
 const system = useSystem();
 const { refFileDrop } = useFileDrag(system);
@@ -210,7 +210,7 @@ const { isVia, refersh, createFolder, backFolder, openFolder, onComputerMount } 
   },
 });
 
-const rootFileList = ref<Array<VtronFile>>([]);
+const rootFileList = ref<Array<VtronFileWithoutContent>>([]);
 const random = ref(0);
 onMounted(() => {
   if (config) {

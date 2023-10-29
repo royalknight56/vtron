@@ -2,7 +2,7 @@ import { BrowserWindow, BrowserWindowOption } from '../feature/window/BrowserWin
 import { Tree } from '@packages/util/Tree';
 import { SystemStateEnum } from './enum';
 import { Notify } from '../feature/notification/Notification';
-import { VtronFile } from '@/packages/feature/core/FileSystem';
+import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
 import { ShellInterface } from '@feature/core/ShellType';
 export type BuiltinApp = 'MyComputer' | 'AppStore';
@@ -61,9 +61,9 @@ export type RootState = {
       notify: Array<Notify>;
       system: Array<Notify>;
     };
-    apps: Array<VtronFile>;
-    magnet: Array<VtronFile>;
-    menulist: Array<VtronFile>;
+    apps: Array<VtronFileWithoutContent>;
+    magnet: Array<VtronFileWithoutContent>;
+    menulist: Array<VtronFileWithoutContent>;
     notify: Array<Notify>;
     windowTree: Tree<BrowserWindow>;
     windowOrder: Array<BrowserWindow>;

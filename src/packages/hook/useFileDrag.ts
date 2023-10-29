@@ -1,4 +1,4 @@
-import { VtronFile } from '@/packages/feature/core/FileSystem';
+import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 import { System } from '@feature/system';
 import * as FsPath from '@feature/core/Path';
 import { emitEvent } from '@feature/event';
@@ -7,7 +7,7 @@ let dragCallback = () => {
   //
 };
 export function useFileDrag(system: System) {
-  function startDrag(ev: DragEvent, items: VtronFile[], callback: () => void) {
+  function startDrag(ev: DragEvent, items: VtronFileWithoutContent[], callback: () => void) {
     dragCallback = callback;
     ev?.dataTransfer?.setData('fromobj', 'web');
     ev?.dataTransfer?.setData('frompath', JSON.stringify(items.map((item) => item.path)));
@@ -43,13 +43,9 @@ export function useFileDrag(system: System) {
     content?: string,
     process?: (path: string) => void
   ) {
-    system?.fs
-      .writeFile(FsPath.join(path, name || 'unkown'), {
-        content: content || '',
-      })
-      .then(() => {
-        process?.(FsPath.join(path, name || 'unkown'));
-      });
+    system?.fs.writeFile(FsPath.join(path, name || 'unkown'), content || '').then(() => {
+      process?.(FsPath.join(path, name || 'unkown'));
+    });
   }
   // 外部文件拖到文件夹放下时
   async function outerFileDrop(path: string, list: FileList | undefined, process: (path: string) => void) {

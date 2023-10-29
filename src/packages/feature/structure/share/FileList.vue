@@ -51,7 +51,7 @@ import { emitEvent } from '@feature/event';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { basename, extname } from '@feature/core/Path';
-import { VtronFile } from '@feature/core/FileSystem';
+import { VtronFileWithoutContent } from '@feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { onMounted, ref } from 'vue';
@@ -78,7 +78,7 @@ const props = defineProps({
     },
   },
   fileList: {
-    type: Array<VtronFile>,
+    type: Array<VtronFileWithoutContent>,
     default: () => [],
   },
   theme: {
@@ -134,7 +134,7 @@ onMounted(() => {
   );
 });
 
-function startDragApp(mouse: DragEvent, item: VtronFile) {
+function startDragApp(mouse: DragEvent, item: VtronFileWithoutContent) {
   if (chosenIndexs.value.length) {
     startDrag(
       mouse,
@@ -152,7 +152,7 @@ function startDragApp(mouse: DragEvent, item: VtronFile) {
   }
 }
 
-function handleRightClick(mouse: MouseEvent, item: VtronFile) {
+function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent) {
   if (chosenIndexs.value.length <= 1) {
     chosenIndexs.value = [props.fileList.findIndex((app) => app.path === item.path)];
   }
@@ -199,7 +199,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFile) {
   });
 }
 
-function handleDragEnter(mouse: DragEvent, item: VtronFile, index: number) {
+function handleDragEnter(mouse: DragEvent, item: VtronFileWithoutContent, index: number) {
   hoverIndex.value = index;
 }
 

@@ -111,7 +111,7 @@ export function initBuiltinFileOpener(system: System) {
       const imgwindow = new BrowserWindow({
         width: 900,
         height: 600,
-        icon: dealIcon(await system.fs.stat(path), system),
+        icon: await dealIcon(await system.fs.stat(path), system),
         center: true,
         title: basename(path),
         content: UrlBrowser,

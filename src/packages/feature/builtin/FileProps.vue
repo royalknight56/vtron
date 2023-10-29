@@ -46,12 +46,12 @@ import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 import EditFileName from './EditFileName.vue';
 import FileIcon from '@feature/builtin/FileIcon.vue';
-import { VtronFile } from '@packages/plug';
+import { VtronFileWithoutContent } from '@packages/plug';
 import { basename, extname } from '@feature/core/Path';
 import { i18n } from '@feature/i18n';
 
 const window: BrowserWindow | undefined = inject('browserWindow');
-const file = ref<VtronFile | null>();
+const file = ref<VtronFileWithoutContent | null>();
 file.value = await useSystem()?.fs.stat(window?.config.content);
 function confirm() {
   window?.close();

@@ -52,9 +52,10 @@ const handleInstall = (data: any) => {
     return;
   }
   if (data.type === 'all') {
-    const writeFilePromise = system.fs.writeFile(system._options.systemLocation + 'plugs/' + data.name, {
-      content: data.content,
-    });
+    const writeFilePromise = system.fs.writeFile(
+      system._options.systemLocation + 'plugs/' + data.name,
+      data.content
+    );
     const dialogPromise = Dialog.showMessageBox({
       message: i18n('install.success') + ',' + i18n('please.reboot'),
       type: 'info',
@@ -65,9 +66,10 @@ const handleInstall = (data: any) => {
     });
   } else if (data.type === 'once') {
     const shellPromise = system.shell('node ' + data.content);
-    const writeFilePromise = system.fs.writeFile(system._options.systemLocation + 'plugs/' + data.name, {
-      content: 'function main(){\n\n}',
-    });
+    const writeFilePromise = system.fs.writeFile(
+      system._options.systemLocation + 'plugs/' + data.name,
+      'function main(){\n\n}'
+    );
     const dialogPromise = Dialog.showMessageBox({
       message: i18n('install.success'),
       type: 'info',

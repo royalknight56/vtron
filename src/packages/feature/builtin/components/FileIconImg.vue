@@ -13,5 +13,4 @@ const props = defineProps<{
 
 const sys = useSystem();
 const iconimg = await dealIcon(props.file, sys);
-console.log(iconimg);
 </script>

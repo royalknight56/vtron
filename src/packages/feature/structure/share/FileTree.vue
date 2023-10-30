@@ -225,6 +225,14 @@ function dealI18nName(name: string) {
 .chosen {
   border: 1px dashed #3bdbff3d;
   background-color: #9595956b;
+  .file-item_title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
   //   background-color: var(--theme-color);
 }
 .chosen:hover {
@@ -237,7 +245,7 @@ function dealI18nName(name: string) {
     word-break: break-all;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
   }
 }
 .mode-icon {
@@ -270,15 +278,18 @@ function dealI18nName(name: string) {
     height: calc(0.6 * var(--menulist-item-height));
     // margin: 0px auto;
     user-select: none;
-    // flex-shrink: 0;
+    flex-shrink: 0;
   }
   .file-item_title {
-    height: calc(1 * var(--menulist-item-height));
-    display: flex;
-    align-items: center;
+    height: min-content;
 
     word-break: break-all;
-    // flex-grow: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
   }
 }
 </style>

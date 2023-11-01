@@ -51,6 +51,7 @@ class System {
   ref!: HTMLElement;
   fs!: VtronFileInterface;
   _shell!: ShellInterface;
+
   constructor(options?: SystemOptions) {
     logger('mountGlobalSystem');
     this.mountGlobalSystem(this); // 挂载全局系统
@@ -202,6 +203,9 @@ class System {
     } else {
       logger(this.fs);
       this.fs = await new VtronFileSystem().initFileSystem();
+      (this.fs as VtronFileSystem).on('error', (err: string) => {
+        this.emitError(err);
+      });
       logger(this.fs);
       await this.fs.mkdir('/C');
       await createInitFile(this, this._options.initFile || InitUserFile, this._options.userLocation);
@@ -425,6 +429,18 @@ class System {
   /** 方便的通过system创建Dialog */
   createDialog() {
     return Dialog;
+  }
+
+  errorHandler = 0;
+  emitError(error: string) {
+    this._error && this._error(error);
+    this._rootState.system.error = error;
+    this.errorHandler = Date.now();
+    setTimeout(() => {
+      if (Date.now() - this.errorHandler > 1000 * 3) {
+        this._rootState.system.error = '';
+      }
+    }, 1000 * 4);
   }
 }
 function useSystem() {

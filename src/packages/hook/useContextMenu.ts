@@ -66,7 +66,8 @@ function useContextMenu() {
   async function pasteFile(path: string) {
     const system = useSystem();
     if (!system) return;
-    if (rootState.system.clipboard) {
+    const clipLen = Object.keys(rootState.system.clipboard).length;
+    if (clipLen) {
       const clipFiles = rootState.system.clipboard;
 
       if (!clipFiles.forEach) {
@@ -85,6 +86,8 @@ function useContextMenu() {
         }
         return system.fs.copyFile(clipFile, fspath.join(path, tempName) + ext);
       });
+    } else {
+      system.emitError('no file in clipboard');
     }
   }
   return { createNewFile, openPropsWindow, createNewDir, deleteFile, copyFile, pasteFile };

@@ -88,9 +88,12 @@ class VtronFileSystem implements VtronFileInterface {
   private _watchMap: Map<RegExp, (path: string, content: string) => void> = new Map();
 
   private volumeMap: Map<string, VtronFileInterface> = new Map();
+
+  onerror: (e: any) => void = () => {
+    console.error('Failed to open database');
+  };
   constructor(rootPath = '/', id = '') {
     const request = window.indexedDB.open('FileSystemDB' + id, 1);
-
     request.onerror = () => {
       console.error('Failed to open database');
     };
@@ -108,8 +111,8 @@ class VtronFileSystem implements VtronFileInterface {
       const rootDir = new VtronFile(rootPath, '', {
         isDirectory: true,
       });
-
       rootDir.parentPath = rootPath === '/' ? '' : fspath.dirname(rootPath);
+
       objectStore.add(rootDir);
     };
   }
@@ -117,6 +120,9 @@ class VtronFileSystem implements VtronFileInterface {
   async initFileSystem() {
     await this.whenReady();
     return this;
+  }
+  on(event: 'error', func: (e: any) => void) {
+    this.onerror = func;
   }
   serializeFileSystem() {
     return new Promise((resolve, reject) => {
@@ -220,27 +226,32 @@ class VtronFileSystem implements VtronFileInterface {
    * @returns 文件内容
    */
   async readFile(path: string): Promise<string | null> {
-    const volume = this.checkVolumePath(path);
-    if (volume) {
-      return this.beforeGuard(volume, 'readFile', path);
+    try {
+      const volume = this.checkVolumePath(path);
+      if (volume) {
+        return this.beforeGuard(volume, 'readFile', path);
+      }
+
+      const transaction = this.db.transaction('files', 'readonly');
+      const objectStore = transaction.objectStore('files');
+
+      const index = objectStore.index('path');
+      const range = IDBKeyRange.only(path);
+      const request = index.get(range);
+
+      return new Promise((resolve, reject) => {
+        request.onerror = () => {
+          reject('Failed to read file');
+        };
+        request.onsuccess = () => {
+          const file: VtronFile = request.result;
+          resolve(file ? file.content : null);
+        };
+      });
+    } catch (e: any) {
+      this.onerror(e.toString());
+      return Promise.reject(e);
     }
-
-    const transaction = this.db.transaction('files', 'readonly');
-    const objectStore = transaction.objectStore('files');
-
-    const index = objectStore.index('path');
-    const range = IDBKeyRange.only(path);
-    const request = index.get(range);
-
-    return new Promise((resolve, reject) => {
-      request.onerror = () => {
-        reject('Failed to read file');
-      };
-      request.onsuccess = () => {
-        const file: VtronFile = request.result;
-        resolve(file ? file.content : null);
-      };
-    });
   }
 
   /**
@@ -258,6 +269,7 @@ class VtronFileSystem implements VtronFileInterface {
     // judge if file exists
     const exists = await this.exists(parentPath);
     if (!exists) {
+      this.onerror('Cannot write file to a non-exist path:' + path);
       return Promise.reject('Cannot write file to a non-exist path:' + path);
     }
     const stat = await this.stat(path);
@@ -272,7 +284,7 @@ class VtronFileSystem implements VtronFileInterface {
       );
       return new Promise((resolve, reject) => {
         request.onerror = () => {
-          console.error('Failed to write file');
+          this.onerror('Failed to write file');
           reject('Failed to write file');
         };
         request.onsuccess = () => {
@@ -293,7 +305,7 @@ class VtronFileSystem implements VtronFileInterface {
       );
       return new Promise((resolve, reject) => {
         request.onerror = () => {
-          console.error('Failed to write file');
+          this.onerror('Failed to write file');
           reject('Failed to write file');
         };
         request.onsuccess = () => {
@@ -318,7 +330,7 @@ class VtronFileSystem implements VtronFileInterface {
 
     return new Promise((resolve, reject) => {
       request.onerror = () => {
-        console.error('Failed to read file');
+        this.onerror('Failed to write file');
         reject('Failed to read file');
       };
       request.onsuccess = () => {
@@ -327,7 +339,7 @@ class VtronFileSystem implements VtronFileInterface {
           file.content += content;
           const request = objectStore.put(file);
           request.onerror = () => {
-            console.error('Failed to write file');
+            this.onerror('Failed to write file');
             reject('Failed to write file');
           };
           request.onsuccess = () => {
@@ -335,7 +347,7 @@ class VtronFileSystem implements VtronFileInterface {
             resolve();
           };
         } else {
-          console.error('File not found');
+          this.onerror('File not found');
           reject('File not found');
         }
       };
@@ -355,7 +367,11 @@ class VtronFileSystem implements VtronFileInterface {
     const volume2 = this.checkVolumeChild(path);
     let vol: VtronFileWithoutContent[] = [];
     if (volume2) {
-      vol = await this.beforeGuard(volume2, 'readdir', path);
+      try {
+        vol = await this.beforeGuard(volume2, 'readdir', path);
+      } catch {
+        this.onerror('Failed to read volume directory:' + path);
+      }
     }
 
     const transaction = this.db.transaction('files', 'readonly');
@@ -367,7 +383,7 @@ class VtronFileSystem implements VtronFileInterface {
 
     return new Promise((resolve, reject) => {
       request.onerror = () => {
-        console.error('Failed to read directory');
+        this.onerror('Failed to read directory');
         reject('Failed to read directory');
       };
       request.onsuccess = () => {
@@ -380,7 +396,11 @@ class VtronFileSystem implements VtronFileInterface {
   async exists(path: string): Promise<boolean> {
     const volume = this.checkVolumePath(path);
     if (volume) {
-      return this.beforeGuard(volume, 'exists', path);
+      try {
+        return this.beforeGuard(volume, 'exists', path);
+      } catch {
+        this.onerror('Failed to read volume directory:' + path);
+      }
     }
 
     try {
@@ -393,7 +413,7 @@ class VtronFileSystem implements VtronFileInterface {
 
       return new Promise((resolve, reject) => {
         request.onerror = () => {
-          console.error('Failed to read file');
+          this.onerror('Failed to read file');
           reject('Failed to read file');
         };
         request.onsuccess = () => {
@@ -409,7 +429,11 @@ class VtronFileSystem implements VtronFileInterface {
   async stat(path: string): Promise<VtronFileWithoutContent | null> {
     const volume = this.checkVolumePath(path);
     if (volume) {
-      return this.beforeGuard(volume, 'stat', path);
+      try {
+        return this.beforeGuard(volume, 'stat', path);
+      } catch {
+        this.onerror('Failed to read volume directory:' + path);
+      }
     }
 
     const transaction = this.db.transaction('files', 'readonly');
@@ -421,7 +445,7 @@ class VtronFileSystem implements VtronFileInterface {
 
     return new Promise((resolve, reject) => {
       request.onerror = () => {
-        console.error('Failed to read file');
+        this.onerror('Failed to read file');
         reject('Failed to read file');
       };
       request.onsuccess = () => {
@@ -438,7 +462,11 @@ class VtronFileSystem implements VtronFileInterface {
   async unlink(path: string): Promise<void> {
     const volume = this.checkVolumePath(path);
     if (volume) {
-      return this.beforeGuard(volume, 'unlink', path);
+      try {
+        return this.beforeGuard(volume, 'unlink', path);
+      } catch {
+        this.onerror('Failed to unlink volume file:' + path);
+      }
     }
 
     const transaction = this.db.transaction('files', 'readwrite');
@@ -450,7 +478,7 @@ class VtronFileSystem implements VtronFileInterface {
 
     return new Promise((resolve, reject) => {
       request.onerror = () => {
-        console.error('Failed to delete file');
+        this.onerror('Failed to delete file');
         reject('Failed to delete file');
       };
       request.onsuccess = () => {
@@ -492,11 +520,9 @@ class VtronFileSystem implements VtronFileInterface {
     if (!!volume && !!volume2) {
       return this.beforeGuard(volume, 'rename', path, newPath);
     } else if ((!!volume && !volume2) || (!volume && !!volume2)) {
+      this.onerror('Cannot rename between volumes');
       return Promise.reject('Cannot rename between volumes');
     }
-    // if (volume) {
-    //   return this.beforeGuard(volume,'rename', path,newPath);
-    // }
 
     // this.beforeGuard('rename', path, newPath);
     // cannot rename to child path
@@ -505,6 +531,7 @@ class VtronFileSystem implements VtronFileInterface {
       return Promise.resolve();
     }
     if (fspath.isChildPath(path, newPath)) {
+      this.onerror('Cannot rename to child path');
       return Promise.reject('Cannot rename to child path');
     }
     // if (newPath.startsWith(path)) {//bug
@@ -520,6 +547,7 @@ class VtronFileSystem implements VtronFileInterface {
 
     return new Promise((resolve, reject) => {
       request.onerror = () => {
+        this.onerror('Failed to read file');
         reject('Failed to read file');
       };
       request.onsuccess = () => {
@@ -571,6 +599,7 @@ class VtronFileSystem implements VtronFileInterface {
 
     return new Promise((resolve, reject) => {
       request.onerror = () => {
+        this.onerror('Failed to read file');
         reject('Failed to read file');
       };
       request.onsuccess = () => {
@@ -600,7 +629,7 @@ class VtronFileSystem implements VtronFileInterface {
     // judge if file exists
     const exists = await this.exists(parentPath);
     if (!exists) {
-      console.error('Cannot create directory to a non-exist path:' + parentPath);
+      this.onerror('Cannot create directory to a non-exist path:' + parentPath);
       return Promise.reject('Cannot create directory to a non-exist path:' + parentPath);
     }
 
@@ -621,7 +650,7 @@ class VtronFileSystem implements VtronFileInterface {
 
     return new Promise((resolve, reject) => {
       request.onerror = () => {
-        console.error('Failed to create directory');
+        this.onerror('Failed to create directory');
         reject('Failed to create directory');
       };
       request.onsuccess = () => {
@@ -658,6 +687,7 @@ class VtronFileSystem implements VtronFileInterface {
     if (!!volume && !!volume2) {
       return this.beforeGuard(volume, 'copyFile', src, dest);
     } else if ((!!volume && !volume2) || (!volume && !!volume2)) {
+      this.onerror('Cannot copyFile between volumes');
       return Promise.reject('Cannot copyFile between volumes');
     }
 
@@ -670,6 +700,7 @@ class VtronFileSystem implements VtronFileInterface {
 
     return new Promise((resolve, reject) => {
       request.onerror = () => {
+        this.onerror('Failed to read file');
         reject('Failed to read file');
       };
       request.onsuccess = () => {

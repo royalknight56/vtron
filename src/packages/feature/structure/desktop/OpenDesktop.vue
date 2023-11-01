@@ -42,6 +42,7 @@ import { Rect, useRectChosen } from '@packages/hook/useRectChosen';
 
 import { i18n } from '@feature/i18n';
 import { useSystem } from '@feature/system';
+import { onErrorCaptured } from 'vue';
 
 const { createNewFile, createNewDir, pasteFile } = useContextMenu();
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
@@ -120,6 +121,10 @@ function handleRightClick(e: MouseEvent) {
     ],
   });
 }
+
+onErrorCaptured((err) => {
+  system.emitError(err.message.toString());
+});
 </script>
 <style lang="scss" scoped>
 .desktop {

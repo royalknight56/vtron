@@ -89,5 +89,6 @@ export type RootState = {
     clipboard: any;
     settings: Setting[];
     options: SystemOptions;
+    error: string;
   };
 };

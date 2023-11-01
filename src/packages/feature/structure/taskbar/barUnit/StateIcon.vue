@@ -1,5 +1,8 @@
 <template>
   <div class="state-group">
+    <div class="error">
+      <Error></Error>
+    </div>
     <div class="state-item battery">
       <Battery></Battery>
     </div>
@@ -21,6 +24,7 @@ import Battery from './Battery.vue';
 import DateTime from './DateTime.vue';
 import NetWork from './NetWork.vue';
 import MessageIcon from './MessageIcon.vue';
+import Error from './Error.vue';
 
 function handleClick() {
   emitEvent('datetime.show');
@@ -42,6 +46,12 @@ function handleNotifyClick() {
   }
   .state-item:hover {
     background-color: rgba(255, 255, 255, 0.519);
+  }
+  .error {
+    padding: 0 8px;
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
 }
 .showdesk {

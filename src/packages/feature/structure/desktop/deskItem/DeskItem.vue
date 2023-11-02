@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import { mountEvent } from '@/packages/feature/event';
 import { useSystem } from '@/packages/plug';
-import FileList from '@feature/structure/share/FileList.vue';
+import FileList from '@feature/builtin/components/FileList.vue';
 import { useAppOpen, initAppList } from '@packages/hook/useAppOpen';
 import { onMounted } from 'vue';
 

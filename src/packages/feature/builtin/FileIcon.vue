@@ -28,4 +28,3 @@ defineProps<{
   }
 }
 </style>
-@/packages/feature/core/FileSystem

@@ -136,8 +136,8 @@
 import { ref, onMounted, inject } from 'vue';
 import foldericon from '@packages/assets/folder.png';
 
-import FileList from '@feature/structure/share/FileList.vue';
-import FileTree from '@feature/structure/share/FileTree.vue';
+import FileList from '@feature/builtin/components/FileList.vue';
+import FileTree from '@feature/builtin/components/FileTree.vue';
 import UpPopover from './components/UpPopover.vue';
 import { Notify } from '@feature/notification/Notification';
 import { useSystem } from '@feature/system';

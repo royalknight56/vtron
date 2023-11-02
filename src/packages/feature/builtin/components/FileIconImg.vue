@@ -1,16 +1,24 @@
 <template>
-  <img v-if="icon" draggable="false" :src="icon" />
-  <img v-else draggable="false" :src="iconimg" />
+  <img v-if="icon" draggable="false" :src="iconR" @error="replaceIcon" />
+  <img v-else draggable="false" :src="iconimg" @error="replaceIcon" />
 </template>
 <script setup lang="ts">
 import { VtronFileWithoutContent } from '@feature/core/FileSystem';
 import { useSystem } from '@feature/system';
 import { dealIcon } from '@/packages/util/Icon';
+import unknownicon from '@packages/assets/unknown.png';
+import { ref } from 'vue';
 const props = defineProps<{
   file?: VtronFileWithoutContent | null;
   icon?: string;
 }>();
 
 const sys = useSystem();
-const iconimg = await dealIcon(props.file, sys);
+const iconimg = ref(await dealIcon(props.file, sys));
+const iconR = ref(props.icon);
+
+function replaceIcon() {
+  iconR.value = unknownicon;
+  iconimg.value = unknownicon;
+}
 </script>

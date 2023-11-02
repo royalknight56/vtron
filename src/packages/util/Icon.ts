@@ -1,8 +1,9 @@
-import { VtronFileWithoutContent } from '../feature/core/FileSystem';
+import { VtronFileSystem, VtronFileWithoutContent } from '../feature/core/FileSystem';
 import foldericon from '@packages/assets/folder.png';
 import unknownicon from '@packages/assets/unknown.png';
 import audioicon from '@packages/assets/audio.png';
 import videoicon from '@packages/assets/video.png';
+import imageicon from '@packages/assets/image.png';
 import { System, extname } from '../plug';
 function dealExeIcon(content: string | null | undefined) {
   if (!content) return unknownicon;
@@ -23,6 +24,14 @@ async function dealIcon(file: VtronFileWithoutContent | null | undefined, system
     return dealExeIcon(content);
   }
   if (ext === '.png') {
+    if (system.fs instanceof VtronFileSystem) {
+      if (system.fs.checkVolumePath(file.path)) {
+        return imageicon;
+      }
+    } else {
+      return imageicon;
+    }
+    // 只有当非自定义文件系统和非自定义卷才直接展示icon
     const content = await system.fs.readFile(file.path);
     return content || unknownicon;
   }

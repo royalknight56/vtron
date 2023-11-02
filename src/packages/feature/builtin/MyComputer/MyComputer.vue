@@ -13,25 +13,11 @@
       <div class="button" @click="createFolderStart()">{{ i18n('new') }}</div>
       <div class="button" @click="backFolder()">{{ i18n('back') }}</div>
       <!-- 查看 -->
-      <div class="button" @click="viewChange()">{{ i18n('view') }}</div>
+      <div class="button" @click="popoverChange()">{{ i18n('view') }}</div>
       <!-- <div class="button" @click="newFolder()">新建</div> -->
     </div>
     <div v-if="isView" class="up-pop">
-      <div class="up-pop-button" :class="{ chosen: chosenView == 'big' }" @click="changeView('big')">
-        {{ i18n('large.icon') }}
-      </div>
-      <div class="up-pop-button" :class="{ chosen: chosenView == 'middle' }" @click="changeView('middle')">
-        {{ i18n('middle.icon') }}
-      </div>
-      <div class="up-pop-button" :class="{ chosen: chosenView == 'icon' }" @click="changeView('icon')">
-        {{ i18n('small.icon') }}
-      </div>
-      <div class="up-pop-button" :class="{ chosen: chosenView == 'list' }" @click="changeView('list')">
-        {{ i18n('list') }}
-      </div>
-      <div class="up-pop-button" :class="{ chosen: chosenView == 'detail' }" @click="changeView('detail')">
-        {{ i18n('detail.info') }}
-      </div>
+      <UpPopover v-model="chosenView"></UpPopover>
     </div>
     <div class="uper_nav">
       <div class="uper_nav_button" @click="backFolder()">
@@ -152,7 +138,7 @@ import foldericon from '@packages/assets/folder.png';
 
 import FileList from '@feature/structure/share/FileList.vue';
 import FileTree from '@feature/structure/share/FileTree.vue';
-
+import UpPopover from './components/UpPopover.vue';
 import { Notify } from '@feature/notification/Notification';
 import { useSystem } from '@feature/system';
 import { BrowserWindow, VtronFileWithoutContent } from '@packages/plug';
@@ -241,14 +227,11 @@ function onListRefresh() {
 
 /**------视图切换------ */
 const isView = ref(false);
-function viewChange() {
+function popoverChange() {
   isView.value = !isView.value;
 }
 
-const chosenView = ref('list');
-function changeView(view: string) {
-  chosenView.value = view;
-}
+const chosenView = ref('icon');
 
 /**------树状列表打开------ */
 const chosenTreePath = ref('');
@@ -433,37 +416,6 @@ function end_input() {
 
   .path:hover {
     border: 1px solid rgb(0, 102, 255);
-  }
-
-  .up-pop {
-    position: absolute;
-    top: 20px;
-    left: 0;
-    width: 100%;
-    height: 30px;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    z-index: 20;
-    background-color: rgba(208, 208, 208, 0.937);
-    .up-pop-button {
-      width: 70px;
-      height: 20px;
-      background-color: rgba(255, 255, 255, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0px 4px;
-      cursor: pointer;
-      transition: all 0.1s;
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.8);
-      }
-      &.chosen {
-        background-color: rgba(255, 255, 255, 0.8);
-      }
-    }
   }
 }
 .main {

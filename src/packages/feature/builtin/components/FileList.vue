@@ -226,9 +226,13 @@ function dealI18nName(name: string) {
   .file-item_img {
     width: 60%;
     height: 60%;
+    pointer-events: none;
   }
   .file-item_type {
     display: none;
+  }
+  .file-item_title {
+    pointer-events: none;
   }
 }
 
@@ -270,7 +274,6 @@ function dealI18nName(name: string) {
     margin: 0px auto;
     user-select: none;
     flex-shrink: 0;
-    pointer-events: none;
   }
 
   .file-item_title {
@@ -280,7 +283,6 @@ function dealI18nName(name: string) {
     text-align: center;
     word-break: break-all;
     flex-grow: 0;
-    pointer-events: none;
   }
 }
 

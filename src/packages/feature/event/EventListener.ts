@@ -29,7 +29,13 @@ const eventTranslateMap: {
   'magnet.item.click': ['uipop.hidden'],
   'menulist.item.click': ['uipop.hidden'],
   'startMenu.set.click': ['uipop.hidden'],
-  'uipop.hidden': ['contextMenu.hidden', 'startmenu.hidden', 'datetime.hidden', 'messagecenter.hidden'],
+  'uipop.hidden': [
+    'contextMenu.hidden',
+    'startmenu.hidden',
+    'datetime.hidden',
+    'messagecenter.hidden',
+    'edit.end',
+  ],
   'datetime.show': ['messagecenter.hidden'],
   'messagecenter.show': ['datetime.hidden'],
 };

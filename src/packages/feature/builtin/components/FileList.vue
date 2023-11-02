@@ -19,7 +19,7 @@
     v-for="(item, index) in fileList"
     :key="item.path"
     @dblclick="onOpen(item)"
-    @contextmenu.stop.prevent="handleRightClick($event, item)"
+    @contextmenu.stop.prevent="handleRightClick($event, item, index)"
     @drop="hadnleDrop($event, item.path)"
     @dragenter.prevent="handleDragEnter($event, item, index)"
     @dragover.prevent
@@ -38,7 +38,20 @@
     <div class="file-item_img">
       <FileIcon :file="item" />
     </div>
-    <span class="file-item_title">{{ dealI18nName(basename(item.path)) }}</span>
+    <span v-if="editIndex !== index" class="file-item_title">{{ dealI18nName(basename(item.path)) }}</span>
+    <textarea
+      autofocus
+      draggable="false"
+      @dragover.stop
+      @dragstart.stop
+      @dragenter.stop
+      @mousedown.stop
+      @dblclick.stop
+      @blur="onEditNameEnd"
+      v-if="editIndex === index"
+      class="file-item_title file-item_editing"
+      v-model="editName"
+    ></textarea>
     <div class="file-item_type">
       <span v-if="item.isDirectory">folder</span>
       <span v-else>{{ extname(item.path) }}</span>
@@ -47,16 +60,17 @@
 </template>
 <script lang="ts" setup>
 import { useSystem } from '@packages/plug';
-import { emitEvent } from '@feature/event';
+import { emitEvent, mountEvent } from '@feature/event';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
-import { basename, extname } from '@feature/core/Path';
+import { basename, dirname, extname, join } from '@feature/core/Path';
 import { VtronFileWithoutContent } from '@feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { onMounted, ref } from 'vue';
 import { Rect } from '@/packages/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
+
 const { openPropsWindow, copyFile } = useContextMenu();
 const sys = useSystem();
 const { startDrag, folderDrop } = useFileDrag(sys);
@@ -101,6 +115,22 @@ function hadnleDrop(mouse: DragEvent, path: string) {
   hoverIndex.value = -1;
   folderDrop(mouse, path);
 }
+
+const editIndex = ref<number>(-1);
+const editName = ref<string>('');
+function onEditNameEnd() {
+  if (editName.value && editIndex.value >= 0) {
+    sys?.fs.rename(
+      props.fileList[editIndex.value].path,
+      join(dirname(props.fileList[editIndex.value].path), editName.value)
+    );
+    props.onRefresh();
+  }
+  editIndex.value = -1;
+}
+mountEvent('edit.end', () => {
+  onEditNameEnd();
+});
 
 const hoverIndex = ref<number>(-1);
 const appPositions = ref<Array<Element>>([]);
@@ -152,7 +182,7 @@ function startDragApp(mouse: DragEvent, item: VtronFileWithoutContent) {
   }
 }
 
-function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent) {
+function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, index: number) {
   if (chosenIndexs.value.length <= 1) {
     chosenIndexs.value = [props.fileList.findIndex((app) => app.path === item.path)];
   }
@@ -177,6 +207,13 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent) {
         name: i18n('copy'),
         click: () => {
           copyFile(chosenIndexs.value.map((index) => props.fileList[index]));
+        },
+      },
+      {
+        name: i18n('rename'),
+        click: () => {
+          editIndex.value = index;
+          editName.value = basename(item.path);
         },
       },
       {
@@ -233,6 +270,16 @@ function dealI18nName(name: string) {
   }
   .file-item_title {
     pointer-events: none;
+  }
+  .file-item_editing {
+    display: inline-block !important;
+    outline: none;
+    pointer-events: all;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    height: min-content !important;
+    width: min-content;
   }
 }
 

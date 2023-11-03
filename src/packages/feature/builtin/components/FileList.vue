@@ -52,10 +52,21 @@
       class="file-item_title file-item_editing"
       v-model="editName"
     ></textarea>
-    <div class="file-item_type">
-      <span v-if="item.isDirectory">folder</span>
-      <span v-else>{{ extname(item.path) }}</span>
-    </div>
+    <template v-if="mode === 'detail'">
+      <div class="file-item_type">
+        <span v-if="item.isDirectory">folder</span>
+        <span v-else>{{ extname(item.path) }}</span>
+      </div>
+      <div class="file-item_type">
+        <span>{{ item.birthtime.toLocaleString() }}</span>
+      </div>
+      <div class="file-item_type">
+        <span>{{ item.mtime.toLocaleString() }}</span>
+      </div>
+      <div class="file-item_type">
+        <span>{{ item.mode }}</span>
+      </div>
+    </template>
   </div>
 </template>
 <script lang="ts" setup>
@@ -280,7 +291,9 @@ function dealI18nName(name: string) {
     margin: 0;
     min-width: 0;
     height: min-content !important;
-    width: min-content;
+    width: min-content !important;
+    resize: none;
+    border-radius: 0;
   }
 }
 
@@ -377,14 +390,21 @@ function dealI18nName(name: string) {
     width: 30px;
   }
   .file-item_title {
-    width: 40%;
+    width: 20%;
     display: flex;
     align-items: center;
     word-break: break-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .file-item_type {
     display: block;
     color: var(--color-dark-hover);
+    width: 20%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>

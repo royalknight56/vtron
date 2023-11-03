@@ -79,6 +79,10 @@ export interface AllText {
   list: string; // 列表
   'detail.info': string; // 详细信息
 
+  permission: string; // 权限
+  'modification.time': string;
+  'creation.time': string;
+
   computer: string;
   terminal: string;
   appstore: string;

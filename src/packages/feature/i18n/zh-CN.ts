@@ -74,6 +74,10 @@ export const zhCN: AllText = {
 
   view: '查看',
 
+  permission: '权限',
+  'modification.time': '修改时间',
+  'creation.time': '创建时间',
+
   'large.icon': '大图标',
   'middle.icon': '中图标',
   'small.icon': '小图标',

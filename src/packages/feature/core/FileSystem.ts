@@ -295,7 +295,7 @@ class VtronFileSystem implements VtronFileInterface {
       this.onerror('Cannot write file to a non-exist path:' + path);
       return Promise.reject('Cannot write file to a non-exist path:' + path);
     }
-    let stats = await this.stat(path);
+    const stats = await this.stat(path);
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
 
@@ -316,11 +316,11 @@ class VtronFileSystem implements VtronFileInterface {
         };
       });
     } else {
-      stats = {
+      const request = objectStore.put({
         ...stats,
+        content: data,
         mtime: new Date(),
-      };
-      const request = objectStore.put(stats);
+      });
       return new Promise((resolve, reject) => {
         request.onerror = () => {
           this.onerror('Failed to write file');

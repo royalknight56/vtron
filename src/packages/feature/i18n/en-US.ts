@@ -73,7 +73,9 @@ export const enUS: AllText = {
   brightness: 'Brightness',
 
   view: 'View',
-
+  permission: 'Permission',
+  'modification.time': 'Modification Time',
+  'creation.time': 'Creation Time',
   'large.icon': 'Large Icon',
   'middle.icon': 'Middle Icon',
   'small.icon': 'Small Icon',

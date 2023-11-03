@@ -39,7 +39,6 @@ function handleButton(e: MouseEvent) {
             });
             return;
           }
-          await system.fs.unlink(file?.path);
           await system.fs.writeFile(file?.path, input.value);
           new Notify({
             title: i18n('tips'),

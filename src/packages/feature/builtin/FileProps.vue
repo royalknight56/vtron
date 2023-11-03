@@ -28,6 +28,21 @@
         <div class="propname">{{ i18n('location') }}：</div>
         <div class="propvalue">{{ file?.path }}</div>
       </div>
+
+      <div class="propitem">
+        <div class="propname">{{ i18n('permission') }}：</div>
+        <div class="propvalue">{{ file?.mode || '' }}</div>
+      </div>
+
+      <div class="propitem">
+        <div class="propname">{{ i18n('creation.time') }}：</div>
+        <div class="propvalue">{{ file?.birthtime || '' }}</div>
+      </div>
+
+      <div class="propitem">
+        <div class="propname">{{ i18n('modification.time') }}：</div>
+        <div class="propvalue">{{ file?.mtime || '' }}</div>
+      </div>
     </div>
     <div class="button-group">
       <WinButton @click="confirm">
@@ -127,11 +142,13 @@ function editFileName() {
       .propname {
         width: 80px;
         margin-left: 20px;
+        user-select: none;
       }
 
       .file-icon {
         width: calc(var(--ui-list-item-height) * 2);
         height: calc(var(--ui-list-item-height) * 2);
+        user-select: none;
       }
 
       .propvalue {

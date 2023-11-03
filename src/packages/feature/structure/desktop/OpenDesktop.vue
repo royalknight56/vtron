@@ -5,7 +5,7 @@
     @dragover.prevent
     @drop="refFileDrop($event, `${system._options.userLocation}Desktop`)"
     :style="{
-      filter: `brightness(${system._rootState.system.info.brightness}%)`,
+      filter: `brightness(${system._rootState.system.info.brightness * 2}%)`,
     }"
   >
     <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown="userareaDown">

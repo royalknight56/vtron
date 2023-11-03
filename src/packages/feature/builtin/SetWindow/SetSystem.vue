@@ -19,53 +19,10 @@
         </div>
         <div class="setting-item">
           <label> {{ i18n('brightness') }} </label>
-          <WinSelect
-            v-model="rootstate.system.info.brightness"
-            :options="[
-              {
-                label: '10%',
-                value: 10,
-              },
-              {
-                label: '20%',
-                value: 20,
-              },
-              {
-                label: '30%',
-                value: 30,
-              },
-              {
-                label: '40%',
-                value: 40,
-              },
-              {
-                label: '50%',
-                value: 50,
-              },
-              {
-                label: '60%',
-                value: 60,
-              },
-              {
-                label: '70%',
-                value: 70,
-              },
-              {
-                label: '80%',
-                value: 80,
-              },
-              {
-                label: '90%',
-                value: 90,
-              },
-              {
-                label: '100%',
-                value: 100,
-              },
-            ]"
-            :placeholder="i18n('please.select')"
-          >
-          </WinSelect>
+          <div class="ctrl">
+            <WinProcess v-model="rootstate.system.info.brightness"></WinProcess>
+          </div>
+          {{ rootstate.system.info.brightness.toFixed(0) }}
         </div>
 
         <!-- <div class="setting-item">
@@ -79,8 +36,8 @@
 
 <script lang="ts" setup>
 // import WinButton from '@packages/components/WinButton.vue';
-import WinSelect from '@packages/components/WinSelect.vue';
-
+// import WinSelect from '@packages/components/WinSelect.vue';
+import WinProcess from '@packages/components/WinProcess.vue';
 import { ref } from 'vue';
 // import { useSystem } from '@feature/system';
 // import { Dialog } from '@feature/dialog/Dialog';
@@ -118,4 +75,11 @@ const selectItem = (index: number) => {
 </script>
 <style scoped>
 @import './setStyle.css';
+.ctrl {
+  width: 100px;
+}
+.setting-item {
+  display: flex;
+  align-items: center;
+}
 </style>

@@ -190,6 +190,13 @@ onMounted(() => {
         birthtime: new Date(),
       },
     };
+    sys.registerSetting({
+      key: 'test',
+      title: `测试`,
+      desc: '测试',
+      content: TestButton,
+      icon: testicon,
+    });
     // sys.mountVolume('/D', new VtronFileSystem('/D', '2'));
     sys.mountVolume('/D', {
       copyFile: async (src: string, dest: string) => {
@@ -231,6 +238,9 @@ onMounted(() => {
       },
       stat: async (path: string) => {
         return memoryFs[path];
+      },
+      chmod: async (path, mode) => {
+        console.log(path, mode);
       },
       unlink: async (path: string) => {
         delete memoryFs[path];

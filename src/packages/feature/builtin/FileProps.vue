@@ -13,7 +13,10 @@
           </div>
         </div>
         <div class="propvalue">
-          {{ basename(file?.path || '') }}
+          <span class="file-name">
+            {{ basename(file?.path || '') }}
+          </span>
+
           <WinButton class="some-button" @click="editFileName">
             {{ i18n('rename') }}
           </WinButton>
@@ -125,6 +128,11 @@ function editFileName() {
     background-color: #fff;
     border: var(--light-border);
 
+    .file-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .split-line {
       height: 1px;
       width: calc(100% - 30px);
@@ -143,6 +151,9 @@ function editFileName() {
         width: 80px;
         margin-left: 20px;
         user-select: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .file-icon {
@@ -152,10 +163,10 @@ function editFileName() {
       }
 
       .propvalue {
-        flex: 1;
+        width: 200px;
+        // flex: 1;
         display: flex;
         align-items: center;
-        // justify-content: space-between;
       }
     }
   }
@@ -170,6 +181,8 @@ function editFileName() {
 
   .some-button {
     margin-left: 10px;
+    width: 60px;
+    flex-shrink: 0;
   }
 }
 </style>

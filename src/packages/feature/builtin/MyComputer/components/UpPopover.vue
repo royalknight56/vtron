@@ -1,5 +1,5 @@
 <template>
-  <div class="up-pop">
+  <div class="up-pop" @mousedown.stop>
     <div class="pop-group">
       <div class="layout">
         <div class="up-pop-button" :class="{ chosen: chosenView == 'big' }" @click="changeView('big')">

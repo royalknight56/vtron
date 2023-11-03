@@ -10,13 +10,13 @@
       <!-- <div class="button">文件</div> -->
       <!-- <div class="button">计算机</div> -->
 
-      <div class="button" @click="createFolderStart()">{{ i18n('new') }}</div>
+      <!-- <div class="button" @click="createFolderStart()">{{ i18n('new') }}</div> -->
       <div class="button" @click="backFolder()">{{ i18n('back') }}</div>
       <!-- 查看 -->
       <div class="button" @click="popoverChange()">{{ i18n('view') }}</div>
       <!-- <div class="button" @click="newFolder()">新建</div> -->
     </div>
-    <div v-if="isView" class="up-pop">
+    <div v-if="isPopoverView" class="up-pop">
       <UpPopover v-model="chosenView"></UpPopover>
     </div>
     <div class="uper_nav">
@@ -202,11 +202,14 @@ onMounted(() => {
   if (config) {
     router_url.value = config.path;
   } else {
-    router_url.value = '/C';
+    router_url.value = '/';
   }
   onComputerMount();
   mountEvent('file.props.edit', async () => {
     refersh();
+  });
+  mountEvent('computerpop.hidden', () => {
+    isPopoverView.value = false;
   });
   system.fs.readdir('/').then((file) => {
     if (file) {
@@ -226,9 +229,9 @@ function onListRefresh() {
 }
 
 /**------视图切换------ */
-const isView = ref(false);
+const isPopoverView = ref(false);
 function popoverChange() {
-  isView.value = !isView.value;
+  isPopoverView.value = !isPopoverView.value;
 }
 
 const chosenView = ref('icon');
@@ -276,12 +279,12 @@ function backgroundUp() {
 /* ------------ 新建文件夹 ------------*/
 const createInput = ref(i18n('new.folder'));
 const creating = ref(false);
-function createFolderStart() {
-  // creating.value = true;
-  createNewFile(router_url.value).then(() => {
-    refersh();
-  });
-}
+// function createFolderStart() {
+//   // creating.value = true;
+//   createNewFile(router_url.value).then(() => {
+//     refersh();
+//   });
+// }
 function creatingEditEnd() {
   if (creating.value) {
     createFolder(createInput.value);

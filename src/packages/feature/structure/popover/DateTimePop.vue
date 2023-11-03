@@ -30,12 +30,19 @@
           </div>
         </div>
       </div>
+      <!-- <div class="date-note">
+        <div class="date-note-title">日记</div>
+        <div class="date-note-content"></div>
+      </div> -->
     </div>
   </Transition>
 </template>
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
 import { mountEvent } from '@feature/event';
+// import { useSystem } from '../../system';
+// import { join } from '../../core/Path';
+// const sys = useSystem();
 const isDataPopShow = ref(false);
 mountEvent('datetime.show', () => {
   isDataPopShow.value = !isDataPopShow.value;
@@ -77,6 +84,7 @@ const lastDay = new Date(today.year, today.month, 0).getDate();
 const weekNum = Math.ceil((firstDay + lastDay) / 7);
 
 onMounted(() => {
+  // readDateNotes();
   setInterval(() => {
     updateTime();
   }, 500);
@@ -95,6 +103,11 @@ for (let i = 0; i < lastDay; i++) {
 function pad(num: number) {
   return num.toString().padStart(2, '0');
 }
+
+// async function readDateNotes() {
+//   let res = await sys.fs.readFile(join(sys._rootState.system.options.userLocation || '', '/dateNotes.json'));
+//   console.log(res);
+// }
 </script>
 <style lang="scss" scoped>
 .date-pop {
@@ -103,7 +116,7 @@ function pad(num: number) {
   right: 0;
   width: 320px;
   height: 500px;
-  background-color: var(--color-gray-dark);
+  background-color: var(--color-gray-dark-op9);
   border: 1px solid rgba(0, 0, 0, 0.19);
   user-select: none;
   box-sizing: border-box;
@@ -130,7 +143,7 @@ function pad(num: number) {
     }
   }
   .date-middle {
-    height: 430px;
+    height: 300px;
     padding-top: 10px;
     padding: 10px 8px;
     border-top: 1px solid rgba(0, 0, 0, 0.19);
@@ -157,7 +170,7 @@ function pad(num: number) {
       flex-direction: column;
       .week {
         width: 100%;
-        height: 56px;
+        height: 50px;
         display: flex;
         .day {
           // width: 14.28%;
@@ -196,6 +209,9 @@ function pad(num: number) {
         }
       }
     }
+  }
+  .date-note {
+    border: 1px solid rgba(0, 0, 0, 0.19);
   }
 }
 

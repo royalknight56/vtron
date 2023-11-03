@@ -208,6 +208,7 @@ class System {
       });
       logger(this.fs);
       await this.fs.mkdir('/C');
+      await this.fs.chmod('/C', 0o111);
       await createInitFile(this, this._options.initFile || InitUserFile, this._options.userLocation);
       await createInitFile(this, this._options.initFile || InitSystemFile, this._options.systemLocation);
       this.fs.registerWatcher(new RegExp(`^${this._options.userLocation}`), () => {

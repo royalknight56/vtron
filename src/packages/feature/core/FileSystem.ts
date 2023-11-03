@@ -1,14 +1,28 @@
 import * as fspath from '@feature/core/Path';
 import { VtronFileInterface } from './FIleInterface';
 type DateLike = Date | string | number;
+export enum VtronFileMode {
+  Read = 0b001, //1
+  Write = 0b010, //2
+  Execute = 0b100, //4
+  ReadWrite = Read | Write, //3
+  ReadExecute = Read | Execute, //5
+  WriteExecute = Write | Execute, // 6
+  ReadWriteExecute = Read | Write | Execute, //7
+}
+
 class VtronFileInfo {
   isFile = true;
   isDirectory = false;
   isSymlink = false;
   size = 0;
-  mtime: DateLike = new Date();
-  atime: DateLike = new Date();
-  birthtime: DateLike = new Date();
+
+  mtime: DateLike = new Date(); //指示最后一次修改此文件的时间戳
+  atime: DateLike = new Date(); //最后一次访问此文件的时间戳
+  birthtime: DateLike = new Date(); //此文件创建时间的时间戳
+  mode = 0o777;
+  rdev = 0;
+
   constructor(
     isFile?: boolean,
     isDirectory?: boolean,
@@ -16,7 +30,9 @@ class VtronFileInfo {
     size?: number,
     mtime?: DateLike,
     atime?: DateLike,
-    birthtime?: DateLike
+    birthtime?: DateLike,
+    mode?: VtronFileMode,
+    rdev?: number
   ) {
     if (isFile !== undefined) {
       this.isFile = isFile;
@@ -38,6 +54,12 @@ class VtronFileInfo {
     }
     if (birthtime !== undefined) {
       this.birthtime = birthtime;
+    }
+    if (mode !== undefined) {
+      this.mode = mode;
+    }
+    if (rdev !== undefined) {
+      this.rdev = rdev;
     }
   }
 }
@@ -109,6 +131,7 @@ class VtronFileSystem implements VtronFileInterface {
       objectStore.createIndex('parentPath', 'parentPath');
       objectStore.createIndex('path', 'path', { unique: true });
       const rootDir = new VtronFile(rootPath, '', {
+        mode: 0o111,
         isDirectory: true,
       });
       rootDir.parentPath = rootPath === '/' ? '' : fspath.dirname(rootPath);
@@ -562,6 +585,12 @@ class VtronFileSystem implements VtronFileInterface {
     });
   }
   private async dfsRmdir(vfile: VtronFile, objectStore: IDBObjectStore) {
+    if (vfile.mode) {
+      if (vfile.mode <= 0o111) {
+        this.onerror('Cannot delete a readonly file');
+        return Promise.reject('Cannot delete a readonly file');
+      }
+    }
     if (vfile.isDirectory) {
       objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
         const cursor: IDBCursorWithValue = event.target.result;
@@ -579,6 +608,7 @@ class VtronFileSystem implements VtronFileInterface {
         cursor.continue();
       }
     };
+    this.commitWatch(vfile.path, vfile.content);
   }
   /**
    * 删除指定路径的文件夹及其内容
@@ -715,7 +745,34 @@ class VtronFileSystem implements VtronFileInterface {
     });
   }
 
-  // async mountVolume(path: string, volume: string): Promise<void> {}
+  async chmod(path: string, mode: VtronFileMode): Promise<void> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'chmod', path, mode);
+    }
+
+    const transaction = this.db.transaction('files', 'readwrite');
+    const objectStore = transaction.objectStore('files');
+
+    const index = objectStore.index('path');
+    const range = IDBKeyRange.only(path);
+    const request = index.get(range);
+
+    return new Promise((resolve, reject) => {
+      request.onerror = () => {
+        this.onerror('Failed to read file');
+        reject('Failed to read file');
+      };
+      request.onsuccess = () => {
+        const file: VtronFile = request.result;
+        if (file) {
+          file.mode = mode;
+          objectStore.put(file);
+        }
+        resolve();
+      };
+    });
+  }
 }
 
 export { VtronFile, VtronFileInfo, VtronFileSystem };

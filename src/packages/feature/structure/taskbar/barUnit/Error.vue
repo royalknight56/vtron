@@ -16,7 +16,7 @@ const system = useSystem();
 </script>
 <style lang="scss" scoped>
 .error {
-  width: 200px;
+  width: min-content;
   height: 100%;
   background-color: rgba(255, 0, 0, 0);
   color: rgb(60, 60, 60);

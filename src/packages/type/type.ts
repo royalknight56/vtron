@@ -10,6 +10,7 @@ export interface InitFileItem {
   type: string;
   name: string;
   children?: InitFileItem[];
+  mode?: number;
   content?: string;
 }
 export interface Setting {

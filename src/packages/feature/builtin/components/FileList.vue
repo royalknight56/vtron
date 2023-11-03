@@ -253,11 +253,12 @@ function dealI18nName(name: string) {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: var(--desk-item-size);
   height: var(--desk-item-size);
   font-size: var(--ui-font-size);
+  padding-top: 4px;
   border: 1px solid transparent;
   margin: 6px;
   .file-item_img {
@@ -325,8 +326,8 @@ function dealI18nName(name: string) {
 
   .file-item_title {
     // color: var(--color-ui-desk-item-title);
-    height: calc(0.4 * var(--desk-item-size));
-    display: block;
+    // height: calc(0.4 * var(--desk-item-size));
+    // display: block;
     text-align: center;
     word-break: break-all;
     flex-grow: 0;

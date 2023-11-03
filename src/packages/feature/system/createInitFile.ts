@@ -12,6 +12,8 @@ export const createInitFile = async (system: System, file: InitFileItem, path = 
     const tempPath = join(path, file.name);
     await fs.mkdir(tempPath);
 
+    file.mode && (await fs.chmod(tempPath, file.mode));
+
     if (file.children?.length) {
       for (let i = 0; i < file.children.length; i++) {
         await createInitFile(system, file.children[i], tempPath);

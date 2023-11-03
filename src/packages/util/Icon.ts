@@ -4,6 +4,9 @@ import unknownicon from '@packages/assets/unknown.png';
 import audioicon from '@packages/assets/audio.png';
 import videoicon from '@packages/assets/video.png';
 import imageicon from '@packages/assets/image.png';
+import volumeNetIcon from '@packages/assets/volume-net.png';
+import volumeLocalIcon from '@packages/assets/volume-local.png';
+
 import { System, extname } from '../plug';
 function dealExeIcon(content: string | null | undefined) {
   if (!content) return unknownicon;
@@ -17,6 +20,16 @@ function dealExeIcon(content: string | null | undefined) {
 }
 async function dealIcon(file: VtronFileWithoutContent | null | undefined, system: System) {
   if (!file) return unknownicon;
+  if (file.isDirectory && file.parentPath === '/') {
+    // 是挂载在根目录的卷
+    if (system.fs instanceof VtronFileSystem) {
+      if (system.fs.checkVolumePath(file.path)) {
+        return volumeNetIcon;
+      } else {
+        return volumeLocalIcon;
+      }
+    }
+  }
   if (file.isDirectory) return foldericon;
   const ext = extname(file.path);
   if (ext === '.exe' || ext === '.url') {

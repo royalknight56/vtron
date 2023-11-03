@@ -9,6 +9,7 @@ import { pwd } from './pwd';
 import { open } from './open';
 import { node } from './node';
 import { mkdir } from './mkdir';
+import { chmod } from './chmod';
 const commandMap = [
   {
     name: 'ls',
@@ -57,6 +58,12 @@ const commandMap = [
     description: 'display a line of text',
     usage: 'echo [STRING]...',
     callback: echo,
+  },
+  {
+    name: 'chmod',
+    description: 'change file mode bits',
+    usage: 'chmod 777 /path/to/file',
+    callback: chmod,
   },
   {
     name: 'rm',

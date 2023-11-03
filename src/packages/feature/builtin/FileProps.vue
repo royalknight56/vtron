@@ -31,7 +31,7 @@
 
       <div class="propitem">
         <div class="propname">{{ i18n('permission') }}：</div>
-        <div class="propvalue">{{ file?.mode || '' }}</div>
+        <div class="propvalue">{{ file?.mode?.toString(8) || '' }}</div>
       </div>
 
       <div class="propitem">

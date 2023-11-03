@@ -767,6 +767,8 @@ class VtronFileSystem implements VtronFileInterface {
           file.mode = mode;
           file.mtime = new Date();
           objectStore.put(file);
+        } else {
+          reject('File not found');
         }
         resolve();
       };

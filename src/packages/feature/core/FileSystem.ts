@@ -295,11 +295,11 @@ class VtronFileSystem implements VtronFileInterface {
       this.onerror('Cannot write file to a non-exist path:' + path);
       return Promise.reject('Cannot write file to a non-exist path:' + path);
     }
-    const stat = await this.stat(path);
+    let stats = await this.stat(path);
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
 
-    if (!stat) {
+    if (!stats) {
       const request = objectStore.add(
         new VtronFile(path, data, {
           isFile: true,
@@ -316,16 +316,11 @@ class VtronFileSystem implements VtronFileInterface {
         };
       });
     } else {
-      const request = objectStore.put(
-        new VtronFile(
-          path,
-          data,
-          {
-            isFile: true,
-          },
-          stat.id
-        )
-      );
+      stats = {
+        ...stats,
+        mtime: new Date(),
+      };
+      const request = objectStore.put(stats);
       return new Promise((resolve, reject) => {
         request.onerror = () => {
           this.onerror('Failed to write file');
@@ -360,6 +355,7 @@ class VtronFileSystem implements VtronFileInterface {
         const file: VtronFile = request.result;
         if (file) {
           file.content += content;
+          file.mtime = new Date();
           const request = objectStore.put(file);
           request.onerror = () => {
             this.onerror('Failed to write file');
@@ -535,6 +531,7 @@ class VtronFileSystem implements VtronFileInterface {
     const vParentPath = fspath.dirname(newPath);
     vfile.path = newPath;
     vfile.parentPath = vParentPath;
+    vfile.mtime = new Date();
     objectStore.put(vfile);
   }
   async rename(path: string, newPath: string): Promise<void> {
@@ -706,6 +703,7 @@ class VtronFileSystem implements VtronFileInterface {
       ...vfile,
       path: newPath,
       parentPath: fspath.dirname(newPath),
+      mtime: new Date(),
     };
     delete newFile.id;
     objectStore.put(newFile);
@@ -767,6 +765,7 @@ class VtronFileSystem implements VtronFileInterface {
         const file: VtronFile = request.result;
         if (file) {
           file.mode = mode;
+          file.mtime = new Date();
           objectStore.put(file);
         }
         resolve();

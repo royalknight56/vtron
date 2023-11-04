@@ -302,13 +302,19 @@ function showOuterMenu(e: MouseEvent) {
     mouse: e,
     menuList: [
       {
-        name: i18n('new.file'),
-        click: () => {
-          createNewFile(router_url.value).then(() => {
-            refersh();
-          });
-        },
+        name: i18n('new'),
+        children: [
+          {
+            name: i18n('new.file'),
+            click: () => {
+              createNewFile(router_url.value).then(() => {
+                refersh();
+              });
+            },
+          },
+        ],
       },
+
       {
         name: i18n('new.folder'),
         click: () => {

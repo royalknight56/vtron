@@ -53,10 +53,10 @@
       v-model="editName"
     ></textarea>
     <template v-if="mode === 'detail'">
-      <div class="file-item_type">
+      <!-- <div class="file-item_type">
         <span v-if="item.isDirectory">folder</span>
         <span v-else>{{ extname(item.path) }}</span>
-      </div>
+      </div> -->
       <div class="file-item_type">
         <span>{{ item.birthtime.toLocaleString() }}</span>
       </div>
@@ -64,7 +64,7 @@
         <span>{{ item.mtime.toLocaleString() }}</span>
       </div>
       <div class="file-item_type">
-        <span>{{ item.mode }}</span>
+        <span>{{ item.mode?.toString?.(8) || 'unknow' }}</span>
       </div>
     </template>
   </div>
@@ -390,7 +390,7 @@ function dealI18nName(name: string) {
     width: 30px;
   }
   .file-item_title {
-    width: 20%;
+    width: 40%;
     display: flex;
     align-items: center;
     word-break: break-all;

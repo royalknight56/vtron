@@ -6,6 +6,12 @@ import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useRootState } from '../feature/state/Root';
 
+export type ContextMenu = {
+  name: string;
+  click: () => void;
+  children?: ContextMenu[];
+};
+
 function useContextMenu() {
   const rootState = useRootState();
   async function createNewFile(path: string) {

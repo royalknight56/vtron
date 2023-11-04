@@ -1,15 +1,18 @@
 const InitSystemFile = {
   type: 'dir',
   name: '',
+  mode: 0o111,
   children: [
     {
       name: 'plugs',
       type: 'dir',
+      mode: 0o111,
       children: [],
     },
     {
       name: 'Vtron',
       type: 'dir',
+      mode: 0o111,
       children: [
         // {
         //     name: 'Vtron.exe',
@@ -28,18 +31,22 @@ const InitSystemFile = {
 const InitUserFile = {
   type: 'dir',
   name: '',
+  mode: 0o111,
   children: [
     {
       name: 'Desktop',
       type: 'dir',
+      mode: 0o111,
     },
     {
       name: 'Magnet',
       type: 'dir',
+      mode: 0o111,
     },
     {
       name: 'Menulist',
       type: 'dir',
+      mode: 0o111,
     },
   ],
 };

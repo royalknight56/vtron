@@ -14,7 +14,7 @@ import { initBuiltinApp, initBuiltinFileOpener } from './initBuiltin';
 import { Shell } from '@feature/core/Shell';
 import { defaultConfig } from './initConfig';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
-import { InitSystemFile, InitUserFile } from '@feature/core/SystemFileConfig';
+import { InitSystemFile, InitUserFile } from '@/packages/feature/system/SystemFileConfig';
 import { createInitFile } from './createInitFile';
 import { Notify, NotifyConstructorOptions } from '@feature/notification/Notification';
 import { ShellInterface } from '@feature/core/ShellType';

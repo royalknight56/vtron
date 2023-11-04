@@ -101,10 +101,15 @@ function handleRightClick(e: MouseEvent) {
         },
       },
       {
-        name: i18n('new.file'),
-        click: () => {
-          createNewFile(`${system._options.userLocation}Desktop`);
-        },
+        name: i18n('new'),
+        children: [
+          {
+            name: i18n('new.file'),
+            click: () => {
+              createNewFile(`${system._options.userLocation}Desktop`);
+            },
+          },
+        ],
       },
       {
         name: i18n('paste'),

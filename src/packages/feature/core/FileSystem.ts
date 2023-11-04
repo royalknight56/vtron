@@ -744,16 +744,17 @@ class VtronFileSystem implements VtronFileInterface {
   }
 
   async chmod(path: string, mode: VtronFileMode): Promise<void> {
-    const volume = this.checkVolumePath(path);
+    const respath = fspath.resolve(path);
+    const volume = this.checkVolumePath(respath);
     if (volume) {
-      return this.beforeGuard(volume, 'chmod', path, mode);
+      return this.beforeGuard(volume, 'chmod', respath, mode);
     }
 
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
 
     const index = objectStore.index('path');
-    const range = IDBKeyRange.only(path);
+    const range = IDBKeyRange.only(respath);
     const request = index.get(range);
 
     return new Promise((resolve, reject) => {

@@ -18,7 +18,7 @@ import VtronTest from './apps/VtronTest.vue';
 import VtronPerfTest from './apps/VtronPerfTest.vue';
 
 import { onMounted } from 'vue';
-import { System, VtronFile } from './packages/plug';
+import { System } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 
 // class TestShell {
@@ -164,32 +164,32 @@ onMounted(() => {
     },
   };
   sys.whenReady().then((readySys) => {
-    const memoryFs: Record<string, VtronFile> = {
-      '/': {
-        isDirectory: true,
-        isFile: false,
-        content: '',
-        path: '/',
-        parentPath: '',
-        isSymlink: false,
-        size: 0,
-        mtime: new Date(),
-        atime: new Date(),
-        birthtime: new Date(),
-      },
-      '/D': {
-        isDirectory: true,
-        isFile: false,
-        content: '',
-        path: '/D',
-        parentPath: '/',
-        isSymlink: false,
-        size: 0,
-        mtime: new Date(),
-        atime: new Date(),
-        birthtime: new Date(),
-      },
-    };
+    // const memoryFs: Record<string, VtronFile> = {
+    //   '/': {
+    //     isDirectory: true,
+    //     isFile: false,
+    //     content: '',
+    //     path: '/',
+    //     parentPath: '',
+    //     isSymlink: false,
+    //     size: 0,
+    //     mtime: new Date(),
+    //     atime: new Date(),
+    //     birthtime: new Date(),
+    //   },
+    //   '/D': {
+    //     isDirectory: true,
+    //     isFile: false,
+    //     content: '',
+    //     path: '/D',
+    //     parentPath: '/',
+    //     isSymlink: false,
+    //     size: 0,
+    //     mtime: new Date(),
+    //     atime: new Date(),
+    //     birthtime: new Date(),
+    //   },
+    // };
     sys.registerSetting({
       key: 'test',
       title: `测试`,
@@ -198,91 +198,91 @@ onMounted(() => {
       icon: testicon,
     });
     // sys.mountVolume('/D', new VtronFileSystem('/D', '2'));
-    sys.mountVolume('/D', {
-      copyFile: async (src: string, dest: string) => {
-        console.log(src, dest);
-      },
-      readFile: async (path: string) => {
-        return memoryFs[path]?.content;
-      },
-      writeFile: async (path: string, content: string) => {
-        memoryFs[path] = {
-          ...memoryFs[path],
-          content,
-          path,
-          parentPath: path,
-          isSymlink: false,
-          isFile: true,
-          isDirectory: false,
-          size: 0,
-          mtime: new Date(),
-          atime: new Date(),
-          birthtime: new Date(),
-        };
-        console.log('readFile', memoryFs);
-      },
-      appendFile: async (path: string, content: string) => {
-        memoryFs[path] = {
-          ...memoryFs[path],
-          content: memoryFs[path].content + content,
-        };
-      },
-      readdir: async (path: string) => {
-        // console.log(path);
-        return Object.keys(memoryFs)
-          .filter((p) => memoryFs[p].parentPath === path)
-          .map((p) => memoryFs[p]);
-      },
-      exists: async (path: string) => {
-        return !!memoryFs[path];
-      },
-      stat: async (path: string) => {
-        return memoryFs[path];
-      },
-      chmod: async (path, mode) => {
-        console.log(path, mode);
-      },
-      unlink: async (path: string) => {
-        delete memoryFs[path];
-      },
-      rename: async (oldPath: string, newPath: string) => {
-        memoryFs[newPath] = memoryFs[oldPath];
-        delete memoryFs[oldPath];
-      },
-      rmdir: async (path: string) => {
-        delete memoryFs[path];
-      },
-      mkdir: async (path: string) => {
-        memoryFs[path] = {
-          isDirectory: true,
-          isFile: false,
-          content: '',
-          path,
-          parentPath: path,
-          isSymlink: false,
-          size: 0,
-          mtime: new Date(),
-          atime: new Date(),
-          birthtime: new Date(),
-        };
-      },
-      serializeFileSystem: async () => {
-        return memoryFs;
-      },
-      deserializeFileSystem: async (files: any) => {
-        Object.keys(files).forEach((path) => {
-          memoryFs[path] = files[path];
-        });
-      },
-      removeFileSystem: async () => {
-        Object.keys(memoryFs).forEach((path) => {
-          delete memoryFs[path];
-        });
-      },
-      registerWatcher: (path: RegExp, callback: (path: string, content: string) => void) => {
-        console.log(path, callback);
-      },
-    });
+    // sys.mountVolume('/D', {
+    //   copyFile: async (src: string, dest: string) => {
+    //     console.log(src, dest);
+    //   },
+    //   readFile: async (path: string) => {
+    //     return memoryFs[path]?.content;
+    //   },
+    //   writeFile: async (path: string, content: string) => {
+    //     memoryFs[path] = {
+    //       ...memoryFs[path],
+    //       content,
+    //       path,
+    //       parentPath: path,
+    //       isSymlink: false,
+    //       isFile: true,
+    //       isDirectory: false,
+    //       size: 0,
+    //       mtime: new Date(),
+    //       atime: new Date(),
+    //       birthtime: new Date(),
+    //     };
+    //     console.log('readFile', memoryFs);
+    //   },
+    //   appendFile: async (path: string, content: string) => {
+    //     memoryFs[path] = {
+    //       ...memoryFs[path],
+    //       content: memoryFs[path].content + content,
+    //     };
+    //   },
+    //   readdir: async (path: string) => {
+    //     // console.log(path);
+    //     return Object.keys(memoryFs)
+    //       .filter((p) => memoryFs[p].parentPath === path)
+    //       .map((p) => memoryFs[p]);
+    //   },
+    //   exists: async (path: string) => {
+    //     return !!memoryFs[path];
+    //   },
+    //   stat: async (path: string) => {
+    //     return memoryFs[path];
+    //   },
+    //   chmod: async (path, mode) => {
+    //     console.log(path, mode);
+    //   },
+    //   unlink: async (path: string) => {
+    //     delete memoryFs[path];
+    //   },
+    //   rename: async (oldPath: string, newPath: string) => {
+    //     memoryFs[newPath] = memoryFs[oldPath];
+    //     delete memoryFs[oldPath];
+    //   },
+    //   rmdir: async (path: string) => {
+    //     delete memoryFs[path];
+    //   },
+    //   mkdir: async (path: string) => {
+    //     memoryFs[path] = {
+    //       isDirectory: true,
+    //       isFile: false,
+    //       content: '',
+    //       path,
+    //       parentPath: path,
+    //       isSymlink: false,
+    //       size: 0,
+    //       mtime: new Date(),
+    //       atime: new Date(),
+    //       birthtime: new Date(),
+    //     };
+    //   },
+    //   serializeFileSystem: async () => {
+    //     return memoryFs;
+    //   },
+    //   deserializeFileSystem: async (files: any) => {
+    //     Object.keys(files).forEach((path) => {
+    //       memoryFs[path] = files[path];
+    //     });
+    //   },
+    //   removeFileSystem: async () => {
+    //     Object.keys(memoryFs).forEach((path) => {
+    //       delete memoryFs[path];
+    //     });
+    //   },
+    //   registerWatcher: (path: RegExp, callback: (path: string, content: string) => void) => {
+    //     console.log(path, callback);
+    //   },
+    // });
     for (let i = 0; i < 20; i++) {
       readySys.addMenuList({
         ...testapp,

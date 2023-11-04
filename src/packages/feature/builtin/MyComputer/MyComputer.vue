@@ -91,7 +91,7 @@
       </div>
     </div>
   </div>
-  <div class="main">
+  <div class="main" @click="handleOuterClick">
     <div class="left-tree">
       <FileTree
         :chosen-path="chosenTreePath"
@@ -143,7 +143,7 @@ import { Notify } from '@feature/notification/Notification';
 import { useSystem } from '@feature/system';
 import { BrowserWindow, VtronFileWithoutContent } from '@packages/plug';
 import { useContextMenu } from '@packages/hook/useContextMenu';
-import { mountEvent } from '@feature/event';
+import { emitEvent, mountEvent } from '@feature/event';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { useComputer } from './hooks/useComputer';
@@ -218,6 +218,10 @@ onMounted(() => {
     }
   });
 });
+
+function handleOuterClick() {
+  emitEvent('mycomputer.click');
+}
 
 function onListRefresh() {
   refersh();

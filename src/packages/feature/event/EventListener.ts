@@ -29,6 +29,7 @@ const eventTranslateMap: {
   'magnet.item.click': ['uipop.hidden'],
   'menulist.item.click': ['uipop.hidden'],
   'startMenu.set.click': ['uipop.hidden'],
+  'mycomputer.click': ['uipop.hidden'],
   'uipop.hidden': [
     'contextMenu.hidden',
     'startmenu.hidden',

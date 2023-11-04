@@ -354,11 +354,12 @@ export function resolve(...pathSegments: string[]): string {
     if (i >= 0) path = pathSegments[i];
     else {
       // deno-lint-ignore no-explicit-any
-      const { Deno } = globalThis as any;
-      if (typeof Deno?.cwd !== 'function') {
-        throw new TypeError('Resolved a relative path without a CWD.');
-      }
-      path = Deno.cwd();
+      // const { Deno } = globalThis as any;
+      // if (typeof Deno?.cwd !== 'function') {
+      //   throw new TypeError('Resolved a relative path without a CWD.');
+      // }
+      // path = Deno.cwd();
+      path = '/';
     }
 
     assertPath(path);

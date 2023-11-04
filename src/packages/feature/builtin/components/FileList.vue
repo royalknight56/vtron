@@ -74,7 +74,7 @@ import { useSystem } from '@packages/plug';
 import { emitEvent, mountEvent } from '@feature/event';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
-import { basename, dirname, extname, join } from '@feature/core/Path';
+import { basename, dirname, join } from '@feature/core/Path';
 import { VtronFileWithoutContent } from '@feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
@@ -130,10 +130,11 @@ function hadnleDrop(mouse: DragEvent, path: string) {
 const editIndex = ref<number>(-1);
 const editName = ref<string>('');
 function onEditNameEnd() {
-  if (editName.value && editIndex.value >= 0) {
+  const editEndName = editName.value.trim();
+  if (editEndName && editIndex.value >= 0) {
     sys?.fs.rename(
       props.fileList[editIndex.value].path,
-      join(dirname(props.fileList[editIndex.value].path), editName.value)
+      join(dirname(props.fileList[editIndex.value].path), editEndName)
     );
     props.onRefresh();
   }

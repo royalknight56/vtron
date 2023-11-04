@@ -374,10 +374,11 @@ class VtronFileSystem implements VtronFileInterface {
   }
   /**
    * 读取指定路径下的所有文件和文件夹
-   * @param path 目录路径
+   * @param fpath 目录路径
    * @returns 文件和文件夹列表
    */
-  async readdir(path: string): Promise<VtronFileWithoutContent[]> {
+  async readdir(fpath: string): Promise<VtronFileWithoutContent[]> {
+    const path = fspath.resolve(fpath);
     const volume = this.checkVolumePath(path);
     if (volume) {
       return this.beforeGuard(volume, 'readdir', path);

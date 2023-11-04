@@ -39,12 +39,12 @@
 
       <div class="propitem">
         <div class="propname">{{ i18n('creation.time') }}：</div>
-        <div class="propvalue">{{ file?.birthtime || '' }}</div>
+        <div class="propvalue">{{ file?.birthtime?.toLocaleString?.() || '' }}</div>
       </div>
 
       <div class="propitem">
         <div class="propname">{{ i18n('modification.time') }}：</div>
-        <div class="propvalue">{{ file?.mtime || '' }}</div>
+        <div class="propvalue">{{ file?.mtime?.toLocaleString?.() || '' }}</div>
       </div>
     </div>
     <div class="button-group">
@@ -127,6 +127,8 @@ function editFileName() {
     height: 100%;
     background-color: #fff;
     border: var(--light-border);
+    overflow-y: auto;
+    overflow-x: hidden;
 
     .file-name {
       overflow: hidden;
@@ -167,6 +169,7 @@ function editFileName() {
         // flex: 1;
         display: flex;
         align-items: center;
+        word-break: break-all;
       }
     }
   }

@@ -40,6 +40,7 @@ import Setting from '@feature/builtin/Setting.vue';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 import { Dialog } from '@feature/dialog/Dialog';
+import Settingicon from '@packages/assets/setting.png';
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
     case 0:
@@ -75,6 +76,7 @@ function handleClick(key: number, ev: MouseEvent) {
       });
       const win = new BrowserWindow({
         content: Setting,
+        icon: Settingicon,
         width: 800,
         height: 600,
         title: i18n('setting'),

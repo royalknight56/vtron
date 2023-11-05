@@ -23,14 +23,17 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.22.0
+      - run: pnpm install
+      - run: pnpm run store build
       - name: Deploy to Staging server
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          SOURCE: 'dist/'
+          SOURCE: 'packages/vtron-store/dist'
           REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
           REMOTE_USER: ${{ secrets.DEPLOY_USER }}
           REMOTE_PORT: ${{ secrets.DEPLOY_PORT }}

@@ -3,6 +3,7 @@
     "vtron": "pnpm -C packages/vtron",
     "plus": "pnpm -C packages/vtron-plus",
     "demo": "pnpm -C packages/vtron-demo",
+    "store": "pnpm -C packages/vtron-store",
     "demo-build": "pnpm -C ./packages/vtron-demo build",
     "prepare": "husky install",
     "pre": "lint-staged",

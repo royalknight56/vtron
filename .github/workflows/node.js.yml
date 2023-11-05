@@ -35,7 +35,7 @@ jobs:
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          SOURCE: 'packages/vtron-demo/dist'
+          SOURCE: 'packages/vtron-demo/dist/'
           REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
           REMOTE_USER: ${{ secrets.DEPLOY_USER }}
           REMOTE_PORT: ${{ secrets.REMOTE_PORT }}

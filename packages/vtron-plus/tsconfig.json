@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "allowJs": true,
+    // "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    // "esModuleInterop": true,
+    "lib": ["ESNext", "dom"],
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationDir": "distlib",
+    "typeRoots": ["./types","./node_modules/@types"],
+    "baseUrl": ".",
+    "paths":{
+      "@/*": ["src/*"],
+      "@packages/*": ["src/packages/*"],
+     },
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+}

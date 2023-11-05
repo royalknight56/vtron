@@ -1,14 +1,3 @@
-node_modules
-.DS_Store
-dist
-dist-ssr
-*.local
-.VSCodeCounter
-distlib
-test
-Icon?
-stats.html
-
 # Logs
 logs
 *.log

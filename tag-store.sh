@@ -2,12 +2,12 @@
 function tag() {
     git pull --tags
     branch=$(git branch | sed -n '/\* /s///p')
-    prefix="test"
+    prefix="store"
 
     if [[ $branch == 'release' ]]; then
-        prefix="pro"
+        prefix="store-pro"
     elif [[ $branch == "preview" ]]; then
-        prefix="pre"
+        prefix="store-pre"
     fi
 
     new_tag=$(echo ${prefix}-$(date +'%Y%m%d')-$(git tag -l "${prefix}-$(date +'%Y%m%d')-*" | wc -l | xargs printf '%02d'))

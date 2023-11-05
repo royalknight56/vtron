@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Node.js CI
+name: Demo CI
 
 on:
   push:
@@ -23,10 +23,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
       - uses: pnpm/action-setup@v2
         with:
           version: 7.22.0
+          cache: 'pnpm'
       - run: pnpm install
       - run: npx pnpm run vtron bl
       - run: npx pnpm run plus bl

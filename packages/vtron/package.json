@@ -1,0 +1,75 @@
+{
+  "name": "vtron",
+  "version": "0.5.4",
+  "files": [
+    "distlib",
+    "distlib/*.css"
+  ],
+  "main": "distlib/vtron.mjs",
+  "module": "distlib/vtron.mjs",
+  "style": "distlib/style.css",
+  "types": "distlib/src/packages/plug.d.ts",
+  "exports": {
+    ".": {
+      "types": "./distlib/src/packages/plug.d.ts",
+      "import": "./distlib/vtron.mjs",
+      "require": "./distlib/vtron.umd.js"
+    },
+    "./distlib/style.css": {
+      "import": "./distlib/style.css",
+      "require": "./distlib/style.css"
+    }
+  },
+  "scripts": {
+    "test": "vitest",
+    "dev": "vite --host",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview",
+    "bl": "vue-tsc --noEmit && vite build --config vitelib.config.ts",
+    "tsc": "vue-tsc",
+    "tag": "node script/auto_tag.js",
+    "pre": "lint-staged",
+    "update": "node script/update.js"
+  },
+  "dependencies": {
+    "vue": "^3.2.37",
+    "vue3-sfc-loader": "^0.8.4",
+    "xterm": "^5.1.0",
+    "xterm-addon-fit": "^0.7.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^8.2.5",
+    "@types/node": "^16.11.0",
+    "@types/rollup-plugin-visualizer": "^4.2.1",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^6.1.0",
+    "@vitejs/plugin-vue": "^3.0.3",
+    "@vue/compiler-sfc": "^3.2.20",
+    "@vue/eslint-config-typescript": "^11.0.3",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-standard-with-typescript": "^36.1.1",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^16.0.1",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-vue": "^9.15.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "prettier": "3.0.0",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "rollup-plugin-visualizer": "^5.8.0",
+    "sass": "^1.45.1",
+    "semantic-release": "^21.1.1",
+    "typescript": "^5.1.6",
+    "vite": "^3.0.9",
+    "vite-plugin-dts": "^0.8.3",
+    "vite-plugin-style-import": "^1.2.1",
+    "vitest": "^0.31.1",
+    "vue-eslint-parser": "^9.3.1",
+    "vue-tsc": "^0.40.1"
+  },
+  "lint-staged": {
+    "*.{js,css,md,ts,vue}": "prettier --write"
+  }
+}

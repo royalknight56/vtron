@@ -29,11 +29,11 @@ onMounted(() => {
     const url = new URL(path);
     const cred = url.password ? `${url.username}:${url.password}` : '';
     if (cred) {
-      // const resource = url.href.replace(`${url.username}:${url.password}@`, "");
+      const resource = url.href.replace(`${url.username}:${url.password}@`, '');
       const headers = new Headers({
         Authorization: `Basic ${btoa(cred)}`,
       });
-      fetch(url, {
+      fetch(resource, {
         headers: headers,
       }).then((res) => {
         res.blob().then((blob) => {

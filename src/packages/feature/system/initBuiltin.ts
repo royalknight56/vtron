@@ -23,7 +23,7 @@ export function initBuiltinApp(system: System) {
   if (system._options.builtinApp?.length === 0) return;
   if (system._options.builtinApp?.includes('MyComputer')) {
     const myComputer = {
-      name: i18n('computer'),
+      name: '此电脑',
       icon: myComputerLogoIcon,
       window: {
         width: 800,
@@ -44,7 +44,7 @@ export function initBuiltinApp(system: System) {
 
   if (system._options.builtinApp?.includes('AppStore')) {
     const appStore: WinAppOptions = {
-      name: i18n('appstore'),
+      name: "'应用商店'",
       icon: vtronStoreLogoIcon,
       window: {
         width: 900,

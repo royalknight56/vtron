@@ -53,7 +53,6 @@ export async function dealIcon(
     return content || unknownicon;
   }
   if (ext === '.ln') {
-    console.log(file);
     if (stopCircle) {
       return unknownicon;
     } else {

@@ -43,6 +43,7 @@ export const enUS: AllText = {
   delete: 'Delete',
   general: 'General',
   rename: 'Rename',
+  'create.shortcut': 'Create Shortcut',
   'file.type': 'File Type',
   location: 'Location',
   'edit.type': 'Edit Type',

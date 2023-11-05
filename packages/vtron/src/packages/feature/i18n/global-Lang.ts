@@ -42,6 +42,7 @@ export interface AllText {
   delete: string;
   general: string;
   rename: string;
+  'create.shortcut': string; // '创建快捷方式'
   'file.type': string;
   location: string;
   'edit.type': string;

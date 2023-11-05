@@ -18,6 +18,7 @@ import { WinAppOptions } from '@/packages/type/type';
 import { dealIcon } from '@/packages/util/Icon';
 import { basename } from '../core/Path';
 import ImageViewerVue from '../builtin/ImageViewer.vue';
+import { Dialog } from '../dialog/Dialog';
 
 export function initBuiltinApp(system: System) {
   if (system._options.builtinApp?.length === 0) return;
@@ -82,9 +83,24 @@ export function initBuiltinFileOpener(system: System) {
   });
   system.registerFileOpener('.ln', {
     icon: unknownIcon,
-    func: (path, content) => {
-      //  `${content}`
-      system.openFile(content);
+    func: async (path, content) => {
+      if (await system.fs.exists(content)) {
+        try {
+          system.openFile(content);
+        } catch (e) {
+          Dialog.showMessageBox({
+            title: '错误',
+            message: '无法打开快捷方式',
+            type: 'error',
+          });
+        }
+      } else {
+        Dialog.showMessageBox({
+          title: '错误',
+          message: '无法打开快捷方式，目标不存在',
+          type: 'error',
+        });
+      }
     },
   });
 

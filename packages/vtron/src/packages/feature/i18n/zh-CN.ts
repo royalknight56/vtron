@@ -43,6 +43,7 @@ export const zhCN: AllText = {
   delete: '删除',
   general: '常规',
   rename: '重命名',
+  'create.shortcut': '创建快捷方式',
   'file.type': '文件类型',
   location: '位置',
   'edit.type': '编辑类型',

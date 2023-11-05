@@ -372,7 +372,9 @@ class System {
   /**打开vtron 文件系统的文件 */
   async openFile(path: string) {
     const fileStat = await this.fs.stat(path);
-    //  .then((res) => {
+    if (!fileStat) {
+      throw new Error('文件不存在');
+    }
     if (fileStat?.isDirectory) {
       this._flieOpenerMap.get('dir')?.func.call(this, path, '');
       return;
@@ -382,7 +384,6 @@ class System {
         .get(extname(fileStat?.path || '') || 'link')
         ?.func.call(this, path, fileContent || '');
     }
-    // });
   }
   getOpener(type: string) {
     return this._flieOpenerMap.get(type);

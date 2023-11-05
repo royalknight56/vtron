@@ -96,7 +96,16 @@ function useContextMenu() {
       system.emitError('no file in clipboard');
     }
   }
-  return { createNewFile, openPropsWindow, createNewDir, deleteFile, copyFile, pasteFile };
+  // 创建快捷方式
+  function createLink(path: string) {
+    const system = useSystem();
+    if (!system) return;
+    const parentPath = fspath.dirname(path);
+    const baseName = fspath.basename(path);
+    const linkPath = fspath.join(parentPath, baseName + '.ln');
+    return system.fs.writeFile(linkPath, path);
+  }
+  return { createNewFile, openPropsWindow, createNewDir, deleteFile, copyFile, pasteFile, createLink };
 }
 
 export { useContextMenu };

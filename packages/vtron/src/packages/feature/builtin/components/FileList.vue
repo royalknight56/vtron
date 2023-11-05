@@ -38,7 +38,9 @@
     <div class="file-item_img">
       <FileIcon :file="item" />
     </div>
-    <span v-if="editIndex !== index" class="file-item_title">{{ dealI18nName(basename(item.path)) }}</span>
+    <span v-if="editIndex !== index" class="file-item_title">
+      {{ dealI18nName(basename(item.path)) }}
+    </span>
     <textarea
       autofocus
       draggable="false"
@@ -82,7 +84,7 @@ import { onMounted, ref } from 'vue';
 import { Rect } from '@/packages/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
 
-const { openPropsWindow, copyFile } = useContextMenu();
+const { openPropsWindow, copyFile, createLink } = useContextMenu();
 const sys = useSystem();
 const { startDrag, folderDrop } = useFileDrag(sys);
 const props = defineProps({
@@ -228,6 +230,16 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
           editName.value = basename(item.path);
         },
       },
+
+      {
+        name: i18n('create.shortcut'),
+        click: () => {
+          createLink(item.path)?.then(() => {
+            props.onRefresh();
+          });
+        },
+      },
+
       {
         name: i18n('delete'),
         click: async () => {

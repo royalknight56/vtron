@@ -3,6 +3,7 @@
     "vtron": "pnpm -C ./packages/vtron",
     "plus": "pnpm -C ./packages/vtron-plus",
     "demo": "pnpm -C ./packages/vtron-demo",
+    "demo-build": "pnpm -C ./packages/vtron-demo build",
     "prepare": "husky install",
     "pre": "lint-staged",
     "clean": "rm -rf node_modules **/*/node_modules"

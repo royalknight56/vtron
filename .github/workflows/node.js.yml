@@ -26,8 +26,8 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 7.22.0
-      - run: pnpm install
-      - run: pnpm run demo build
+      - run: npx pnpm install
+      - run: npx pnpm run demo-build
       - name: Deploy to Staging server
         uses: easingthemes/ssh-deploy@main
         env:

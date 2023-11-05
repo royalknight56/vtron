@@ -6,10 +6,12 @@ importers:
     specifiers:
       husky: ^8.0.3
       lint-staged: ^13.2.3
+      pnpm: ^7.22.0
       prettier: 3.0.0
     devDependencies:
       husky: 8.0.3
       lint-staged: 13.3.0
+      pnpm: 7.33.6
       prettier: 3.0.0
 
   packages/vtron:
@@ -3487,6 +3489,12 @@ packages:
       jsonc-parser: 3.2.0
       mlly: 1.4.2
       pathe: 1.1.1
+    dev: true
+
+  /pnpm/7.33.6:
+    resolution: {integrity: sha512-kOJ/04BH8YWD8zQveEzD8Yf01MqsievB//rhjc17Ld52eKC/I3SBvLj36OZhNfo0gDhW5OssRCzggv+rXZ0kHw==}
+    engines: {node: '>=14.6'}
+    hasBin: true
     dev: true
 
   /postcss-selector-parser/6.0.13:

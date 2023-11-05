@@ -5,23 +5,29 @@ fs 是用于在浏览器端进行文件操作的库，使用了类似于node fs�
 在应用中 fs需要等待system完成初始化工作之后才能使用，所以，在new System的运行帧中，fs是不可用的。可以调用system.whenReady()来等待system初始化完成。
 
 ```typescript
-class VtronFileInfo {
-    isFile: boolean = true;
-    isDirectory = false;
-    isSymlink = false;
-    size = 0;
-    mtime = new Date();
-    atime = new Date();
-    birthtime = new Date();
-    constructor(isFile?: boolean, isDirectory?: boolean, isSymlink?: boolean, size?: number, mtime?: Date, atime?: Date, birthtime?: Date) {
-    }
+class VtronFileInfo {
+  isFile: boolean = true;
+  isDirectory = false;
+  isSymlink = false;
+  size = 0;
+  mtime = new Date();
+  atime = new Date();
+  birthtime = new Date();
+  constructor(
+    isFile?: boolean,
+    isDirectory?: boolean,
+    isSymlink?: boolean,
+    size?: number,
+    mtime?: Date,
+    atime?: Date,
+    birthtime?: Date
+  ) {}
 }
 class VtronFile {
-    path: string;
-    parentPath: string;
-    content: string;
-    constructor(path: string, content: string, 
-    info: Partial<VtronFileInfo>,);
+  path: string;
+  parentPath: string;
+  content: string;
+  constructor(path: string, content: string, info: Partial<VtronFileInfo>);
 }
 ```
 
@@ -48,15 +54,11 @@ system.fs.readFile("path/to/file").then((data)=>{
 write content to a file, if the file is not exist, it will be created
 
 ```typescript
- writeFile(path: string, par: {
-        content: string;
-    }): Promise<void>;
+ writeFile(path: string, content: string): Promise<void>;
 
 import { useSystem } from "vtron";
 const system = useSystem();
-system.fs.writeFile("path/to/file",{
-    content:"hello world",
-})
+system.fs.writeFile("path/to/file","hello world")
 ```
 
 ## appendFile
@@ -72,6 +74,7 @@ import { useSystem } from "vtron";
 const system = useSystem();
 system.fs.appendFile("path/to/file","hello world")
 ```
+
 ## mkdir
 
 创建一个文件夹
@@ -85,7 +88,6 @@ import { useSystem } from "vtron";
 const system = useSystem();
 system.fs.mkdir("path/to/folder")
 ```
-
 
 ## readdir
 
@@ -109,7 +111,7 @@ class VtronFile {
     path: string;
     parentPath: string;
     content: string;
-    constructor(path: string, content: string, 
+    constructor(path: string, content: string,
     info: Partial<VtronFileInfo>,);
 }
 
@@ -124,6 +126,7 @@ system.fs.readdir("path/to/folder").then((files)=>{
     })
 })
 ```
+
 ## exists
 
 判断指定路径的文件或文件夹是否存在

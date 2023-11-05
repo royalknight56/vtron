@@ -8,38 +8,36 @@
     <Screen></Screen>
     <!-- 一定需要引入Win10组件，组件已经在use时注册了 -->
   </div>
-  <a style="display: none" href="https://beian.miit.gov.cn/"
-    >豫ICP备19041315号</a
-  >
+  <a style="display: none" href="https://beian.miit.gov.cn/">豫ICP备19041315号</a>
 </template>
 
 <script lang="ts" setup>
-import desktopConfig from "./DesktopSet";
+import desktopConfig from './DesktopSet';
 
-import { System, BrowserWindow, Notify } from "vtron";
-import { vtronPlus } from "vtron-plus";
-import MarkDown from "./components/apps/MarkDown.vue";
-import "vtron-plus/distlib/style.css";
-import backimg from "./assets/back.jpg";
-import CommentVue from "./components/apps/Comment.vue";
-import beaticon from "./assets/beat.ico";
-import PPT from "./components/apps/PPT.vue";
-import markdownicon from "./assets/markdown.png";
-import ppticon from "./assets/ppt.png";
-import onetocicon from "./assets/onetoc.png";
-import OpenSource from "./components/apps/OpenSource.vue";
+import { System, BrowserWindow, Notify } from 'vtron';
+import { vtronPlus } from 'vtron-plus';
+import MarkDown from './components/apps/MarkDown.vue';
+import 'vtron-plus/distlib/style.css';
+import backimg from './assets/back.jpg';
+import CommentVue from './components/apps/Comment.vue';
+import beaticon from './assets/beat.ico';
+import PPT from './components/apps/PPT.vue';
+import markdownicon from './assets/markdown.png';
+import ppticon from './assets/ppt.png';
+import onetocicon from './assets/onetoc.png';
+import OpenSource from './components/apps/OpenSource.vue';
 
-import { mountWebdav } from "./hook/mountWebdav";
-import { mountOpener } from "./hook/mountOpener";
+import { mountWebdav } from './hook/mountWebdav';
+import { mountOpener } from './hook/mountOpener';
 // 在App中组织桌面图标t
 // 先清空再添加，防止热更新加入多重图标
 let system = new System({
   desktop: [
     {
-      name: "意见反馈",
+      name: '意见反馈',
       icon: beaticon,
       window: {
-        title: "意见反馈",
+        title: '意见反馈',
         width: 400,
         height: 400,
         center: true,
@@ -51,10 +49,10 @@ let system = new System({
   ],
   magnet: [
     {
-      name: "意见反馈",
+      name: '意见反馈',
       icon: beaticon,
       window: {
-        title: "意见反馈",
+        title: '意见反馈',
         width: 400,
         height: 400,
         center: true,
@@ -65,10 +63,10 @@ let system = new System({
   ],
   menulist: [
     {
-      name: "开源项目",
+      name: '开源项目',
       icon: beaticon,
       window: {
-        title: "开源项目",
+        title: '开源项目',
         width: 400,
         height: 200,
         center: true,
@@ -78,7 +76,7 @@ let system = new System({
     },
   ],
   background: backimg,
-  lang: "zh-CN",
+  lang: 'zh-CN',
 });
 
 system.whenReady().then((readySystem) => {
@@ -88,10 +86,10 @@ system.whenReady().then((readySystem) => {
 
   readySystem.use(vtronPlus);
   readySystem.fs.writeFile(
-    "/C/Users/Desktop/使用教程.md",
+    '/C/Users/Desktop/使用教程.md',
     `# hello, 欢迎使用Vtron WebOS!
 
-这可能是目前最具扩展性的webos
+这可能是目前最具扩展性的webos!
 
 ## 欢迎加入qq群 712921211
 
@@ -143,7 +141,7 @@ NoteMd是和vtron契合的笔记软件
   );
 
   readySystem.fs.writeFile(
-    "/C/Users/Desktop/Webdav使用教程.md",
+    '/C/Users/Desktop/Webdav使用教程.md',
     `# Webdav使用教程
 ## 设置
 
@@ -166,16 +164,15 @@ NoteMd是和vtron契合的笔记软件
   );
   setTimeout(() => {
     if (readySystem.isFirstRun) {
-      readySystem.openFile("/C/Users/Desktop/使用教程.md");
+      readySystem.openFile('/C/Users/Desktop/使用教程.md');
     }
   }, 1200);
 
   mountWebdav(system);
-  localStorage.getItem("user") ||
-    localStorage.setItem("user", new Date().getTime().toString());
+  localStorage.getItem('user') || localStorage.setItem('user', new Date().getTime().toString());
 
   mountOpener(system);
-  readySystem.registerFileOpener(".md", {
+  readySystem.registerFileOpener('.md', {
     icon: onetocicon,
     func: (path, content) => {
       new BrowserWindow({
@@ -209,23 +206,23 @@ NoteMd是和vtron契合的笔记软件
   //   }).show();
   // });
   setTimeout(() => {
-    if (process.env.NODE_ENV === "development") return;
-    fetch("https://myim.online:3100/api/visit", {
-      method: "POST",
+    if (process.env.NODE_ENV === 'development') return;
+    fetch('https://myim.online:3100/api/visit', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user: localStorage.getItem("user"),
-        type: "view",
+        user: localStorage.getItem('user'),
+        type: 'view',
         content: `${document.referrer}`,
       }),
     });
 
-    fetch("https://myim.online:3100/api/notify", {
-      method: "POST",
+    fetch('https://myim.online:3100/api/notify', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         id: 1,

@@ -36,5 +36,5 @@ jobs:
           SOURCE: 'packages/vtron-store/dist'
           REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
           REMOTE_USER: ${{ secrets.DEPLOY_USER }}
-          REMOTE_PORT: ${{ secrets.DEPLOY_PORT }}
+          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
           TARGET: ${{ secrets.DEPLOY_REMOTE_DIR }}

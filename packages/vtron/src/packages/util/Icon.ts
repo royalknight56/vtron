@@ -8,7 +8,7 @@ import volumeNetIcon from '@packages/assets/volume-net.png';
 import volumeLocalIcon from '@packages/assets/volume-local.png';
 
 import { System, extname } from '../plug';
-function dealExeIcon(content: string | null | undefined) {
+export function dealExeIcon(content: string | null | undefined) {
   if (!content) return unknownicon;
   const exeContent = content.split('::');
   const iconImg = exeContent.slice(3).join('::');
@@ -18,7 +18,11 @@ function dealExeIcon(content: string | null | undefined) {
     return unknownicon;
   }
 }
-async function dealIcon(file: VtronFileWithoutContent | null | undefined, system: System) {
+export async function dealIcon(
+  file: VtronFileWithoutContent | null | undefined,
+  system: System,
+  stopCircle = false
+) {
   if (!file) return unknownicon;
   if (file.isDirectory && file.parentPath === '/') {
     // 是挂载在根目录的卷
@@ -48,9 +52,21 @@ async function dealIcon(file: VtronFileWithoutContent | null | undefined, system
     const content = await system.fs.readFile(file.path);
     return content || unknownicon;
   }
+  if (ext === '.ln') {
+    console.log(file);
+    if (stopCircle) {
+      return unknownicon;
+    } else {
+      const target = await system.fs.readFile(file.path);
+      if (target) {
+        return dealIcon(await system.fs.stat(target), system, true);
+      } else {
+        return unknownicon;
+      }
+    }
+  }
   if (ext === '.mp3') return audioicon;
   if (ext === '.mp4') return videoicon;
 
   return system.getOpener(ext)?.icon || unknownicon;
 }
-export { dealIcon };

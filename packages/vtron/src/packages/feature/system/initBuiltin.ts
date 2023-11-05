@@ -68,8 +68,26 @@ export function initBuiltinApp(system: System) {
 export function initBuiltinFileOpener(system: System) {
   system.registerFileOpener('.exe', {
     icon: unknownIcon,
-    func: system.openLink.bind(system),
+    func: (path: string, content: string) => {
+      const exeContent = content.split('::');
+      // exeContent[1]= loc
+      // exeContent[2]= name
+      // exeContent[3]= icon
+      const winopt = system._rootState.system.windowMap[exeContent[1]].get(exeContent[2]);
+      if (winopt) {
+        const win = new BrowserWindow(winopt);
+        win.show();
+      }
+    },
   });
+  system.registerFileOpener('.ln', {
+    icon: unknownIcon,
+    func: (path, content) => {
+      //  `${content}`
+      system.openFile(content);
+    },
+  });
+
   system.registerFileOpener(['.txt', '.js', '.json'], {
     icon: unknownIcon,
     func: (path, content) => {

@@ -263,17 +263,6 @@ class System {
     }
     this._rootState.system.windowMap[loc].set(options.name, options.window);
   }
-  openLink(path: string, content: string) {
-    const exeContent = content.split('::');
-    // exeContent[1]= loc
-    // exeContent[2]= name
-    // exeContent[3]= icon
-    const winopt = this._rootState.system.windowMap[exeContent[1]].get(exeContent[2]);
-    if (winopt) {
-      const win = new BrowserWindow(winopt);
-      win.show();
-    }
-  }
 
   async runPlugin(system: System) {
     const pluginsFile = await this.fs.readdir(`${this._options.systemLocation}plugs`);

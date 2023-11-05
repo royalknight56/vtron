@@ -44,7 +44,7 @@ export function initBuiltinApp(system: System) {
 
   if (system._options.builtinApp?.includes('AppStore')) {
     const appStore: WinAppOptions = {
-      name: "'应用商店'",
+      name: '应用商店',
       icon: vtronStoreLogoIcon,
       window: {
         width: 900,

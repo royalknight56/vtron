@@ -70,6 +70,7 @@ class Shell implements ShellInterface {
   emit(event: 'start' | 'key') {
     if (event === 'start') {
       this.output('\x1b[2m' + 'Welcome to Vtron Terminal' + '\x1b[0m\r\n');
+      this.output('\x1b[2m' + 'Type "help" for more information.' + '\x1b[0m\r\n');
       this.output(this.prefix);
     }
     // this.user = user;

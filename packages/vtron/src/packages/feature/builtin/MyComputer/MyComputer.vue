@@ -454,6 +454,7 @@ function end_input() {
     align-content: flex-start;
     flex-wrap: wrap;
     position: relative;
+    overflow-x: hidden;
   }
 }
 

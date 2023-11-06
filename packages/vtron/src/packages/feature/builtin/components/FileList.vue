@@ -18,7 +18,7 @@
     }"
     v-for="(item, index) in fileList"
     :key="item.path"
-    @dblclick="onOpen(item)"
+    @dblclick="handleOnOpen(item)"
     @contextmenu.stop.prevent="handleRightClick($event, item, index)"
     @drop="hadnleDrop($event, item.path)"
     @dragenter.prevent="handleDragEnter($event, item, index)"
@@ -123,10 +123,14 @@ const props = defineProps({
     },
   },
 });
-
+function handleOnOpen(item: VtronFileWithoutContent) {
+  chosenIndexs.value = [];
+  props.onOpen(item);
+}
 function hadnleDrop(mouse: DragEvent, path: string) {
   hoverIndex.value = -1;
   folderDrop(mouse, path);
+  chosenIndexs.value = [];
 }
 
 const editIndex = ref<number>(-1);
@@ -206,6 +210,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
       {
         name: i18n('open'),
         click: () => {
+          chosenIndexs.value = [];
           props.onOpen(item);
         },
       },
@@ -214,6 +219,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
         click: () => {
           chosenIndexs.value.forEach((index) => {
             openPropsWindow(props.fileList[index].path);
+            chosenIndexs.value = [];
           });
         },
       },
@@ -221,6 +227,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
         name: i18n('copy'),
         click: () => {
           copyFile(chosenIndexs.value.map((index) => props.fileList[index]));
+          chosenIndexs.value = [];
         },
       },
       {
@@ -228,6 +235,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
         click: () => {
           editIndex.value = index;
           editName.value = basename(item.path);
+          chosenIndexs.value = [];
         },
       },
 
@@ -235,6 +243,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
         name: i18n('create.shortcut'),
         click: () => {
           createLink(item.path)?.then(() => {
+            chosenIndexs.value = [];
             props.onRefresh();
           });
         },
@@ -253,6 +262,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
               }
             })
           );
+          chosenIndexs.value = [];
           props.onRefresh();
         },
       },

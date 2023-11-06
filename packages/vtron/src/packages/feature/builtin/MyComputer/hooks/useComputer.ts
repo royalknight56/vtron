@@ -13,6 +13,7 @@ export const useComputer = (adpater: {
   exists: (path: RouterPath) => Promise<boolean>;
   isDirectory: (file: VtronFileWithoutContent) => boolean;
   notify: (title: string, content: string) => void;
+  search: (keyword: string) => Promise<VtronFileWithoutContent[]>;
 }) => {
   const isVia = async (path: RouterPath) => {
     if (path === '') path = '/';
@@ -27,6 +28,14 @@ export const useComputer = (adpater: {
   };
   const refersh = async () => {
     const currentPath = adpater.getRouter();
+    if (!currentPath) return;
+    if (currentPath.startsWith('search:')) {
+      const keyword = currentPath.substr(7);
+      const result = await adpater.search(keyword);
+      adpater.setFileList(result);
+      return;
+    }
+
     if (!(await isVia(currentPath))) return;
     const result = await adpater.readdir(currentPath);
     if (result) adpater.setFileList(result);

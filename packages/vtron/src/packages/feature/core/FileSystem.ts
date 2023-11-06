@@ -65,6 +65,7 @@ class VtronFileInfo {
 }
 
 class VtronFile extends VtronFileInfo {
+  name = '';
   path: string;
   parentPath: string;
   content: string;
@@ -92,6 +93,7 @@ class VtronFile extends VtronFileInfo {
     super(info.isFile, info.isDirectory, info.isSymlink, info.size, info.mtime, info.atime, info.birthtime);
     this.path = path;
     this.parentPath = fspath.dirname(path);
+    this.name = fspath.basename(path);
     this.content = content;
     // this.icon = icon;
     // this.type = type;
@@ -130,6 +132,8 @@ class VtronFileSystem implements VtronFileInterface {
       const objectStore = this.db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
       objectStore.createIndex('parentPath', 'parentPath');
       objectStore.createIndex('path', 'path', { unique: true });
+      objectStore.createIndex('name', 'name');
+
       const rootDir = new VtronFile(rootPath, '', {
         mode: 0o111,
         isDirectory: true,
@@ -773,6 +777,26 @@ class VtronFileSystem implements VtronFileInterface {
           reject('File not found');
         }
         resolve();
+      };
+    });
+  }
+  async search(keyword: string): Promise<VtronFileWithoutContent[]> {
+    const transaction = this.db.transaction('files', 'readonly');
+    const objectStore = transaction.objectStore('files');
+
+    const index = objectStore.index('name');
+    const range = IDBKeyRange.bound(keyword, keyword + '\uffff');
+    const request = index.getAll(range);
+
+    return new Promise((resolve, reject) => {
+      request.onerror = () => {
+        this.onerror('Failed to search file');
+        reject('Failed to search file');
+      };
+      request.onsuccess = () => {
+        const files = request.result;
+        console.log(files);
+        resolve(files);
       };
     });
   }

@@ -63,11 +63,14 @@
       </svg>
     </div>
 
-    <div @click="start_input()" v-if="path_state == 'pendding'" class="path">
+    <div @click="startInput()" v-if="path_state == 'pendding'" class="path">
       <span>{{ modelValue }}</span>
     </div>
-    <div v-if="path_state == 'inputing'" class="path_inputing">
-      <input v-model="inputStr" @blur="end_input()" />
+    <div v-if="path_state == 'inputing'" class="path_inputing nav-path">
+      <input v-model="inputStr" @keyup.enter="endInput()" @blur="endInput()" />
+    </div>
+    <div class="search path_inputing">
+      <input placeholder="search" v-model="searchStr" @keyup.enter="endSearch" @blur="endSearch" />
     </div>
   </div>
 </template>
@@ -76,7 +79,7 @@ import { ref } from 'vue';
 const props = defineProps<{
   modelValue?: string;
 }>();
-const emit = defineEmits(['update:modelValue', 'backFolder', 'refresh']);
+const emit = defineEmits(['update:modelValue', 'backFolder', 'refresh', 'search']);
 
 function backFolder() {
   emit('backFolder');
@@ -86,15 +89,23 @@ function backFolder() {
 const inputStr = ref(props.modelValue);
 
 const path_state = ref('pendding');
-function start_input() {
+function startInput() {
   path_state.value = 'inputing';
   inputStr.value = props.modelValue;
 }
-function end_input() {
+function endInput() {
   path_state.value = 'pendding';
   emit('refresh', inputStr.value);
 }
 /* ------------ 路径输入框end ---------*/
+
+/* ------------ 搜索框 ------------*/
+const searchStr = ref('');
+function endSearch() {
+  if (searchStr.value == '') return;
+  emit('search', searchStr.value);
+  searchStr.value = '';
+}
 </script>
 <style lang="scss" scoped>
 .uper_nav {
@@ -165,7 +176,11 @@ function end_input() {
   border: none;
   outline: none;
 }
-
+.nav-path {
+}
+.search {
+  width: 200px;
+}
 .path:hover {
   border: 1px solid rgb(0, 102, 255);
 }

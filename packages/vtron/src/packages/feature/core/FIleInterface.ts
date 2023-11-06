@@ -13,6 +13,7 @@ export interface VtronFileInterface {
   mkdir: (path: string) => Promise<void>;
   copyFile: (src: string, dest: string) => Promise<void>;
   chmod: (path: string, mode: number) => Promise<void>;
+  search: (keyword: string) => Promise<VtronFileWithoutContent[]>;
   serializeFileSystem: () => Promise<unknown>;
   deserializeFileSystem: (files: VtronFile[]) => Promise<unknown>;
   removeFileSystem: () => Promise<void>;

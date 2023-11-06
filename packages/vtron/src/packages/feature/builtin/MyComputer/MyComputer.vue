@@ -17,7 +17,12 @@
     <div v-if="isPopoverView" class="up-pop">
       <UpPopover v-model="chosenView"></UpPopover>
     </div>
-    <NavBar v-model="router_url" @backFolder="backFolder()" @refresh="handleNavRefresh"></NavBar>
+    <NavBar
+      v-model="router_url"
+      @backFolder="backFolder()"
+      @refresh="handleNavRefresh"
+      @search="handleNavSearch"
+    ></NavBar>
   </div>
   <div class="main" @click="handleOuterClick">
     <div class="left-tree">
@@ -123,6 +128,9 @@ const { refersh, createFolder, backFolder, openFolder, onComputerMount } = useCo
       title,
       content,
     });
+  },
+  search(keyword) {
+    return system.fs.search(keyword);
   },
 });
 
@@ -264,6 +272,13 @@ function showOuterMenu(e: MouseEvent) {
 }
 /* ------------ 路径输入框 ------------*/
 async function handleNavRefresh(path: string) {
+  if (path == '') return;
+  if (path.startsWith('search:')) {
+    router_url.value = path;
+    refersh();
+    return;
+  }
+
   const res = await system.fs.stat(path);
   if (res) {
     router_url.value = path;
@@ -272,6 +287,10 @@ async function handleNavRefresh(path: string) {
     router_url.value = dirname(path);
     refersh();
   }
+}
+async function handleNavSearch(path: string) {
+  router_url.value = 'search:' + path;
+  refersh();
 }
 /* ------------ 路径输入框end ---------*/
 </script>

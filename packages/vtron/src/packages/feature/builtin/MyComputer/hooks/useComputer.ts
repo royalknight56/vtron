@@ -20,12 +20,6 @@ export const useComputer = (adpater: {
     else if (path.endsWith('/')) path = path.substr(0, path.length - 1);
     const isExist = await adpater.exists(path);
     if (!isExist) {
-      //   if (alert)
-      //     new Notify({
-      //       // title: "路径不存在",
-      //       title: i18n('path.not.exist'),
-      //       content: path,
-      //     });
       adpater.notify('路径不存在', path);
       return false;
     }

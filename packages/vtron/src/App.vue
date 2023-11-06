@@ -166,6 +166,7 @@ onMounted(() => {
   sys.whenReady().then((readySys) => {
     const memoryFs: Record<string, VtronFile> = {
       '/': {
+        name: '/',
         isDirectory: true,
         isFile: false,
         content: '',
@@ -180,6 +181,7 @@ onMounted(() => {
         birthtime: new Date(),
       },
       '/D': {
+        name: 'D',
         isDirectory: true,
         isFile: false,
         content: '',
@@ -258,6 +260,7 @@ onMounted(() => {
       },
       mkdir: async (path: string) => {
         memoryFs[path] = {
+          name: path.split('/').pop() as string,
           isDirectory: true,
           isFile: false,
           content: '',
@@ -271,6 +274,10 @@ onMounted(() => {
           atime: new Date(),
           birthtime: new Date(),
         };
+      },
+      async search(keyword) {
+        console.log(keyword);
+        return [];
       },
       serializeFileSystem: async () => {
         return memoryFs;

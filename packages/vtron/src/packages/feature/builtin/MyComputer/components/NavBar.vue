@@ -73,8 +73,9 @@
           :key="p"
           v-for="(p, index) in modelValue?.split('/').slice(1)"
           @click.stop="handlePathPClick(index)"
-          >/{{ p }}</span
         >
+          {{ p }}<span class="iconfont icon-arrow-down"></span
+        ></span>
       </template>
     </div>
     <div @focusout="endInput()" v-show="path_state == 'inputing'" class="path_inputing nav-path">
@@ -133,6 +134,17 @@ function handlePathPClick(index: number) {
 }
 </script>
 <style lang="scss" scoped>
+.icon-arrow-down {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  transform: translateY(-1px) rotate(-45deg);
+  border: 2px solid rgba(0, 0, 0, 0.465);
+  border-left: none;
+  border-top: none;
+  transition: all 0.1s;
+  margin: 0 2px;
+}
 .uper_nav {
   height: var(--button-item-height);
   display: flex;
@@ -178,9 +190,13 @@ function handlePathPClick(index: number) {
   .path-p {
     padding: 0;
     margin: 0;
+    margin-right: 2px;
+    transition: all 0.1s;
+    border: 1px solid transparent;
   }
   .path-p:hover {
-    color: rgb(0, 102, 255);
+    background-color: #b1f1ff4c;
+    border: 1px solid rgba(0, 102, 255, 0.138);
     cursor: pointer;
   }
   .path span {

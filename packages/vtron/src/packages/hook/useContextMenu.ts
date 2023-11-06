@@ -5,6 +5,7 @@ import FileProps from '@feature/builtin/FileProps.vue';
 import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useRootState } from '../feature/state/Root';
+import { Dialog } from '../plug';
 
 export type ContextMenu = {
   name: string;
@@ -100,6 +101,13 @@ function useContextMenu() {
   function createLink(path: string) {
     const system = useSystem();
     if (!system) return;
+    if (fspath.extname(path) === '.ln') {
+      Dialog.showMessageBox({
+        title: '错误',
+        message: '无法创建快捷方式',
+        type: 'error',
+      });
+    }
     const parentPath = fspath.dirname(path);
     const baseName = fspath.basename(path);
     const linkPath = fspath.join(parentPath, baseName + '.ln');

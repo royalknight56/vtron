@@ -29,7 +29,7 @@
     "tsc": "vue-tsc",
     "tag": "node script/auto_tag.js",
     "pre": "lint-staged",
-    "update": "node script/update.js"
+    "pub": "node script/update.js"
   },
   "dependencies": {
     "vue": "^3.2.37",

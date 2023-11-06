@@ -64,10 +64,21 @@
     </div>
 
     <div @click="startInput()" v-if="path_state == 'pendding'" class="path">
-      <span>{{ modelValue }}</span>
+      <template v-if="modelValue?.startsWith('search:')">
+        <span>{{ modelValue }}</span>
+      </template>
+      <template v-else>
+        <span
+          class="path-p"
+          :key="p"
+          v-for="(p, index) in modelValue?.split('/').slice(1)"
+          @click.stop="handlePathPClick(index)"
+          >/{{ p }}</span
+        >
+      </template>
     </div>
-    <div v-if="path_state == 'inputing'" class="path_inputing nav-path">
-      <input v-model="inputStr" @keyup.enter="endInput()" @blur="endInput()" />
+    <div @focusout="endInput()" v-show="path_state == 'inputing'" class="path_inputing nav-path">
+      <input ref="myinput" v-model="inputStr" @keyup.enter="endInput()" />
     </div>
     <div class="search path_inputing">
       <input placeholder="search" v-model="searchStr" @keyup.enter="endSearch" @blur="endSearch" />
@@ -75,7 +86,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 const props = defineProps<{
   modelValue?: string;
 }>();
@@ -86,12 +97,16 @@ function backFolder() {
 }
 
 /* ------------ 路径输入框 ------------*/
+const myinput = ref<HTMLElement | null>(null);
 const inputStr = ref(props.modelValue);
 
 const path_state = ref('pendding');
 function startInput() {
   path_state.value = 'inputing';
   inputStr.value = props.modelValue;
+  nextTick(() => {
+    myinput.value?.focus();
+  });
 }
 function endInput() {
   path_state.value = 'pendding';
@@ -105,6 +120,16 @@ function endSearch() {
   if (searchStr.value == '') return;
   emit('search', searchStr.value);
   searchStr.value = '';
+}
+
+function handlePathPClick(index: number) {
+  const path = props.modelValue
+    ?.split('/')
+    .slice(0, index + 2)
+    .join('/');
+  if (path === undefined) return;
+  if (path === props.modelValue) return;
+  emit('refresh', path);
 }
 </script>
 <style lang="scss" scoped>
@@ -147,12 +172,22 @@ function endSearch() {
   /* text-align: center; */
   overflow: auto;
   user-select: none;
-}
 
-.path span {
-  height: var(--button-item-height);
-  /* text-align: center; */
-  line-height: var(--button-item-height);
+  display: flex;
+  align-items: center;
+  .path-p {
+    padding: 0;
+    margin: 0;
+  }
+  .path-p:hover {
+    color: rgb(0, 102, 255);
+    cursor: pointer;
+  }
+  .path span {
+    height: var(--button-item-height);
+    /* text-align: center; */
+    line-height: var(--button-item-height);
+  }
 }
 
 .path_inputing {

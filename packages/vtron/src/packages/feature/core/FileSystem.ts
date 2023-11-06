@@ -795,7 +795,6 @@ class VtronFileSystem implements VtronFileInterface {
       };
       request.onsuccess = () => {
         const files = request.result;
-        console.log(files);
         resolve(files);
       };
     });

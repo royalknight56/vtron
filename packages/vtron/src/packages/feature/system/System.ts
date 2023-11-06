@@ -66,7 +66,8 @@ class System {
     logger('firstRun');
     this.firstRun();
     logger('setRef');
-    this.setRef(this._rootState.ref!);
+    this.setRef(this._rootState.system.ref!);
+    this.setRootStyle();
   }
   mountGlobalSystem(system: System) {
     GLOBAL_SYSTEM = system;
@@ -74,14 +75,11 @@ class System {
 
   setRef(ref: HTMLElement) {
     this.ref = ref;
-    if (this._options.rootStyle) {
-      this.setRootStyle(this._options.rootStyle);
-    }
   }
-  setRootStyle(obj: any) {
-    if (obj) {
-      Object.keys(obj).forEach((key) => {
-        this.ref.style.setProperty(key, obj[key]);
+  setRootStyle() {
+    if (this._options.rootStyle) {
+      Object.keys(this._options.rootStyle).forEach((key) => {
+        this.ref.style.setProperty(key, this._options.rootStyle[key]);
       });
     }
   }
@@ -134,7 +132,7 @@ class System {
     logger('initBackground');
     this.initBackground(); // 初始化壁纸
     logger('initEvent');
-    this.setRootStyle(this._rootState.system.options.rootStyle); // 设置根样式
+    this.setRootStyle(); // 设置根样式
 
     this.emit('start');
   }

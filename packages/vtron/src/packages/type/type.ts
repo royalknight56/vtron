@@ -55,8 +55,8 @@ export interface WinAppOptions {
 }
 
 export type RootState = {
-  ref: HTMLElement | undefined;
   system: {
+    ref: HTMLElement | undefined;
     state: SystemStateEnum;
     message: {
       notify: Array<Notify>;

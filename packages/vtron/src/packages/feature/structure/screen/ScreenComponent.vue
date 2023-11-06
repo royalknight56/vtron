@@ -41,7 +41,7 @@ import { onMounted, ref } from 'vue';
 const rootState = useRootState();
 const screen = ref<HTMLElement>();
 onMounted(() => {
-  rootState.ref = screen.value;
+  rootState.system.ref = screen.value;
 });
 </script>
 <style lang="scss" scoped>

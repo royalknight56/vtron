@@ -59,11 +59,11 @@
             :options="[
               {
                 label: i18n('white'),
-                value: 0,
+                value: '#fff',
               },
               {
                 label: i18n('black'),
-                value: 1,
+                value: '#111',
               },
             ]"
             :placeholder="i18n('please.select')"
@@ -90,13 +90,11 @@ import WinButton from '@packages/components/WinButton.vue';
 import WinSelect from '@packages/components/WinSelect.vue';
 import WinInput from '@packages/components/WinInput.vue';
 
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { useSystem } from '@feature/system';
 import { Dialog } from '@feature/dialog/Dialog';
-import { useRootState } from '../../state/Root';
 import { i18n } from '@feature/i18n';
 
-const rootstate = useRootState();
 const system = useSystem();
 const items = [
   i18n('background'),
@@ -107,22 +105,12 @@ const items = [
 const activeIndex = ref(0);
 
 const imgtype = ref(0);
-const imgurl = ref('');
-const textColor = ref(0);
+const imgurl = ref(system.getConfig('background'));
+const textColor = ref(system.getConfig('styleProps')?.desktopFileList?.color);
 
-/** 获取保存的配置 */
-async function getSavedConfig() {
-  const config = await system?.fs.readFile(`${system._options.systemLocation}Vtron/config.json`);
-  const configObj = JSON.parse(config || '{}');
-  textColor.value = configObj.styleProps?.desktopFileList?.color === '#fff' ? 0 : 1;
-}
-onMounted(() => {
-  getSavedConfig();
-});
 /** 提交背景设置 */
 async function submit() {
-  rootstate.system.options.background = imgurl.value;
-  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/background.txt`, imgurl.value);
+  await system.setConfig('background', imgurl.value);
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('wallpaper'),
@@ -130,25 +118,19 @@ async function submit() {
   });
 }
 
-// const rootstyle = ref(JSON.stringify(rootstate.system.options.rootStyle));
 const selectItem = (index: number) => {
   activeIndex.value = index;
 };
 async function submitStyle() {
-  const config = await system?.fs.readFile(`${system._options.systemLocation}Vtron/config.json`);
-
-  const configObj = JSON.parse(config || '{}');
-  // configObj.rootStyle = JSON.parse(rootstyle.value);
-  configObj.styleProps = {
-    desktopFileList:
-      textColor.value === 0
-        ? {
-            color: '#fff',
-          }
-        : { color: '#000' },
+  let configobj = system.getConfig('styleProps');
+  configobj = {
+    ...configobj,
+    desktopFileList: {
+      ...configobj?.desktopFileList,
+      color: textColor.value,
+    },
   };
-
-  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, JSON.stringify(configObj));
+  await system.setConfig('styleProps', configobj);
 
   Dialog.showMessageBox({
     message: i18n('save.success'),

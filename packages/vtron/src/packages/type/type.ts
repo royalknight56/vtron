@@ -21,8 +21,7 @@ export interface Setting {
   content: any;
 }
 export type SafeAny = unknown;
-
-export interface SystemOptions {
+export interface SystemOptionsCertainly {
   lang?: string;
   logo?: string;
   background?: string;
@@ -35,7 +34,6 @@ export interface SystemOptions {
   fs?: VtronFileInterface;
   userLocation?: string;
   systemLocation?: string;
-
   initFile?: InitFileItem;
   shell?: ShellInterface;
   login?: {
@@ -45,8 +43,10 @@ export interface SystemOptions {
   };
   noPassword?: boolean;
   loginCallback?: (username: string, password: string) => Promise<boolean>;
-  [key: string]: SafeAny;
 }
+export type SystemOptions = SystemOptionsCertainly & {
+  [key: string]: SafeAny;
+};
 export interface WinApp {
   icon: string;
   path: string;

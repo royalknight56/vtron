@@ -1,7 +1,13 @@
 import { initRootState } from '@feature/state/Root';
 import { SystemStateEnum } from '@packages/type/enum';
 import { markRaw } from 'vue';
-import { RootState, Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
+import {
+  RootState,
+  Setting,
+  SystemOptions,
+  SystemOptionsCertainly,
+  WinAppOptions,
+} from '@packages/type/type';
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from '@feature/event';
 import { VtronFileSystem } from '@/packages/feature/core/FileSystem';
 import { initAppList } from '@packages/hook/useAppOpen';
@@ -248,16 +254,22 @@ class System {
       }
     }
   }
-
-  async setConfig(key: string, value: any) {
+  setConfig<T extends keyof SystemOptionsCertainly>(key: T, value: SystemOptionsCertainly[T]): Promise<void>;
+  setConfig<T extends string>(
+    key: T,
+    value: T extends keyof SystemOptionsCertainly ? SystemOptionsCertainly[T] : unknown
+  ): Promise<void>;
+  setConfig<T extends keyof SystemOptionsCertainly>(key: T, value: SystemOptionsCertainly[T]) {
     this._rootState.system.options[key] = value;
-    await this.fs.writeFile(
+    return this.fs.writeFile(
       join(this._options.systemLocation || '', 'Vtron/config.json'),
       JSON.stringify(this._rootState.system.options)
     );
   }
 
-  async getConfig(key: string) {
+  getConfig<T extends keyof SystemOptionsCertainly>(key: T): SystemOptionsCertainly[T];
+  getConfig<T extends string>(key: T): unknown;
+  getConfig(key: string) {
     return this._rootState.system.options[key];
   }
 

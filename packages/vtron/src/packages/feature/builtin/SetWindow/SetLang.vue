@@ -24,11 +24,11 @@
             :options="[
               {
                 label: 'zh-CN',
-                value: 0,
+                value: 'zh-CN',
               },
               {
                 label: 'en-US',
-                value: 1,
+                value: 'en-US',
               },
             ]"
             :placeholder="i18n('please.select')"
@@ -52,27 +52,22 @@ import WinSelect from '@packages/components/WinSelect.vue';
 import { ref } from 'vue';
 import { useSystem } from '@feature/system';
 import { Dialog } from '@feature/dialog/Dialog';
-import { useRootState } from '../../state/Root';
 import { i18n } from '@feature/i18n';
 
-const rootstate = useRootState();
 const system = useSystem();
 
 const items = [i18n('language')];
 
 const activeIndex = ref(0);
 
-const modelvalue = ref(rootstate.system.options.lang === 'zh-CN' ? 0 : 1);
+const modelvalue = ref(system.getConfig('lang'));
 
 const selectItem = (index: number) => {
   activeIndex.value = index;
 };
 
 async function submit() {
-  const config = await system?.fs.readFile(`${system._options.systemLocation}Vtron/config.json`);
-  const configObj = JSON.parse(config || '{}');
-  configObj.lang = modelvalue.value === 0 ? 'zh-CN' : 'en-US';
-  await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, JSON.stringify(configObj));
+  await system.setConfig('lang', modelvalue.value);
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('language'),

@@ -20,6 +20,8 @@ export interface Setting {
   icon: string;
   content: any;
 }
+export type SafeAny = unknown;
+
 export interface SystemOptions {
   lang?: string;
   logo?: string;
@@ -43,6 +45,7 @@ export interface SystemOptions {
   };
   noPassword?: boolean;
   loginCallback?: (username: string, password: string) => Promise<boolean>;
+  [key: string]: SafeAny;
 }
 export interface WinApp {
   icon: string;

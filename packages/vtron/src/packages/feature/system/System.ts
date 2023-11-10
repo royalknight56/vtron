@@ -9,7 +9,7 @@ import { initAppList } from '@packages/hook/useAppOpen';
 import { version } from '../../../../package.json';
 import { BrowserWindow, BrowserWindowOption } from '@feature/window/BrowserWindow';
 
-import { extname } from '@feature/core/Path';
+import { extname, join } from '@feature/core/Path';
 import { initBuiltinApp, initBuiltinFileOpener } from './initBuiltin';
 import { Shell } from '@feature/core/Shell';
 import { defaultConfig } from './initConfig';
@@ -232,8 +232,11 @@ class System {
       this._shell = new Shell(this, '/', 'root');
     }
   }
+  /**
+   * @description: 初始化保存的配置
+   */
   private async initSavedConfig() {
-    const config = await this.fs.readFile(`${this._options.systemLocation}Vtron/config.json`);
+    const config = await this.fs.readFile(join(this._options.systemLocation || '', 'Vtron/config.json'));
     if (config) {
       try {
         this._rootState.system.options = Object.assign(this._rootState.system.options, JSON.parse(config));
@@ -245,6 +248,19 @@ class System {
       }
     }
   }
+
+  async setConfig(key: string, value: any) {
+    this._rootState.system.options[key] = value;
+    await this.fs.writeFile(
+      join(this._options.systemLocation || '', 'Vtron/config.json'),
+      JSON.stringify(this._rootState.system.options)
+    );
+  }
+
+  async getConfig(key: string) {
+    return this._rootState.system.options[key];
+  }
+
   private addWindowSysLink(loc: string, options: WinAppOptions, force = false) {
     if (this.isFirstRun || force) {
       this.fs.writeFile(

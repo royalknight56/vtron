@@ -9,7 +9,6 @@
         'mode-list': mode === 'list',
       }"
       :style="{
-        ...styleProps,
         'padding-left': level * 12 + 'px',
       }"
       @contextmenu.stop.prevent="handleRightClick($event, item)"
@@ -85,12 +84,6 @@ const props = defineProps({
   mode: {
     type: String,
     default: 'icon',
-  },
-  styleProps: {
-    type: Object,
-    default: () => {
-      //
-    },
   },
 });
 const chosenIndexs = ref<Array<number>>([]);
@@ -212,6 +205,7 @@ function dealI18nName(name: string) {
   justify-content: center;
   align-items: center;
   width: 100%;
+  color: var(--icon-title-color);
 
   font-size: var(--ui-font-size);
   border: 1px solid transparent;

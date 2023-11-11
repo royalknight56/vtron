@@ -19,27 +19,8 @@
         </div>
         <div class="setting-item">
           <label> {{ i18n('set.background') }} </label>
-          <WinSelect
-            v-model="imgtype"
-            :options="[
-              {
-                label: i18n('from.network'),
-                value: 0,
-              },
-              {
-                label: i18n('from.string'),
-                value: 1,
-              },
-            ]"
-            :placeholder="i18n('please.select')"
-          >
-          </WinSelect>
-        </div>
-        <div class="setting-item">
-          <label></label>
           <WinInput placeholder="" v-model="imgurl"></WinInput>
         </div>
-
         <div class="setting-item">
           <label></label>
           <WinButton @click="submit">{{ i18n('confirm') }} </WinButton>
@@ -71,10 +52,10 @@
           </WinSelect>
         </div>
 
-        <!-- <div class="setting-item">
-          <label></label>
-          <textarea placeholder="" v-model="rootstyle"></textarea>
-        </div> -->
+        <div class="setting-item">
+          <label>窗口圆角：</label>
+          <WinInput placeholder="example: 2px" v-model="winRadius"></WinInput>
+        </div>
 
         <div class="setting-item">
           <label></label>
@@ -104,9 +85,9 @@ const items = [
 
 const activeIndex = ref(0);
 
-const imgtype = ref(0);
 const imgurl = ref(system.getConfig('background'));
-const textColor = ref(system.getConfig('styleProps')?.desktopFileList?.color);
+const textColor = ref(system.getConfig('rootStyle')?.['--icon-title-color']);
+const winRadius = ref(system.getConfig('rootStyle')?.['--window-border-radius']);
 
 /** 提交背景设置 */
 async function submit() {
@@ -122,15 +103,13 @@ const selectItem = (index: number) => {
   activeIndex.value = index;
 };
 async function submitStyle() {
-  let configobj = system.getConfig('styleProps');
-  configobj = {
-    ...configobj,
-    desktopFileList: {
-      ...configobj?.desktopFileList,
-      color: textColor.value,
-    },
+  let rootStyle = system.getConfig('rootStyle');
+  rootStyle = {
+    ...rootStyle,
+    '--icon-title-color': textColor.value,
+    '--window-border-radius': winRadius.value,
   };
-  await system.setConfig('styleProps', configobj);
+  await system.setConfig('rootStyle', rootStyle);
 
   Dialog.showMessageBox({
     message: i18n('save.success'),

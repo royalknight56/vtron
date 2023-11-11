@@ -3,9 +3,10 @@ import { SystemStateEnum } from '@packages/type/enum';
 import { markRaw } from 'vue';
 import {
   RootState,
+  Saveablekey,
   Setting,
   SystemOptions,
-  SystemOptionsCertainly,
+  SystemOptionsSaveable,
   WinAppOptions,
 } from '@packages/type/type';
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from '@feature/event';
@@ -25,6 +26,7 @@ import { createInitFile } from './createInitFile';
 import { Notify, NotifyConstructorOptions } from '@feature/notification/Notification';
 import { ShellInterface } from '@feature/core/ShellType';
 import { Dialog } from '../dialog/Dialog';
+import { pick } from '@/packages/util/modash';
 let GLOBAL_SYSTEM: System | null = null;
 
 const logger = function (...args: any[]) {
@@ -73,7 +75,6 @@ class System {
     this.firstRun();
     logger('setRef');
     this.setRef(this._rootState.system.ref!);
-    this.setRootStyle();
   }
   mountGlobalSystem(system: System) {
     GLOBAL_SYSTEM = system;
@@ -81,13 +82,6 @@ class System {
 
   setRef(ref: HTMLElement) {
     this.ref = ref;
-  }
-  setRootStyle() {
-    if (this._options.rootStyle) {
-      Object.keys(this._options.rootStyle).forEach((key) => {
-        this.ref.style.setProperty(key, this._options.rootStyle[key]);
-      });
-    }
   }
   /**
    * @description: pure 初始化配置选项
@@ -138,7 +132,6 @@ class System {
     logger('initBackground');
     this.initBackground(); // 初始化壁纸
     logger('initEvent');
-    this.setRootStyle(); // 设置根样式
 
     this.emit('start');
   }
@@ -254,20 +247,25 @@ class System {
       }
     }
   }
-  setConfig<T extends keyof SystemOptionsCertainly>(key: T, value: SystemOptionsCertainly[T]): Promise<void>;
+  setConfig<T extends keyof SystemOptionsSaveable>(key: T, value: SystemOptionsSaveable[T]): Promise<void>;
   setConfig<T extends string>(
     key: T,
-    value: T extends keyof SystemOptionsCertainly ? SystemOptionsCertainly[T] : unknown
+    value: T extends keyof SystemOptionsSaveable ? SystemOptionsSaveable[T] : unknown
   ): Promise<void>;
-  setConfig<T extends keyof SystemOptionsCertainly>(key: T, value: SystemOptionsCertainly[T]) {
+  setConfig<T extends keyof SystemOptionsSaveable>(key: T, value: SystemOptionsSaveable[T]) {
     this._rootState.system.options[key] = value;
-    return this.fs.writeFile(
-      join(this._options.systemLocation || '', 'Vtron/config.json'),
-      JSON.stringify(this._rootState.system.options)
-    );
+    if (Saveablekey.includes(key)) {
+      return this.fs.writeFile(
+        join(this._options.systemLocation || '', 'Vtron/config.json'),
+
+        JSON.stringify(pick(this._rootState.system.options, ...Saveablekey))
+      );
+    } else {
+      return Promise.resolve();
+    }
   }
 
-  getConfig<T extends keyof SystemOptionsCertainly>(key: T): SystemOptionsCertainly[T];
+  getConfig<T extends keyof SystemOptionsSaveable>(key: T): SystemOptionsSaveable[T];
   getConfig<T extends string>(key: T): unknown;
   getConfig(key: string) {
     return this._rootState.system.options[key];

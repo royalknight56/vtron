@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="item-group"
-    v-for="(item, index) in fileList"
-    :key="item.path + item.isOpen"
-  >
+  <div class="item-group" v-for="(item, index) in fileList" :key="item.path + item.isOpen">
     <div
       class="file-item"
       :class="{
@@ -13,7 +9,6 @@
         'mode-list': mode === 'list',
       }"
       :style="{
-        ...styleProps,
         'padding-left': level * 12 + 'px',
       }"
       @click="handleClick(item, index)"
@@ -23,17 +18,13 @@
         class="iconfont icon-arrow-down"
         :class="{
           'open-arrow': item.isOpen,
-          'hide-arrow':
-            (item.isOpen && !item.subFileList?.length) || !item.isDirectory,
+          'hide-arrow': (item.isOpen && !item.subFileList?.length) || !item.isDirectory,
         }"
         @click.stop="onOpenArrow(item)"
       ></div>
-      <span
-        v-if="isEdit !== item.path"
-        class="file-item_title"
-        @dblclick="dbclick(item)"
-        >{{ dealI18nName(basename(item.path)) }}</span
-      >
+      <span v-if="isEdit !== item.path" class="file-item_title" @dblclick="dbclick(item)">{{
+        dealI18nName(basename(item.path))
+      }}</span>
       <input
         v-else
         class="file-item_title"
@@ -56,14 +47,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {
-  VtronFile,
-  useSystem,
-  basename,
-  join,
-  VtronFileWithoutContent,
-} from "vtron";
-import { onMounted, ref } from "vue";
+import { useSystem, basename, join, VtronFileWithoutContent } from 'vtron';
+import { onMounted, ref } from 'vue';
 
 const sys = useSystem();
 type FileWithOpen = VtronFileWithoutContent & {
@@ -84,7 +69,7 @@ const props = defineProps({
 
   chosenPath: {
     type: String,
-    default: "",
+    default: '',
   },
   fileList: {
     type: Array<FileWithOpen>,
@@ -93,13 +78,7 @@ const props = defineProps({
 
   mode: {
     type: String,
-    default: "icon",
-  },
-  styleProps: {
-    type: Object,
-    default: () => {
-      //
-    },
+    default: 'icon',
   },
 });
 const chosenIndexs = ref<Array<number>>([]);
@@ -120,8 +99,8 @@ function onSubOpen(path?: string, isDirectory?: boolean) {
 }
 
 // 重命名
-const isEdit = ref("-1");
-const renameStr = ref("");
+const isEdit = ref('-1');
+const renameStr = ref('');
 function dbclick(item: FileWithOpen) {
   // if (!item.isDirectory) {
   renameStr.value = basename(item.path);
@@ -131,17 +110,11 @@ function dbclick(item: FileWithOpen) {
 
 function endRename(item: FileWithOpen) {
   if (isEdit.value === item.path) {
-    isEdit.value = "-1";
-    sys.fs
-      .rename(item.path, join(item.parentPath, renameStr.value))
-      .then((res) => {
-        props.onOpen();
-      });
+    isEdit.value = '-1';
+    sys.fs.rename(item.path, join(item.parentPath, renameStr.value)).then(() => {
+      props.onOpen();
+    });
   }
-}
-
-async function onSubRefresh(item: FileWithOpen) {
-  item.subFileList = await sys.fs.readdir(item.path);
 }
 
 async function onOpenArrow(item: FileWithOpen) {
@@ -169,7 +142,7 @@ function dealI18nName(name: string) {
   transition: all 0.1s;
 }
 .icon-arrow-down::after {
-  content: "";
+  content: '';
   display: block;
   width: 9px;
   height: 9px;
@@ -188,6 +161,7 @@ function dealI18nName(name: string) {
   justify-content: center;
   align-items: center;
   width: 100%;
+  color: var(--icon-title-color);
   font-size: var(--ui-font-size);
   border: 1px solid transparent;
   margin: 2px;

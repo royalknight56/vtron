@@ -21,16 +21,23 @@ export interface Setting {
   content: any;
 }
 export type SafeAny = unknown;
+export const Saveablekey: ('lang' | 'logo' | 'background' | 'rootStyle')[] = [
+  'lang',
+  'logo',
+  'background',
+  'rootStyle',
+];
+export type SystemOptionsSaveable = Pick<SystemOptionsCertainly, (typeof Saveablekey)[number]>;
+
 export interface SystemOptionsCertainly {
   lang?: string;
   logo?: string;
   background?: string;
+  rootStyle?: any;
   builtinApp?: BuiltinApp[];
   desktop?: WinAppOptions[];
   magnet?: WinAppOptions[];
   menulist?: WinAppOptions[];
-  rootStyle?: any;
-  styleProps?: any;
   fs?: VtronFileInterface;
   userLocation?: string;
   systemLocation?: string;

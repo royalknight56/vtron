@@ -1,5 +1,5 @@
 <template>
-  <div class="screen" @contextmenu.prevent ref="screen">
+  <div class="screen" @contextmenu.prevent ref="screen" :style="rootState?.system?.options?.rootStyle">
     <template v-if="rootState.system.state == SystemStateEnum.close">
       <CloseDesktop></CloseDesktop>
     </template>
@@ -22,7 +22,6 @@
           class="mask"
         ></DesktopBackground>
       </Transition>
-
       <OpenDesktop v-if="rootState.system.state == SystemStateEnum.open"></OpenDesktop>
     </template>
   </div>
@@ -36,13 +35,8 @@ import DesktopBackground from '@feature/structure/desktop/components/DesktopBack
 
 import { SystemStateEnum } from '@packages/type/enum';
 import { useRootState } from '@feature/state/Root';
-import { onMounted, ref } from 'vue';
 
 const rootState = useRootState();
-const screen = ref<HTMLElement>();
-onMounted(() => {
-  rootState.system.ref = screen.value;
-});
 </script>
 <style lang="scss" scoped>
 @import '@packages/root.scss';

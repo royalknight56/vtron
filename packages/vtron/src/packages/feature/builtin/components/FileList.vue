@@ -13,7 +13,6 @@
       'drag-over': hoverIndex === index,
     }"
     :style="{
-      ...styleProps,
       '--theme-color': theme === 'light' ? '#ffffff6b' : '#3bdbff3d',
     }"
     v-for="(item, index) in fileList"
@@ -115,12 +114,6 @@ const props = defineProps({
   mode: {
     type: String,
     default: 'icon',
-  },
-  styleProps: {
-    type: Object,
-    default: () => {
-      //
-    },
   },
 });
 function handleOnOpen(item: VtronFileWithoutContent) {
@@ -292,6 +285,7 @@ function dealI18nName(name: string) {
   width: var(--desk-item-size);
   height: var(--desk-item-size);
   font-size: var(--ui-font-size);
+  color: var(--icon-title-color);
   padding-top: 4px;
   border: 1px solid transparent;
   margin: 6px;

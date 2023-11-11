@@ -12,9 +12,9 @@
 <script setup lang="ts">
 import { BrowserWindow } from "vtron";
 import { inject } from "vue";
-let window: BrowserWindow | undefined = inject("browserWindow");
+const window: BrowserWindow | undefined = inject("browserWindow");
 
-let content = base64PDFToBlobUrl(
+const content = base64PDFToBlobUrl(
   window?.config.content.replace(/^data:application\/octet-stream;base64,/, "")
 );
 function base64PDFToBlobUrl(base64: string) {

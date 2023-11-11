@@ -8,8 +8,8 @@
 <script lang="ts" setup>
 import { BrowserWindow, Notify, useSystem } from "vtron";
 import { ref, onMounted, inject } from "vue";
-let sys = useSystem();
-let win = inject<BrowserWindow>("browserWindow");
+const sys = useSystem();
+const win = inject<BrowserWindow>("browserWindow");
 const storeRef = ref<HTMLIFrameElement | null>(null);
 let hasInit = false;
 window.addEventListener("message", async (e) => {

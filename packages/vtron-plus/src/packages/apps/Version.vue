@@ -9,10 +9,10 @@
 <script setup lang="ts">
 import json from "../../../package.json?raw";
 
-let jsonobj = JSON.parse(json);
+const jsonobj = JSON.parse(json);
 
-let plusVersion = jsonobj.version;
-let vtronVersion = jsonobj.dependencies.vtron;
+const plusVersion = jsonobj.version;
+const vtronVersion = jsonobj.dependencies.vtron;
 </script>
 <style scoped>
 .version {

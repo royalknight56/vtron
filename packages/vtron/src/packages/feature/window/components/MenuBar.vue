@@ -6,7 +6,7 @@
       </div>
       <div class="menubar-title">{{ browserWindow.windowInfo.title }}</div>
     </div>
-    <WinUpButtonGroup :browserWindow="browserWindow"></WinUpButtonGroup>
+    <WinUpButtonGroup :browser-window="browserWindow"></WinUpButtonGroup>
   </div>
 </template>
 <script lang="ts" setup>

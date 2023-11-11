@@ -1,7 +1,7 @@
 import InstallTur from "./Tur.vue";
 
 function main(system: any, _: any) {
-  let win = system.createWindow({
+  const win = system.createWindow({
     content: InstallTur,
     title: "system",
     center: true,

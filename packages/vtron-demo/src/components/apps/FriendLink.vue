@@ -30,7 +30,7 @@ onMounted(() => {
     .then((res) => res.json())
     .then((res) => {
       if (res.code === 200) {
-        let tempArray: any[] = [];
+        const tempArray: any[] = [];
         res.data.forEach((item: any) => {
           tempArray.push({
             name: item.title,

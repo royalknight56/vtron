@@ -11,10 +11,10 @@ import { BrowserWindow, Notify, System } from "vtron";
 import { ref, onMounted, inject, onUnmounted } from "vue";
 
 const sys = inject<System>("system");
-let win = inject<BrowserWindow>("browserWindow");
+const win = inject<BrowserWindow>("browserWindow");
 const storeRef = ref<HTMLIFrameElement | null>(null);
 let hasInit = false;
-let eventHandler = async (e: MessageEvent) => {
+const eventHandler = async (e: MessageEvent) => {
   const eventData = e.data;
   if (eventData.type == "exportSpecificFile") {
     await sys?.fs.writeFile("/C/Users/Desktop/newPPT.ppt", eventData.data);

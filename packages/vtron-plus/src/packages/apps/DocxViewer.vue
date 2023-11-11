@@ -11,7 +11,7 @@ import VueOfficeDocx from "@vue-office/docx/lib/v3/vue-office-docx.mjs";
 
 import "@vue-office/docx/lib/index.css";
 
-let browserWindow: BrowserWindow | undefined = inject("browserWindow");
+const browserWindow: BrowserWindow | undefined = inject("browserWindow");
 
 function base64PDFToBlobUrl(base64: string) {
   return browserWindow?.config.content;

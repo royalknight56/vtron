@@ -108,7 +108,7 @@ function click() {
   client
     .stat(webdavPath.value)
     .then((stattemp) => {
-      let stat = stattemp as FileStat;
+      const stat = stattemp as FileStat;
       if (stat?.type !== "directory") {
         Dialog.showMessageBox({
           type: "error",

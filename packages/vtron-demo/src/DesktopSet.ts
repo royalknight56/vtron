@@ -23,7 +23,7 @@ import PPT from "./components/apps/PPT.vue";
 
 import MusicVue from "./components/apps/Music.vue";
 
-let config = [
+const config = [
   {
     title: "github1s",
     icon: vscode,

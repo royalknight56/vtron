@@ -32,8 +32,8 @@ import {
 import { inject, onMounted, ref } from "vue";
 import FileTree from "./comp/FileTree.vue";
 const value = ref("# hello, markdown!");
-let sys = useSystem();
-let win = inject<BrowserWindow>("browserWindow");
+const sys = useSystem();
+const win = inject<BrowserWindow>("browserWindow");
 const chosenTreePath = ref(join(sys._options.userLocation || "", "Note"));
 const chosenIsDirectory = ref(true);
 function onTreeOpen(path?: string, isDirectory?: boolean) {

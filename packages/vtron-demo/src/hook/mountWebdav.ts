@@ -38,7 +38,7 @@ export function mountWebdav(system: System) {
       },
       async stat(path) {
         return client.stat(path).then((res) => {
-          let temp = res as FileStat;
+          const temp = res as FileStat;
           return {
             path: temp.filename,
             parentPath: dirname(temp.filename),
@@ -57,7 +57,7 @@ export function mountWebdav(system: System) {
         return client.exists(path);
       },
       async readFile(path) {
-        let ext = extname(path);
+        const ext = extname(path);
         if (
           [
             ".mp4",
@@ -75,7 +75,7 @@ export function mountWebdav(system: System) {
           return (await client.getFileDownloadLink(path)) || "";
         }
         if ([".txt"].includes(ext)) {
-          let res = await client.getFileContents(path);
+          const res = await client.getFileContents(path);
           if (typeof res === "string") {
             return res;
           }

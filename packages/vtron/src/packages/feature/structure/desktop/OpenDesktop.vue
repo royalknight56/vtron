@@ -10,7 +10,7 @@
   >
     <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown="userareaDown">
       <div @mousedown="backgroundDown">
-        <DeskItem class="userarea-upper zhighher" :onChosen="onChosen"></DeskItem>
+        <DeskItem class="userarea-upper zhighher" :on-chosen="onChosen"></DeskItem>
         <DesktopBackground class="userarea-upper"></DesktopBackground>
       </div>
       <WindowGroup></WindowGroup>

@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { BrowserWindow } from 'vtron';
 import Lrc from "../Lrc.vue"
-let lrc = new BrowserWindow({
+const lrc = new BrowserWindow({
     title: '歌词',
     width: 300,
     height: 100,

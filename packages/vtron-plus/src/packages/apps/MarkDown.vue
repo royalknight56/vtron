@@ -9,7 +9,7 @@ const { mavonEditor } = editor;
 const value = ref("# hello, markdown!");
 
 const sys = inject<System>("system");
-let win = inject<BrowserWindow>("browserWindow");
+const win = inject<BrowserWindow>("browserWindow");
 onMounted(() => {
   if (win?.config?.path) {
     sys?.fs.readFile(win.config.path).then((res) => {

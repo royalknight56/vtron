@@ -31,7 +31,7 @@ import { mountWebdav } from './hook/mountWebdav';
 import { mountOpener } from './hook/mountOpener';
 // 在App中组织桌面图标t
 // 先清空再添加，防止热更新加入多重图标
-let system = new System({
+const system = new System({
   desktop: [
     {
       name: '意见反馈',
@@ -243,7 +243,7 @@ NoteMd是和vtron契合的笔记软件
   }, 100);
 });
 function addListToDesktop(list: typeof desktopConfig) {
-  let res: any[] = [];
+  const res: any[] = [];
   list.forEach((item) => {
     res.push({
       name: item.title,

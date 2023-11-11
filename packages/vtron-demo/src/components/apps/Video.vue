@@ -7,9 +7,9 @@
 import { BrowserWindow, basename } from "vtron";
 import { inject } from "vue";
 
-let window: BrowserWindow | undefined = inject("browserWindow");
+const window: BrowserWindow | undefined = inject("browserWindow");
 
-let content = window?.config.content;
+const content = window?.config.content;
 
 function base64PDFToBlobUrl(base64: string) {
   const binStr = atob(base64);

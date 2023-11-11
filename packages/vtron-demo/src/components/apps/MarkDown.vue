@@ -6,8 +6,8 @@ import { BrowserWindow, Notify, basename, useSystem } from "vtron";
 import { inject, onMounted, ref } from "vue";
 
 const value = ref("# hello, markdown!");
-let sys = useSystem();
-let win = inject<BrowserWindow>("browserWindow");
+const sys = useSystem();
+const win = inject<BrowserWindow>("browserWindow");
 onMounted(() => {
   if (win?.config.path) {
     sys?.fs.readFile(win.config.path).then((res) => {

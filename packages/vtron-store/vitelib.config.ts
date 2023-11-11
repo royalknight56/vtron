@@ -5,7 +5,7 @@ function myPlugin() {
     name: "transform-file",
 
     generateBundle(options, bundle) {
-      for (let fileName in bundle) {
+      for (const fileName in bundle) {
         console.log("fileName", fileName);
         // if (fileName == "webdav.es.js") {
         bundle[fileName].code = bundle[fileName].code?.replace(

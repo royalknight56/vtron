@@ -12,7 +12,7 @@
 import { BrowserWindow, Notify, System } from "vtron";
 import { inject, ref } from "vue";
 
-let browserWindow: BrowserWindow | undefined = inject("browserWindow");
+const browserWindow: BrowserWindow | undefined = inject("browserWindow");
 
 const base64String = browserWindow?.config.content;
 const binaryData = base64String;
@@ -28,7 +28,7 @@ function handleButton(e: MouseEvent) {
       {
         name: "保存",
         click: async () => {
-          let file = await system.fs.stat(browserWindow?.config.path);
+          const file = await system.fs.stat(browserWindow?.config.path);
           if (!file) {
             new Notify({
               title: "提示",

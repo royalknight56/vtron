@@ -12,7 +12,7 @@ import { inject, ref, onMounted, watch } from "vue";
 import VueOfficeExcel from "@vue-office/excel/lib/v3/vue-office-excel.mjs";
 import "@vue-office/excel/lib/index.css";
 
-let browserWindow: BrowserWindow | undefined = inject("browserWindow");
+const browserWindow: BrowserWindow | undefined = inject("browserWindow");
 
 function base64PDFToBlobUrl(base64: string) {
   return browserWindow?.config.content;

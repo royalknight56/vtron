@@ -18,7 +18,7 @@ onMounted(() => {
   window.parent.postMessage({ type: "ready", data: "ready" }, "*");
   window.addEventListener("message", function (event) {
     if (event.source === window.parent) {
-      let rec: any = event.data;
+      const rec: any = event.data;
       if (rec.type === "init") {
         installedList.value = rec.data;
         isready.value = true;
@@ -214,7 +214,7 @@ const temp = [
               <div v-for="item in temp" class="store-item">
                 <AppItem
                   :item="item"
-                  :installedList="installedList"
+                  :installed-list="installedList"
                   :install="install"
                   :uninstall="uninstall"
                 ></AppItem>

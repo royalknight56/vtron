@@ -14,12 +14,12 @@
 import { BrowserWindow } from "vtron";
 import InfoVue from "./Info.vue";
 
-let win = new BrowserWindow({
+const win = new BrowserWindow({
         width: 200,
         height: 100,
         content: InfoVue
       })
-let functionArray = [
+const functionArray = [
   {
     name: "弹出提示",
     call: () => {

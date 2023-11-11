@@ -7,7 +7,7 @@
 import { BrowserWindow } from 'vtron';
 import { inject } from 'vue';
 
-let window:BrowserWindow|undefined = inject('browserWindow');
+const window:BrowserWindow|undefined = inject('browserWindow');
 
 </script>
 <style scoped>

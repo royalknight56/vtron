@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import { BrowserWindow, Notify } from "vtron";
 import { inject } from "vue"
-let browserWindow = inject<BrowserWindow>('browserWindow')
+const browserWindow = inject<BrowserWindow>('browserWindow')
 setTimeout(() => {
     window.open('https://github.com/royalknight56/vue-windows10')
     new Notify({

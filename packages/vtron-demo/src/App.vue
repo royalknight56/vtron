@@ -21,9 +21,7 @@ import 'vtron-plus/distlib/style.css';
 import backimg from './assets/back.jpg';
 import CommentVue from './components/apps/Comment.vue';
 import beaticon from './assets/beat.ico';
-import PPT from './components/apps/PPT.vue';
 import markdownicon from './assets/markdown.png';
-import ppticon from './assets/ppt.png';
 import onetocicon from './assets/onetoc.png';
 import OpenSource from './components/apps/OpenSource.vue';
 

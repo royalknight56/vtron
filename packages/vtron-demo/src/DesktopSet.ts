@@ -1,36 +1,27 @@
-import vscode from "./assets/vscode.png";
-import GitHub from "./assets/GitHub.png";
-import winv3icon from "./assets/winv3.png";
-import todoappicon from "./assets/todoapp.png";
-import moonappicon from "./assets/moonappicon.webp";
-import ppticon from "./assets/ppt.png";
-import baidumapicon from "./assets/baidumap.png";
-import markdownicon from "./assets/markdown.png";
-import friendLinkicon from "./assets/friendLink.png";
-import bird1icon from "./assets/bird1.png";
-import signalicon from "./assets/signal.png";
+import vscode from './assets/vscode.png';
+import GitHub from './assets/GitHub.png';
+import winv3icon from './assets/winv3.png';
+import baidumapicon from './assets/baidumap.png';
+import markdownicon from './assets/markdown.png';
+import friendLinkicon from './assets/friendLink.png';
+import bird1icon from './assets/bird1.png';
+import signalicon from './assets/signal.png';
 
-// import kiometicon from "./assets/kiomet.webp";
+import GitStars from './components/apps/GitStars.vue';
+import GotoReadMe from './components/apps/GotoReadMe.vue';
 
-import GitStars from "./components/apps/GitStars.vue";
-import GotoReadMe from "./components/apps/GotoReadMe.vue";
-import MarkDown from "./components/apps/MarkDown.vue";
-import FriendLink from "./components/apps/FriendLink.vue";
-import CreateUrl from "./components/apps/CreateUrl.vue";
-import NoteMd from "./components/apps/NoteMd.vue";
-
-import PPT from "./components/apps/PPT.vue";
-
-import MusicVue from "./components/apps/Music.vue";
+import FriendLink from './components/apps/FriendLink.vue';
+import CreateUrl from './components/apps/CreateUrl.vue';
+import NoteMd from './components/apps/NoteMd.vue';
 
 const config = [
   {
-    title: "github1s",
+    title: 'github1s',
     icon: vscode,
     width: 800,
     height: 700,
     center: true,
-    content: "https://github1s.com/",
+    content: 'https://github1s.com/',
     resizable: true,
   },
   // {
@@ -61,16 +52,16 @@ const config = [
   //     resizable: true
   // },
   {
-    title: "百度地图",
+    title: '百度地图',
     icon: baidumapicon,
     width: 800,
     height: 600,
     center: true,
-    content: "https://map.baidu.com/",
+    content: 'https://map.baidu.com/',
     resizable: true,
   },
   {
-    title: "友链",
+    title: '友链',
     icon: friendLinkicon,
     width: 600,
     height: 400,
@@ -79,17 +70,17 @@ const config = [
     resizable: true,
   },
   {
-    title: "压扁小鸟",
+    title: '压扁小鸟',
     icon: bird1icon,
     width: 800,
     height: 600,
     center: true,
-    content: "https://static.myim.online/yabird/",
-    backgroundColor: "#71c5cf",
+    content: 'https://static.myim.online/yabird/',
+    backgroundColor: '#71c5cf',
     resizable: true,
   },
   {
-    title: "NoteMd",
+    title: 'NoteMd',
     icon: markdownicon,
     width: 800,
     height: 600,
@@ -99,7 +90,7 @@ const config = [
     resizable: true,
   },
   {
-    title: "创建网络链接",
+    title: '创建网络链接',
     icon: signalicon,
     width: 400,
     height: 400,
@@ -129,14 +120,14 @@ const config = [
   //   content: PPT,
   // },
   {
-    title: "点个star",
+    title: '点个star',
     icon: GitHub,
     width: 170,
     height: 100,
     content: GitStars,
   },
   {
-    title: "文档",
+    title: '文档',
     icon: winv3icon,
     width: 770,
     height: 600,

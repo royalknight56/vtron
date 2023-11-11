@@ -4,24 +4,12 @@
   </video>
 </template>
 <script setup lang="ts">
-import { BrowserWindow, basename } from "vtron";
-import { inject } from "vue";
+import { BrowserWindow } from 'vtron';
+import { inject } from 'vue';
 
-const window: BrowserWindow | undefined = inject("browserWindow");
+const window: BrowserWindow | undefined = inject('browserWindow');
 
 const content = window?.config.content;
-
-function base64PDFToBlobUrl(base64: string) {
-  const binStr = atob(base64);
-  const len = binStr.length;
-  const arr = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    arr[i] = binStr.charCodeAt(i);
-  }
-  const blob = new Blob([arr], { type: "application/pdf" });
-  const url = URL.createObjectURL(blob);
-  return url;
-}
 </script>
 <style scoped>
 .viewer {

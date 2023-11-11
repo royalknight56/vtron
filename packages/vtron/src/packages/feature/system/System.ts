@@ -6,7 +6,7 @@ import {
   Saveablekey,
   Setting,
   SystemOptions,
-  SystemOptionsSaveable,
+  SystemOptionsCertainly,
   WinAppOptions,
 } from '@packages/type/type';
 import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from '@feature/event';
@@ -247,14 +247,14 @@ class System {
       }
     }
   }
-  setConfig<T extends keyof SystemOptionsSaveable>(key: T, value: SystemOptionsSaveable[T]): Promise<void>;
+  setConfig<T extends keyof SystemOptionsCertainly>(key: T, value: SystemOptionsCertainly[T]): Promise<void>;
   setConfig<T extends string>(
     key: T,
-    value: T extends keyof SystemOptionsSaveable ? SystemOptionsSaveable[T] : unknown
+    value: T extends keyof SystemOptionsCertainly ? SystemOptionsCertainly[T] : unknown
   ): Promise<void>;
-  setConfig<T extends keyof SystemOptionsSaveable>(key: T, value: SystemOptionsSaveable[T]) {
+  setConfig<T extends keyof SystemOptionsCertainly>(key: string, value: SystemOptionsCertainly[T]) {
     this._rootState.system.options[key] = value;
-    if (Saveablekey.includes(key)) {
+    if (Saveablekey.includes(key as any)) {
       return this.fs.writeFile(
         join(this._options.systemLocation || '', 'Vtron/config.json'),
 
@@ -265,7 +265,7 @@ class System {
     }
   }
 
-  getConfig<T extends keyof SystemOptionsSaveable>(key: T): SystemOptionsSaveable[T];
+  getConfig<T extends keyof SystemOptionsCertainly>(key: T): SystemOptionsCertainly[T];
   getConfig<T extends string>(key: T): unknown;
   getConfig(key: string) {
     return this._rootState.system.options[key];
@@ -302,14 +302,6 @@ class System {
           }
         })
       );
-      // pluginsFile.forEach((file) => {
-      //   if (file.isFile) {
-      //     const content = file.content;
-      //     if (content) {
-      //       new Shell(system, '/', 'root').exec('node ' + file.path);
-      //     }
-      //   }
-      // });
     }
   }
   /**

@@ -123,6 +123,7 @@ function handleRightClick(e: MouseEvent) {
           createNewDir(`${system._options.userLocation}Desktop`);
         },
       },
+      ...(system._rootState.system.options.contextMenus || []),
     ],
   });
 }

@@ -48,6 +48,12 @@ export interface SystemOptionsCertainly {
     password: string;
     init?: () => boolean;
   };
+  contextMenus?: [
+    {
+      name: string;
+      click: () => void;
+    },
+  ];
   noPassword?: boolean;
   loginCallback?: (username: string, password: string) => Promise<boolean>;
 }

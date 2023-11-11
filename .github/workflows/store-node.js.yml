@@ -28,7 +28,7 @@ jobs:
           version: 7.22.0
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm run store build
+      - run: pnpm run shop build
       - name: Deploy to Staging server
         uses: easingthemes/ssh-deploy@main
         env:

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // import HelloWorld from './components/HelloWorld.vue'
-import { System } from "vtron";
-import { vtronPlus } from "./packages/plug";
-let system = new System({
+import { System } from 'vtron';
+import { vtronPlus } from './packages/plug';
+const system = new System({
   rootStyle: {},
 });
 system.whenReady().then(() => {

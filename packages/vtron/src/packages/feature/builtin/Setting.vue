@@ -16,24 +16,10 @@
         <WinUpButtonGroup :browser-window="browserWindow"></WinUpButtonGroup>
       </div>
     </div>
-    <Transition name="fade" appear>
-      <SetUpdate v-if="currentRouter === 'update'" />
+    <Transition v-for="item in setList" :key="item.key" name="fade" appear>
+      <component :is="item.content" v-if="currentRouter === item.key" />
     </Transition>
     <Transition name="fade" appear>
-      <SetCustom v-if="currentRouter === 'custom'" />
-    </Transition>
-    <Transition name="fade" appear>
-      <SetSystem v-if="currentRouter === 'system'" />
-    </Transition>
-    <Transition name="fade" appear>
-      <SetLang v-if="currentRouter === 'language'" />
-    </Transition>
-    <template v-if="sys._rootState.system.settings">
-      <Transition v-for="item in sys._rootState.system.settings" :key="item.key" name="fade" appear>
-        <component :is="item.content" v-if="currentRouter === item.key" />
-      </Transition>
-    </template>
-    <Transition name="fade">
       <div class="outer" v-if="currentRouter === 'main'">
         <div class="uper_tab">
           <div class="tab">
@@ -58,7 +44,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { inject, ref } from 'vue';
+import { inject, ref, markRaw } from 'vue';
 import SetUpdate from '@feature/builtin/SetWindow/SetUpdate.vue';
 import SetCustom from '@feature/builtin/SetWindow/SetCustom.vue';
 import SetSystem from '@feature/builtin/SetWindow/SetSystem.vue';
@@ -91,14 +77,14 @@ function back() {
 function openSet(key: string) {
   currentRouter.value = key;
 }
-const setList = [
+const setList = ref([
   {
     key: 'system',
     title: i18n('system'),
     // desc: '显示，声音，通知，电源',
     desc: i18n('brightness'),
     icon: e7f8,
-    content: SetSystem,
+    content: markRaw(SetSystem),
   },
   // {
   //     title: '网络和Internet',
@@ -110,7 +96,7 @@ const setList = [
     title: i18n('personalization'),
     desc: i18n('background.lockscreen.color'),
     icon: e771,
-    content: SetCustom,
+    content: markRaw(SetCustom),
   },
   //  {
   //     title: '软件商店',
@@ -123,7 +109,7 @@ const setList = [
     title: i18n('time.and.language'),
     desc: i18n('language'),
     icon: e775,
-    content: SetLang,
+    content: markRaw(SetLang),
   },
 
   {
@@ -133,10 +119,10 @@ const setList = [
     // desc: 'Windows 更新，恢复，备份',
     desc: i18n('windows.update.recover.backup'),
     icon: e895,
-    content: SetUpdate,
+    content: markRaw(SetUpdate),
   },
   ...(sys._rootState.system.settings ? sys._rootState.system.settings : []),
-];
+]);
 </script>
 
 <style lang="scss" scoped>

@@ -1,40 +1,44 @@
-import { BrowserWindow, System } from "vtron";
-import type { RootState } from "vtron";
-import Browser from "./apps/Browser.vue";
+import { BrowserWindow, System } from 'vtron';
+import type { RootState } from 'vtron';
+import Browser from './apps/Browser.vue';
 // import ImageViewer from "./apps/ImageViewer.vue";
-import PdfViewer from "./apps/PdfViewer.vue";
+import PdfViewer from './apps/PdfViewer.vue';
 // import MarkDown from "./apps/MarkDown.vue";
-import UrlBrowser from "./apps/UrlBrowser.vue";
-import PPT from "./apps/PPT.vue";
+import UrlBrowser from './apps/UrlBrowser.vue';
+import PPT from './apps/PPT.vue';
 
-import Version from "./apps/Version.vue";
+import Version from './apps/Version.vue';
 // @ts-ignore
-import Calculator from "./apps/Calculator.vue";
-import mycomicon from "./assets/computer.ico";
-import helpicon from "./assets/help.ico";
-import termIcon from "./assets/term.png";
+import Calculator from './apps/Calculator.vue';
+import mycomicon from './assets/computer.ico';
+import helpicon from './assets/help.ico';
+import termIcon from './assets/term.png';
 // import markdownicon from "./assets/markdown.png";
-import chromeicon from "./assets/chromeicon.png";
-import calcicon from "./assets/calcicon.png";
-import ppticon from "./assets/ppt.png";
-import pptxIcon from "./assets/pptx.png";
-import pdfIcon from "./assets/pdf.png";
-import docxIcon from "./assets/docx.png";
-import xlsxIcon from "./assets/xlsx.png";
+import chromeicon from './assets/chromeicon.png';
+import calcicon from './assets/calcicon.png';
+import ppticon from './assets/ppt.png';
+import pptxIcon from './assets/pptx.png';
+import pdfIcon from './assets/pdf.png';
+import docxIcon from './assets/docx.png';
+import xlsxIcon from './assets/xlsx.png';
 
-import audioIcon from "./assets/audio.png";
-import videoIcon from "./assets/video.png";
-import MusicViewerVue from "./apps/MusicViewer.vue";
-import VideoViewerVue from "./apps/VideoViewer.vue";
-import DocxViewerVue from "./apps/DocxViewer.vue";
-import ExeclViewerVue from "./apps/ExeclViewer.vue";
-import Terminal from "./apps/Terminal.vue";
+import audioIcon from './assets/audio.png';
+import videoIcon from './assets/video.png';
+import MusicViewerVue from './apps/MusicViewer.vue';
+import VideoViewerVue from './apps/VideoViewer.vue';
+import DocxViewerVue from './apps/DocxViewer.vue';
+import ExeclViewerVue from './apps/ExeclViewer.vue';
+import Terminal from './apps/Terminal.vue';
 
 function vtronPlus(system: System, rootState: RootState) {
+  /**------------------ 桌面右键菜单--------------- */
+  //#region
+  //#endregion
+
   /**------------------ 打开器区--------------- */
   //#region
 
-  system.registerFileOpener([".doc", ".docx"], {
+  system.registerFileOpener(['.doc', '.docx'], {
     icon: docxIcon,
     func: (path, content) => {
       new BrowserWindow({
@@ -53,7 +57,7 @@ function vtronPlus(system: System, rootState: RootState) {
     },
   });
 
-  system.registerFileOpener([".xls", ".xlsx"], {
+  system.registerFileOpener(['.xls', '.xlsx'], {
     icon: xlsxIcon,
     func: (path, content) => {
       new BrowserWindow({
@@ -72,15 +76,15 @@ function vtronPlus(system: System, rootState: RootState) {
     },
   });
 
-  system.registerFileOpener(".pdf", {
+  system.registerFileOpener('.pdf', {
     icon: pdfIcon,
     func: (path, content) => {
-      let pdfwindow = new BrowserWindow({
+      const pdfwindow = new BrowserWindow({
         width: 800,
         height: 600,
         icon: pdfIcon,
         center: true,
-        title: "PDF预览",
+        title: 'PDF预览',
         content: PdfViewer,
         config: {
           content: content,
@@ -114,15 +118,15 @@ function vtronPlus(system: System, rootState: RootState) {
   //   });
   // });
 
-  system.registerFileOpener(".ink", {
+  system.registerFileOpener('.ink', {
     icon: mycomicon,
     func: (path, content) => {
-      let imgwindow = new BrowserWindow({
+      const imgwindow = new BrowserWindow({
         width: 800,
         height: 600,
         icon: mycomicon,
         center: true,
-        title: "浏览器",
+        title: '浏览器',
         content: UrlBrowser,
         config: {
           content: content,
@@ -133,7 +137,7 @@ function vtronPlus(system: System, rootState: RootState) {
     },
   });
 
-  system.registerFileOpener(".mp3", {
+  system.registerFileOpener('.mp3', {
     icon: audioIcon,
     func: (path, content) => {
       new BrowserWindow({
@@ -151,7 +155,7 @@ function vtronPlus(system: System, rootState: RootState) {
       }).show();
     },
   });
-  system.registerFileOpener(".mp4", {
+  system.registerFileOpener('.mp4', {
     icon: videoIcon,
     func: (path, content) => {
       new BrowserWindow({
@@ -170,7 +174,7 @@ function vtronPlus(system: System, rootState: RootState) {
     },
   });
 
-  system.registerFileOpener([".ppt", ".pptx"], {
+  system.registerFileOpener(['.ppt', '.pptx'], {
     icon: pptxIcon,
     func: (path, content) => {
       new BrowserWindow({
@@ -194,18 +198,18 @@ function vtronPlus(system: System, rootState: RootState) {
   /**------------------ 应用区--------------- */
   //#region
   const terminal = {
-    name: "Terminal",
+    name: 'Terminal',
     icon: termIcon,
     window: {
       width: 700,
       height: 470,
       center: true,
-      title: "Terminal",
+      title: 'Terminal',
       icon: termIcon,
       content: Terminal,
       // resizable: false,
       config: {
-        path: "/",
+        path: '/',
       },
     },
   };
@@ -214,7 +218,7 @@ function vtronPlus(system: System, rootState: RootState) {
   system.addMenuList(terminal);
 
   system.addApp({
-    name: "Chrome",
+    name: 'Chrome',
     icon: chromeicon,
     window: {
       width: 800,
@@ -225,7 +229,7 @@ function vtronPlus(system: System, rootState: RootState) {
     },
   });
   system.addApp({
-    name: "PPTist",
+    name: 'PPTist',
     icon: ppticon,
     window: {
       width: 800,
@@ -236,19 +240,19 @@ function vtronPlus(system: System, rootState: RootState) {
     },
   });
   system.addMagnet({
-    name: "计算器",
+    name: '计算器',
     icon: calcicon,
     window: {
       width: 400,
       height: 520,
       content: Calculator,
       resizable: false,
-      title: "计算器",
+      title: '计算器',
       icon: calcicon,
     },
   });
   system.addMagnet({
-    name: "版本信息",
+    name: '版本信息',
     icon: helpicon,
     window: {
       width: 300,
@@ -256,7 +260,7 @@ function vtronPlus(system: System, rootState: RootState) {
       content: Version,
       resizable: false,
       center: true,
-      title: "版本信息",
+      title: '版本信息',
       icon: helpicon,
     },
   });

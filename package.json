@@ -3,7 +3,7 @@
     "vtron": "pnpm -C packages/vtron",
     "plus": "pnpm -C packages/vtron-plus",
     "demo": "pnpm -C packages/vtron-demo",
-    "store": "pnpm -C packages/vtron-store",
+    "shop": "pnpm -C packages/vtron-store",
     "md": "pnpm -C packages/vtron-md",
     "demo-build": "pnpm -C ./packages/vtron-demo build",
     "prepare": "husky install",

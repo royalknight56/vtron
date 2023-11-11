@@ -383,7 +383,11 @@ class System {
     this._flieOpenerMap.set(type, opener);
   }
   registerSetting(setting: Setting) {
-    this._rootState.system.settings?.push(setting);
+    const temp = {
+      ...setting,
+      content: markRaw(setting.content),
+    };
+    this._rootState.system.settings?.push(temp);
   }
   /**打开vtron 文件系统的文件 */
   async openFile(path: string) {

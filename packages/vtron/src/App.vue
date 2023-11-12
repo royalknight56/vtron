@@ -196,7 +196,7 @@ onMounted(() => {
         birthtime: new Date(),
       },
     };
-    sys.registerSetting({
+    sys.registerSettingPanel({
       key: 'test',
       title: `测试`,
       desc: '测试',

@@ -382,7 +382,7 @@ class System {
     }
     this._flieOpenerMap.set(type, opener);
   }
-  registerSetting(setting: Setting) {
+  registerSettingPanel(setting: Setting) {
     const temp = {
       ...setting,
       content: markRaw(setting.content),

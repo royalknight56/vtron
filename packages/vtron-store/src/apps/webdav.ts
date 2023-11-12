@@ -1,6 +1,6 @@
-import Test from "./test.vue";
-import * as Vue from "vue";
-import { AuthType, createClient } from "webdav";
+import Test from './test.vue';
+import * as Vue from 'vue';
+import { AuthType, createClient } from 'webdav';
 declare type DateLike = Date | string | number;
 declare class VtronFileInfo {
   isFile: boolean;
@@ -25,19 +25,14 @@ declare class VtronFile extends VtronFileInfo {
   parentPath: string;
   content: string;
   id?: number;
-  constructor(
-    path: string,
-    content: string,
-    info: Partial<VtronFileInfo>,
-    id?: number
-  );
+  constructor(path: string, content: string, info: Partial<VtronFileInfo>, id?: number);
 }
 function main(system: any, _: typeof Vue) {
-  if (localStorage.getItem("webdav_path")) {
-    const client = createClient(localStorage.getItem("webdav_path") || "", {
+  if (localStorage.getItem('webdav_path')) {
+    const client = createClient(localStorage.getItem('webdav_path') || '', {
       authType: AuthType.Digest,
-      username: localStorage.getItem("webdav_username") || "",
-      password: localStorage.getItem("webdav_password") || "",
+      username: localStorage.getItem('webdav_username') || '',
+      password: localStorage.getItem('webdav_password') || '',
     });
 
     system.replaceFileSystem({
@@ -61,16 +56,13 @@ function main(system: any, _: typeof Vue) {
       serializeFileSystem: () => Promise<unknown>;
       deserializeFileSystem: (files: VtronFile[]) => Promise<unknown>;
       removeFileSystem: () => Promise<void>;
-      registerWatcher: (
-        path: RegExp,
-        callback: (path: string, content: string) => void
-      ) => void;
+      registerWatcher: (path: RegExp, callback: (path: string, content: string) => void) => void;
     });
   }
-  system.registerSetting({
-    title: "webdav 设置",
-    desc: "设置文件系统webdav",
-    icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAk0lEQVRYw2P8z0AZYBw1YHgYcLF9JVk6wyv1wQZccHxPpt2C+0EmMIavJNv14StABlDi//8wA8gJSMYRbMCKLIZpEZQYIPSeQfDdgBpAsRdG08HwNYDiAmWIG/CfiIAiu2Ya4gYwogXWSDXgPxEBORwNYMST2/4PUwNwFRTEKPw/TAz4T0ygkBsLQ9SA0U7XiDQAAHeffgFWSH/RAAAAAElFTkSuQmCC",
+  system.registerSettingPanel({
+    title: 'webdav 设置',
+    desc: '设置文件系统webdav',
+    icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAk0lEQVRYw2P8z0AZYBw1YHgYcLF9JVk6wyv1wQZccHxPpt2C+0EmMIavJNv14StABlDi//8wA8gJSMYRbMCKLIZpEZQYIPSeQfDdgBpAsRdG08HwNYDiAmWIG/CfiIAiu2Ya4gYwogXWSDXgPxEBORwNYMST2/4PUwNwFRTEKPw/TAz4T0ygkBsLQ9SA0U7XiDQAAHeffgFWSH/RAAAAAElFTkSuQmCC',
     content: Test,
   });
 }

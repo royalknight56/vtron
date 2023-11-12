@@ -129,7 +129,7 @@
 //       registerWatcher(path, callback) {},
 //     });
 //   }
-//   system.registerSetting({
+//   system.registerSettingPanel({
 //     key: "webdav",
 //     title: "webdav 设置",
 //     desc: "设置文件系统webdav",

@@ -8,8 +8,7 @@
 </template>
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-const checkedRef = ref(false);
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Boolean,
     default: false,
@@ -17,6 +16,7 @@ defineProps({
 });
 const emit = defineEmits(['update:modelValue']);
 
+const checkedRef = ref(props.modelValue);
 watch(checkedRef, (val) => {
   emit('update:modelValue', val);
 });

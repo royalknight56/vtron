@@ -1,13 +1,13 @@
 <template>
   <div class="win-input">
-    <input type="text" :placeholder="placeholder" v-model="value" />
+    <input type="text" :placeholder="placeholder" :value="modelValue" @input="handleChange" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref, watch } from 'vue';
+import { defineProps } from 'vue';
 
-const props = defineProps({
+defineProps({
   modelValue: {
     type: String,
     default: '',
@@ -19,11 +19,9 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:modelValue']);
 
-const value = ref(props.modelValue);
-
-watch(value, (nv) => {
-  emit('update:modelValue', nv);
-});
+function handleChange(e: any) {
+  emit('update:modelValue', e.target.value);
+}
 </script>
 
 <style scoped lang="scss">

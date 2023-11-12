@@ -21,6 +21,16 @@
           <label> {{ i18n('set.background') }} </label>
           <WinInput placeholder="" v-model="imgurl"></WinInput>
         </div>
+
+        <div class="setting-item">
+          <label></label>
+          <div class="color-selects">
+            <div class="color-select" v-for="item in colors" :key="item" @click="choseColor(item)">
+              <div class="color" :style="{ background: item }" @click="imgurl = item"></div>
+            </div>
+          </div>
+        </div>
+
         <div class="setting-item">
           <label></label>
           <WinButton @click="submit">{{ i18n('confirm') }} </WinButton>
@@ -90,6 +100,24 @@ const imgurl = ref(system.getConfig('background'));
 const textColor = ref(system.getConfig('rootStyle')?.['--icon-title-color']);
 const winRadius = ref(system.getConfig('rootStyle')?.['--window-border-radius']);
 
+const colors = [
+  '#b8cca3',
+  '#ff6633',
+  '#cfe6a1',
+  '#cfe6e6',
+  '#a1e6b8',
+  '#66e6cc',
+  '#ccc',
+  '#999',
+  '#666',
+  '#333',
+  '#222',
+  '#111',
+];
+function choseColor(color: string) {
+  imgurl.value = color;
+}
+
 /** 提交背景设置 */
 async function submit() {
   await system.setConfig('background', imgurl.value);
@@ -122,4 +150,28 @@ async function submitStyle() {
 
 <style scoped>
 @import './setStyle.css';
+.color-selects {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  width: 40%;
+}
+.color-select {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #fff;
+  margin: 4px;
+  /* border-radius: 50%; */
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.color-select:hover {
+  border: 2px solid #cccccc;
+}
+.color-select .color {
+  width: 100%;
+  height: 100%;
+  /* border-radius: 50%; */
+}
 </style>

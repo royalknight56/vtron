@@ -70,6 +70,7 @@
 import WinButton from '@packages/components/WinButton.vue';
 import WinSelect from '@packages/components/WinSelect.vue';
 import WinInput from '@packages/components/WinInput.vue';
+// import WinCheckBox from '@/packages/components/WinCheckBox.vue';
 
 import { ref } from 'vue';
 import { useSystem } from '@feature/system';

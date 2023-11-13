@@ -19,10 +19,26 @@
   cursor: pointer;
   padding: 10px 20px;
   font-size: 14px;
+  position: relative;
 }
 
 .nav li.active {
   background-color: #cccccc62;
+  transition: all 0.1s;
+}
+.nav li.active:hover {
+  background-color: var(--color-dark-light);
+}
+.nav li.active::after {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 60%;
+  background-color: var(--color-dark);
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .setting {

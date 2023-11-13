@@ -197,15 +197,17 @@ class BrowserWindow {
     this.emit('close', 'close');
     this.emit('state', 'close');
     const rootState = useRootState();
-    this.windowInfo.isCreated = false;
-    rootState.system.windowTree.removeNode(this);
-    // Vue bug
-    setTimeout(() => {
-      const ind = rootState.system.windowOrder.findIndex((val) => {
-        return val === this;
-      });
-      rootState.system.windowOrder.splice(ind, 1);
-    }, 500);
+    if (this.windowInfo.isCreated) {
+      this.windowInfo.isCreated = false;
+      rootState.system.windowTree.removeNode(this);
+      // Vue bug
+      setTimeout(() => {
+        const ind = rootState.system.windowOrder.findIndex((val) => {
+          return val === this;
+        });
+        rootState.system.windowOrder.splice(ind, 1);
+      }, 500);
+    }
   }
   /**
    * Moves window to the center of the screen.

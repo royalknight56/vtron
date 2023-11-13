@@ -1,10 +1,57 @@
-import { toRaw } from 'vue';
+import { toRaw, ref } from 'vue';
 import { useRootState } from '../state/Root';
 import { BrowserWindow } from '../window/BrowserWindow';
 import DialogVue from './DialogTemp.vue';
+import DialogProcessVue from './DialogProcess.vue';
 class Dialog {
   constructor() {
     // static class
+  }
+  public static showProcessDialog(option: {
+    message?: string;
+    type?: 'info' | 'error' | 'question' | 'warning';
+    title?: string;
+    buttons?: string[];
+  }) {
+    const opt = Object.assign(
+      {
+        message: '',
+        type: 'info',
+        title: '提示',
+        buttons: ['OK'],
+      },
+      option
+    );
+
+    const process = ref(0);
+
+    const dialogwin = new BrowserWindow({
+      width: 300,
+      height: 150,
+      content: DialogProcessVue,
+      title: opt.title,
+      resizable: false,
+      minimizable: false,
+      center: true,
+      skipTaskbar: true,
+      config: {
+        res: process,
+        option: opt,
+      },
+      alwaysOnTop: true,
+    });
+    dialogwin.show();
+
+    function setProgress(value: number) {
+      process.value = value;
+      if (value >= 100) {
+        dialogwin.close();
+      }
+    }
+
+    return {
+      setProgress,
+    };
   }
   public static showMessageBox(option: {
     message?: string;

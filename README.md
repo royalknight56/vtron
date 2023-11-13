@@ -191,4 +191,6 @@ let system = new System({
 
 更加完善的功能：向更加完善的webOS迈进
 
+![./rdmassert/qqgroup.jpg](./rdmassert/qqgroup.jpg)
+
 ## Thanks

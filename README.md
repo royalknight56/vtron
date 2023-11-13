@@ -193,7 +193,7 @@ let system = new System({
 
 
 <div>
-<img src="./rdmassert/qqgroup.jpg" alt="QQ" width="300" height="300" style="display: inline-block"/>
+<img src="./rdmassert/qqgroup.jpg" alt="QQ" width="300" style="display: inline-block"/>
 </div>
 
 ## Thanks

@@ -28,6 +28,7 @@ defineProps({
   height: var(--ui-button-height);
   border-width: 1px;
   box-sizing: border-box;
+  white-space: nowrap;
   &:hover {
     border-width: 2px;
     border-color: var(--color-blue);

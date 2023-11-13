@@ -191,4 +191,9 @@ let system = new System({
 
 更加完善的功能：向更加完善的webOS迈进
 
+
+<div>
+<img src="./rdmassert/qqgroup.jpg" alt="QQ" width="300" style="display: inline-block"/>
+</div>
+
 ## Thanks

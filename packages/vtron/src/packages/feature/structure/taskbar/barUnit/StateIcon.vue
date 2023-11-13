@@ -15,7 +15,7 @@
     <div @click="handleNotifyClick" class="state-item">
       <MessageIcon></MessageIcon>
     </div>
-    <div class="showdesk"></div>
+    <div @click="showDesk" class="showdesk"></div>
   </div>
 </template>
 <script setup lang="ts">
@@ -25,12 +25,19 @@ import DateTime from './DateTime.vue';
 import NetWork from './NetWork.vue';
 import MessageIcon from './MessageIcon.vue';
 import Error from './Error.vue';
+import { useSystem } from '@/packages/plug';
+const sys = useSystem();
 
 function handleClick() {
   emitEvent('datetime.show');
 }
 function handleNotifyClick() {
   emitEvent('messagecenter.show');
+}
+function showDesk() {
+  sys._rootState.system.windowOrder.forEach((win) => {
+    win.minimize();
+  });
 }
 </script>
 <style lang="scss" scoped>
@@ -57,6 +64,11 @@ function handleNotifyClick() {
 .showdesk {
   width: 6px;
   height: 100%;
+  cursor: pointer;
   border-left: 1px solid rgba(0, 0, 0, 0.222);
+}
+.showdesk:hover {
+  background-color: rgba(255, 255, 255, 0.519);
+  box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0.222);
 }
 </style>

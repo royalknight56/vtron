@@ -1,4 +1,4 @@
-export interface AllText {
+interface AllText {
   hello: string;
   'startMenu.power': string;
   'startMenu.shutdown': string;

@@ -81,7 +81,7 @@ function handleClick(key: number, ev: MouseEvent) {
         height: 600,
         title: i18n('setting'),
         frame: false,
-        resizable: false,
+        // resizable: false,
         center: true,
         backgroundColor: '#00000000',
       });

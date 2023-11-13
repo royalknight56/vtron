@@ -1,5 +1,10 @@
 <template>
-  <div class="win-input">
+  <div
+    class="win-input"
+    :style="{
+      width: width,
+    }"
+  >
     <input type="text" :placeholder="placeholder" :value="modelValue" @input="handleChange" />
   </div>
 </template>
@@ -15,6 +20,10 @@ defineProps({
   placeholder: {
     type: String,
     default: 'Type here',
+  },
+  width: {
+    type: String,
+    default: '',
   },
 });
 const emit = defineEmits(['update:modelValue']);

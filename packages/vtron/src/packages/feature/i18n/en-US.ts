@@ -1,4 +1,4 @@
-import type { AllText } from './global-Lang';
+import { AllText } from './zh-CN';
 export const enUS: AllText = {
   hello: 'hello',
   'startMenu.power': 'Power',
@@ -12,6 +12,8 @@ export const enUS: AllText = {
   'update.security': 'Update & Security',
   'windows.update.recover.backup': 'Windows Update, Recovery, Backup',
   background: 'Background',
+  image: 'Image',
+  color: 'Color',
   'set.background': 'Set Background',
   'from.network': 'From Network',
   'from.string': 'From String',

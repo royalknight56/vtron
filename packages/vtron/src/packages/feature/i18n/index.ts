@@ -1,7 +1,7 @@
-import { zhCN } from './zh-CN';
+import { AllText, zhCN } from './zh-CN';
 import { enUS } from './en-US';
 import { useRootState } from '@feature/state/Root';
-import type { AllText } from './global-Lang';
+
 const rootState = useRootState();
 export function i18n(key: keyof AllText): string {
   if (rootState.system.options.lang == 'zh-CN') {

@@ -133,7 +133,7 @@ const setList = ref([
   height: 100%;
   border: #0076d795 1px solid;
   box-sizing: border-box;
-  box-shadow: inset -599px 0px 0px 0px #ffffff;
+  // box-shadow: inset -599px 0px 0px 0px #ffffff;
   transition: background-color 0.1s;
   overflow: hidden;
 }

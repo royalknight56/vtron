@@ -1,5 +1,5 @@
-import type { AllText } from './global-Lang';
-export const zhCN: AllText = {
+export type AllText = typeof zhCN;
+export const zhCN = {
   hello: '你好',
   'startMenu.power': '电源',
   setting: '设置',
@@ -12,6 +12,8 @@ export const zhCN: AllText = {
   'update.security': '更新和安全',
   'windows.update.recover.backup': 'Windows 更新，恢复，备份',
   background: '背景',
+  image: '图片',
+  color: '颜色',
   'set.background': '设置背景',
   'from.network': '来源网络',
   'from.string': '来源字符串',

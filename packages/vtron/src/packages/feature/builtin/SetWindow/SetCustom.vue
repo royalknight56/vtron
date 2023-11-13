@@ -19,20 +19,53 @@
         </div>
         <div class="setting-item">
           <label> {{ i18n('set.background') }} </label>
-          <WinInput placeholder="" v-model="imgurl"></WinInput>
+          <WinSelect
+            :options="[
+              {
+                label: i18n('image'),
+                value: 'image',
+              },
+              {
+                label: i18n('color'),
+                value: 'color',
+              },
+            ]"
+            v-model="backgroundType"
+          ></WinSelect>
         </div>
-
-        <div class="setting-item">
-          <label></label>
-          <div class="color-selects">
-            <div class="color-select" v-for="item in colors" :key="item" @click="choseColor(item)">
-              <div class="color" :style="{ background: item }" @click="imgurl = item"></div>
+        <template v-if="backgroundType === 'color'">
+          <div class="setting-item">
+            <label> </label>
+            <div class="color-select color-border">
+              <div class="color" :style="{ background: backgroundColor }"></div>
             </div>
           </div>
-        </div>
+
+          <div class="setting-item">
+            <label></label>
+            <div class="color-selects">
+              <div class="color-select" v-for="item in colors" :key="item" @click="choseColor(item)">
+                <div class="color" :style="{ background: item }"></div>
+              </div>
+            </div>
+          </div>
+        </template>
+        <template v-if="backgroundType === 'image'">
+          <div class="setting-item">
+            <label> </label>
+            <WinInput
+              placeholder="请输入网络链接或者base64"
+              :width="'340px'"
+              v-model="backgroundUrl"
+            ></WinInput>
+          </div>
+          <div class="setting-item">
+            <label> </label>
+          </div>
+        </template>
 
         <div class="setting-item">
-          <label></label>
+          <label> </label>
           <WinButton @click="submit">{{ i18n('confirm') }} </WinButton>
         </div>
       </div>
@@ -45,21 +78,18 @@
 
         <div class="setting-item">
           <label>桌面文字颜色：</label>
-          <WinSelect
-            v-model="textColor"
-            :options="[
-              {
-                label: i18n('white'),
-                value: '#fff',
-              },
-              {
-                label: i18n('black'),
-                value: '#111',
-              },
-            ]"
-            :placeholder="i18n('please.select')"
-          >
-          </WinSelect>
+          <div class="color-select color-border">
+            <div class="color" :style="{ background: textColor }"></div>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <label></label>
+          <div class="color-selects">
+            <div class="color-select" v-for="item in colors" :key="item" @click="choseTextColor(item)">
+              <div class="color" :style="{ background: item }"></div>
+            </div>
+          </div>
         </div>
 
         <div class="setting-item">
@@ -96,7 +126,13 @@ const items = [
 
 const activeIndex = ref(0);
 
-const imgurl = ref(system.getConfig('background'));
+const backgroundType = ref('color');
+const backgroundColor = ref(
+  system.getConfig('background')?.startsWith('#') ? system.getConfig('background') : '#fff'
+);
+const backgroundUrl = ref(
+  system.getConfig('background')?.startsWith('#') ? '' : system.getConfig('background')
+);
 const textColor = ref(system.getConfig('rootStyle')?.['--icon-title-color']);
 const winRadius = ref(system.getConfig('rootStyle')?.['--window-border-radius']);
 
@@ -114,13 +150,20 @@ const colors = [
   '#222',
   '#111',
 ];
+function choseTextColor(color: string) {
+  textColor.value = color;
+}
 function choseColor(color: string) {
-  imgurl.value = color;
+  backgroundColor.value = color;
 }
 
 /** 提交背景设置 */
 async function submit() {
-  await system.setConfig('background', imgurl.value);
+  const imgurl = backgroundType.value === 'color' ? backgroundColor.value : backgroundUrl.value;
+  if (!imgurl) {
+    return;
+  }
+  await system.setConfig('background', imgurl || '#fff');
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('wallpaper'),
@@ -157,14 +200,18 @@ async function submitStyle() {
   flex-wrap: wrap;
   width: 40%;
 }
+
 .color-select {
   width: 40px;
   height: 40px;
   border: 2px solid #fff;
-  margin: 4px;
+  margin: 1px;
   /* border-radius: 50%; */
   cursor: pointer;
   transition: all 0.3s;
+}
+.color-border {
+  border: 2px solid #0f0f0f;
 }
 .color-select:hover {
   border: 2px solid #cccccc;

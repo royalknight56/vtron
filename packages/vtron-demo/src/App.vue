@@ -23,7 +23,9 @@ import CommentVue from './components/apps/Comment.vue';
 import beaticon from './assets/beat.ico';
 import markdownicon from './assets/markdown.png';
 import onetocicon from './assets/onetoc.png';
+import signalicon from './assets/signal.png';
 import OpenSource from './components/apps/OpenSource.vue';
+import CreateUrl from './components/apps/CreateUrl.vue';
 
 import { mountWebdav } from './hook/mountWebdav';
 import { mountOpener } from './hook/mountOpener';
@@ -170,6 +172,28 @@ NoteMd是和vtron契合的笔记软件
   localStorage.getItem('user') || localStorage.setItem('user', new Date().getTime().toString());
 
   mountOpener(system);
+  readySystem.setConfig('contextMenus', [
+    {
+      name: '新建.md文件',
+      click() {
+        readySystem.fs.writeFile('/C/Users/Desktop/新建文件.md', `# 新建文件`);
+      },
+    },
+    {
+      name: '新建网络链接',
+      click() {
+        new BrowserWindow({
+          title: '创建网络链接',
+          icon: signalicon,
+          width: 400,
+          height: 400,
+          center: true,
+          content: CreateUrl,
+          resizable: false,
+        }).show();
+      },
+    },
+  ]);
   readySystem.registerFileOpener('.md', {
     icon: onetocicon,
     func: (path, content) => {
@@ -188,21 +212,7 @@ NoteMd是和vtron契合的笔记软件
       }).show();
     },
   });
-  // readySystem.registerFileOpener(".ppt", (path, content) => {
-  //   new BrowserWindow({
-  //     title: path,
-  //     icon: ppticon,
-  //     width: 800,
-  //     height: 600,
-  //     resizable: true,
-  //     center: true,
-  //     content: PPT,
-  //     config: {
-  //       path: path,
-  //       content: content,
-  //     },
-  //   }).show();
-  // });
+
   setTimeout(() => {
     if (process.env.NODE_ENV === 'development') return;
     fetch('https://myim.online:3100/api/visit', {

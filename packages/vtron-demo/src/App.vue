@@ -189,6 +189,8 @@ NoteMd是和vtron契合的笔记软件
             }
           }
           return;
+        } else {
+          readySystem.fs.writeFile(`/C/Users/Desktop/新建文件.md`, `# 新建文件`);
         }
       },
     },

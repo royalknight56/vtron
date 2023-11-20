@@ -25,7 +25,12 @@
     ></NavBar>
   </div>
   <div class="main" @click="handleOuterClick">
-    <div class="left-tree">
+    <div
+      class="left-tree"
+      :style="{
+        width: leftWidth + 'px',
+      }"
+    >
       <FileTree
         :chosen-path="chosenTreePath"
         mode="list"
@@ -35,6 +40,7 @@
         :key="random"
       >
       </FileTree>
+      <div class="left-handle" @mousedown="leftHandleDown"></div>
     </div>
     <div
       class="desk-outer"
@@ -133,6 +139,23 @@ const { refersh, createFolder, backFolder, openFolder, onComputerMount } = useCo
     return system.fs.search(keyword);
   },
 });
+const leftWidth = ref(200);
+function leftHandleDown(e: MouseEvent) {
+  const startX = e.clientX;
+  const startWidth = leftWidth.value;
+  addEventListener('mousemove', leftHandleMove);
+  addEventListener('mouseup', leftHandleUp);
+  function leftHandleMove(e: MouseEvent) {
+    const moveX = e.clientX - startX;
+    if (startWidth + moveX < 100) return;
+    if (startWidth + moveX > 500) return;
+    leftWidth.value = startWidth + moveX;
+  }
+  function leftHandleUp() {
+    removeEventListener('mousemove', leftHandleMove);
+    removeEventListener('mouseup', leftHandleUp);
+  }
+}
 
 const rootFileList = ref<Array<VtronFileWithoutContent>>([]);
 const random = ref(0);
@@ -309,12 +332,22 @@ async function handleNavSearch(path: string) {
   position: relative;
   top: 4px;
   .left-tree {
+    position: relative;
     overflow-x: hidden;
     overflow-y: auto;
     width: var(--menulist-width);
     height: 100%;
     background-color: rgba(255, 255, 255, 0.1);
     border-right: 1px solid rgba(134, 134, 134, 0.267);
+  }
+  .left-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    cursor: ew-resize;
   }
   .desk-outer {
     flex: 1;

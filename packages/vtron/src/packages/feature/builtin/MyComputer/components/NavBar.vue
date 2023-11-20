@@ -226,6 +226,7 @@ function handlePathPClick(index: number) {
   background: none;
   border: none;
   outline: none;
+  user-select: none;
 }
 .nav-path {
 }

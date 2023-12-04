@@ -43,24 +43,24 @@ git clone 已经创建好的项目
 2. 在 vue 中 use 插件
 
 ```js
-import vtron from "vtron";
+import vtron from 'vtron';
 ```
 
 引入样式文件"vtron/distlib/style.css"
 
 ```js
-import "vtron/distlib/style.css";
+import 'vtron/distlib/style.css';
 ```
 
 使用案例
 
 ```js
-import { createApp } from "vue";
-import App from "./App.vue";
-import vtron from "vtron";
-import "vtron/distlib/style.css";
+import { createApp } from 'vue';
+import App from './App.vue';
+import vtron from 'vtron';
+import 'vtron/distlib/style.css';
 
-createApp(App).use(vtron).mount("#app");
+createApp(App).use(vtron).mount('#app');
 ```
 
 3. 在页面中引入 Screen 组件
@@ -71,7 +71,7 @@ createApp(App).use(vtron).mount("#app");
 // App.vue
 <Screen></Screen>
 <script setup>
-import { System } from "vtron";
+import { System } from 'vtron';
 let system = new System();
 </script>
 ```
@@ -128,14 +128,14 @@ let system = new System();
 ```vue
 <Screen></Screen>
 <script setup>
-import { System, BrowserWindow } from "vtron";
-import { App } from "./apps/App.vue";
-import someicon from "./assets/someicon.png";
-import HelloWorld from "./apps/HelloWorld.vue";
+import { System, BrowserWindow } from 'vtron';
+import { App } from './apps/App.vue';
+import someicon from './assets/someicon.png';
+import HelloWorld from './apps/HelloWorld.vue';
 let system = new System({
   desktop: [
     {
-      name: "HelloWorld",
+      name: 'HelloWorld',
       icon: someicon,
       window: {
         content: HelloWorld,
@@ -146,6 +146,18 @@ let system = new System({
 });
 </script>
 ```
+
+## 常见问题
+
+为什么在 system 中添加了 app，桌面还是没有显示出 app
+
+桌面的图标都是在用户的文件系统中保存的
+
+Vtron 只有在系统第一次启动的时候，才会在文件系统中添加 app 图标
+
+所以，这时需要点击开始菜单->电源->恢复
+
+恢复之后，系统会回到第一次启动的状态，这时，会执行一些特殊的过程，比如在桌面添加 app 图标
 
 # 感谢 Star
 

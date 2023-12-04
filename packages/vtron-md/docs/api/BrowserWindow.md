@@ -9,8 +9,17 @@
 通过 inject 注入 browserWindow 实例
 
 ```ts
-import { BrowserWindow } from "vtron";
-let browserWindow = inject<BrowserWindow>("browserWindow");
+import { BrowserWindow } from 'vtron';
+let browserWindow = inject<BrowserWindow>('browserWindow');
+```
+
+## 在窗口内容中获取 System
+
+通过 inject 注入 browserWindow 实例
+
+```ts
+import { System } from 'vtron';
+const sys = inject<System>('system');
 ```
 
 ## constructor
@@ -41,11 +50,11 @@ constructor(option:{
 BrowserWindow 是 vtron 中创建窗口的类，它可以通过传入不同的构建参数来定制化窗口的外观和行为。在本文档中，我们将介绍 BrowserWindow 构建参数的各个属性和用法，以便您更好地了解如何使用它们来创建您的自定义窗口。
 
 ```ts
-import ContentVue from "./content.vue";
+import ContentVue from './content.vue';
 const win = new BrowserWindow({
-  title: "test",
+  title: 'test',
   content: ContentVue,
-  icon: "test",
+  icon: 'test',
   width: 100,
   height: 100,
   x: 100,
@@ -581,7 +590,7 @@ usage:
 
 ```ts
 const win = new BrowserWindow();
-win.setTitle("title");
+win.setTitle('title');
 ```
 
 ## setPosition

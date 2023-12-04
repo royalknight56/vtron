@@ -9,7 +9,7 @@ there is only one system in vue app, so this method is used to get current syste
 usage:
 
 ```typescript
-import { useSystem } from "vtron";
+import { useSystem } from 'vtron';
 const system = useSystem();
 ```
 
@@ -43,12 +43,27 @@ interface SystemOptions {
   lang?: string;
   logo?: string;
   background?: string;
+  rootStyle?: any;
+  builtinApp?: BuiltinApp[];
   desktop?: WinAppOptions[];
   magnet?: WinAppOptions[];
   menulist?: WinAppOptions[];
-  rootStyle?: any;
   fs?: VtronFileInterface;
+  userLocation?: string;
+  systemLocation?: string;
+  initFile?: InitFileItem;
   shell?: ShellInterface;
+  login?: {
+    username: string;
+    password: string;
+    init?: () => boolean;
+  };
+  contextMenus?: {
+    name: string;
+    click: () => void;
+  }[];
+  noPassword?: boolean;
+  loginCallback?: (username: string, password: string) => Promise<boolean>;
 }
 
 
@@ -60,19 +75,19 @@ logo：可以设置系统的 logo，如果不设置则使用默认的 logo
 ### Usage
 
 ```typescript
-import { System } from "vtron";
-import vtronLogoIcon from "./assets/vtron-icon-nobg.png";
-import TestButton from "./apps/TestButton.vue";
+import { System } from 'vtron';
+import vtronLogoIcon from './assets/vtron-icon-nobg.png';
+import TestButton from './apps/TestButton.vue';
 const system = new System({
   logo: vtronLogoIcon,
-  background: "https://source.unsplash.com/random/1920x1080",
+  background: 'https://source.unsplash.com/random/1920x1080',
   desktop: [
     {
-      name: "测试按钮",
+      name: '测试按钮',
       icon: testicon,
       window: {
         content: TestButton,
-        title: "测试按钮",
+        title: '测试按钮',
         icon: testicon,
         center: true,
       },
@@ -122,10 +137,7 @@ export interface VtronFileInterface {
   serializeFileSystem: () => Promise<unknown>;
   deserializeFileSystem: (files: VtronFile[]) => Promise<unknown>;
   removeFileSystem: () => Promise<void>;
-  registerWatcher: (
-    path: RegExp,
-    callback: (path: string, content: string) => void
-  ) => void;
+  registerWatcher: (path: RegExp, callback: (path: string, content: string) => void) => void;
 }
 class VtronFileInfo {
   isFile = true;
@@ -162,8 +174,8 @@ removeFileSystem 是用来清除文件系统的，如果是例如接入了 Linux
 export interface ShellInterface {
   prefix: string;
   router: string;
-  on: (event: "message", callback: (...args: any[]) => void) => void;
-  emit: (event: "start", router: string, user: string) => void;
+  on: (event: 'message', callback: (...args: any[]) => void) => void;
+  emit: (event: 'start', router: string, user: string) => void;
   exec: (input: string) => Promise<void>;
 }
 ```
@@ -191,7 +203,7 @@ only after system ready, you can add app to desktop and so on
 Usage:
 
 ```typescript
-import { System } from "vtron";
+import { System } from 'vtron';
 const system = new System();
 
 system.whenReady().then((system) => {
@@ -212,9 +224,9 @@ see api/fs for more
 ### Usage
 
 ```typescript
-import { useSystem } from "vtron";
+import { useSystem } from 'vtron';
 const system = useSystem();
-system.fs.readFile("path/to/file").then((data) => {});
+system.fs.readFile('path/to/file').then((data) => {});
 ```
 
 ## shell
@@ -226,9 +238,9 @@ system.fs.readFile("path/to/file").then((data) => {});
 ### Usage
 
 ```typescript
-import { useSystem } from "vtron";
+import { useSystem } from 'vtron';
 const system = useSystem();
-system.shell("cd C");
+system.shell('cd C');
 ```
 
 ## emit
@@ -317,9 +329,9 @@ open a file, will call the opener with this type
 see api/fs for more
 
 ```typescript
-import { useSystem } from "vtron";
+import { useSystem } from 'vtron';
 const system = useSystem();
-system.openFile("path/to/file");
+system.openFile('path/to/file');
 ```
 
 ## use
@@ -352,15 +364,17 @@ after system ready, add app to desktop
 
 所以，在开发时，需要点击开始菜单中的电源按钮，再点击恢复，才能看到 app
 
-```typescript
-addApp(options:Partial<WinApp>)
+如果传入第二个参数为 true，则会强制添加 app 到桌面，但是这样会在每次打开页面的时候，都会添加 app 图标到桌面，即使已经删除了
 
-interface WinApp {
-    name?:string;
-    icon?:string;
-    url?:string;
-    window?: BrowserWindow
+```typescript
+addApp(options: WinAppOptions, force = false)
+
+export interface WinAppOptions {
+  name: string;
+  icon?: string;
+  window: BrowserWindowOption;
 }
+
 ```
 
 Usage:
@@ -372,9 +386,9 @@ system.whenReady().then((readySystem)=>{
     readySystem.addApp({
         name:"string";
         icon:"string";
-        window:new BrowserWindow(
-            //...
-        )
+        window{
+          // ...
+        }
     })
 })
 ```
@@ -412,7 +426,7 @@ shutdown system, screen will be black, you can only refresh page to open system 
 Usage:
 
 ```typescript
-import { System } from "vtron";
+import { System } from 'vtron';
 const system = new System();
 
 system.shutdown();
@@ -437,7 +451,7 @@ recover system, the process is: clear localStorage, clear file system.
 Usage:
 
 ```typescript
-import { System } from "vtron";
+import { System } from 'vtron';
 const system = new System();
 
 system.recover();
@@ -452,3 +466,29 @@ system.recover();
 ## deserializeState
 
 反序列化系统状态，将系统的文件系统从 json 字符串中恢复
+
+## createWindow
+
+方便的通过system创建window
+
+```typescript
+createWindow(options: BrowserWindowOption): BrowserWindow
+```
+
+有了这种方法，就不需要再引入BrowserWindow了
+
+## createNotify
+
+方便的通过system创建notify
+
+```typescript
+createNotify(options: NotifyOption): Notify
+```
+
+## createDialog
+
+方便的通过system创建dialog
+
+```typescript
+createDialog(): Dialog
+```

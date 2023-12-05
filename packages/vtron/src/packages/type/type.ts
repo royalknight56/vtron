@@ -65,7 +65,9 @@ export interface WinApp {
 export interface WinAppOptions {
   name: string;
   icon?: string;
+  multiple?: boolean;
   window: BrowserWindowOption;
+  _hasShow?: boolean;
 }
 
 export type RootState = {
@@ -83,10 +85,10 @@ export type RootState = {
     windowTree: Tree<BrowserWindow>;
     windowOrder: Array<BrowserWindow>;
     windowMap: {
-      Desktop: Map<string, BrowserWindowOption>;
-      Magnet: Map<string, BrowserWindowOption>;
-      Menulist: Map<string, BrowserWindowOption>;
-      [key: string]: Map<string, BrowserWindowOption>;
+      Desktop: Map<string, WinAppOptions>;
+      Magnet: Map<string, WinAppOptions>;
+      Menulist: Map<string, WinAppOptions>;
+      [key: string]: Map<string, WinAppOptions>;
     };
     winnum: number;
     topWindow: BrowserWindow | undefined;

@@ -1,8 +1,8 @@
 import { SystemStateEnum } from '@packages/type/enum';
-import { RootState, SystemOptions } from '@packages/type/type';
+import { RootState, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { reactive, markRaw } from 'vue';
 import { Tree } from '@packages/util/Tree';
-import { BrowserWindow, BrowserWindowOption } from '../window/BrowserWindow';
+import { BrowserWindow } from '../window/BrowserWindow';
 
 const rootState: RootState = reactive({
   system: {
@@ -19,9 +19,9 @@ const rootState: RootState = reactive({
     windowTree: new Tree<BrowserWindow>(),
     windowOrder: new Array<BrowserWindow>(),
     windowMap: {
-      Desktop: new Map<string, BrowserWindowOption>(),
-      Magnet: new Map<string, BrowserWindowOption>(),
-      Menulist: new Map<string, BrowserWindowOption>(),
+      Desktop: new Map<string, WinAppOptions>(),
+      Magnet: new Map<string, WinAppOptions>(),
+      Menulist: new Map<string, WinAppOptions>(),
     },
     topWindow: undefined,
     winnum: 0,

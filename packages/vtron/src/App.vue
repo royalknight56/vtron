@@ -71,6 +71,7 @@ onMounted(() => {
       {
         name: '测试Url',
         icon: testicon,
+        multiple: false,
         window: {
           content: 'https://shimo.im/desktop',
           title: '测试按钮',

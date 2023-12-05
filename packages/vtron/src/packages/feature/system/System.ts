@@ -285,7 +285,7 @@ class System {
     } else {
       options.window.content = markRaw(options.window.content);
     }
-    this._rootState.system.windowMap[loc].set(options.name, options.window);
+    this._rootState.system.windowMap[loc].set(options.name, options);
   }
 
   async runPlugin(system: System) {

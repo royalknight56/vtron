@@ -76,8 +76,21 @@ export function initBuiltinFileOpener(system: System) {
       // exeContent[3]= icon
       const winopt = system._rootState.system.windowMap[exeContent[1]].get(exeContent[2]);
       if (winopt) {
-        const win = new BrowserWindow(winopt);
-        win.show();
+        if (winopt.multiple ?? true) {
+          const win = new BrowserWindow(winopt.window);
+          win.show();
+        } else {
+          if (winopt._hasShow) {
+            return;
+          } else {
+            winopt._hasShow = true;
+            const win = new BrowserWindow(winopt.window);
+            win.show();
+            win.on('close', () => {
+              winopt._hasShow = false;
+            });
+          }
+        }
       }
     },
   });

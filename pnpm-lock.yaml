@@ -97,7 +97,7 @@ importers:
       mavon-editor: ^3.0.1
       typescript: ^5.0.2
       vite: ^4.3.9
-      vtron: ^0.5.6
+      vtron: ^0.5.7
       vtron-plus: ^0.5.0
       vue: ^3.2.45
       vue-tsc: ^1.4.2

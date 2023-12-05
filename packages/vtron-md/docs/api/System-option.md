@@ -117,6 +117,7 @@ type BuiltinApp = 'MyComputer' | 'AppStore';
       {
         name: '测试',
         icon: testicon,
+        multiple:false,// 防止多开，默认为true
         window: {
           content: 'https://shimo.im/desktop',// 这里也可以是vue组件
           title: '测试按钮',

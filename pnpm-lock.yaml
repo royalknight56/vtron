@@ -95,6 +95,7 @@ importers:
       '@vue/compiler-sfc': ^3.2.37
       element-plus: ^2.2.14
       mavon-editor: ^3.0.1
+      primevue: ^3.43.0
       typescript: ^5.0.2
       vite: ^4.3.9
       vtron: ^0.5.7
@@ -108,6 +109,7 @@ importers:
       '@sentry/vue': 7.77.0_vue@3.2.47
       element-plus: 2.4.2_vue@3.2.47
       mavon-editor: 3.0.1
+      primevue: 3.43.0_vue@3.2.47
       vtron: link:../vtron
       vtron-plus: link:../vtron-plus
       vue: 3.2.47
@@ -3762,6 +3764,14 @@ packages:
       ansi-styles: r2.cnpmjs.org/ansi-styles/5.2.0
       react-is: r2.cnpmjs.org/react-is/17.0.2
     dev: true
+
+  /primevue/3.43.0_vue@3.2.47:
+    resolution: {integrity: sha512-iW2gEbM79v5RzRYIrg010fN1DRr5CIRdMsVMG3pBUCq0rzUGnm/hlzJ9ThDZyJrA0/tEKByAo/Pra56s5PnvqQ==}
+    peerDependencies:
+      vue: ^3.0.0
+    dependencies:
+      vue: 3.2.47
+    dev: false
 
   /punycode/2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}

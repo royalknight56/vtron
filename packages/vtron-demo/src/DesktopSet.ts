@@ -7,12 +7,15 @@ import friendLinkicon from './assets/friendLink.png';
 import bird1icon from './assets/bird1.png';
 import signalicon from './assets/signal.png';
 
+import galleryicon from './assets/gallery.png';
+
 import GitStars from './components/apps/GitStars.vue';
 import GotoReadMe from './components/apps/GotoReadMe.vue';
 
 import FriendLink from './components/apps/FriendLink.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
 import NoteMd from './components/apps/NoteMd.vue';
+import Gallery from './components/apps/Gallery.vue';
 
 const config = [
   {
@@ -89,6 +92,16 @@ const config = [
 
     resizable: true,
   },
+  // {
+  //   title: '图库',
+  //   icon: galleryicon,
+  //   width: 800,
+  //   height: 600,
+  //   center: true,
+  //   content: Gallery,
+
+  //   resizable: true,
+  // },
   {
     title: '创建网络链接',
     icon: signalicon,

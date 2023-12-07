@@ -1,5 +1,13 @@
 <template>
-  <div class="appicon" @contextmenu.prevent="handleRightClick" @click="handleClick">
+  <div
+    class="appicon"
+    :class="{
+      'appicon-top': windowNode.windowInfo.istop,
+      'appicon-minimize': windowNode.windowInfo.state === WindowStateEnum.minimize,
+    }"
+    @contextmenu.prevent="handleRightClick"
+    @click="handleClick"
+  >
     <div class="appicon-img">
       <FileIcon :icon="windowNode.windowInfo.icon" />
     </div>
@@ -8,7 +16,7 @@
 <script lang="ts" setup>
 import { UnwrapNestedRefs } from 'vue';
 import { emitEvent } from '@feature/event';
-import { BrowserWindow } from '@feature/window/BrowserWindow';
+import { BrowserWindow, WindowStateEnum } from '@feature/window/BrowserWindow';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { i18n } from '@feature/i18n';
 
@@ -58,15 +66,53 @@ function handleClick() {
   display: flex;
   justify-content: center;
   align-items: center;
-
+  box-sizing: border-box;
+  transition: all 0.1s;
+  position: relative;
   .appicon-img {
     user-select: none;
     width: 60%;
     height: 60%;
   }
 }
+.appicon::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 80%;
+  height: 4px;
+  box-sizing: border-box;
+  transition: all 0.1s;
+  background-color: var(--color-dark);
+}
+.appicon-top {
+  background-color: var(--color-gray-active);
+}
+.appicon-top::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 4px;
+  box-sizing: border-box;
+  transition: all 0.1s;
+  background-color: var(--color-dark);
+}
+.appicon-minimize::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  width: 100%;
+  height: 4px;
+  box-sizing: border-box;
+  transition: all 0.1s;
+  background-color: var(--color-dark);
+}
 
 .appicon:hover {
   background-color: var(--color-gray-hover);
+}
+.appicon-top:hover {
+  background-color: var(--color-gray-active);
 }
 </style>

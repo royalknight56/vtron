@@ -20,6 +20,7 @@ const eventTranslateMap: {
   'taskbar.startmenu.leftClick': ['startmenu.changeVisible', 'contextMenu.hidden'],
   'desktop.background.leftClick': ['uipop.hidden'],
   'desktop.background.rightClick': ['contextMenu.show', 'startmenu.hidden'],
+  'desktop.app.open': ['uipop.hidden'],
   'system.resize': ['system.initSize'],
   'system.open': ['system.initSize'],
   'window.menubar.rightclick': ['contextMenu.show'],

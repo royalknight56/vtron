@@ -106,4 +106,5 @@ export const zhCN = {
   black: '黑色',
 
   'cannot.create.shortcut': '无法创建快捷方式',
+  'shortcut.has.been.created': '快捷方式已创建',
 };

@@ -98,7 +98,7 @@ function useContextMenu() {
     }
   }
   // 创建快捷方式
-  function createLink(path: string) {
+  async function createLink(path: string) {
     const system = useSystem();
     if (!system) return;
     if (fspath.extname(path) === '.ln') {
@@ -112,7 +112,15 @@ function useContextMenu() {
     const parentPath = fspath.dirname(path);
     const baseName = fspath.basename(path);
     const linkPath = fspath.join(parentPath, baseName + '.ln');
-    return system.fs.writeFile(linkPath, path);
+    if (await system.fs.exists(linkPath)) {
+      Dialog.showMessageBox({
+        title: i18n('error'),
+        message: i18n('shortcut.has.been.created'),
+        type: 'error',
+      });
+      return;
+    }
+    return await system.fs.writeFile(linkPath, path);
   }
   return { createNewFile, openPropsWindow, createNewDir, deleteFile, copyFile, pasteFile, createLink };
 }

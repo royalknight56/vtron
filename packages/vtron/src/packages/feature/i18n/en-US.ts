@@ -104,4 +104,5 @@ export const enUS: AllText = {
   black: 'Black',
 
   'cannot.create.shortcut': 'Cannot Create Shortcut',
+  'shortcut.has.been.created': 'Shortcut Has Been Created',
 };

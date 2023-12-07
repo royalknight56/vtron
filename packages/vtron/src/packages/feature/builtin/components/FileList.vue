@@ -119,6 +119,7 @@ const props = defineProps({
 function handleOnOpen(item: VtronFileWithoutContent) {
   chosenIndexs.value = [];
   props.onOpen(item);
+  emitEvent('desktop.app.open');
 }
 function hadnleDrop(mouse: DragEvent, path: string) {
   hoverIndex.value = -1;

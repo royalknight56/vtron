@@ -60,6 +60,7 @@ export const zhCN = {
   'path.not.exist': '路径不存在',
   success: '成功',
   failed: '失败',
+  error: '错误',
   install: '安装',
   uninstall: '卸载',
   'install.success': '安装成功',
@@ -103,4 +104,6 @@ export const zhCN = {
 
   white: '白色',
   black: '黑色',
+
+  'cannot.create.shortcut': '无法创建快捷方式',
 };

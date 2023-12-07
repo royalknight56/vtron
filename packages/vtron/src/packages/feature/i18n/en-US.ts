@@ -60,6 +60,7 @@ export const enUS: AllText = {
   'path.not.exist': 'Path Not Exist',
   success: 'Success',
   failed: 'Failed',
+  error: 'Error',
   install: 'Install',
   uninstall: 'Uninstall',
   'install.success': 'Install Success',
@@ -101,4 +102,6 @@ export const enUS: AllText = {
 
   white: 'White',
   black: 'Black',
+
+  'cannot.create.shortcut': 'Cannot Create Shortcut',
 };

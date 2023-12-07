@@ -103,10 +103,11 @@ function useContextMenu() {
     if (!system) return;
     if (fspath.extname(path) === '.ln') {
       Dialog.showMessageBox({
-        title: '错误',
-        message: '无法创建快捷方式',
+        title: i18n('error'),
+        message: i18n('cannot.create.shortcut'),
         type: 'error',
       });
+      return;
     }
     const parentPath = fspath.dirname(path);
     const baseName = fspath.basename(path);

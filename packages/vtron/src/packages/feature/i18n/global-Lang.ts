@@ -57,6 +57,7 @@ interface AllText {
   'path.not.exist': string;
   success: string;
   failed: string;
+  error: string;
   install: string;
   uninstall: string;
   'install.success': string;
@@ -100,4 +101,6 @@ interface AllText {
 
   white: string;
   black: string;
+
+  'cannot.create.shortcut': string;
 }

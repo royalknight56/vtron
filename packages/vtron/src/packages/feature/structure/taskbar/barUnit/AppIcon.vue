@@ -51,11 +51,13 @@ function handleRightClick(e: MouseEvent) {
   });
 }
 function handleClick() {
-  props.windowNode.moveTop();
   if (props.windowNode.windowInfo.state === 'minimize') {
     props.windowNode.restore();
-  } else {
+    props.windowNode.moveTop();
+  } else if (props.windowNode.windowInfo.istop) {
     props.windowNode.minimize();
+  } else {
+    props.windowNode.moveTop();
   }
 }
 </script>

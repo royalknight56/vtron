@@ -63,9 +63,6 @@ const rootState = useRootState();
   font-style: normal;
   font-weight: normal;
 }
-* {
-  font-family: 'SEGOEUIMDL', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
 .moveup-enter-active {
   transition: all 1s var(--aniline);
 }

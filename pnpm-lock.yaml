@@ -98,7 +98,7 @@ importers:
       primevue: ^3.43.0
       typescript: ^5.0.2
       vite: ^4.3.9
-      vtron: ^0.5.7
+      vtron: ^0.5.8
       vtron-plus: ^0.5.0
       vue: ^3.2.45
       vue-tsc: ^1.4.2

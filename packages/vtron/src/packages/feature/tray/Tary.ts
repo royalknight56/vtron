@@ -25,4 +25,10 @@ export class Tray {
     this.image = image;
     Tray.trayList.value = Tray.trayList.value.slice();
   }
+  destroy() {
+    const index = Tray.trayList.value.findIndex((item) => item._id === this._id);
+    if (index !== -1) {
+      Tray.trayList.value.splice(index, 1);
+    }
+  }
 }

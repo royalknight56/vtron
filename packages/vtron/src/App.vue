@@ -212,12 +212,14 @@ onMounted(() => {
     new Tray({
       image: '/C/ic.png',
     }).setContextMenu(TestButton, 200, 200);
-    new Tray({
+    const cT = new Tray({
       image: '/C/ic.png',
-    }).setContextMenu(TestButton, 200, 200);
-    // setTimeout(() => {
-    //   aTray.setImage('/C/ib.png');
-    // }, 1000);
+    });
+    cT.setContextMenu(TestButton, 200, 200);
+
+    setTimeout(() => {
+      cT.destroy();
+    }, 1000);
 
     // sys.mountVolume('/D', new VtronFileSystem('/D', '2'));
     sys.mountVolume('/D', {

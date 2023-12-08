@@ -3,6 +3,7 @@
     <div class="error">
       <Error></Error>
     </div>
+    <CustomIcon></CustomIcon>
     <div class="state-item battery">
       <Battery></Battery>
     </div>
@@ -26,6 +27,7 @@ import NetWork from './NetWork.vue';
 import MessageIcon from './MessageIcon.vue';
 import Error from './Error.vue';
 import { useSystem } from '@/packages/plug';
+import CustomIcon from './CustomIcon.vue';
 const sys = useSystem();
 
 function handleClick() {

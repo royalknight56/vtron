@@ -20,6 +20,7 @@ import VtronPerfTest from './apps/VtronPerfTest.vue';
 import { onMounted } from 'vue';
 import { System, VtronFile } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
+import { Tray } from './packages/feature/tray/Tary';
 
 // class TestShell {
 //   prefix = 'vtron@vtron:~$ ';
@@ -204,6 +205,14 @@ onMounted(() => {
       content: TestButton,
       icon: testicon,
     });
+    const aTray = new Tray({
+      image: '/C/ic.png',
+    });
+    aTray.setContextMenu(TestButton, 200, 200);
+    setTimeout(() => {
+      aTray.setImage('/C/ib.png');
+    }, 1000);
+
     // sys.mountVolume('/D', new VtronFileSystem('/D', '2'));
     sys.mountVolume('/D', {
       copyFile: async (src: string, dest: string) => {

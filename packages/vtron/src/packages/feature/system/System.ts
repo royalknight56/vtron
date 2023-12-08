@@ -27,6 +27,7 @@ import { Notify, NotifyConstructorOptions } from '@feature/notification/Notifica
 import { ShellInterface } from '@feature/core/ShellType';
 import { Dialog } from '../dialog/Dialog';
 import { pick } from '@/packages/util/modash';
+import { Tray, TrayOptions } from '@feature/tray/Tary';
 let GLOBAL_SYSTEM: System | null = null;
 
 const logger = function (...args: any[]) {
@@ -440,6 +441,10 @@ class System {
   /** 方便的通过system创建Dialog */
   createDialog() {
     return Dialog;
+  }
+
+  createTray(options: TrayOptions) {
+    return new Tray(options);
   }
 
   errorHandler = 0;

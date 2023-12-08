@@ -5,14 +5,14 @@ import { Eventer } from '../event';
 
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
 // implements BrowserWindowModel
-const enum WindowStateEnum {
+export const enum WindowStateEnum {
   normal = 'normal',
   minimize = 'minimize',
   maximize = 'maximize',
   fullscreen = 'fullscreen',
 }
-type BrowserWindowContent = ReturnType<typeof defineComponent> | string;
-interface BrowserWindowConstructorOptions {
+export type BrowserWindowContent = ReturnType<typeof defineComponent> | string;
+export interface BrowserWindowConstructorOptions {
   title: string;
   content: BrowserWindowContent;
   config?: any;
@@ -30,14 +30,14 @@ interface BrowserWindowConstructorOptions {
   skipTaskbar: boolean;
   backgroundColor: string;
 }
-interface WindowInfo extends BrowserWindowConstructorOptions {
+export interface WindowInfo extends BrowserWindowConstructorOptions {
   state: WindowStateEnum;
   istop: boolean;
   zindex: number;
   isCreated: boolean;
   disable: boolean;
 }
-type BrowserWindowOption = Partial<Omit<BrowserWindowConstructorOptions, 'content'>> & {
+export type BrowserWindowOption = Partial<Omit<BrowserWindowConstructorOptions, 'content'>> & {
   content: BrowserWindowContent;
 };
 class BrowserWindow {
@@ -337,4 +337,4 @@ class BrowserWindow {
     this.emit('disable', flag);
   }
 }
-export { BrowserWindow, WindowStateEnum, BrowserWindowOption };
+export { BrowserWindow };

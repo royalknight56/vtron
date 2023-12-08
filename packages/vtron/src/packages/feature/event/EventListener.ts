@@ -38,6 +38,7 @@ const eventTranslateMap: {
     'messagecenter.hidden',
     'edit.end',
     'computerpop.hidden',
+    'tray.hidden',
   ],
   'datetime.show': ['messagecenter.hidden'],
   'messagecenter.show': ['datetime.hidden'],

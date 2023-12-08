@@ -48,6 +48,7 @@
       @dragenter.stop
       @mousedown.stop
       @dblclick.stop
+      @click.stop
       @blur="onEditNameEnd"
       v-if="editIndex === index"
       class="file-item_title file-item_editing"

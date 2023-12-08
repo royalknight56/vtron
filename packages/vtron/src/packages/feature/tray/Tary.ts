@@ -5,6 +5,7 @@ export interface TrayOptions {
 }
 export class Tray {
   image: string;
+  _id: string;
   _contextMenu: ReturnType<typeof defineComponent>;
   _contextMenuShow = false;
   _contextMenuWidth = 100;
@@ -13,6 +14,7 @@ export class Tray {
   constructor(options: TrayOptions) {
     this.image = options.image;
     Tray.trayList.value.push(this);
+    this._id = Tray.trayList.value.length.toString();
   }
   setContextMenu(content: ReturnType<typeof defineComponent>, width = 100, height = 100) {
     this._contextMenu = markRaw(content);

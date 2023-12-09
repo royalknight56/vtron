@@ -48,6 +48,21 @@ const InitUserFile = {
       type: 'dir',
       mode: 0o111,
     },
+    {
+      name: 'Note',
+      type: 'dir',
+      mode: 0o111,
+    },
+    {
+      name: 'Photo',
+      type: 'dir',
+      mode: 0o111,
+    },
+    {
+      name: 'Music',
+      type: 'dir',
+      mode: 0o111,
+    },
   ],
 };
 

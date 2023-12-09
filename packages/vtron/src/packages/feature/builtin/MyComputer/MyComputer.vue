@@ -31,6 +31,7 @@
         width: leftWidth + 'px',
       }"
     >
+      <QuickLink :on-open="onTreeOpen"></QuickLink>
       <FileTree
         :chosen-path="chosenTreePath"
         mode="list"
@@ -89,6 +90,7 @@ import { useComputer } from './hooks/useComputer';
 import { Rect, useRectChosen } from '@/packages/hook/useRectChosen';
 
 import NavBar from './components/NavBar.vue';
+import QuickLink from './components/QuickLink.vue';
 
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 

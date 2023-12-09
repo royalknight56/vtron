@@ -88,7 +88,9 @@ function handleClick() {
   background-color: var(--color-dark);
 }
 .appicon-top {
-  background-color: var(--color-gray-active);
+  // background-color: var(--color-gray-active);
+  background-color: var(--task-bar-color);
+  filter: brightness(110%);
 }
 .appicon-top::after {
   content: '';
@@ -98,7 +100,6 @@ function handleClick() {
   height: 4px;
   box-sizing: border-box;
   transition: all 0.1s;
-  background-color: var(--color-dark);
 }
 .appicon-minimize::after {
   content: '';

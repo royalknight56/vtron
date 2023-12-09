@@ -29,7 +29,7 @@ function emitClick(e: MouseEvent) {
 .startmenuicon {
   width: var(--startmenu-icon-size);
   height: var(--task-bar-height);
-  background-color: var(--color-gray);
+  background-color: var(--task-bar-color);
   user-select: none;
   display: flex;
   justify-content: center;

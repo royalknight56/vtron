@@ -93,6 +93,22 @@
         </div>
 
         <div class="setting-item">
+          <label>任务栏颜色：</label>
+          <div class="color-select color-border">
+            <div class="color" :style="{ background: taskBarColor }"></div>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <label></label>
+          <div class="color-selects">
+            <div class="color-select" v-for="item in colors" :key="item" @click="choseTaskBarColor(item)">
+              <div class="color" :style="{ background: item }"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-item">
           <label>窗口圆角：</label>
           <WinInput placeholder="example: 2px" v-model="winRadius"></WinInput>
         </div>
@@ -133,7 +149,9 @@ const backgroundColor = ref(
 const backgroundUrl = ref(
   system.getConfig('background')?.startsWith('#') ? '' : system.getConfig('background')
 );
-const textColor = ref(system.getConfig('rootStyle')?.['--icon-title-color']);
+const textColor = ref(system.getConfig('rootStyle')?.['--icon-title-color'] || '#111');
+const taskBarColor = ref(system.getConfig('rootStyle')?.['--task-bar-color'] || '#ededed');
+
 const winRadius = ref(system.getConfig('rootStyle')?.['--window-border-radius']);
 
 const colors = [
@@ -143,15 +161,18 @@ const colors = [
   '#cfe6e6',
   '#a1e6b8',
   '#66e6cc',
+  '#ededed',
   '#ccc',
   '#999',
   '#666',
   '#333',
-  '#222',
   '#111',
 ];
 function choseTextColor(color: string) {
   textColor.value = color;
+}
+function choseTaskBarColor(color: string) {
+  taskBarColor.value = color;
 }
 function choseColor(color: string) {
   backgroundColor.value = color;
@@ -180,6 +201,7 @@ async function submitStyle() {
     ...rootStyle,
     '--icon-title-color': textColor.value,
     '--window-border-radius': winRadius.value,
+    '--task-bar-color': taskBarColor.value,
   };
   await system.setConfig('rootStyle', rootStyle);
 

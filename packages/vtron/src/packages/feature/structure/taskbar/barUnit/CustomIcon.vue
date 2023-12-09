@@ -1,9 +1,11 @@
 <template>
   <div class="custom-outer">
     <div class="state-item" v-for="item in traylst" :key="item._id">
-      <div class="inner" @click="handleClick(item)">
-        <VtronImage v-if="typeof item.image === 'string'" :path="item.image"></VtronImage>
-        <component v-else :is="item.image"></component>
+      <div class="state-icon" @click="handleClick(item)">
+        <div class="inner">
+          <VtronImage v-if="typeof item.image === 'string'" :path="item.image"></VtronImage>
+          <component v-else :is="item.image"></component>
+        </div>
       </div>
       <Transition name="fade">
         <div
@@ -51,16 +53,22 @@ mountEvent('tray.hidden', () => {
   align-items: center;
 }
 .state-item {
-  padding: 0 8px;
   height: 100%;
   display: flex;
   align-items: center;
   position: relative;
 }
+.state-icon {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
 .state-item:hover {
   background-color: rgba(255, 255, 255, 0.519);
 }
 .inner {
+  padding: 0 8px;
   height: 60%;
   display: flex;
   align-items: center;

@@ -18,6 +18,7 @@
     v-for="(item, index) in fileList"
     :key="item.path"
     @dblclick="handleOnOpen(item)"
+    @touchstart="doubleTouch($event, item)"
     @contextmenu.stop.prevent="handleRightClick($event, item, index)"
     @drop="hadnleDrop($event, item.path)"
     @dragenter.prevent="handleDragEnter($event, item, index)"
@@ -126,6 +127,23 @@ function hadnleDrop(mouse: DragEvent, path: string) {
   hoverIndex.value = -1;
   folderDrop(mouse, path);
   chosenIndexs.value = [];
+}
+let expired: number | null = null;
+function doubleTouch(e: TouchEvent, item: VtronFileWithoutContent) {
+  if (e.touches.length === 1) {
+    if (!expired) {
+      expired = e.timeStamp + 400;
+    } else if (e.timeStamp <= expired) {
+      // remove the default of this event ( Zoom )
+      handleOnOpen(item);
+      e.preventDefault();
+      // then reset the variable for other "double Touches" event
+      expired = null;
+    } else {
+      // if the second touch was expired, make it as it's the first
+      expired = e.timeStamp + 400;
+    }
+  }
 }
 
 const editIndex = ref<number>(-1);

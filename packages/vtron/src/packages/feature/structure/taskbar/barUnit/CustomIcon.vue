@@ -1,20 +1,23 @@
 <template>
-  <div class="state-item" v-for="item in traylst" :key="item._id">
-    <div class="inner" @click="handleClick(item)">
-      <VtronImage :path="item.image"></VtronImage>
-    </div>
-    <Transition name="fade">
-      <div
-        class="context-menu"
-        v-if="item._contextMenuShow"
-        :style="{
-          width: item._contextMenuWidth + 'px',
-          height: item._contextMenuHeight + 'px',
-        }"
-      >
-        <component :is="item._contextMenu"></component>
+  <div class="custom-outer">
+    <div class="state-item" v-for="item in traylst" :key="item._id">
+      <div class="inner" @click="handleClick(item)">
+        <VtronImage v-if="typeof item.image === 'string'" :path="item.image"></VtronImage>
+        <component v-else :is="item.image"></component>
       </div>
-    </Transition>
+      <Transition name="fade">
+        <div
+          class="context-menu"
+          v-if="item._contextMenuShow"
+          :style="{
+            width: item._contextMenuWidth + 'px',
+            height: item._contextMenuHeight + 'px',
+          }"
+        >
+          <component :is="item._contextMenu"></component>
+        </div>
+      </Transition>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -41,6 +44,12 @@ mountEvent('tray.hidden', () => {
 });
 </script>
 <style lang="scss" scoped>
+.custom-outer {
+  display: flex;
+  height: 100%;
+  flex-direction: row-reverse;
+  align-items: center;
+}
 .state-item {
   padding: 0 8px;
   height: 100%;
@@ -53,6 +62,8 @@ mountEvent('tray.hidden', () => {
 }
 .inner {
   height: 60%;
+  display: flex;
+  align-items: center;
 }
 .context-menu {
   position: absolute;

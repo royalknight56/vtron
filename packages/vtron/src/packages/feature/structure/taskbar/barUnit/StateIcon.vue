@@ -4,15 +4,6 @@
       <Error></Error>
     </div>
     <CustomIcon></CustomIcon>
-    <div class="state-item battery">
-      <Battery></Battery>
-    </div>
-    <div class="state-item network">
-      <NetWork></NetWork>
-    </div>
-    <div @click="handleClick" class="state-item datetime">
-      <DateTime></DateTime>
-    </div>
     <div @click="handleNotifyClick" class="state-item">
       <MessageIcon></MessageIcon>
     </div>
@@ -21,18 +12,13 @@
 </template>
 <script setup lang="ts">
 import { emitEvent } from '@feature/event';
-import Battery from './Battery.vue';
-import DateTime from './DateTime.vue';
-import NetWork from './NetWork.vue';
+
 import MessageIcon from './MessageIcon.vue';
 import Error from './Error.vue';
 import { useSystem } from '@/packages/plug';
 import CustomIcon from './CustomIcon.vue';
 const sys = useSystem();
 
-function handleClick() {
-  emitEvent('datetime.show');
-}
 function handleNotifyClick() {
   emitEvent('messagecenter.show');
 }

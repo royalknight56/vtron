@@ -15,7 +15,6 @@
       </div>
       <WindowGroup></WindowGroup>
       <NotificationGroup></NotificationGroup>
-      <DateTimePop></DateTimePop>
       <MessageCenterPop></MessageCenterPop>
       <Chosen></Chosen>
     </div>
@@ -33,8 +32,7 @@ import { emitEvent } from '@feature/event';
 import WindowGroup from '@feature/window/WindowGroup.vue';
 import ContextMenu from '@feature/structure/contextMenu/ContextMenu.vue';
 import NotificationGroup from '@feature/notification/NotifyGroup.vue';
-import DateTimePop from '@feature/structure/popover/DateTimePop.vue';
-import MessageCenterPop from '@feature/structure/popover/MessageCenterPop.vue';
+import MessageCenterPop from '@feature/structure/taskbar/popover/MessageCenterPop.vue';
 
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';

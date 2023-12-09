@@ -1,10 +1,10 @@
 import { Ref, defineComponent, markRaw, ref } from 'vue';
 
 export interface TrayOptions {
-  image: string;
+  image: string | ReturnType<typeof defineComponent>;
 }
 export class Tray {
-  image: string;
+  image: string | ReturnType<typeof defineComponent>;
   _id: string;
   _contextMenu: ReturnType<typeof defineComponent>;
   _contextMenuShow = false;
@@ -12,7 +12,11 @@ export class Tray {
   _contextMenuHeight = 100;
   public static trayList: Ref<Tray[]> = ref<Tray[]>([]);
   constructor(options: TrayOptions) {
-    this.image = options.image;
+    if (typeof options.image === 'string') {
+      this.image = options.image;
+    } else {
+      this.image = markRaw(options.image);
+    }
     Tray.trayList.value.push(this);
     this._id = Tray.trayList.value.length.toString();
   }
@@ -21,8 +25,12 @@ export class Tray {
     this._contextMenuWidth = width;
     this._contextMenuHeight = height;
   }
-  setImage(image: string) {
-    this.image = image;
+  setImage(image: string | ReturnType<typeof defineComponent>) {
+    if (typeof image === 'string') {
+      this.image = image;
+    } else {
+      this.image = markRaw(image);
+    }
     Tray.trayList.value = Tray.trayList.value.slice();
   }
   destroy() {

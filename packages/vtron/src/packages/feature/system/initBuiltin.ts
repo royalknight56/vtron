@@ -19,6 +19,12 @@ import { dealIcon } from '@/packages/util/Icon';
 import { basename } from '../core/Path';
 import ImageViewerVue from '../builtin/ImageViewer.vue';
 import { Dialog } from '../dialog/Dialog';
+import { Tray } from '../tray/Tary';
+import BatteryVue from '../structure/taskbar/barUnit/Battery.vue';
+import BatteryPopVue from '../structure/taskbar/popover/BatteryPop.vue';
+import NetWorkVue from '../structure/taskbar/barUnit/NetWork.vue';
+import DateTimeVue from '../structure/taskbar/barUnit/DateTime.vue';
+import DateTimePopVue from '../structure/taskbar/popover/DateTimePop.vue';
 
 export function initBuiltinApp(system: System) {
   if (system._options.builtinApp?.length === 0) return;
@@ -191,4 +197,16 @@ export function initBuiltinFileOpener(system: System) {
       imgwindow.show();
     },
   });
+  const dateTimeT = new Tray({
+    image: DateTimeVue,
+  });
+  dateTimeT.setContextMenu(DateTimePopVue, 320, 500);
+
+  new Tray({
+    image: NetWorkVue,
+  });
+  const batteryT = new Tray({
+    image: BatteryVue,
+  });
+  batteryT.setContextMenu(BatteryPopVue, 200, 80);
 }

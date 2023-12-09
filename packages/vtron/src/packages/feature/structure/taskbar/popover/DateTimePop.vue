@@ -1,48 +1,40 @@
 <template>
-  <Transition name="fade">
-    <div v-if="isDataPopShow" class="date-pop" @mousedown.stop="">
-      <div class="date-up">
-        <div class="date-time">
-          <span class="time">{{ timeDisplay }}</span>
-          <span class="date">{{ dateDisplay }}</span>
-        </div>
+  <div class="date-pop" @mousedown.stop="">
+    <div class="date-up">
+      <div class="date-time">
+        <span class="time">{{ timeDisplay }}</span>
+        <span class="date">{{ dateDisplay }}</span>
       </div>
-      <div class="date-middle">
-        <div class="week">
-          <div class="day" v-for="item in weeksPrefix" :key="item">
-            <span>{{ item }}</span>
-          </div>
-        </div>
-        <div class="month">
-          <div class="week" v-for="(perweek, weekIndex) in month" :key="perweek[0]">
-            <div
-              class="day"
-              :class="{
-                istoday: today.weekIndex === weekIndex && today.dayIndex === dayIndex,
-                chosen: chosen.weekIndex === weekIndex && chosen.dayIndex === dayIndex,
-              }"
-              v-for="(perday, dayIndex) in perweek"
-              :key="perday"
-              @click="onDayClick(weekIndex, dayIndex)"
-            >
-              <span>{{ perday }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- <div class="date-note">
-        <div class="date-note-title">日记</div>
-        <div class="date-note-content"></div>
-      </div> -->
     </div>
-  </Transition>
+    <div class="date-middle">
+      <div class="week">
+        <div class="day" v-for="item in weeksPrefix" :key="item">
+          <span>{{ item }}</span>
+        </div>
+      </div>
+      <div class="month">
+        <div class="week" v-for="(perweek, weekIndex) in month" :key="perweek[0]">
+          <div
+            class="day"
+            :class="{
+              istoday: today.weekIndex === weekIndex && today.dayIndex === dayIndex,
+              chosen: chosen.weekIndex === weekIndex && chosen.dayIndex === dayIndex,
+            }"
+            v-for="(perday, dayIndex) in perweek"
+            :key="perday"
+            @click="onDayClick(weekIndex, dayIndex)"
+          >
+            <span>{{ perday }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { mountEvent } from '@feature/event';
-// import { useSystem } from '../../system';
-// import { join } from '../../core/Path';
-// const sys = useSystem();
+
 const isDataPopShow = ref(false);
 mountEvent('datetime.show', () => {
   isDataPopShow.value = !isDataPopShow.value;
@@ -82,13 +74,16 @@ function updateTime() {
 const firstDay = new Date(today.year, today.month - 1, 1).getDay();
 const lastDay = new Date(today.year, today.month, 0).getDate();
 const weekNum = Math.ceil((firstDay + lastDay) / 7);
-
+let timer: any = null;
 onMounted(() => {
   // readDateNotes();
-  setInterval(() => {
+  timer = setInterval(() => {
     updateTime();
   }, 500);
   updateTime();
+});
+onUnmounted(() => {
+  clearInterval(timer);
 });
 for (let i = 0; i < weekNum; i++) {
   month.value[i] = [];

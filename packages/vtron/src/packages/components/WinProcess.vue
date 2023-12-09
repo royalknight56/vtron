@@ -7,12 +7,14 @@
 import { defineProps, ref } from 'vue';
 const props = defineProps<{
   modelValue?: number;
+  changeAble?: boolean;
 }>();
 const emit = defineEmits(['update:modelValue']);
 const process = ref(props.modelValue || 0);
 const outerRef = ref<HTMLElement>();
 
 const handleMouseDown = (e: MouseEvent) => {
+  if (!props.changeAble) return;
   const startX = e.clientX;
   const startLeft = process.value;
   const handleMouseMove = (e: MouseEvent) => {

@@ -101,7 +101,12 @@ export type RootState = {
         isCharging: boolean;
         chargeLevel: number;
       };
-      connection: number;
+      connection: {
+        effectiveType: string;
+        rtt: number;
+        downlink: number;
+        saveData: boolean;
+      };
     };
     clipboard: any;
     settings: Setting[];

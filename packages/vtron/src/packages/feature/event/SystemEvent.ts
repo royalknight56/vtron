@@ -49,10 +49,9 @@ function initNetworkEvent() {
   }
 
   const connection = nav.connection as any;
-  rootState.system.info.connection = connection.rtt;
-
+  rootState.system.info.connection = connection;
   connection.addEventListener('change', () => {
-    rootState.system.info.connection = connection.rtt;
+    rootState.system.info.connection = connection;
   });
 }
 function setAlertTask(time: number, callback: any) {

@@ -25,6 +25,7 @@ import BatteryPopVue from '../structure/taskbar/popover/BatteryPop.vue';
 import NetWorkVue from '../structure/taskbar/barUnit/NetWork.vue';
 import DateTimeVue from '../structure/taskbar/barUnit/DateTime.vue';
 import DateTimePopVue from '../structure/taskbar/popover/DateTimePop.vue';
+import NetworkPopVue from '../structure/taskbar/popover/NetworkPop.vue';
 
 export function initBuiltinApp(system: System) {
   if (system._options.builtinApp?.length === 0) return;
@@ -202,9 +203,10 @@ export function initBuiltinFileOpener(system: System) {
   });
   dateTimeT.setContextMenu(DateTimePopVue, 320, 700);
 
-  new Tray({
+  const networkT = new Tray({
     image: NetWorkVue,
   });
+  networkT.setContextMenu(NetworkPopVue, 200, 80);
   const batteryT = new Tray({
     image: BatteryVue,
   });

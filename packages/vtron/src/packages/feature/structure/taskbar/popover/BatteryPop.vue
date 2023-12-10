@@ -5,7 +5,7 @@
       <span>充电中</span>
     </div>
     <div class="ch-text">
-      {{ props.system.info.battery.chargeLevel * 100 }}
+      {{ props.system.info.battery.chargeLevel * 100 }} %
       <div class="pro">
         <WinProcess :model-value="props.system.info.battery.chargeLevel * 100"></WinProcess>
       </div>

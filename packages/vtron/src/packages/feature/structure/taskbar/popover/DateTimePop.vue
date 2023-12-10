@@ -376,16 +376,16 @@ async function readDateNotes() {
           font-size: 12px;
           font-weight: 400;
           padding-right: 20px;
-          width: 80px;
+          width: 90px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
         }
         .sch-time {
           font-size: 12px;
-          font-weight: 400;
-          padding-right: 20px;
-          width: 56px;
+          font-weight: 200;
+          padding-right: 2px;
+          width: 68px;
         }
       }
       .sch-item::after {

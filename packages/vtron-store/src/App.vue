@@ -9,7 +9,6 @@ import jiepaiqi from './assets/jiepaiqi.base?raw';
 import shimo from './assets/shimo.base?raw';
 import zhengqiji from './assets/zhengqiji.base?raw';
 import vtbshuju from './assets/vtbshuju.base?raw';
-import xixuegui from './assets/吸血鬼.base?raw';
 import defaulticon from './assets/default.base?raw';
 import chatGPTIcon from './assets/chatGPT.base?raw';
 import redalertIcon from './assets/redalert.base?raw';
@@ -203,7 +202,7 @@ const temp = [
               </div>
             </div>
             <div class="main-app">
-              <div v-for="item in temp" class="store-item">
+              <div v-for="item in temp" class="store-item" :key="item.name">
                 <AppItem
                   :item="item"
                   :installed-list="installedList"

@@ -33,7 +33,12 @@ const rootState: RootState = reactive({
         chargeLevel: 0,
       },
       brightness: 50,
-      connection: 0,
+      connection: {
+        effectiveType: '4g',
+        rtt: 0,
+        downlink: 0,
+        saveData: false,
+      },
     },
     options: {},
     clipboard: {},

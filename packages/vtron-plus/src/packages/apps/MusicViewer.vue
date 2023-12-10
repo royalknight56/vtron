@@ -5,27 +5,21 @@
         {{ basename(window?.config.path) }}
       </div>
     </div>
-    <audio-player
-      ref="audioPlayer"
-      theme-color="#444"
-      :audio-list="audioList.map((elm) => elm.url)"
-    />
+    <audio-player ref="audioPlayer" theme-color="#444" :audio-list="audioList.map((elm) => elm.url)" />
   </div>
 </template>
 <script setup lang="ts">
-import AudioPlayer from "@liripeng/vue-audio-player";
-import { BrowserWindow, basename } from "vtron";
-import { inject } from "vue";
+import AudioPlayer from '@liripeng/vue-audio-player';
+import { BrowserWindow, basename } from 'vtron';
+import { inject } from 'vue';
 
-const window: BrowserWindow | undefined = inject("browserWindow");
+const window: BrowserWindow | undefined = inject('browserWindow');
 
-const content = base64PDFToBlobUrl(
-  window?.config.content.replace(/^data:application\/octet-stream;base64,/, "")
-);
+const content = base64PDFToBlobUrl(window?.config.content.replace(/^data:(.)*;base64,/, ''));
 
 const audioList = [
   {
-    name: "audio 1",
+    name: 'audio 1',
     url: content,
   },
 ];
@@ -37,7 +31,7 @@ function base64PDFToBlobUrl(base64: string) {
   for (let i = 0; i < len; i++) {
     arr[i] = binStr.charCodeAt(i);
   }
-  const blob = new Blob([arr], { type: "application/pdf" });
+  const blob = new Blob([arr], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   return url;
 }
@@ -67,16 +61,22 @@ function base64PDFToBlobUrl(base64: string) {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  box-shadow: 0 0 30px 2px #c8c8c8, 0 0 1px 25px #c0c0c0 inset,
-    0 0 5px 35px #545454 inset, 0 0 1px 40px #000000 inset;
+  box-shadow:
+    0 0 30px 2px #c8c8c8,
+    0 0 1px 25px #c0c0c0 inset,
+    0 0 5px 35px #545454 inset,
+    0 0 1px 40px #000000 inset;
   transition: all 0.3s;
 }
 .viewer-img:hover {
-  box-shadow: 0 0 30px 4px #c8c8c8, 0 0 1px 25px #c0c0c0e4 inset,
-    0 0 5px 35px #6f6f6fd8 inset, 0 0 1px 40px rgb(0, 0, 0) inset;
+  box-shadow:
+    0 0 30px 4px #c8c8c8,
+    0 0 1px 25px #c0c0c0e4 inset,
+    0 0 5px 35px #6f6f6fd8 inset,
+    0 0 1px 40px rgb(0, 0, 0) inset;
 }
 .viewer-img::after {
-  content: " ";
+  content: ' ';
   display: block;
   position: absolute;
   width: 20px;

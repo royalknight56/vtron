@@ -21,6 +21,7 @@ import pptxIcon from './assets/pptx.png';
 import pdfIcon from './assets/pdf.png';
 import docxIcon from './assets/docx.png';
 import xlsxIcon from './assets/xlsx.png';
+import musicAppIcon from './assets/musicApp.png';
 
 import audioIcon from './assets/audio.png';
 import videoIcon from './assets/video.png';
@@ -29,6 +30,7 @@ import VideoViewerVue from './apps/VideoViewer.vue';
 import DocxViewerVue from './apps/DocxViewer.vue';
 import ExeclViewerVue from './apps/ExeclViewer.vue';
 import Terminal from './apps/Terminal.vue';
+import MusicStoreVue from './apps/MusicStore.vue';
 
 function vtronPlus(system: System, rootState: RootState) {
   /**------------------ 桌面右键菜单--------------- */
@@ -262,6 +264,20 @@ function vtronPlus(system: System, rootState: RootState) {
       center: true,
       title: '版本信息',
       icon: helpicon,
+    },
+  });
+
+  system.addApp({
+    name: '音乐库',
+    icon: musicAppIcon,
+    multiple: false,
+    window: {
+      title: '音乐库',
+      width: 800,
+      height: 600,
+      icon: musicAppIcon,
+      center: true,
+      content: MusicStoreVue,
     },
   });
   //#endregion

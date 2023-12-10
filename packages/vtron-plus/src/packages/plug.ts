@@ -22,6 +22,7 @@ import pdfIcon from './assets/pdf.png';
 import docxIcon from './assets/docx.png';
 import xlsxIcon from './assets/xlsx.png';
 import musicAppIcon from './assets/musicApp.png';
+import galleryIcon from './assets/gallery.png';
 
 import audioIcon from './assets/audio.png';
 import videoIcon from './assets/video.png';
@@ -31,6 +32,7 @@ import DocxViewerVue from './apps/DocxViewer.vue';
 import ExeclViewerVue from './apps/ExeclViewer.vue';
 import Terminal from './apps/Terminal.vue';
 import MusicStoreVue from './apps/MusicStore.vue';
+import PictureStoreVue from './apps/PictureStore.vue';
 
 function vtronPlus(system: System, rootState: RootState) {
   /**------------------ 桌面右键菜单--------------- */
@@ -280,6 +282,21 @@ function vtronPlus(system: System, rootState: RootState) {
       content: MusicStoreVue,
     },
   });
+
+  system.addApp({
+    name: '图库',
+    icon: galleryIcon,
+    multiple: false,
+    window: {
+      title: '图库',
+      width: 800,
+      height: 600,
+      icon: galleryIcon,
+      center: true,
+      content: PictureStoreVue,
+    },
+  });
+
   //#endregion
 }
 export { vtronPlus };

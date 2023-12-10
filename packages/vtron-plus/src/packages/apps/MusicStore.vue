@@ -82,12 +82,14 @@ import AudioPlayer from '@liripeng/vue-audio-player';
 const sys = useSystem();
 const musicList = ref<VtronFileWithoutContent[]>([]);
 onMounted(async () => {
+  refershFileLst();
+});
+async function refershFileLst() {
   const list = await sys.fs.readdir(join(sys._options.userLocation || '', 'Music'));
   musicList.value = list.filter((item) => {
     return item.path.endsWith('.mp3');
   });
-});
-
+}
 const router = ref(1);
 const jumpTo = (index: number) => {
   router.value = index;
@@ -106,6 +108,8 @@ function upload() {
             reader.result as string
           )
           .then(() => {
+            file.value = '';
+            refershFileLst();
             sys.createNotify({
               title: '上传成功',
               content: '上传成功',
@@ -144,6 +148,9 @@ async function playMusic(item: VtronFileWithoutContent) {
     setTimeout(() => {
       audioplayer?.value?.play();
     }, 200);
+  } else {
+    audioList.value = [];
+    chosenMusic.value.path = '无法打开文件';
   }
 }
 </script>

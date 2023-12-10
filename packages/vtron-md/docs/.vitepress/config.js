@@ -68,6 +68,10 @@ module.exports = {
           link: '/api/Dialog.md',
         },
         {
+          text: 'Tary',
+          link: '/api/Tary.md',
+        },
+        {
           text: 'Shell',
           link: '/api/Shell.md',
         },
@@ -86,6 +90,7 @@ module.exports = {
       ],
       '/guide/': [
         { text: '如何使用', link: '/guide/how-to-use-vtron.md' },
+        { text: '功能导航', link: '/guide/roadmap.md' },
         { text: '常见问题', link: '/guide/qa.md' },
         // { text: 'What is vtron?', link: '/guide/what-is-vtron.md' },
       ],

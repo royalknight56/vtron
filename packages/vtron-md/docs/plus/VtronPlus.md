@@ -15,8 +15,8 @@ npm install vtron-plus
 ## 使用(Usage)
 
 ```typescript
-import { System } from "vtron";
-import { vtronPlus } from "vtron-plus";
+import { System } from 'vtron';
+import { vtronPlus } from 'vtron-plus';
 let system = new System({});
 system.whenReady().then(() => {
   system.use(VtronPlus);

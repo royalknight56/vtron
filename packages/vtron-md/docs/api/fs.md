@@ -201,3 +201,27 @@ import { useSystem } from "vtron";
 const system = useSystem();
 system.fs.rmdir("path/to/folder")
 ```
+
+## chmod
+
+设置文件权限，
+
+文件权限用二进制表示
+
+```ts
+export enum VtronFileMode {
+  Read = 0b001, //1
+  Write = 0b010, //2
+  Execute = 0b100, //4
+  ReadWrite = Read | Write, //3
+  ReadExecute = Read | Execute, //5
+  WriteExecute = Write | Execute, // 6
+  ReadWriteExecute = Read | Write | Execute, //7
+}
+```
+
+usage：
+
+```ts
+chmod('path/to/file', 0b001);
+```

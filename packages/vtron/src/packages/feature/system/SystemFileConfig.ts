@@ -63,6 +63,11 @@ const InitUserFile = {
       type: 'dir',
       mode: 0o111,
     },
+    {
+      name: 'Schedule',
+      type: 'dir',
+      mode: 0o111,
+    },
   ],
 };
 

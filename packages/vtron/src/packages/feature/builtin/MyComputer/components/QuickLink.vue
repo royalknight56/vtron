@@ -39,7 +39,6 @@ const quickLinks = [
   },
 ];
 function quick(item: any) {
-  console.log(item);
   props.onOpen(item.path);
 }
 </script>

@@ -200,7 +200,7 @@ export function initBuiltinFileOpener(system: System) {
   const dateTimeT = new Tray({
     image: DateTimeVue,
   });
-  dateTimeT.setContextMenu(DateTimePopVue, 320, 500);
+  dateTimeT.setContextMenu(DateTimePopVue, 320, 700);
 
   new Tray({
     image: NetWorkVue,

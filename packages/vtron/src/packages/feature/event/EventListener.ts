@@ -1,11 +1,12 @@
 import { mountEvent, redirectEvent } from './EventHook';
 
 import { useSystem } from '@feature/system';
-import { initBatteryEvent, initSizeEvent, initNetworkEvent } from './SystemEvent';
+import { initBatteryEvent, initSizeEvent, initNetworkEvent, initAlertEvent } from './SystemEvent';
 function initEventListener() {
   initBatteryEvent();
   initSizeEvent();
   initNetworkEvent();
+  initAlertEvent();
   mountEvent('system.shutdown', () => {
     useSystem()?.shutdown();
   });

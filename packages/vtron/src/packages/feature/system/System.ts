@@ -28,7 +28,6 @@ import { ShellInterface } from '@feature/core/ShellType';
 import { Dialog } from '../dialog/Dialog';
 import { pick } from '@/packages/util/modash';
 import { Tray, TrayOptions } from '@feature/tray/Tary';
-let GLOBAL_SYSTEM: System | null = null;
 
 const logger = function (...args: any[]) {
   return;
@@ -45,6 +44,7 @@ export type FileOpener = {
  * @description: System 类，在初始化的过程中需要提供挂载点，以及一些配置
  */
 class System {
+  public static GLOBAL_SYSTEM: System;
   readonly _options: SystemOptions;
   /**
    * @internal
@@ -63,7 +63,7 @@ class System {
 
   constructor(options?: SystemOptions) {
     logger('mountGlobalSystem');
-    this.mountGlobalSystem(this); // 挂载全局系统
+    System.GLOBAL_SYSTEM = this; // 挂载全局系统
     logger('initOptions');
     this._options = this.initOptions(options);
     logger('initRootState');
@@ -76,9 +76,6 @@ class System {
     this.firstRun();
     logger('setRef');
     this.setRef(this._rootState.system.ref!);
-  }
-  mountGlobalSystem(system: System) {
-    GLOBAL_SYSTEM = system;
   }
 
   setRef(ref: HTMLElement) {
@@ -105,8 +102,6 @@ class System {
      * 过程：激活屏幕，桥接事件。
      */
     this._rootState.system.state = SystemStateEnum.opening;
-    logger('initEventListener');
-    initEventListener(); // 初始化事件侦听
     logger('initBuiltinFileOpener');
     initBuiltinFileOpener(this); // 注册内建文件打开器
     logger('initFileSystem');
@@ -125,9 +120,10 @@ class System {
     // 判断是否登录
     this.isLogin();
     logger('_ready');
-    // this._rootState.system.state = SystemStateEnum.open;
-    this._ready && this._ready(this);
+    logger('initEventListener');
+    initEventListener(); // 初始化事件侦听
 
+    this._ready && this._ready(this);
     logger('runPlugin');
     this.runPlugin(this); // 运行fs中插件
     logger('initBackground');
@@ -460,6 +456,6 @@ class System {
   }
 }
 function useSystem() {
-  return GLOBAL_SYSTEM!;
+  return System.GLOBAL_SYSTEM!;
 }
 export { System, useSystem };

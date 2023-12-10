@@ -1,25 +1,28 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import AppItem from "./components/AppItem.vue";
+import { onMounted, ref } from 'vue';
+import AppItem from './components/AppItem.vue';
 // import defaulticon from "./assets/default.png";
-import moon from "./assets/moon.base?raw";
+import moon from './assets/moon.base?raw';
 // import webdav from "./appout/webdav.es.js?raw";
 // import demoApp from "./appout/demoApp.es.js?raw";
-import jiepaiqi from "./assets/jiepaiqi.base?raw";
-import shimo from "./assets/shimo.base?raw";
-import zhengqiji from "./assets/zhengqiji.base?raw";
-import vtbshuju from "./assets/vtbshuju.base?raw";
-import xixuegui from "./assets/吸血鬼.base?raw";
-import defaulticon from "./assets/default.base?raw";
+import jiepaiqi from './assets/jiepaiqi.base?raw';
+import shimo from './assets/shimo.base?raw';
+import zhengqiji from './assets/zhengqiji.base?raw';
+import vtbshuju from './assets/vtbshuju.base?raw';
+import xixuegui from './assets/吸血鬼.base?raw';
+import defaulticon from './assets/default.base?raw';
+import chatGPTIcon from './assets/chatGPT.base?raw';
+import redalertIcon from './assets/redalert.base?raw';
+
 const isready = ref(false);
 const isNoSystem = ref(false);
 const installedList = ref([]);
 onMounted(() => {
-  window.parent.postMessage({ type: "ready", data: "ready" }, "*");
-  window.addEventListener("message", function (event) {
+  window.parent.postMessage({ type: 'ready', data: 'ready' }, '*');
+  window.addEventListener('message', function (event) {
     if (event.source === window.parent) {
       const rec: any = event.data;
-      if (rec.type === "init") {
+      if (rec.type === 'init') {
         installedList.value = rec.data;
         isready.value = true;
       }
@@ -35,32 +38,32 @@ onMounted(() => {
 function install(item: any) {
   window.parent.postMessage(
     {
-      type: "install",
+      type: 'install',
       data: {
         name: `${item.name}.js`,
-        content: item.content?.replaceAll("\n", " "),
-        uninstallContent: item.uninstallContent?.replaceAll("\n", " "),
+        content: item.content?.replaceAll('\n', ' '),
+        uninstallContent: item.uninstallContent?.replaceAll('\n', ' '),
         type: item.type,
       },
     },
-    "*"
+    '*'
   );
 }
 
 function uninstall(item: any) {
   window.parent.postMessage(
     {
-      type: "uninstall",
+      type: 'uninstall',
       data: {
         name: `${item.name}.js`,
 
-        content: item.content?.replaceAll("\n", " "),
-        uninstallContent: item.uninstallContent?.replaceAll("\n", " "),
+        content: item.content?.replaceAll('\n', ' '),
+        uninstallContent: item.uninstallContent?.replaceAll('\n', ' '),
 
         type: item.type,
       },
     },
-    "*"
+    '*'
   );
 }
 function transSimpleUrlApp(title: string, url: string, icon: string) {
@@ -68,7 +71,7 @@ function transSimpleUrlApp(title: string, url: string, icon: string) {
     name: title,
     desc: `添加${title} app`,
     icon: icon,
-    type: "once",
+    type: 'once',
     content: `function main(system){
       system.fs.writeFile(system._options.userLocation+'Desktop/${title}.url', "link::url::${url}::${icon}")
     }`,
@@ -79,19 +82,19 @@ function transSimpleUrlApp(title: string, url: string, icon: string) {
 }
 const temp = [
   {
-    name: "systemTest",
-    desc: "可以在启动的时候输出一些信息",
+    name: 'systemTest',
+    desc: '可以在启动的时候输出一些信息',
     icon: defaulticon,
-    type: "all",
+    type: 'all',
     content: `function main(system){
         console.log(system);
       }`,
   },
   {
-    name: "consoleShell",
+    name: 'consoleShell',
     desc: '可以在控制台输入shell命令,如shell("ls")',
     icon: defaulticon,
-    type: "all",
+    type: 'all',
     content: `function main(system){
         window.shell = (cmd)=>{
           system.shell(cmd)
@@ -110,46 +113,37 @@ const temp = [
   // },
 
   {
-    name: "webdav",
-    desc: "支持连接webdav，在“设置”中进行设置",
+    name: 'webdav',
+    desc: '支持连接webdav，在“设置”中进行设置',
     // type: "all",
-    icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAk0lEQVRYw2P8z0AZYBw1YHgYcLF9JVk6wyv1wQZccHxPpt2C+0EmMIavJNv14StABlDi//8wA8gJSMYRbMCKLIZpEZQYIPSeQfDdgBpAsRdG08HwNYDiAmWIG/CfiIAiu2Ya4gYwogXWSDXgPxEBORwNYMST2/4PUwNwFRTEKPw/TAz4T0ygkBsLQ9SA0U7XiDQAAHeffgFWSH/RAAAAAElFTkSuQmCC",
+    icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAk0lEQVRYw2P8z0AZYBw1YHgYcLF9JVk6wyv1wQZccHxPpt2C+0EmMIavJNv14StABlDi//8wA8gJSMYRbMCKLIZpEZQYIPSeQfDdgBpAsRdG08HwNYDiAmWIG/CfiIAiu2Ya4gYwogXWSDXgPxEBORwNYMST2/4PUwNwFRTEKPw/TAz4T0ygkBsLQ9SA0U7XiDQAAHeffgFWSH/RAAAAAElFTkSuQmCC',
     // content: webdav,
   },
-  transSimpleUrlApp("看月亮", "https://static.myim.online/moon/", moon),
+  transSimpleUrlApp('看月亮', 'https://static.myim.online/moon/', moon),
+  transSimpleUrlApp('语音ChatGPT', 'https://gpt.myim.online/#/about', chatGPTIcon),
+  transSimpleUrlApp('红警', 'https://game.bun.sh.cn/', redalertIcon),
   transSimpleUrlApp(
-    "在线工具",
-    "https://tool.lu/",
-    "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNTEycHgiIGhlaWdodD0iNTEycHgiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPHRpdGxlPuW3peWFtzwvdGl0bGU+CiAgICA8ZyBpZD0i5bel5YW3IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0i5bel5YW3566xIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxOS4wMDAwMDAsIDE5LjAwMDAwMCkiIGZpbGwtcnVsZT0ibm9uemVybyI+CiAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJQYXRoIiBmaWxsPSIjMjAyNDI1IiBvcGFjaXR5PSIwLjAxIiBwb2ludHM9IjAgMCA0NzMgMCA0NzMgNDczIDAgNDczIj48L3BvbHlnb24+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0xNTcuNjY2NjY3LDMxLjUzMzMzMzUgQzE0MC4yNTEyODgsMzEuNTMzMzMzNSAxMjYuMTMzMzMzLDQ1LjY1MTI4NzcgMTI2LjEzMzMzMyw2My4wNjY2NjY1IEwxMjYuMTMzMzMzLDE1Ny42NjY2NjcgQzEyNi4xMzMzMzMsMTc1LjA4MjA0NiAxNDAuMjUxMjg3LDE4OS4yIDE1Ny42NjY2NjcsMTg5LjIgTDMxNS4zMzMzMzMsMTg5LjIgQzMzMi43NDg3MTMsMTg5LjIgMzQ2Ljg2NjY2NywxNzUuMDgyMDQ2IDM0Ni44NjY2NjcsMTU3LjY2NjY2NyBMMzQ2Ljg2NjY2Nyw2My4wNjY2NjY1IEMzNDYuODY2NjY3LDQ1LjY1MTI4NzcgMzMyLjc0ODcxMiwzMS41MzMzMzM1IDMxNS4zMzMzMzMsMzEuNTMzMzMzNSBMMTU3LjY2NjY2NywzMS41MzMzMzM1IFogTTE1Ny42NjY2NjcsNjMuMDY2NjY2NSBMMzE1LjMzMzMzMyw2My4wNjY2NjY1IEwzMTUuMzMzMzMzLDE1Ny42NjY2NjcgTDE1Ny42NjY2NjcsMTU3LjY2NjY2NyBMMTU3LjY2NjY2Nyw2My4wNjY2NjY1IFogTTMxLjUzMzMzMzUsMjgzLjggTDMxLjUzMzMzMzUsNDI1LjcgQzMxLjUzMzMzMzUsNDM0LjQwNzY4OSAzOC41OTIzMTA1LDQ0MS40NjY2NjcgNDcuMyw0NDEuNDY2NjY3IEw0MjUuNyw0NDEuNDY2NjY3IEM0MzQuNDA3Njg5LDQ0MS40NjY2NjcgNDQxLjQ2NjY2Nyw0MzQuNDA3Njg5IDQ0MS40NjY2NjcsNDI1LjcgTDQ0MS40NjY2NjcsMjgzLjggQzQ0MS40NjY2NjcsMjc1LjA5MjMxMSA0MzQuNDA3Njg5LDI2OC4wMzMzMzMgNDI1LjcsMjY4LjAzMzMzMyBMNDcuMywyNjguMDMzMzMzIEMzOC41OTIzMTA1LDI2OC4wMzMzMzMgMzEuNTMzMzMzNSwyNzUuMDkyMzExIDMxLjUzMzMzMzUsMjgzLjggWiIgaWQ9IlNoYXBlIiBmaWxsPSIjMDA5QTYxIj48L3BhdGg+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0zMS41MzMzMzM1LDEyNi4xMzMzMzMgQzMxLjUzMzMzMzUsMTIxLjk1MTc1MyAzMy4xOTQ0NTk1LDExNy45NDE0NCAzNi4xNTEyODMsMTE0Ljk4NDYxNiBDMzkuMTA4MTA2NiwxMTIuMDI3NzkzIDQzLjExODQyLDExMC4zNjY2NjcgNDcuMywxMTAuMzY2NjY3IEw0MjUuNywxMTAuMzY2NjY3IEM0MjkuODgxNTgsMTEwLjM2NjY2NyA0MzMuODkxODkzLDExMi4wMjc3OTMgNDM2Ljg0ODcxNywxMTQuOTg0NjE2IEM0MzkuODA1NTQxLDExNy45NDE0NCA0NDEuNDY2NjY3LDEyMS45NTE3NTMgNDQxLjQ2NjY2NywxMjYuMTMzMzMzIEw0NDEuNDY2NjY3LDIzNi41IEM0NDEuNDY2NjY3LDI0NS4yMDc2ODkgNDM0LjQwNzY4OSwyNTIuMjY2NjY3IDQyNS43LDI1Mi4yNjY2NjcgTDQ3LjMsMjUyLjI2NjY2NyBDMzguNTkyMzEwNSwyNTIuMjY2NjY3IDMxLjUzMzMzMzUsMjQ1LjIwNzY4OSAzMS41MzMzMzM1LDIzNi41IEwzMS41MzMzMzM1LDEyNi4xMzMzMzMgWiIgaWQ9IlBhdGgiIGZpbGw9IiNGRkFBNDQiPjwvcGF0aD4KICAgICAgICAgICAgPHBhdGggZD0iTTE3My40MzMzMzMsMjM2LjUgQzE3My40MzMzMzMsMjI3Ljc5MjMxMSAxODAuNDkyMzExLDIyMC43MzMzMzMgMTg5LjIsMjIwLjczMzMzMyBMMjgzLjgsMjIwLjczMzMzMyBDMjkyLjUwNzY4OSwyMjAuNzMzMzMzIDI5OS41NjY2NjcsMjI3Ljc5MjMxMSAyOTkuNTY2NjY3LDIzNi41IEwyOTkuNTY2NjY3LDI4My44IEMyOTkuNTY2NjY3LDI5Mi41MDc2ODkgMjkyLjUwNzY4OSwyOTkuNTY2NjY3IDI4My44LDI5OS41NjY2NjcgTDE4OS4yLDI5OS41NjY2NjcgQzE4MC40OTIzMTEsMjk5LjU2NjY2NyAxNzMuNDMzMzMzLDI5Mi41MDc2ODkgMTczLjQzMzMzMywyODMuOCBMMTczLjQzMzMzMywyMzYuNSBMMTczLjQzMzMzMywyMzYuNSBaIiBpZD0iUGF0aCIgZmlsbD0iI0ZGRkZGRiI+PC9wYXRoPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+"
+    '在线工具',
+    'https://tool.lu/',
+    'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNTEycHgiIGhlaWdodD0iNTEycHgiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPHRpdGxlPuW3peWFtzwvdGl0bGU+CiAgICA8ZyBpZD0i5bel5YW3IiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0i5bel5YW3566xIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxOS4wMDAwMDAsIDE5LjAwMDAwMCkiIGZpbGwtcnVsZT0ibm9uemVybyI+CiAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJQYXRoIiBmaWxsPSIjMjAyNDI1IiBvcGFjaXR5PSIwLjAxIiBwb2ludHM9IjAgMCA0NzMgMCA0NzMgNDczIDAgNDczIj48L3BvbHlnb24+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0xNTcuNjY2NjY3LDMxLjUzMzMzMzUgQzE0MC4yNTEyODgsMzEuNTMzMzMzNSAxMjYuMTMzMzMzLDQ1LjY1MTI4NzcgMTI2LjEzMzMzMyw2My4wNjY2NjY1IEwxMjYuMTMzMzMzLDE1Ny42NjY2NjcgQzEyNi4xMzMzMzMsMTc1LjA4MjA0NiAxNDAuMjUxMjg3LDE4OS4yIDE1Ny42NjY2NjcsMTg5LjIgTDMxNS4zMzMzMzMsMTg5LjIgQzMzMi43NDg3MTMsMTg5LjIgMzQ2Ljg2NjY2NywxNzUuMDgyMDQ2IDM0Ni44NjY2NjcsMTU3LjY2NjY2NyBMMzQ2Ljg2NjY2Nyw2My4wNjY2NjY1IEMzNDYuODY2NjY3LDQ1LjY1MTI4NzcgMzMyLjc0ODcxMiwzMS41MzMzMzM1IDMxNS4zMzMzMzMsMzEuNTMzMzMzNSBMMTU3LjY2NjY2NywzMS41MzMzMzM1IFogTTE1Ny42NjY2NjcsNjMuMDY2NjY2NSBMMzE1LjMzMzMzMyw2My4wNjY2NjY1IEwzMTUuMzMzMzMzLDE1Ny42NjY2NjcgTDE1Ny42NjY2NjcsMTU3LjY2NjY2NyBMMTU3LjY2NjY2Nyw2My4wNjY2NjY1IFogTTMxLjUzMzMzMzUsMjgzLjggTDMxLjUzMzMzMzUsNDI1LjcgQzMxLjUzMzMzMzUsNDM0LjQwNzY4OSAzOC41OTIzMTA1LDQ0MS40NjY2NjcgNDcuMyw0NDEuNDY2NjY3IEw0MjUuNyw0NDEuNDY2NjY3IEM0MzQuNDA3Njg5LDQ0MS40NjY2NjcgNDQxLjQ2NjY2Nyw0MzQuNDA3Njg5IDQ0MS40NjY2NjcsNDI1LjcgTDQ0MS40NjY2NjcsMjgzLjggQzQ0MS40NjY2NjcsMjc1LjA5MjMxMSA0MzQuNDA3Njg5LDI2OC4wMzMzMzMgNDI1LjcsMjY4LjAzMzMzMyBMNDcuMywyNjguMDMzMzMzIEMzOC41OTIzMTA1LDI2OC4wMzMzMzMgMzEuNTMzMzMzNSwyNzUuMDkyMzExIDMxLjUzMzMzMzUsMjgzLjggWiIgaWQ9IlNoYXBlIiBmaWxsPSIjMDA5QTYxIj48L3BhdGg+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0zMS41MzMzMzM1LDEyNi4xMzMzMzMgQzMxLjUzMzMzMzUsMTIxLjk1MTc1MyAzMy4xOTQ0NTk1LDExNy45NDE0NCAzNi4xNTEyODMsMTE0Ljk4NDYxNiBDMzkuMTA4MTA2NiwxMTIuMDI3NzkzIDQzLjExODQyLDExMC4zNjY2NjcgNDcuMywxMTAuMzY2NjY3IEw0MjUuNywxMTAuMzY2NjY3IEM0MjkuODgxNTgsMTEwLjM2NjY2NyA0MzMuODkxODkzLDExMi4wMjc3OTMgNDM2Ljg0ODcxNywxMTQuOTg0NjE2IEM0MzkuODA1NTQxLDExNy45NDE0NCA0NDEuNDY2NjY3LDEyMS45NTE3NTMgNDQxLjQ2NjY2NywxMjYuMTMzMzMzIEw0NDEuNDY2NjY3LDIzNi41IEM0NDEuNDY2NjY3LDI0NS4yMDc2ODkgNDM0LjQwNzY4OSwyNTIuMjY2NjY3IDQyNS43LDI1Mi4yNjY2NjcgTDQ3LjMsMjUyLjI2NjY2NyBDMzguNTkyMzEwNSwyNTIuMjY2NjY3IDMxLjUzMzMzMzUsMjQ1LjIwNzY4OSAzMS41MzMzMzM1LDIzNi41IEwzMS41MzMzMzM1LDEyNi4xMzMzMzMgWiIgaWQ9IlBhdGgiIGZpbGw9IiNGRkFBNDQiPjwvcGF0aD4KICAgICAgICAgICAgPHBhdGggZD0iTTE3My40MzMzMzMsMjM2LjUgQzE3My40MzMzMzMsMjI3Ljc5MjMxMSAxODAuNDkyMzExLDIyMC43MzMzMzMgMTg5LjIsMjIwLjczMzMzMyBMMjgzLjgsMjIwLjczMzMzMyBDMjkyLjUwNzY4OSwyMjAuNzMzMzMzIDI5OS41NjY2NjcsMjI3Ljc5MjMxMSAyOTkuNTY2NjY3LDIzNi41IEwyOTkuNTY2NjY3LDI4My44IEMyOTkuNTY2NjY3LDI5Mi41MDc2ODkgMjkyLjUwNzY4OSwyOTkuNTY2NjY3IDI4My44LDI5OS41NjY2NjcgTDE4OS4yLDI5OS41NjY2NjcgQzE4MC40OTIzMTEsMjk5LjU2NjY2NyAxNzMuNDMzMzMzLDI5Mi41MDc2ODkgMTczLjQzMzMzMywyODMuOCBMMTczLjQzMzMzMywyMzYuNSBMMTczLjQzMzMzMywyMzYuNSBaIiBpZD0iUGF0aCIgZmlsbD0iI0ZGRkZGRiI+PC9wYXRoPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+'
   ),
-  transSimpleUrlApp("石墨文档", "https://shimo.im/desktop", shimo),
-  transSimpleUrlApp(
-    "在线节拍器",
-    "https://metronome.tooltool.net/?utm_source=xinquji",
-    jiepaiqi
-  ),
-  transSimpleUrlApp("查看月食", "https://nadc.china-vo.org/eclipse/", moon),
-  transSimpleUrlApp(
-    "蒸 気 機",
-    "https://magiconch.com/vaporwave/?from=home",
-    zhengqiji
-  ),
-  transSimpleUrlApp("vtb 大数据", "https://vtbs.moe/", vtbshuju),
-  transSimpleUrlApp(
-    "吸血鬼幸存者",
-    "https://v6p9d9t4.ssl.hwcdn.net/html/5185382/index.html",
-    xixuegui
-  ),
-  transSimpleUrlApp(
-    "Six Cats under",
-    "https://v6p9d9t4.ssl.hwcdn.net/html/2267583/index.html?v=1591301667",
-    defaulticon
-  ),
-  transSimpleUrlApp("biborg", "https://pos.biborg.com/fr/", defaulticon),
+  transSimpleUrlApp('石墨文档', 'https://shimo.im/desktop', shimo),
+  transSimpleUrlApp('在线节拍器', 'https://metronome.tooltool.net/?utm_source=xinquji', jiepaiqi),
+
+  transSimpleUrlApp('查看月食', 'https://nadc.china-vo.org/eclipse/', moon),
+  transSimpleUrlApp('蒸 気 機', 'https://magiconch.com/vaporwave/?from=home', zhengqiji),
+  transSimpleUrlApp('vtb 大数据', 'https://vtbs.moe/', vtbshuju),
+  // transSimpleUrlApp('吸血鬼幸存者', 'https://v6p9d9t4.ssl.hwcdn.net/html/5185382/index.html', xixuegui),
+  // transSimpleUrlApp(
+  //   'Six Cats under',
+  //   'https://v6p9d9t4.ssl.hwcdn.net/html/2267583/index.html?v=1591301667',
+  //   defaulticon
+  // ),
+  // transSimpleUrlApp('biborg', 'https://pos.biborg.com/fr/', defaulticon),
 
   {
-    name: "更多应用",
-    desc: "更多应用敬请期待，如果您有合适的应用，可以点击开始菜单，意见反馈取得联系",
+    name: '更多应用',
+    desc: '更多应用敬请期待，如果您有合适的应用，可以点击开始菜单，意见反馈取得联系',
   },
 ];
 </script>
@@ -191,9 +185,7 @@ const temp = [
             <div class="swiper">
               <div class="swiper-txt">
                 主页
-                <span class="sub-tip" v-if="isNoSystem">
-                  当前不在vtron环境下，无法安装
-                </span>
+                <span class="sub-tip" v-if="isNoSystem"> 当前不在vtron环境下，无法安装 </span>
               </div>
               <div class="swiper-inner">
                 <div class="swiper-tab">

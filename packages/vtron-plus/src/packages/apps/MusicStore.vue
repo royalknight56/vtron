@@ -155,6 +155,7 @@ async function playMusic(item: VtronFileWithoutContent) {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  user-select: none;
   .music-header {
     width: 100%;
     // height: 50px;

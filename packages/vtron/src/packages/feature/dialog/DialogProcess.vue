@@ -1,7 +1,7 @@
 <template>
   <div class="dialog">
     <div class="dialog-content">
-      <div class="dialog-tip">已完成{{ win?.config.res.toFixed(1) }}%</div>
+      <div class="dialog-tip">{{ win?.config.option.message }}:{{ win?.config.res.toFixed(1) }}%</div>
 
       <div class="dialog-process">
         <div

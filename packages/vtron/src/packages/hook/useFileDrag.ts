@@ -43,64 +43,73 @@ export function useFileDrag(system: System) {
     content?: string,
     process?: (path: string) => void
   ) {
-    system?.fs.writeFile(FsPath.join(path, name || 'unkown'), content || '').then(() => {
+    return await system?.fs.writeFile(FsPath.join(path, name || 'unkown'), content || '').then(() => {
       process?.(FsPath.join(path, name || 'unkown'));
     });
   }
   // 外部文件拖到文件夹放下时
   async function outerFileDrop(path: string, list: FileList | undefined, process: (path: string) => void) {
     const len = list?.length || 0;
+    const { setProgress } = Dialog.showProcessDialog({
+      message: '正在写入到文件夹中',
+    });
     for (let i = 0; i < len; i++) {
-      const item = list?.[i];
+      setProgress((i / len) * 100);
+      await new Promise((resolve) => {
+        const item = list?.[i];
 
-      // let oFile = null;
-      const reader = new FileReader();
-      //读取成功
-      reader.onload = function () {
-        // console.log(reader);
-      };
-      reader.onloadstart = function () {
-        // console.log('读取开始');
-      };
-      reader.onloadend = function () {
-        if (
-          item?.type == 'image/jpeg' ||
-          item?.type == 'image/png' ||
-          item?.type == 'image/gif' ||
-          item?.type == 'image/bmp' ||
-          item?.type == 'image/webp'
-        ) {
-          writeFileToInner(path, item?.name, reader.result as string, process);
-        } else if (item?.type == 'audio/mpeg') {
-          writeFileToInner(path, item?.name, reader.result as string, process);
-        } else if (item?.type == 'video/mp4') {
-          writeFileToInner(path, item?.name, reader.result as string, process);
-        } else if (item?.type == 'text/plain') {
-          writeFileToInner(
-            path,
-            item?.name,
-            decodeURIComponent(escape(atob((reader.result?.toString() || '').split(',')[1]))),
-            process
-          );
-        } else {
-          writeFileToInner(path, item?.name, reader.result as string, process);
-        }
-      };
-      reader.onabort = function () {
-        // console.log('中断');
-      };
-      reader.onerror = function () {
-        // console.log('读取失败');
-      };
-      reader.onprogress = function (ev) {
-        const scale = ev.loaded / ev.total;
-        if (scale >= 0.5) {
-          reader.abort();
-        }
-      };
-      reader.readAsDataURL(new Blob([item as BlobPart]));
+        // let oFile = null;
+        const reader = new FileReader();
+        //读取成功
+        reader.onload = function () {
+          // console.log(reader);
+        };
+        reader.onloadstart = function () {
+          // console.log('读取开始');
+        };
+        reader.onloadend = async function () {
+          if (
+            item?.type == 'image/jpeg' ||
+            item?.type == 'image/png' ||
+            item?.type == 'image/gif' ||
+            item?.type == 'image/bmp' ||
+            item?.type == 'image/webp'
+          ) {
+            await writeFileToInner(path, item?.name, reader.result as string, process);
+          } else if (item?.type == 'audio/mpeg') {
+            await writeFileToInner(path, item?.name, reader.result as string, process);
+          } else if (item?.type == 'video/mp4') {
+            await writeFileToInner(path, item?.name, reader.result as string, process);
+          } else if (item?.type == 'text/plain') {
+            await writeFileToInner(
+              path,
+              item?.name,
+              decodeURIComponent(escape(atob((reader.result?.toString() || '').split(',')[1]))),
+              process
+            );
+          } else {
+            await writeFileToInner(path, item?.name, reader.result as string, process);
+          }
+          resolve(true);
+        };
+        reader.onabort = function () {
+          // console.log('中断');
+        };
+        reader.onerror = function () {
+          // console.log('读取失败');
+        };
+        reader.onprogress = function (ev) {
+          const scale = ev.loaded / ev.total;
+          if (scale >= 0.5) {
+            reader.abort();
+          }
+        };
+        reader.readAsDataURL(new Blob([item as BlobPart]));
+      });
     }
+    setProgress(101);
   }
+
   async function refFileDrop(ev: DragEvent, path: string) {
     dragCallback();
     ev.preventDefault();

@@ -18,7 +18,7 @@
     v-for="(item, index) in fileList"
     :key="item.path"
     @dblclick="handleOnOpen(item)"
-    @touchstart="doubleTouch($event, item)"
+    @touchstart.passive="doubleTouch($event, item)"
     @contextmenu.stop.prevent="handleRightClick($event, item, index)"
     @drop="hadnleDrop($event, item.path)"
     @dragenter.prevent="handleDragEnter($event, item, index)"

@@ -285,8 +285,16 @@ class VtronFileSystem implements VtronFileInterface {
    * 写入文件内容到指定路径 不存在则创建，存在则覆盖
    * @param path 文件路径
    * @param content 文件内容
+   * @param opt 写入选项 flag: w 强制写入模式，a: 追加模式，wx: 排他写入模式，但是如果文件存在则失败
+   *
    */
-  async writeFile(path: string, data: string, opt?: any): Promise<void> {
+  async writeFile(
+    path: string,
+    data: string,
+    opt?: {
+      flag?: 'w' | 'a' | 'wx';
+    }
+  ): Promise<void> {
     const volume = this.checkVolumePath(path);
     if (volume) {
       return this.beforeGuard(volume, 'writeFile', path, data, opt);
@@ -320,6 +328,13 @@ class VtronFileSystem implements VtronFileInterface {
         };
       });
     } else {
+      if (opt?.flag === 'wx') {
+        return Promise.resolve();
+      }
+      if (opt?.flag === 'a') {
+        return await this.appendFile(path, data);
+      }
+
       const request = objectStore.put({
         ...stats,
         content: data,

@@ -6,7 +6,10 @@ export const createInitFile = async (system: System, file: InitFileItem, path = 
   const fs = system.fs;
   if (file.type === 'file') {
     if (file.content) {
-      await fs.writeFile(join(path, file.name), file.content);
+      await fs.writeFile(join(path, file.name), file.content, {
+        flag: 'wx',
+      });
+      file.mode && (await fs.chmod(join(path, file.name), file.mode));
     }
   } else if (file.type === 'dir') {
     const tempPath = join(path, file.name);

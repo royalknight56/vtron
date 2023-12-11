@@ -1,3 +1,4 @@
+import { version } from '../../../../package.json';
 const InitSystemFile = {
   type: 'dir',
   name: '',
@@ -14,6 +15,12 @@ const InitSystemFile = {
       type: 'dir',
       mode: 0o111,
       children: [
+        {
+          name: 'version.txt',
+          type: 'file',
+          content: version,
+          mode: 0o111,
+        },
         // {
         //     name: 'Vtron.exe',
         //     type: 'file',

@@ -129,7 +129,8 @@ class System {
     logger('initBackground');
     this.initBackground(); // 初始化壁纸
     logger('initEvent');
-
+    this.initCheckVersion(); // 检查版本
+    logger('initEvent');
     this.emit('start');
   }
   /**
@@ -226,6 +227,24 @@ class System {
       this._shell = this._options.shell;
     } else {
       this._shell = new Shell(this, '/', 'root');
+    }
+  }
+  /**
+   * @description: 检查版本
+   * @return {*}
+   */
+  private async initCheckVersion() {
+    const programVersion = this.version;
+    const systemVersion = await this.fs.readFile(
+      join(this._options.systemLocation || '', 'Vtron/version.txt')
+    );
+    if (systemVersion && programVersion) {
+      if (programVersion !== systemVersion) {
+        this.createNotify({
+          title: 'Vtron',
+          content: '本地程序和文件版本不一致，请恢复出厂设置',
+        });
+      }
     }
   }
   /**

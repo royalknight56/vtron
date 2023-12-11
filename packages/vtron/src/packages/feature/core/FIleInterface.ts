@@ -2,7 +2,13 @@ import type { VtronFile, VtronFileWithoutContent } from '@/packages/feature/core
 
 export interface VtronFileInterface {
   readFile: (path: string) => Promise<string | null>;
-  writeFile: (path: string, data: string, opt?: any) => Promise<void>;
+  writeFile: (
+    path: string,
+    data: string,
+    opt?: {
+      flag?: 'w' | 'a' | 'wx';
+    }
+  ) => Promise<void>;
   appendFile: (path: string, content: string) => Promise<void>;
   readdir: (path: string) => Promise<VtronFileWithoutContent[]>;
   exists: (path: string) => Promise<boolean>;

@@ -2,11 +2,18 @@
   <div class="container">
     <div class="nav">
       <ul>
-        <li class="active">备份与恢复</li>
+        <li
+          v-for="(item, index) in items"
+          :key="index"
+          @click="selectItem(index)"
+          :class="{ active: index === activeIndex }"
+        >
+          {{ item }}
+        </li>
       </ul>
     </div>
     <div class="setting">
-      <div>
+      <div v-if="0 === activeIndex">
         <div class="setting-item">
           <h1 class="setting-title">备份与恢复</h1>
         </div>
@@ -29,13 +36,50 @@
           </div>
         </div>
       </div>
+      <div v-if="1 === activeIndex">
+        <div class="setting-item">
+          <h1 class="setting-title">导入文件</h1>
+        </div>
+        <div class="setting-item">
+          <label>导入 </label>
+          <div></div>
+        </div>
+        <div class="setting-item">
+          <label>目标本机路径 </label>
+          <div>/<WinInput v-model="targetPath" placeholder="path"></WinInput></div>
+        </div>
+        <div class="setting-item">
+          <label>zip文件</label>
+          <div>
+            <input type="file" id="backupfile" name="file" />
+          </div>
+        </div>
+        <div class="setting-item">
+          <label> </label>
+          <div>
+            <WinButtonVue @click="importZipFile">导入</WinButtonVue>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { Dialog, WinButtonVue, useSystem } from 'vtron';
+import { ref } from 'vue';
+import { Dialog, WinButtonVue, useSystem, WinInput, join } from 'vtron';
 import * as JSZip from 'jszip';
 import * as FileSaver from 'file-saver';
+
+const activeIndex = ref(0);
+const items = [
+  '备份和恢复',
+  '导入文件',
+  // '版本',
+];
+const selectItem = (index: number) => {
+  activeIndex.value = index;
+};
+
 const sys = useSystem();
 async function exportBackup() {
   const { setProgress } = Dialog.showProcessDialog({
@@ -74,7 +118,7 @@ async function dfsPackage(path: string, zip: JSZip, setProgress: any) {
     }
   }
 }
-async function importBackup() {
+async function importBackup(path = '') {
   const evt = document.getElementById('backupfile') as any;
   const files = evt.files;
   if (!files[0]) {
@@ -93,10 +137,10 @@ async function importBackup() {
       const zipEntry = unzipArray[i];
       setProgress((i / unzipArray.length) * 100);
       if (zipEntry.dir) {
-        await sys.fs.mkdir(zipEntry.name);
+        await sys.fs.mkdir(join(path, zipEntry.name));
       } else {
         const fileC = await zipEntry.async('string');
-        sys.fs.writeFile(zipEntry.name, fileC);
+        sys.fs.writeFile(join(path, zipEntry.name), fileC);
       }
     }
     setProgress(100);
@@ -109,6 +153,19 @@ async function importBackup() {
         setProgress(100);
       });
     }, 100);
+  }
+}
+
+const targetPath = ref('');
+
+async function importZipFile() {
+  if (await sys.fs.exists(join('/' + targetPath.value))) {
+    await importBackup('/' + targetPath.value);
+  } else {
+    Dialog.showMessageBox({
+      message: '目标路径不存在',
+      type: 'error',
+    });
   }
 }
 </script>

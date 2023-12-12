@@ -113,7 +113,14 @@ async function dfsPackage(path: string, zip: JSZip, setProgress: any) {
         await dfsPackage(item.path, zip, setProgress);
       } else {
         const content = await sys.fs.readFile(item.path);
-        zip.file(item.path, content || '');
+        try {
+          atob(content || '');
+          zip.file(item.path, content || '', {
+            base64: true,
+          });
+        } catch (error) {
+          zip.file(item.path, content || '');
+        }
       }
     }
   }
@@ -139,12 +146,13 @@ async function importBackup(path = '') {
       if (zipEntry.dir) {
         await sys.fs.mkdir(join(path, zipEntry.name));
       } else {
-        const fileC = await zipEntry.async('string');
+        const fileC = await zipEntry.async('base64');
         sys.fs.writeFile(join(path, zipEntry.name), fileC);
       }
     }
     setProgress(100);
   } catch (e) {
+    console.log(e);
     setTimeout(() => {
       Dialog.showMessageBox({
         message: '恢复失败',

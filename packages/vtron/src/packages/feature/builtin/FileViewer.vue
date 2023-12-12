@@ -16,12 +16,15 @@ import { BrowserWindow } from '../window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
-
-const base64String = browserWindow?.config.content;
-const binaryData = base64String;
-
 const input = ref('');
-input.value = binaryData;
+try {
+  const base64String = decodeURIComponent(
+    escape(atob(browserWindow?.config.content.replace(/^data:(.)*;base64,/, '')?.toString() || ''))
+  );
+  input.value = base64String;
+} catch (error) {
+  input.value = browserWindow?.config.content;
+}
 
 const system = useSystem();
 function handleButton(e: MouseEvent) {

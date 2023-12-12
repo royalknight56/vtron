@@ -68,28 +68,7 @@ export function useFileDrag(system: System) {
           // console.log('读取开始');
         };
         reader.onloadend = async function () {
-          if (
-            item?.type == 'image/jpeg' ||
-            item?.type == 'image/png' ||
-            item?.type == 'image/gif' ||
-            item?.type == 'image/bmp' ||
-            item?.type == 'image/webp'
-          ) {
-            await writeFileToInner(path, item?.name, reader.result as string, process);
-          } else if (item?.type == 'audio/mpeg') {
-            await writeFileToInner(path, item?.name, reader.result as string, process);
-          } else if (item?.type == 'video/mp4') {
-            await writeFileToInner(path, item?.name, reader.result as string, process);
-          } else if (item?.type == 'text/plain') {
-            await writeFileToInner(
-              path,
-              item?.name,
-              decodeURIComponent(escape(atob((reader.result?.toString() || '').split(',')[1]))),
-              process
-            );
-          } else {
-            await writeFileToInner(path, item?.name, reader.result as string, process);
-          }
+          await writeFileToInner(path, item?.name, reader.result as string, process);
           resolve(true);
         };
         reader.onabort = function () {

@@ -13,12 +13,9 @@
       </div>
     </div>
     <div class="dialog-button">
-      <WinButton
-        v-for="(item, index) in win?.config.option.buttons"
-        :key="item"
-        @click="handleClick(index)"
-        >{{ item }}</WinButton
-      >
+      <WinButton v-for="item in win?.config.option.buttons" :key="item" @click="handleClick()">{{
+        item
+      }}</WinButton>
     </div>
   </div>
 </template>
@@ -42,11 +39,8 @@ import { BrowserWindow } from '../window/BrowserWindow';
 
 const win: BrowserWindow | undefined = inject<BrowserWindow>('browserWindow');
 
-function handleClick(index: number) {
+function handleClick() {
   if (win) {
-    win.config.res({
-      response: index,
-    });
     win.close();
   }
 }

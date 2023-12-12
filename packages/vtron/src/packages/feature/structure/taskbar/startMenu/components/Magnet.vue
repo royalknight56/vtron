@@ -62,11 +62,20 @@ function handle(item: VtronFileWithoutContent) {
       width: 40%;
       height: 40%;
       margin: 4px auto;
+      flex-shrink: 0;
     }
 
     .magnet-item_title {
-      display: block;
+      // height: 40%;
+      // display: block;
       text-align: center;
+      // 最多两行，超过两行显示省略号
+      overflow: hidden;
+      word-break: break-all;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
     }
   }
   @keyframes transin {

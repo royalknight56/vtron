@@ -13,7 +13,7 @@
       </ul>
     </div>
     <div class="setting">
-      <div v-if="0 === activeIndex">
+      <!-- <div v-if="0 === activeIndex">
         <div class="setting-item">
           <h1 class="setting-title">
             {{ i18n('system.backup.and.import') }}
@@ -39,8 +39,8 @@
             {{ i18n('import') }}
           </WinButton>
         </div>
-      </div>
-      <div v-if="1 === activeIndex">
+      </div> -->
+      <div v-if="0 === activeIndex">
         <div class="setting-item">
           <h1 class="setting-title">
             {{ i18n('system.version') }}
@@ -57,76 +57,76 @@
   </div>
 </template>
 <script lang="ts" setup>
-import WinButton from '@packages/components/WinButton.vue';
+// import WinButton from '@packages/components/WinButton.vue';
 import { ref } from 'vue';
-import { useSystem } from '@feature/system';
-import { Dialog } from '@feature/dialog/Dialog';
+// import { useSystem } from '@feature/system';
+// import { Dialog } from '@feature/dialog/Dialog';
 import { i18n } from '@feature/i18n';
 import packagejson from '/package.json?raw';
-const system = useSystem();
+// const system = useSystem();
 const items = [
-  i18n('backup'), // '备份',
+  // i18n('backup'), // '备份',
   i18n('version'), // '版本',
 ];
 const version = JSON.parse(packagejson).version;
 const activeIndex = ref(0);
-const inputConfig = ref('');
+// const inputConfig = ref('');
 const selectItem = (index: number) => {
   activeIndex.value = index;
 };
 
-async function handleClick(num: number) {
-  if (num === 0) {
-    //导出配置
-    const cfg = await system?.serializeState();
-    try {
-      await navigator.clipboard.writeText(cfg!);
-      Dialog.showMessageBox({
-        title: i18n('export.config'),
-        message: i18n('export.success.saved.to.clipboard'),
-        type: 'info',
-        buttons: [i18n('confirm')],
-      });
-    } catch (err) {
-      Dialog.showMessageBox({
-        title: i18n('export.config'),
-        message: i18n('export.failed'),
-        type: 'error',
-        buttons: [i18n('confirm')],
-      });
-    }
-  } else if (num === 1) {
-    // 导入配置
-    try {
-      const req = await Dialog.showMessageBox({
-        title: i18n('import.config'),
-        // message: '导入会覆盖现有的文件,是否继续?',
-        message: i18n('import.config.will.cover.existing.files.continue'),
-        type: 'warning',
-        buttons: [i18n('confirm'), i18n('cancel')],
-      });
-      if (req.response === 1) return;
-      await system?.deserializeState(inputConfig.value);
-      setTimeout(() => {
-        system?.reboot();
-      }, 10000);
-      await Dialog.showMessageBox({
-        title: i18n('import.success'),
-        message: i18n('import.success.reboot.soon'),
-        type: 'warning',
-        buttons: [i18n('confirm')],
-      });
-      system?.reboot();
-    } catch (err) {
-      Dialog.showMessageBox({
-        title: i18n('import.config'),
-        message: i18n('import.failed'),
-        type: 'error',
-        buttons: [i18n('confirm')],
-      });
-    }
-  }
-}
+// async function handleClick(num: number) {
+//   if (num === 0) {
+//     //导出配置
+//     const cfg = await system?.serializeState();
+//     try {
+//       await navigator.clipboard.writeText(cfg!);
+//       Dialog.showMessageBox({
+//         title: i18n('export.config'),
+//         message: i18n('export.success.saved.to.clipboard'),
+//         type: 'info',
+//         buttons: [i18n('confirm')],
+//       });
+//     } catch (err) {
+//       Dialog.showMessageBox({
+//         title: i18n('export.config'),
+//         message: i18n('export.failed'),
+//         type: 'error',
+//         buttons: [i18n('confirm')],
+//       });
+//     }
+//   } else if (num === 1) {
+//     // 导入配置
+//     try {
+//       const req = await Dialog.showMessageBox({
+//         title: i18n('import.config'),
+//         // message: '导入会覆盖现有的文件,是否继续?',
+//         message: i18n('import.config.will.cover.existing.files.continue'),
+//         type: 'warning',
+//         buttons: [i18n('confirm'), i18n('cancel')],
+//       });
+//       if (req.response === 1) return;
+//       await system?.deserializeState(inputConfig.value);
+//       setTimeout(() => {
+//         system?.reboot();
+//       }, 10000);
+//       await Dialog.showMessageBox({
+//         title: i18n('import.success'),
+//         message: i18n('import.success.reboot.soon'),
+//         type: 'warning',
+//         buttons: [i18n('confirm')],
+//       });
+//       system?.reboot();
+//     } catch (err) {
+//       Dialog.showMessageBox({
+//         title: i18n('import.config'),
+//         message: i18n('import.failed'),
+//         type: 'error',
+//         buttons: [i18n('confirm')],
+//       });
+//     }
+//   }
+// }
 </script>
 
 <style scoped>

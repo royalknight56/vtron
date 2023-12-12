@@ -23,6 +23,7 @@ import docxIcon from './assets/docx.png';
 import xlsxIcon from './assets/xlsx.png';
 import musicAppIcon from './assets/musicApp.png';
 import galleryIcon from './assets/gallery.png';
+import backupIcon from './assets/e895.png';
 
 import audioIcon from './assets/audio.png';
 import videoIcon from './assets/video.png';
@@ -33,6 +34,7 @@ import ExeclViewerVue from './apps/ExeclViewer.vue';
 import Terminal from './apps/Terminal.vue';
 import MusicStoreVue from './apps/MusicStore.vue';
 import PictureStoreVue from './apps/PictureStore.vue';
+import ZipBackupVue from './apps/ZipBackup.vue';
 
 function vtronPlus(system: System, rootState: RootState) {
   /**------------------ 桌面右键菜单--------------- */
@@ -297,6 +299,17 @@ function vtronPlus(system: System, rootState: RootState) {
     },
   });
 
+  //#endregion
+
+  /**------------------ 设置面板 ------------ */
+  //#region
+  system.registerSettingPanel({
+    key: '备份与恢复',
+    title: `备份与恢复`,
+    desc: '备份和恢复系统文件',
+    content: ZipBackupVue,
+    icon: backupIcon,
+  });
   //#endregion
 }
 export { vtronPlus };

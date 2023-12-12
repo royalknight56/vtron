@@ -28,7 +28,7 @@ async function updateVersion() {
   console.log('build success');
   await waitExec('git add .');
   console.log('git add success');
-  await waitExec(`git commit -m "publish: ${nextVersion}"`);
+  await waitExec(`git commit -m "[plus]publish: ${nextVersion}"`);
   console.log('git commit success');
   await waitExec(`git tag plus-${nextVersion}`);
   console.log('git tag success');

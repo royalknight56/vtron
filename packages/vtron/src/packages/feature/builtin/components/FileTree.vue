@@ -16,10 +16,12 @@
       @mousedown.stop
     >
       <div
-        class="iconfont icon-arrow-down"
+        class="iconfont"
         :class="{ 'open-arrow': item.isOpen, 'hide-arrow': item.isOpen && !item.subFileList?.length }"
         @click.stop="onOpenArrow(item)"
-      ></div>
+      >
+        <div class="icon-arrow-down"></div>
+      </div>
       <div class="file-item_img">
         <FileIcon :file="item" />
       </div>
@@ -174,29 +176,18 @@ function dealI18nName(name: string) {
   display: block;
   width: 4px;
   height: 4px;
+  margin: 7px;
   transform: translateY(0px) rotate(-45deg);
   border: 2px solid rgba(0, 0, 0, 0.465);
   border-left: none;
   border-top: none;
   transition: all 0.1s;
 }
-.icon-arrow-down::after {
-  content: '';
-  display: block;
-  width: 9px;
-  height: 9px;
-  //   background-color: black;
-}
 .hide-arrow {
   border-color: transparent;
 }
 .open-arrow {
-  transform: translateY(-2px) translateX(2px) rotate(45deg);
-}
-.item-group {
-  .sub-tree {
-    // margin-left: 20px;
-  }
+  transform: translateY(-2px) translateX(2px) rotate(90deg);
 }
 .file-item {
   position: relative;

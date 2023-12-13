@@ -112,15 +112,15 @@ const setList = ref([
     content: markRaw(SetLang),
   },
 
-  {
-    key: 'update',
-    // title: '更新和安全',
-    title: i18n('update.security'),
-    // desc: 'Windows 更新，恢复，备份',
-    desc: i18n('windows.update.recover.backup'),
-    icon: e895,
-    content: markRaw(SetUpdate),
-  },
+  // {
+  //   key: 'update',
+  //   // title: '更新和安全',
+  //   title: i18n('update.security'),
+  //   // desc: 'Windows 更新，恢复，备份',
+  //   desc: i18n('windows.update.recover.backup'),
+  //   icon: e895,
+  //   content: markRaw(SetUpdate),
+  // },
   ...(sys._rootState.system.settings ? sys._rootState.system.settings : []),
 ]);
 </script>

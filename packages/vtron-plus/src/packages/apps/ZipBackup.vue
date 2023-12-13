@@ -26,7 +26,9 @@
         <div class="setting-item">
           <label>恢复 </label>
           <div>
-            <input type="file" id="backupfile" name="file" />
+            <FileUploader :accept="'.zip'" @change="changeZipFile"></FileUploader>
+            <br />
+            <span class="tip"> {{ fileName }}</span>
           </div>
         </div>
         <div class="setting-item">
@@ -51,7 +53,9 @@
         <div class="setting-item">
           <label>zip文件</label>
           <div>
-            <input type="file" id="backupfile" name="file" />
+            <FileUploader :accept="'.zip'" @change="changeZipFile"></FileUploader>
+            <br />
+            <span class="tip"> {{ fileName }}</span>
           </div>
         </div>
         <div class="setting-item">
@@ -69,6 +73,7 @@ import { ref } from 'vue';
 import { Dialog, WinButtonVue, useSystem, WinInput, join } from 'vtron';
 import * as JSZip from 'jszip';
 import * as FileSaver from 'file-saver';
+import FileUploader from '../components/FileUploader.vue';
 
 const activeIndex = ref(0);
 const items = [
@@ -125,17 +130,25 @@ async function dfsPackage(path: string, zip: JSZip, setProgress: any) {
     }
   }
 }
+
+let zipFile: File | undefined = undefined;
+const fileName = ref('');
+async function changeZipFile(ev: Event) {
+  const tar = ev.target as HTMLInputElement;
+  if (tar.files) {
+    zipFile = tar.files[0];
+    fileName.value = zipFile.name;
+  }
+}
 async function importBackup(path = '') {
-  const evt = document.getElementById('backupfile') as any;
-  const files = evt.files;
-  if (!files[0]) {
+  if (!zipFile) {
     return;
   }
   const { setProgress } = Dialog.showProcessDialog({
     message: '正在恢复备份',
   });
   try {
-    const unziped = await JSZip.loadAsync(files[0]);
+    const unziped = await JSZip.loadAsync(zipFile);
     const unzipArray: Array<JSZip.JSZipObject> = [];
     unziped.forEach((relativePath, zipEntry) => {
       unzipArray.push(zipEntry);
@@ -254,7 +267,10 @@ async function importZipFile() {
   margin-bottom: 20px;
   gap: 20px;
 }
-
+.tip {
+  font-size: 12px;
+  color: #999;
+}
 .setting-item label {
   display: block;
   width: 130px;

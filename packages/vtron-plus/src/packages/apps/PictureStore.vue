@@ -65,8 +65,7 @@
           <div class="music-upload-title">
             <span>上传图片</span>
           </div>
-          <input class="music-upload-input" type="file" name="file" id="file" accept="image/*" />
-          <WinButtonVue @click="upload">上传</WinButtonVue>
+          <FileUploader :accept="'image/*'" @change="upload"></FileUploader>
         </div>
       </div>
     </div>
@@ -74,8 +73,8 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { VtronFileWithoutContent, join, useSystem, WinButtonVue } from 'vtron';
-// import AudioPlayer from '@liripeng/vue-audio-player';
+import { VtronFileWithoutContent, join, useSystem } from 'vtron';
+import FileUploader from '../components/FileUploader.vue';
 
 const sys = useSystem();
 const musicList = ref<VtronFileWithoutContent[]>([]);
@@ -91,20 +90,21 @@ const jumpTo = (index: number) => {
   router.value = index;
 };
 
-function upload() {
-  const file = document.getElementById('file') as HTMLInputElement;
-  if (file.files) {
+function upload(ev: Event) {
+  const tar = ev.target as HTMLInputElement;
+
+  if (tar.files) {
     const reader = new FileReader();
-    reader.readAsDataURL(file.files[0]);
+    reader.readAsDataURL(tar.files[0]);
     reader.onloadend = function () {
-      if (file.files) {
+      if (tar.files) {
         sys.fs
           .writeFile(
-            join(sys._options.userLocation || '', 'Photo', file.files[0].name),
+            join(sys._options.userLocation || '', 'Photo', tar.files[0].name),
             reader.result as string
           )
           .then(() => {
-            file.value = '';
+            tar.value = '';
             refershFileLst();
             sys.createNotify({
               title: '上传成功',
@@ -213,32 +213,35 @@ function handleWheel(event: WheelEvent) {
     align-items: center;
     border-top: 1px dashed #545454;
     .music-body-left {
-      width: 80px;
+      width: 100px;
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
       border-right: 1px dashed #545454;
+      margin-top: 20px;
       // margin-top: 40px;
       .music-body-left-title {
         display: flex;
         justify-content: center;
         align-items: center;
-        // margin-top: 10px;
-        width: 100%;
-        padding: 10px 0;
+        width: 80%;
+        padding: 6px;
+        border-radius: 4px;
+        margin: 4px;
         cursor: pointer;
+        transition: all 0.1s;
         span {
           font-size: 16px;
-          color: #000;
         }
       }
       .music-body-left-title.chosen {
         background-color: #eee;
       }
       .music-body-left-title:hover {
-        background-color: #eee;
+        color: white;
+        background-color: #808080;
       }
     }
     .music-body-right {
@@ -260,10 +263,14 @@ function handleWheel(event: WheelEvent) {
           text-overflow: ellipsis;
           white-space: nowrap;
           flex-shrink: 0;
+          margin: 2px;
+          padding: 4px;
+          border-radius: 4px;
+          transition: all 0.1s;
         }
         .music-list-item:hover {
           color: white;
-          background-color: #c8c8c8;
+          background-color: #808080;
         }
       }
       .music-upload {

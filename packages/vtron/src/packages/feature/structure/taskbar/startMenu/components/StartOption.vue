@@ -36,11 +36,13 @@
 </template>
 <script lang="ts" setup>
 import { emitEvent } from '@feature/event';
-import Setting from '@feature/builtin/Setting.vue';
+// import Setting from '@feature/builtin/Setting.vue';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 import { Dialog } from '@feature/dialog/Dialog';
-import Settingicon from '@packages/assets/setting.png';
+// import Settingicon from '@packages/assets/setting.png';
+import { useSystem } from '@/packages/plug';
+const sys = useSystem();
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
     case 0:
@@ -74,19 +76,20 @@ function handleClick(key: number, ev: MouseEvent) {
       emitEvent('startMenu.set.click', {
         mouse: ev,
       });
-      const win = new BrowserWindow({
-        content: Setting,
-        icon: Settingicon,
-        width: 800,
-        height: 600,
-        title: i18n('setting'),
-        frame: false,
-        // resizable: false,
-        center: true,
-        backgroundColor: '#00000000',
-      });
-      win.show();
-      win.moveTop();
+      const winopt = sys._rootState.system.windowMap['Builtin'].get('设置');
+
+      if (winopt) {
+        if (winopt._hasShow) {
+          return;
+        } else {
+          winopt._hasShow = true;
+          const win = new BrowserWindow(winopt.window);
+          win.show();
+          win.on('close', () => {
+            winopt._hasShow = false;
+          });
+        }
+      }
       break;
     }
 

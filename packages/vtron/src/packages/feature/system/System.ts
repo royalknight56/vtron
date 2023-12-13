@@ -333,6 +333,9 @@ class System {
   addMenuList(options: WinAppOptions, force = false) {
     this.addWindowSysLink('Menulist', options, force);
   }
+  addBuiltInApp(options: WinAppOptions) {
+    this._rootState.system.windowMap['Builtin'].set(options.name, options);
+  }
   createShell(): ShellInterface {
     if (this._options.shell) {
       return this._options.shell;

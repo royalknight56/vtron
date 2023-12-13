@@ -22,6 +22,7 @@ const rootState: RootState = reactive({
       Desktop: new Map<string, WinAppOptions>(),
       Magnet: new Map<string, WinAppOptions>(),
       Menulist: new Map<string, WinAppOptions>(),
+      Builtin: new Map<string, WinAppOptions>(),
     },
     topWindow: undefined,
     winnum: 0,

@@ -45,14 +45,14 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref, markRaw } from 'vue';
-import SetUpdate from '@feature/builtin/SetWindow/SetUpdate.vue';
+// import SetUpdate from '@feature/builtin/SetWindow/SetUpdate.vue';
 import SetCustom from '@feature/builtin/SetWindow/SetCustom.vue';
 import SetSystem from '@feature/builtin/SetWindow/SetSystem.vue';
 import WinUpButtonGroup from '@/packages/components/WinUpButtonGroup.vue';
 import e7f8 from '../../../assets/icon/e7f8.png'; //系统设置
 // import e774 from '../../../assets/icon/e774.png'; //网络
 import e771 from '../../../assets/icon/e771.png'; //个性化
-import e895 from '../../../assets/icon/e895.png'; //更新
+// import e895 from '../../../assets/icon/e895.png'; //更新
 import e775 from '../../../assets/icon/e775.png'; //语言
 
 import { BrowserWindow } from '@feature/window/BrowserWindow';
@@ -62,7 +62,7 @@ import { vDragable } from '../window/MakeDragable';
 import SetLang from './SetWindow/SetLang.vue';
 const browserWindow = inject<BrowserWindow>('browserWindow')!;
 const sys = useSystem();
-const currentRouter = ref('main');
+const currentRouter = ref(browserWindow.config?.router || 'main');
 
 const focusState = ref(false);
 browserWindow?.on('focus', () => {

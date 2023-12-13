@@ -88,6 +88,7 @@ export type RootState = {
       Desktop: Map<string, WinAppOptions>;
       Magnet: Map<string, WinAppOptions>;
       Menulist: Map<string, WinAppOptions>;
+      Builtin: Map<string, WinAppOptions>;
       [key: string]: Map<string, WinAppOptions>;
     };
     winnum: number;

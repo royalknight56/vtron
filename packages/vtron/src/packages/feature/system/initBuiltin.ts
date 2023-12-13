@@ -4,6 +4,7 @@ import myComputerLogoIcon from '@packages/assets/computer.png?url';
 // import termIcon from '@packages/assets/term.png?url';
 import unknownIcon from '@packages/assets/unknown.png';
 import imageicon from '@packages/assets/image.png';
+import settingicon from '@packages/assets/setting.png';
 
 import FileViewer from '@feature/builtin/FileViewer.vue';
 import MyComputerVue from '@feature/builtin/MyComputer/MyComputer.vue';
@@ -26,8 +27,29 @@ import NetWorkVue from '../structure/taskbar/barUnit/NetWork.vue';
 import DateTimeVue from '../structure/taskbar/barUnit/DateTime.vue';
 import DateTimePopVue from '../structure/taskbar/popover/DateTimePop.vue';
 import NetworkPopVue from '../structure/taskbar/popover/NetworkPop.vue';
+import SettingVue from '../builtin/Setting.vue';
 
 export function initBuiltinApp(system: System) {
+  const setting = {
+    name: '设置',
+    icon: settingicon,
+    multiple: false,
+    window: {
+      content: SettingVue,
+      icon: settingicon,
+      width: 800,
+      height: 600,
+      title: i18n('setting'),
+      frame: false,
+      // resizable: false,
+      center: true,
+      backgroundColor: '#00000000',
+    },
+  };
+  system.addMagnet(setting, true);
+  system.addMenuList(setting, true);
+  system.addBuiltInApp(setting);
+
   if (system._options.builtinApp?.length === 0) return;
   if (system._options.builtinApp?.includes('MyComputer')) {
     const myComputer = {

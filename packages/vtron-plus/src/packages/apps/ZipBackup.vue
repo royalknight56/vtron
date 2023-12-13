@@ -34,7 +34,7 @@
         <div class="setting-item">
           <label> </label>
           <div>
-            <WinButtonVue @click="importBackup">恢复备份</WinButtonVue>
+            <WinButtonVue v-if="fileName" @click="importBackup('')">恢复备份</WinButtonVue>
           </div>
         </div>
       </div>
@@ -61,7 +61,7 @@
         <div class="setting-item">
           <label> </label>
           <div>
-            <WinButtonVue @click="importZipFile">导入</WinButtonVue>
+            <WinButtonVue v-if="fileName" @click="importZipFile">导入</WinButtonVue>
           </div>
         </div>
       </div>

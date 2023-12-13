@@ -71,8 +71,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Dialog, WinButtonVue, useSystem, WinInput, join } from 'vtron';
-import * as JSZip from 'jszip';
-import * as FileSaver from 'file-saver';
+import JSZip from 'jszip';
+import FileSaver from 'file-saver';
 import FileUploader from '../components/FileUploader.vue';
 
 const activeIndex = ref(0);
@@ -98,6 +98,7 @@ async function exportBackup() {
       setProgress(100);
     });
   } catch (error) {
+    console.log(error);
     Dialog.showMessageBox({
       message: '打包失败',
       type: 'error',

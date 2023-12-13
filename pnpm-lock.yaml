@@ -98,8 +98,8 @@ importers:
       primevue: ^3.43.0
       typescript: ^5.0.2
       vite: ^4.3.9
-      vtron: ^0.5.9
-      vtron-plus: ^0.5.1
+      vtron: ^0.6.0
+      vtron-plus: ^0.5.2
       vue: ^3.2.45
       vue-tsc: ^1.4.2
       webdav: ^5.3.0
@@ -144,7 +144,7 @@ importers:
       typescript: ^5.1.6
       vite: ^4.1.0
       vite-plugin-dts: ^2.0.2
-      vtron: ^0.5.9
+      vtron: ^0.6.0
       vue: ^3.2.45
       vue-demi: ^0.13.11
       vue-tsc: ^0.40.1
@@ -1535,7 +1535,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.5.0_@types+node@18.18.8
+      vite: 4.5.0
       vue: 3.2.47
     dev: true
 

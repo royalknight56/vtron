@@ -9,6 +9,7 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     // "esModuleInterop": true,
+    "allowSyntheticDefaultImports":true,
     "lib": ["ESNext", "dom"],
     "skipLibCheck": true,
     "declaration": true,

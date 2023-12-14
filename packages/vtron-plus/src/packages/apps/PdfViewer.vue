@@ -1,22 +1,14 @@
 <template>
   <div class="viewer">
-    <embed
-      id="mainpdf"
-      :src="content"
-      type="application/pdf"
-      width="100%"
-      height="100%"
-    />
+    <embed id="mainpdf" :src="content" type="application/pdf" width="100%" height="100%" />
   </div>
 </template>
 <script setup lang="ts">
-import { BrowserWindow } from "vtron";
-import { inject } from "vue";
-const window: BrowserWindow | undefined = inject("browserWindow");
+import { BrowserWindow } from 'vtron';
+import { inject } from 'vue';
+const window: BrowserWindow | undefined = inject('browserWindow');
 
-const content = base64PDFToBlobUrl(
-  window?.config.content.replace(/^data:application\/octet-stream;base64,/, "")
-);
+const content = base64PDFToBlobUrl(window?.config.content.replace(/^data:(.)*;base64,/, ''));
 function base64PDFToBlobUrl(base64: string) {
   const binStr = atob(base64);
   const len = binStr.length;
@@ -24,7 +16,7 @@ function base64PDFToBlobUrl(base64: string) {
   for (let i = 0; i < len; i++) {
     arr[i] = binStr.charCodeAt(i);
   }
-  const blob = new Blob([arr], { type: "application/pdf" });
+  const blob = new Blob([arr], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   return url;
 }

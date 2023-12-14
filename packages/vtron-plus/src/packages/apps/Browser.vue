@@ -4,7 +4,7 @@
  * @Description: 这是个未完成的浏览器窗口
 -->
 <template>
-  <div class="outer" @click="handleClick">
+  <div class="outer">
     <div class="uper">
       <button class="change uper_button" @click="changeUrl">
         <svg
@@ -68,12 +68,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
-function handleClick() {}
-let urlinput = ref("https://cn.bing.com/");
-let urlsrc = ref("https://cn.bing.com/");
+import { ref } from 'vue';
+
+const urlinput = ref('https://cn.bing.com/');
+const urlsrc = ref('https://cn.bing.com/');
 function urlkey(e: KeyboardEvent) {
-  if (e.code == "Enter") {
+  if (e.code == 'Enter') {
     changeUrl();
   }
 }
@@ -81,10 +81,9 @@ function changeUrl() {
   if (/^(http|https):\/\//.test(urlinput.value)) {
     urlsrc.value = urlinput.value;
   } else {
-    urlsrc.value = "https://" + urlinput.value;
+    urlsrc.value = 'https://' + urlinput.value;
   }
 }
-window.open = <any>function (e: any) {};
 </script>
 <style>
 iframe {
@@ -105,8 +104,8 @@ iframe {
 .tablist {
   box-sizing: border-box;
   position: relative;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-size: 12px;
   height: 46px;
   padding: 8px 3px 4px 3px;
@@ -116,8 +115,8 @@ iframe {
 
   box-sizing: border-box;
   position: relative;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-size: 12px;
   height: 46px;
   padding: 8px 3px 4px 3px;
@@ -130,8 +129,8 @@ iframe {
 
   box-sizing: border-box;
   position: relative;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-size: 12px;
   height: 46px;
   padding: 8px 3px 4px 3px;

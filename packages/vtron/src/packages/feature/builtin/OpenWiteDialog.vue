@@ -29,7 +29,7 @@ type TempOpener = {
 const openerList = ref<TempOpener[]>([]);
 onMounted(() => {
   let tempList: TempOpener[] = [];
-  sys.getAllFileOpener().forEach((opener, key) => {
+  sys.getAllFileOpener().forEach((opener) => {
     if (opener.hiddenInChosen) {
       return;
     }

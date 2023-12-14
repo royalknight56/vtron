@@ -110,7 +110,7 @@ function uploadFile(ev: Event) {
         sys.fs
           .writeFile(
             join(sys._options.userLocation || '', 'Music', tar.files[0].name),
-            reader.result as string
+            (reader.result || '').toString().replace(/^data:(.)*;base64,/, '')
           )
           .then(() => {
             tar.value = '';
@@ -125,7 +125,7 @@ function uploadFile(ev: Event) {
   }
 }
 
-function base64PDFToBlobUrl(base64: string) {
+function base64ToBlobUrl(base64: string) {
   const binStr = atob(base64);
   const len = binStr.length;
   const arr = new Uint8Array(len);
@@ -143,7 +143,7 @@ async function playMusic(item: VtronFileWithoutContent) {
   chosenMusic.value = item;
   const fileC = await sys.fs.readFile(item.path);
   if (fileC) {
-    const content = base64PDFToBlobUrl(fileC.replace(/^data:(.)*;base64,/, ''));
+    const content = base64ToBlobUrl(fileC.replace(/^data:(.)*;base64,/, ''));
     audioList.value = [
       {
         name: 'audio 1',

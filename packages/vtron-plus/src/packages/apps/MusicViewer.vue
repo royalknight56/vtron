@@ -15,7 +15,7 @@ import { inject } from 'vue';
 
 const window: BrowserWindow | undefined = inject('browserWindow');
 
-const content = base64PDFToBlobUrl(window?.config.content.replace(/^data:(.)*;base64,/, ''));
+const content = base64ToBlobUrl(window?.config.content.replace(/^data:(.)*;base64,/, ''));
 
 const audioList = [
   {
@@ -24,7 +24,7 @@ const audioList = [
   },
 ];
 
-function base64PDFToBlobUrl(base64: string) {
+function base64ToBlobUrl(base64: string) {
   const binStr = atob(base64);
   const len = binStr.length;
   const arr = new Uint8Array(len);

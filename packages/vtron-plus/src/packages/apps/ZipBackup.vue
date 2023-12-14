@@ -102,7 +102,9 @@ async function exportBackup() {
     Dialog.showMessageBox({
       message: '打包失败',
       type: 'error',
-    }).then(() => {
+    }).finally(() => {
+      zipFile = undefined;
+      fileName.value = '';
       setProgress(100);
     });
   }
@@ -113,7 +115,7 @@ async function dfsPackage(path: string, zip: JSZip, setProgress: any) {
   for (let i = 0; i < dir.length; i++) {
     const item = dir[i];
     const stat = await sys.fs.stat(item.path);
-    setProgress((i / dir.length) * 100);
+    setProgress(Math.max((i / dir.length) * 100 - 0.1, 0.1));
     if (stat) {
       if (stat.isDirectory) {
         await dfsPackage(item.path, zip, setProgress);
@@ -139,6 +141,9 @@ async function changeZipFile(ev: Event) {
   if (tar.files) {
     zipFile = tar.files[0];
     fileName.value = zipFile.name;
+  } else {
+    zipFile = undefined;
+    fileName.value = '';
   }
 }
 async function importBackup(path = '') {
@@ -171,7 +176,9 @@ async function importBackup(path = '') {
       Dialog.showMessageBox({
         message: '恢复失败',
         type: 'error',
-      }).then(() => {
+      }).finally(() => {
+        zipFile = undefined;
+        fileName.value = '';
         setProgress(100);
       });
     }, 100);

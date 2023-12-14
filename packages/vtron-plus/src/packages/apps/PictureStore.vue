@@ -101,7 +101,7 @@ function upload(ev: Event) {
         sys.fs
           .writeFile(
             join(sys._options.userLocation || '', 'Photo', tar.files[0].name),
-            reader.result as string
+            (reader.result || '').toString().replace(/^data:(.)*;base64,/, '')
           )
           .then(() => {
             tar.value = '';
@@ -123,7 +123,9 @@ async function playPhoto(item: VtronFileWithoutContent) {
   const path = item.path;
   const fileC = await sys.fs.readFile(path);
   if (fileC) {
-    content.value = fileC;
+    content.value = 'data:image/png;base64,' + fileC;
+  } else {
+    content.value = '';
   }
 }
 const scale = ref(0.7);

@@ -4,23 +4,21 @@
   </video>
 </template>
 <script setup lang="ts">
-import { BrowserWindow, basename } from "vtron";
-import { inject } from "vue";
+import { BrowserWindow } from 'vtron';
+import { inject } from 'vue';
 
-const window: BrowserWindow | undefined = inject("browserWindow");
+const window: BrowserWindow | undefined = inject('browserWindow');
 
-const content = base64PDFToBlobUrl(
-  window?.config.content.replace(/^data:application\/octet-stream;base64,/, "")
-);
+const content = base64ToBlobUrl(window?.config.content.replace(/^data:(.)*;base64,/, ''));
 
-function base64PDFToBlobUrl(base64: string) {
+function base64ToBlobUrl(base64: string) {
   const binStr = atob(base64);
   const len = binStr.length;
   const arr = new Uint8Array(len);
   for (let i = 0; i < len; i++) {
     arr[i] = binStr.charCodeAt(i);
   }
-  const blob = new Blob([arr], { type: "video/mp4" });
+  const blob = new Blob([arr], { type: 'video/mp4' });
 
   const url = URL.createObjectURL(blob);
   return url;

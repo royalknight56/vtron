@@ -4,17 +4,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { BrowserWindow } from "vtron";
-import { inject, watch } from "vue";
+import { BrowserWindow } from 'vtron';
+import { inject } from 'vue';
 // @ts-ignore
-import VueOfficeDocx from "@vue-office/docx/lib/v3/vue-office-docx.mjs";
+import VueOfficeDocx from '@vue-office/docx/lib/v3/vue-office-docx.mjs';
 
-import "@vue-office/docx/lib/index.css";
+import '@vue-office/docx/lib/index.css';
 
-const browserWindow: BrowserWindow | undefined = inject("browserWindow");
+const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
 function base64PDFToBlobUrl(base64: string) {
-  return browserWindow?.config.content;
+  return 'data:application/octet-stream;base64,' + base64;
 }
 </script>
 <style scoped>

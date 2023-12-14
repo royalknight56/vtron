@@ -7,12 +7,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import json from "../../../package.json?raw";
+import json from '../../../package.json?raw';
 
 const jsonobj = JSON.parse(json);
 
 const plusVersion = jsonobj.version;
-const vtronVersion = jsonobj.dependencies.vtron;
 </script>
 <style scoped>
 .version {

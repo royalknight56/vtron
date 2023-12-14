@@ -1,14 +1,15 @@
-import { BrowserWindow, System } from "vtron";
-import VideoVue from "../components/apps/Video.vue";
-import ImageVue from "../components/apps/Image.vue";
+import { BrowserWindow, System } from 'vtron';
+import VideoVue from '../components/apps/Video.vue';
+import ImageVue from '../components/apps/Image.vue';
 
 export function mountOpener(system: System) {
-  system.registerFileOpener([".mp4", ".mkv"], {
-    icon: "",
+  system.registerFileOpener(['.mp4', '.mkv'], {
+    name: '视频',
+    icon: '',
     func: (path, content) => {
       new BrowserWindow({
         title: path,
-        icon: "",
+        icon: '',
         width: 800,
         height: 600,
         resizable: true,
@@ -22,12 +23,13 @@ export function mountOpener(system: System) {
     },
   });
 
-  system.registerFileOpener([".jpg", ".png"], {
-    icon: "",
+  system.registerFileOpener(['.jpg', '.png'], {
+    name: '图片预览',
+    icon: '',
     func: (path, content) => {
       new BrowserWindow({
         title: path,
-        icon: "",
+        icon: '',
         width: 800,
         height: 600,
         resizable: true,

@@ -37,7 +37,9 @@ const logger = function (...args: any[]) {
 
 export type VtronPlugin = (system: System, rootState: RootState) => void;
 export type FileOpener = {
+  name?: string;
   icon: string;
+  hiddenInChosen?: boolean;
   func: (path: string, content: string) => void;
 };
 /**
@@ -400,6 +402,9 @@ class System {
       return;
     }
     this._flieOpenerMap.set(type, opener);
+  }
+  getAllFileOpener() {
+    return this._flieOpenerMap;
   }
   registerSettingPanel(setting: Setting) {
     const temp = {

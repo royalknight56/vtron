@@ -205,6 +205,7 @@ class BrowserWindow {
         const ind = rootState.system.windowOrder.findIndex((val) => {
           return val === this;
         });
+        if (ind === -1) return;
         rootState.system.windowOrder.splice(ind, 1);
       }, 500);
     }

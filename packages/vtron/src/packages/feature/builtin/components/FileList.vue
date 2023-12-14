@@ -85,7 +85,7 @@ import { onMounted, ref } from 'vue';
 import { Rect } from '@/packages/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
 
-const { openPropsWindow, copyFile, createLink } = useContextMenu();
+const { openPropsWindow, copyFile, createLink, openWith } = useContextMenu();
 const sys = useSystem();
 const { startDrag, folderDrop } = useFileDrag(sys);
 const props = defineProps({
@@ -234,6 +234,13 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
             openPropsWindow(props.fileList[index].path);
             chosenIndexs.value = [];
           });
+        },
+      },
+      {
+        name: i18n('open.with'),
+        click: () => {
+          chosenIndexs.value = [];
+          openWith(item);
         },
       },
       {

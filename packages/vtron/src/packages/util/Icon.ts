@@ -44,13 +44,14 @@ export async function dealIcon(
     if (system.fs instanceof VtronFileSystem) {
       if (system.fs.checkVolumePath(file.path)) {
         return imageicon;
+      } else {
+        // 只有当非自定义文件系统和非自定义卷才直接展示icon
+        const content = await system.fs.readFile(file.path);
+        return 'data:image/png;base64,' + content || unknownicon;
       }
     } else {
       return imageicon;
     }
-    // 只有当非自定义文件系统和非自定义卷才直接展示icon
-    const content = await system.fs.readFile(file.path);
-    return content || unknownicon;
   }
   if (ext === '.ln') {
     if (stopCircle) {

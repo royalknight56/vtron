@@ -19,14 +19,14 @@ const sys = inject<System>('system')!;
 const content = ref('');
 
 onMounted(() => {
-  const path = browserWindow?.config.content;
+  const fileContent = browserWindow?.config.content;
 
   if (sys.fs instanceof VtronFileSystem) {
-    sys.fs.checkVolumePath(path);
+    sys.fs.checkVolumePath(fileContent);
   }
-  if (path?.startsWith('http')) {
+  if (fileContent?.startsWith('http')) {
     // http://admin:admin@example.com:5244/dav/a.jpg to admin:admin
-    const url = new URL(path);
+    const url = new URL(fileContent);
     const cred = url.password ? `${url.username}:${url.password}` : '';
     if (cred) {
       const resource = url.href.replace(`${url.username}:${url.password}@`, '');
@@ -46,10 +46,10 @@ onMounted(() => {
       });
       return;
     } else {
-      content.value = path;
+      content.value = fileContent;
     }
   } else {
-    content.value = path;
+    content.value = 'data:image/png;base64,' + fileContent;
     return;
   }
 });

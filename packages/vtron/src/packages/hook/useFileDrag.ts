@@ -43,9 +43,11 @@ export function useFileDrag(system: System) {
     content?: string,
     process?: (path: string) => void
   ) {
-    return await system?.fs.writeFile(FsPath.join(path, name || 'unkown'), content || '').then(() => {
-      process?.(FsPath.join(path, name || 'unkown'));
-    });
+    return await system?.fs
+      .writeFile(FsPath.join(path, name || 'unkown'), content?.replace(/data:.*?;base64,/, '') || '')
+      .then(() => {
+        process?.(FsPath.join(path, name || 'unkown'));
+      });
   }
   // 外部文件拖到文件夹放下时
   async function outerFileDrop(path: string, list: FileList | undefined, process: (path: string) => void) {

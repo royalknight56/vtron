@@ -97,6 +97,7 @@ export const enUS: AllText = {
 
   copy: 'Copy',
   paste: 'Paste',
+  'open.with': 'Open With',
 
   'please.reboot': 'Please Reboot',
 

@@ -6,6 +6,7 @@ import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useRootState } from '../feature/state/Root';
 import { Dialog } from '../plug';
+import OpenWiteDialogVue from '../feature/builtin/OpenWiteDialog.vue';
 
 export type ContextMenu = {
   name: string;
@@ -63,6 +64,23 @@ function useContextMenu() {
       return system?.fs.unlink(file.path);
     }
   }
+  async function openWith(file: VtronFileWithoutContent) {
+    const tempWin = new BrowserWindow({
+      title: i18n('open.with'),
+      content: OpenWiteDialogVue,
+      config: {
+        content: file.path,
+      },
+      width: 400,
+      height: 400,
+      center: true,
+    });
+    tempWin.on('blur', () => {
+      tempWin.close();
+    });
+    tempWin.show();
+  }
+
   async function copyFile(files: VtronFileWithoutContent[]) {
     const system = useSystem();
     if (!system) return;
@@ -122,7 +140,16 @@ function useContextMenu() {
     }
     return await system.fs.writeFile(linkPath, path);
   }
-  return { createNewFile, openPropsWindow, createNewDir, deleteFile, copyFile, pasteFile, createLink };
+  return {
+    createNewFile,
+    openPropsWindow,
+    createNewDir,
+    deleteFile,
+    openWith,
+    copyFile,
+    pasteFile,
+    createLink,
+  };
 }
 
 export { useContextMenu };

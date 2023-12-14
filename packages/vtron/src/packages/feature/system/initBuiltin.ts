@@ -97,7 +97,9 @@ export function initBuiltinApp(system: System) {
 }
 export function initBuiltinFileOpener(system: System) {
   system.registerFileOpener('.exe', {
+    name: '可执行程序',
     icon: unknownIcon,
+    hiddenInChosen: true,
     func: (path: string, content: string) => {
       const exeContent = content.split('::');
       // exeContent[1]= loc
@@ -124,7 +126,9 @@ export function initBuiltinFileOpener(system: System) {
     },
   });
   system.registerFileOpener('.ln', {
+    name: '快捷方式',
     icon: unknownIcon,
+    hiddenInChosen: true,
     func: async (path, content) => {
       if (await system.fs.exists(content)) {
         try {
@@ -146,10 +150,11 @@ export function initBuiltinFileOpener(system: System) {
     },
   });
 
-  system.registerFileOpener(['.txt', '.js', '.json'], {
+  system.registerFileOpener(['.txt', '.js', '.json', ''], {
+    name: '文本文件',
     icon: unknownIcon,
     func: (path, content) => {
-      const pdfwindow = new BrowserWindow({
+      const tempwindow = new BrowserWindow({
         width: 400,
         height: 400,
         center: true,
@@ -160,14 +165,16 @@ export function initBuiltinFileOpener(system: System) {
           path: path,
         },
       });
-      pdfwindow.show();
+      tempwindow.show();
     },
   });
 
   system.registerFileOpener('dir', {
+    name: '文件夹',
     icon: unknownIcon,
+    hiddenInChosen: true,
     func: (path, content) => {
-      const pdfwindow = new BrowserWindow({
+      const tempwindow = new BrowserWindow({
         width: 800,
         height: 600,
         center: true,
@@ -179,11 +186,12 @@ export function initBuiltinFileOpener(system: System) {
           path: path,
         },
       });
-      pdfwindow.show();
+      tempwindow.show();
     },
   });
 
   system.registerFileOpener('.url', {
+    name: '网址',
     icon: unknownIcon,
     func: async (path, content) => {
       const imgwindow = new BrowserWindow({
@@ -203,6 +211,7 @@ export function initBuiltinFileOpener(system: System) {
   });
 
   system.registerFileOpener(['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'], {
+    name: '图片',
     icon: imageicon,
     func: (path: string, content: any) => {
       const imgwindow = new BrowserWindow({

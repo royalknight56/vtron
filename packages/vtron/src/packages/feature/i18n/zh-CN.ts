@@ -99,6 +99,7 @@ export const zhCN = {
 
   copy: '复制',
   paste: '粘贴',
+  'open.with': '打开方式',
 
   'please.reboot': '请重启',
 

@@ -9,7 +9,7 @@ import { inject } from 'vue';
 
 const window: BrowserWindow | undefined = inject('browserWindow');
 
-const content = window?.config.content;
+const content = 'data:application/octet-stream;base64,' + window?.config.content;
 </script>
 <style scoped>
 .viewer {

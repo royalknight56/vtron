@@ -85,6 +85,9 @@ const chosenIndexs = ref<Array<number>>([]);
 function handleClick(item: FileWithOpen, index: number) {
   chosenIndexs.value = [index];
   props.onOpen(item.path, item.isDirectory);
+  if (item.isDirectory) {
+    onOpenArrow(item);
+  }
 }
 
 onMounted(() => {
@@ -153,7 +156,18 @@ function dealI18nName(name: string) {
 .open-arrow {
   transform: translateY(-2px) translateX(2px) rotate(45deg);
 }
-
+.sub-tree {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.item-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
 .file-item {
   position: relative;
   display: flex;
@@ -165,6 +179,8 @@ function dealI18nName(name: string) {
   font-size: var(--ui-font-size);
   border: 1px solid transparent;
   margin: 2px;
+  padding: 2px;
+  border-radius: 4px;
   user-select: none;
 }
 
@@ -172,6 +188,9 @@ function dealI18nName(name: string) {
   margin-left: 4px;
   width: 100%;
   height: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .file-item:hover {
   background-color: #b1f1ff4c;

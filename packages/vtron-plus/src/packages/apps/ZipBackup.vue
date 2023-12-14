@@ -138,9 +138,9 @@ let zipFile: File | undefined = undefined;
 const fileName = ref('');
 async function changeZipFile(ev: Event) {
   const tar = ev.target as HTMLInputElement;
-  if (tar.files) {
+  if (tar.files?.[0]) {
     zipFile = tar.files[0];
-    fileName.value = zipFile.name;
+    fileName.value = zipFile?.name;
   } else {
     zipFile = undefined;
     fileName.value = '';

@@ -53,27 +53,27 @@
           </svg>
         </button>
       </div>
-
-      <FileTree
-        :chosen-path="chosenTreePath"
-        mode="list"
-        :on-open="onTreeOpen"
-        :file-list="rootFileList"
-        :key="random"
-      >
-      </FileTree>
+      <div class="file-list">
+        <FileTree
+          :chosen-path="chosenTreePath"
+          mode="list"
+          :on-open="onTreeOpen"
+          :file-list="rootFileList"
+          :key="random"
+        >
+        </FileTree>
+      </div>
     </div>
     <div class="start" v-if="!chosenTreePath || chosenIsDirectory">左侧选择md文档，请注意随时保存</div>
     <mavon-editor v-else class="editor" v-model="value" @save="save" />
   </div>
 </template>
 <script setup lang="ts">
-import { BrowserWindow, Notify, VtronFile, VtronFileWithoutContent, basename, join, useSystem } from 'vtron';
-import { inject, onMounted, ref } from 'vue';
+import { Notify, VtronFileWithoutContent, join, useSystem } from 'vtron';
+import { onMounted, ref } from 'vue';
 import FileTree from './comp/FileTree.vue';
 const value = ref('# hello, markdown!');
 const sys = useSystem();
-const win = inject<BrowserWindow>('browserWindow');
 const chosenTreePath = ref(join(sys._options.userLocation || '', 'Note'));
 const chosenIsDirectory = ref(true);
 function onTreeOpen(path?: string, isDirectory?: boolean) {
@@ -86,7 +86,13 @@ function onTreeOpen(path?: string, isDirectory?: boolean) {
 
     sys.fs.readFile(path).then((res) => {
       if (res) {
-        value.value = res;
+        try {
+          const base64String = decodeURIComponent(escape(atob(res)));
+          value.value = base64String;
+        } catch (error) {
+          console.log(error);
+          value.value = res;
+        }
       }
     });
   } else {
@@ -109,7 +115,6 @@ async function refersh() {
   });
 }
 async function createMd() {
-  const path = join(chosenTreePath.value, 'Untitled.md');
   if (await sys.fs.exists(join(chosenTreePath.value, 'Untitled.md'))) {
     new Notify({
       title: '创建失败',
@@ -117,7 +122,7 @@ async function createMd() {
     });
     return;
   }
-  sys.fs.writeFile(join(chosenTreePath.value, 'Untitled.md'), '# hello, markdown!').then((res) => {
+  sys.fs.writeFile(join(chosenTreePath.value, 'Untitled.md'), '# hello, markdown!').then(() => {
     sys.fs.readdir(join(sys._options.userLocation || '', 'Note')).then((file) => {
       if (file) {
         rootFileList.value = [...file];
@@ -127,7 +132,7 @@ async function createMd() {
   });
 }
 function createMdFloder() {
-  sys.fs.mkdir(join(sys._options.userLocation || '', 'Note', 'Untitled')).then((res) => {
+  sys.fs.mkdir(join(sys._options.userLocation || '', 'Note', 'Untitled')).then(() => {
     sys.fs.readdir(join(sys._options.userLocation || '', 'Note')).then((file) => {
       if (file) {
         rootFileList.value = [...file];
@@ -136,18 +141,35 @@ function createMdFloder() {
     });
   });
 }
-function save(markdown: string, html: string) {
+function save(markdown: string) {
   let path = chosenTreePath.value;
 
   if (!path) {
     path = '/C/Users/Note/Untitled.md';
   }
-  sys?.fs.writeFile(path, markdown).then((res) => {
-    new Notify({
-      title: '保存成功',
-      content: '文件已保存',
+  try {
+    sys?.fs.writeFile(path, btoa(unescape(encodeURIComponent(markdown)))).then(() => {
+      new Notify({
+        title: '保存成功',
+        content: '文件已保存',
+      });
     });
-  });
+  } catch (error) {
+    sys?.fs
+      .writeFile(path, markdown)
+      .then(() => {
+        new Notify({
+          title: '保存成功',
+          content: '文件已保存',
+        });
+      })
+      .catch(() => {
+        new Notify({
+          title: '保存失败',
+          content: '文件保存失败',
+        });
+      });
+  }
 }
 </script>
 <style scoped>
@@ -158,17 +180,20 @@ function save(markdown: string, html: string) {
 .file-tree {
   width: 200px;
   height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
   border-right: 1px solid #ccc;
   border-top: 1px solid #ccc;
+}
+.file-list {
+  height: calc(100% - 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .opt-group {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 50px;
+  height: 40px;
   border-bottom: 1px solid #ccc;
 }
 .create-button {
@@ -177,14 +202,14 @@ function save(markdown: string, html: string) {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   font-size: var(--ui-font-size);
   border: 1px solid transparent;
-  margin: 2px;
+  margin: 4px;
   user-select: none;
   cursor: pointer;
-  border-radius: 50%;
+  border-radius: 4px;
 }
 .create-button:after {
   position: absolute;

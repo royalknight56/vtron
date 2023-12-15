@@ -144,7 +144,7 @@ importers:
       typescript: ^5.1.6
       vite: ^4.1.0
       vite-plugin-dts: ^2.0.2
-      vtron: ^0.6.0
+      vtron: ^0.6.1
       vue: ^3.2.45
       vue-demi: ^0.13.11
       vue-tsc: ^0.40.1

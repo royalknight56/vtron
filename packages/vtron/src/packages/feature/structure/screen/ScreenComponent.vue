@@ -31,10 +31,10 @@ import LockDesktop from '@feature/structure/desktop/LockDesktop.vue';
 import DesktopBackground from '@feature/structure/desktop/components/DesktopBackground.vue';
 
 import { SystemStateEnum } from '@packages/type/enum';
-import { System } from '@feature/system';
+import { System, useSystem } from '@feature/system';
 import { ref } from 'vue';
 import { RootState } from '@/packages/plug';
-const rootState = ref<RootState | undefined>();
+const rootState = ref<RootState | undefined>(useSystem()?._rootState);
 System.onOpen((system: System) => {
   rootState.value = system._rootState;
 });

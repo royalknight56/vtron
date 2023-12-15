@@ -186,7 +186,7 @@ NoteMd是和vtron契合的笔记软件
   mountOpener(system);
   readySystem.setConfig('contextMenus', [
     {
-      name: '新建.md文件',
+      label: '新建.md文件',
       async click() {
         const ifstat = await readySystem.fs.stat('/C/Users/Desktop/新建文件.md');
         if (ifstat) {
@@ -207,7 +207,7 @@ NoteMd是和vtron契合的笔记软件
       },
     },
     {
-      name: '新建网络链接',
+      label: '新建网络链接',
       click() {
         new BrowserWindow({
           title: '创建网络链接',

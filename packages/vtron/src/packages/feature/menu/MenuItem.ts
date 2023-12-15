@@ -1,10 +1,10 @@
 export interface MenuItemConstructorOptions {
   label: string;
   submenu?: MenuItemConstructorOptions[];
-  click: () => void;
+  click?: () => void;
 }
 export class MenuItem {
-  click: () => void;
+  click?: () => void;
   label: string;
   submenu?: MenuItemConstructorOptions[];
   constructor({ label, click, submenu }: MenuItemConstructorOptions) {

@@ -15,6 +15,7 @@ import { Notify } from '../notification/Notification';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 import { i18n } from '@feature/i18n';
+import { Menu } from '@feature/menu/Menu';
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 const input = ref('');
@@ -39,34 +40,31 @@ function changeFormat() {
 
 const system = useSystem();
 function handleButton(e: MouseEvent) {
-  system?.emitEvent('contextMenu.show', {
-    mouse: e,
-    menuList: [
-      {
-        name: i18n('save'),
-        click: async () => {
-          const file = await system.fs.stat(browserWindow?.config.path);
-          if (!file) {
-            new Notify({
-              title: i18n('tips'),
-              content: i18n('file.not.exist'),
-            });
-            return;
-          }
-          if (format.value === 'base64') {
-            await system.fs.writeFile(file?.path, btoa(unescape(encodeURIComponent(input.value))));
-          } else {
-            await system.fs.writeFile(file?.path, input.value);
-          }
-
+  Menu.buildFromTemplate([
+    {
+      label: i18n('save'),
+      click: async () => {
+        const file = await system.fs.stat(browserWindow?.config.path);
+        if (!file) {
           new Notify({
             title: i18n('tips'),
-            content: i18n('file.save.success'),
+            content: i18n('file.not.exist'),
           });
-        },
+          return;
+        }
+        if (format.value === 'base64') {
+          await system.fs.writeFile(file?.path, btoa(unescape(encodeURIComponent(input.value))));
+        } else {
+          await system.fs.writeFile(file?.path, input.value);
+        }
+
+        new Notify({
+          title: i18n('tips'),
+          content: i18n('file.save.success'),
+        });
       },
-    ],
-  });
+    },
+  ]).popup(e);
 }
 </script>
 <style scoped>

@@ -11,7 +11,6 @@
       :style="{
         'padding-left': level * 12 + 'px',
       }"
-      @contextmenu.stop.prevent="handleRightClick($event, item)"
       @click="handleClick(item, index)"
       @mousedown.stop
     >
@@ -43,15 +42,11 @@
 </template>
 <script lang="ts" setup>
 import { useSystem } from '@packages/plug';
-import { emitEvent } from '@feature/event';
 import FileIcon from '@feature/builtin/FileIcon.vue';
-import { useContextMenu } from '@packages/hook/useContextMenu';
 import { basename } from '@feature/core/Path';
 import { VtronFileWithoutContent } from '@feature/core/FileSystem';
-import { i18n } from '@feature/i18n';
 import { onMounted, ref } from 'vue';
 
-const { openPropsWindow, copyFile } = useContextMenu();
 const sys = useSystem();
 type FileWithOpen = VtronFileWithoutContent & {
   isOpen?: boolean;
@@ -121,52 +116,7 @@ async function onOpenArrow(item: FileWithOpen) {
     return file.isDirectory;
   });
 }
-function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent) {
-  if (chosenIndexs.value.length <= 1) {
-    chosenIndexs.value = [props.fileList.findIndex((app) => app.path === item.path)];
-  }
-  emitEvent('contextMenu.show', {
-    mouse: mouse,
-    menuList: [
-      {
-        name: i18n('open'),
-        click: () => {
-          props.onOpen(item);
-        },
-      },
-      {
-        name: i18n('props'),
-        click: () => {
-          chosenIndexs.value.forEach((index) => {
-            openPropsWindow(props.fileList[index].path);
-          });
-        },
-      },
-      {
-        name: i18n('copy'),
-        click: () => {
-          copyFile(chosenIndexs.value.map((index) => props.fileList[index]));
-        },
-      },
-      {
-        name: i18n('delete'),
-        click: async () => {
-          await Promise.all(
-            chosenIndexs.value.map((index) => {
-              const item = props.fileList[index];
-              if (item.isDirectory) {
-                return sys?.fs.rmdir(item.path);
-              } else {
-                return sys?.fs.unlink(item.path);
-              }
-            })
-          );
-          props.onRefresh();
-        },
-      },
-    ],
-  });
-}
+
 function dealI18nName(name: string) {
   return name;
 }

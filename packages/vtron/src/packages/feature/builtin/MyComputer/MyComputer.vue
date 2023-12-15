@@ -102,7 +102,7 @@ const currentList = ref<Array<VtronFileWithoutContent>>([]);
 
 const system = useSystem();
 const { refFileDrop } = useFileDrag(system);
-const { createNewFile, createNewDir, pasteFile } = useContextMenu();
+const { createDesktopContextMenu } = useContextMenu();
 const { refersh, createFolder, backFolder, openFolder, onComputerMount } = useComputer({
   setRouter(path) {
     router_url.value = path;
@@ -259,41 +259,8 @@ function onBackClick() {
 /* ------------ 新建文件夹end ---------*/
 
 function showOuterMenu(e: MouseEvent) {
-  system?.emitEvent('contextMenu.show', {
-    mouse: e,
-    menuList: [
-      {
-        name: i18n('new'),
-        children: [
-          {
-            name: i18n('new.file'),
-            click: () => {
-              createNewFile(router_url.value).then(() => {
-                refersh();
-              });
-            },
-          },
-        ],
-      },
-
-      {
-        name: i18n('new.folder'),
-        click: () => {
-          createNewDir(router_url.value).then(() => {
-            refersh();
-          });
-        },
-      },
-      {
-        name: i18n('paste'),
-        click: () => {
-          pasteFile(router_url.value)?.then(() => {
-            refersh();
-          });
-        },
-      },
-    ],
-  });
+  e.preventDefault();
+  createDesktopContextMenu(e);
 }
 /* ------------ 路径输入框 ------------*/
 async function handleNavRefresh(path: string) {

@@ -44,7 +44,7 @@ function initRootState(options: SystemOptions): RootState {
     options: {},
     clipboard: {},
     settings: [],
-    contextMenu: undefined,
+    contextMenu: null,
     error: '',
   } as RootState) as unknown as RootState;
   options.desktop?.forEach((item) => {

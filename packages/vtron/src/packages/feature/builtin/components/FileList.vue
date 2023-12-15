@@ -102,6 +102,7 @@ import { onMounted, ref, markRaw } from 'vue';
 import { Rect } from '@/packages/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
 import { dealSize } from '@/packages/util/file';
+import { Menu } from '@feature/menu/Menu';
 const { openPropsWindow, copyFile, createLink, openWith } = useContextMenu();
 const sys = useSystem();
 const { startDrag, folderDrop } = useFileDrag(sys);
@@ -234,77 +235,74 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
   if (chosenIndexs.value.length <= 1) {
     chosenIndexs.value = [props.fileList.findIndex((app) => app.path === item.path)];
   }
-  emitEvent('contextMenu.show', {
-    mouse: mouse,
-    menuList: [
-      {
-        name: i18n('open'),
-        click: () => {
+  Menu.buildFromTemplate([
+    {
+      label: i18n('open'),
+      click: () => {
+        chosenIndexs.value = [];
+        props.onOpen(item);
+      },
+    },
+    {
+      label: i18n('props'),
+      click: () => {
+        chosenIndexs.value.forEach((index) => {
+          openPropsWindow(props.fileList[index].path);
           chosenIndexs.value = [];
-          props.onOpen(item);
-        },
+        });
       },
-      {
-        name: i18n('props'),
-        click: () => {
-          chosenIndexs.value.forEach((index) => {
-            openPropsWindow(props.fileList[index].path);
-            chosenIndexs.value = [];
-          });
-        },
+    },
+    {
+      label: i18n('open.with'),
+      click: () => {
+        chosenIndexs.value = [];
+        openWith(item);
       },
-      {
-        name: i18n('open.with'),
-        click: () => {
-          chosenIndexs.value = [];
-          openWith(item);
-        },
+    },
+    {
+      label: i18n('copy'),
+      click: () => {
+        copyFile(chosenIndexs.value.map((index) => props.fileList[index]));
+        chosenIndexs.value = [];
       },
-      {
-        name: i18n('copy'),
-        click: () => {
-          copyFile(chosenIndexs.value.map((index) => props.fileList[index]));
-          chosenIndexs.value = [];
-        },
+    },
+    {
+      label: i18n('rename'),
+      click: () => {
+        editIndex.value = index;
+        editName.value = basename(item.path);
+        chosenIndexs.value = [];
       },
-      {
-        name: i18n('rename'),
-        click: () => {
-          editIndex.value = index;
-          editName.value = basename(item.path);
-          chosenIndexs.value = [];
-        },
-      },
+    },
 
-      {
-        name: i18n('create.shortcut'),
-        click: () => {
-          createLink(item.path)?.then(() => {
-            chosenIndexs.value = [];
-            props.onRefresh();
-          });
-        },
-      },
-
-      {
-        name: i18n('delete'),
-        click: async () => {
-          await Promise.all(
-            chosenIndexs.value.map((index) => {
-              const item = props.fileList[index];
-              if (item.isDirectory) {
-                return sys?.fs.rmdir(item.path);
-              } else {
-                return sys?.fs.unlink(item.path);
-              }
-            })
-          );
+    {
+      label: i18n('create.shortcut'),
+      click: () => {
+        createLink(item.path)?.then(() => {
           chosenIndexs.value = [];
           props.onRefresh();
-        },
+        });
       },
-    ],
-  });
+    },
+
+    {
+      label: i18n('delete'),
+      click: async () => {
+        await Promise.all(
+          chosenIndexs.value.map((index) => {
+            const item = props.fileList[index];
+            if (item.isDirectory) {
+              return sys?.fs.rmdir(item.path);
+            } else {
+              return sys?.fs.unlink(item.path);
+            }
+          })
+        );
+        chosenIndexs.value = [];
+        props.onRefresh();
+      },
+    },
+  ]).popup(mouse);
 }
 
 function handleDragEnter(mouse: DragEvent, item: VtronFileWithoutContent, index: number) {

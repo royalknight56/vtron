@@ -5,58 +5,59 @@
       left: x + 'px',
     }"
     class="contextmenu"
-    v-show="isVisiable"
+    v-if="rootState.contextMenu"
   >
-    <div class="contextmenu-item" v-for="item in menuList" :key="item.name">
-      <div class="option-title" @click="handleClick(item)">{{ item.name }}</div>
-      <div class="icon-arrow" v-if="item.children?.length"></div>
-      <div class="children-item" v-if="item.children?.length">
-        <div class="contextmenu-item" v-for="citem in item.children" :key="citem.name">
-          <div class="option-title" @click="handleClick(citem)">{{ citem.name }}</div>
+    <div class="contextmenu-item" v-for="item in menuList" :key="item.label">
+      <div class="option-title" @click="handleClick(item)">{{ item.label }}</div>
+      <div class="icon-arrow" v-if="item.submenu?.length"></div>
+      <div class="children-item" v-if="item.submenu?.length">
+        <div class="contextmenu-item" v-for="citem in item.submenu" :key="citem.label">
+          <div class="option-title" @click="handleClick(citem)">{{ citem.label }}</div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { mountEvent, emitEvent } from '@feature/event';
 import { useSystem } from '@feature/system';
-import { ContextMenu } from '@/packages/hook/useContextMenu';
-const isVisiable = ref(false);
+import { MenuItem } from '@feature/menu/MenuItem';
+
 const x = ref(0);
 const y = ref(0);
-const menuList = ref<ContextMenu[]>([]);
-mountEvent('contextMenu.show', (source, data) => {
-  if (!data.menuList || data.menuList?.length === 0) {
-    return;
+const menuList = ref<MenuItem[]>([]);
+const rootState = useSystem()._rootState;
+watch(
+  () => rootState.contextMenu,
+  (contextMenu) => {
+    // get window inner width and height
+    const innerWidth = rootState.info.screenWidth;
+    const innerHeight = rootState.info.screenHeight;
+    // get contextmenu width
+    const contextmenuWidth = 160;
+    // get contextmenu height
+    const contextmenuHeight = 24 * (contextMenu?.items.length || 0);
+    // get mouse position
+    const outer = useSystem()?.ref;
+    const mouseX = (contextMenu?._mouse?.x || 0) - (outer?.offsetLeft || 0);
+    const mouseY = (contextMenu?._mouse?.y || 0) - (outer?.offsetTop || 0);
+
+    // get contextmenu position
+    const contextmenuX = mouseX + contextmenuWidth > innerWidth ? mouseX - contextmenuWidth : mouseX;
+    const contextmenuY = mouseY + contextmenuHeight > innerHeight ? mouseY - contextmenuHeight : mouseY;
+
+    x.value = contextmenuX;
+    y.value = contextmenuY;
+    menuList.value = contextMenu?.items || [];
   }
-  isVisiable.value = true;
-  // get window inner width and height
-  const innerWidth = useSystem()._rootState.info.screenWidth;
-  const innerHeight = useSystem()._rootState.info.screenHeight;
-  // get contextmenu width
-  const contextmenuWidth = 160;
-  // get contextmenu height
-  const contextmenuHeight = 24 * data.menuList.length;
-  // get mouse position
-  const outer = useSystem()?.ref;
-  const mouseX = data.mouse.x - (outer?.offsetLeft || 0);
-  const mouseY = data.mouse.y - (outer?.offsetTop || 0);
+);
 
-  // get contextmenu position
-  const contextmenuX = mouseX + contextmenuWidth > innerWidth ? mouseX - contextmenuWidth : mouseX;
-  const contextmenuY = mouseY + contextmenuHeight > innerHeight ? mouseY - contextmenuHeight : mouseY;
-
-  x.value = contextmenuX;
-  y.value = contextmenuY;
-  menuList.value = data.menuList;
-});
 mountEvent('contextMenu.hidden', () => {
-  isVisiable.value = false;
+  useSystem()._rootState.contextMenu = null;
 });
 
-function handleClick(item: { name: string; click: () => void }) {
+function handleClick(item: MenuItem) {
   if (item?.click) {
     item?.click?.();
     emitEvent('contextMenu.hidden');

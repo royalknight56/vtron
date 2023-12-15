@@ -25,20 +25,22 @@ export class Menu {
         menu.append(new MenuItem(item));
       }
     });
+    return menu;
   }
+  _mouse: MouseEvent | null = null;
   items: MenuItem[] = [];
-  popup: (e: MouseEvent) => void = () => {
-    console.log('popup');
-    useSystem();
+  popup: (e: MouseEvent) => void = (e) => {
+    this._mouse = e;
+    useSystem()._rootState.contextMenu = this;
   };
   closePopup: () => void = () => {
-    console.log('closePopup');
+    useSystem()._rootState.contextMenu = null;
   };
   append: (item: MenuItem) => void = (item: MenuItem) => {
     this.items.push(item);
   };
 
   constructor() {
-    throw new Error('Method not implemented.');
+    //
   }
 }

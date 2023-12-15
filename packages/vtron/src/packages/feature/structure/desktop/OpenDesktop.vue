@@ -33,17 +33,13 @@ import WindowGroup from '@feature/window/WindowGroup.vue';
 import ContextMenu from '@feature/structure/contextMenu/ContextMenu.vue';
 import NotificationGroup from '@feature/notification/NotifyGroup.vue';
 import MessageCenterPop from '@feature/structure/taskbar/popover/MessageCenterPop.vue';
-
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { Rect, useRectChosen } from '@packages/hook/useRectChosen';
-
-import { i18n } from '@feature/i18n';
 import { useSystem } from '@feature/system';
 import { onErrorCaptured } from 'vue';
-import { uniqBy } from '@/packages/util/modash';
 
-const { createNewFile, createNewDir, pasteFile } = useContextMenu();
+const { createDesktopContextMenu } = useContextMenu();
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 const system = useSystem();
 const { refFileDrop } = useFileDrag(system);
@@ -90,44 +86,7 @@ function backgroundUp(e: MouseEvent) {
 
 function handleRightClick(e: MouseEvent) {
   e.preventDefault();
-  emitEvent('desktop.background.rightClick', {
-    mouse: e,
-    menuList: uniqBy(
-      [
-        {
-          name: i18n('refresh'),
-          click: () => {
-            //
-          },
-        },
-        {
-          name: i18n('new'),
-          children: [
-            {
-              name: i18n('new.file'),
-              click: () => {
-                createNewFile(`${system._options.userLocation}Desktop`);
-              },
-            },
-          ],
-        },
-        {
-          name: i18n('paste'),
-          click: () => {
-            pasteFile(`${system._options.userLocation}Desktop`);
-          },
-        },
-        {
-          name: i18n('new.folder'),
-          click: () => {
-            createNewDir(`${system._options.userLocation}Desktop`);
-          },
-        },
-        ...(system._rootState.options.contextMenus || []),
-      ],
-      (val) => val.name
-    ),
-  });
+  createDesktopContextMenu(e);
 }
 
 onErrorCaptured((err) => {

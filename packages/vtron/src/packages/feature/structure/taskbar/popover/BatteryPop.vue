@@ -5,9 +5,9 @@
       <span>充电中</span>
     </div>
     <div class="ch-text">
-      {{ props.system.info.battery.chargeLevel * 100 }} %
+      {{ rootState.info.battery.chargeLevel * 100 }} %
       <div class="pro">
-        <WinProcess :model-value="props.system.info.battery.chargeLevel * 100"></WinProcess>
+        <WinProcess :model-value="rootState.info.battery.chargeLevel * 100"></WinProcess>
       </div>
     </div>
   </div>
@@ -45,13 +45,13 @@ const charMap = {
   } as Record<number, string>,
 };
 const iconDisplay = ref(`\uE850`);
-const props = rootState;
+
 watchEffect(() => {
-  if (props.system.info.battery.chargeLevel == 1) {
+  if (rootState.info.battery.chargeLevel == 1) {
     iconDisplay.value = charMap[`noC`][9];
   } else {
-    const level = Math.floor(props.system.info.battery.chargeLevel * 10);
-    iconDisplay.value = charMap[props.system.info.battery.isCharging ? `isC` : `noC`][level];
+    const level = Math.floor(rootState.info.battery.chargeLevel * 10);
+    iconDisplay.value = charMap[rootState.info.battery.isCharging ? `isC` : `noC`][level];
   }
 });
 </script>

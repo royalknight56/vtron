@@ -6,14 +6,76 @@ import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { Dialog } from '../plug';
 import OpenWiteDialogVue from '../feature/builtin/OpenWiteDialog.vue';
+// import { MenuItem } from '../feature/menu/MenuItem';
+import { Menu } from '@feature/menu/Menu';
+import { uniqBy } from '../util/modash';
+import { UnwrapNestedRefs } from 'vue';
 
-export type ContextMenu = {
-  name: string;
-  click: () => void;
-  children?: ContextMenu[];
-};
-
+export function createTaskbarIconContextMenu(e: MouseEvent, windowNode: UnwrapNestedRefs<BrowserWindow>) {
+  Menu.buildFromTemplate([
+    {
+      label: i18n('close'),
+      click: () => {
+        windowNode.close();
+      },
+    },
+    {
+      label: i18n('maximize'),
+      click: () => {
+        windowNode.maximize();
+      },
+    },
+    {
+      label: i18n('minimize'),
+      click: () => {
+        windowNode.minimize();
+      },
+    },
+  ]).popup(e);
+}
 function useContextMenu() {
+  function createDesktopContextMenu(e: MouseEvent) {
+    const system = useSystem();
+    if (!system) return;
+    const menu = Menu.buildFromTemplate(
+      uniqBy(
+        [
+          {
+            label: i18n('refresh'),
+            click: () => {
+              //
+            },
+          },
+          {
+            label: i18n('new'),
+            submenu: [
+              {
+                label: i18n('new.file'),
+                click: () => {
+                  createNewFile(`${system._options.userLocation}Desktop`);
+                },
+              },
+            ],
+          },
+          {
+            label: i18n('paste'),
+            click: () => {
+              pasteFile(`${system._options.userLocation}Desktop`);
+            },
+          },
+          {
+            label: i18n('new.folder'),
+            click: () => {
+              createNewDir(`${system._options.userLocation}Desktop`);
+            },
+          },
+          ...(system._rootState.options.contextMenus || []),
+        ],
+        (val) => val.label
+      )
+    );
+    menu.popup(e);
+  }
   async function createNewFile(path: string) {
     const system = useSystem();
     if (!system) return;
@@ -141,6 +203,7 @@ function useContextMenu() {
     return await system.fs.writeFile(linkPath, path);
   }
   return {
+    createDesktopContextMenu,
     createNewFile,
     openPropsWindow,
     createNewDir,

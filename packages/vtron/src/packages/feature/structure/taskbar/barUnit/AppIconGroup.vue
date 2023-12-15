@@ -11,8 +11,8 @@
 </template>
 <script lang="ts" setup>
 import AppIcon from './AppIcon.vue';
-import { useRootState } from '@feature/state/Root';
-const rootState = useRootState();
+import { useSystem } from '@feature/system';
+const rootState = useSystem()._rootState;
 const treeRoot = rootState.system.windowOrder;
 </script>
 <style lang="scss" scoped>

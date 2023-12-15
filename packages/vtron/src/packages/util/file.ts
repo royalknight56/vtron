@@ -1,4 +1,4 @@
-export function dealSize(size: number) {
+export function dealSize(size = 0) {
   if (size < 1024) {
     return size + 'B';
   } else if (size < 1024 * 1024) {

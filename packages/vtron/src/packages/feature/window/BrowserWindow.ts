@@ -1,8 +1,7 @@
 import { defineComponent, reactive, markRaw } from 'vue';
-import { useRootState } from '../state/Root';
 import { Tree } from '@packages/util/Tree';
 import { Eventer } from '../event';
-
+import { useSystem } from '@feature/system';
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
 // implements BrowserWindowModel
 export const enum WindowStateEnum {
@@ -82,7 +81,8 @@ class BrowserWindow {
     } else {
       this.content = this._option.content;
     }
-    const rootState = useRootState();
+
+    const rootState = useSystem()._rootState;
     this.id = rootState.system.winnum;
     rootState.system.winnum++;
 
@@ -98,7 +98,7 @@ class BrowserWindow {
   _setZindex() {
     this.windowInfo.zindex =
       20 +
-      useRootState().system.windowTree.findIndex(this, (val: Tree<BrowserWindow>) => {
+      useSystem()._rootState.system.windowTree.findIndex(this, (val: Tree<BrowserWindow>) => {
         return val.value.isVisible();
       });
   }
@@ -109,7 +109,7 @@ class BrowserWindow {
     this.windowInfo.state = state;
   }
   private _getWinInner() {
-    const rootState = useRootState();
+    const rootState = useSystem()._rootState;
     return {
       width: rootState.system.info.screenWidth,
       height: rootState.system.info.screenHeight,
@@ -143,7 +143,7 @@ class BrowserWindow {
   }
   moveTop() {
     // 窗口置顶
-    const rootState = useRootState();
+    const rootState = useSystem()._rootState;
     const tree = rootState.system.windowTree;
     const treeNode = tree.findNode(this);
     if (treeNode) {
@@ -151,8 +151,8 @@ class BrowserWindow {
     }
     tree.addChild(this);
 
-    useRootState().system.topWindow = this;
-    useRootState().system.windowTree.traverseBFS((val) => {
+    useSystem()._rootState.system.topWindow = this;
+    useSystem()._rootState.system.windowTree.traverseBFS((val) => {
       if (val.value.id !== undefined) {
         val.value._setZindex();
         val.value.windowInfo.istop = false;
@@ -167,7 +167,7 @@ class BrowserWindow {
   }
   show() {
     if (!this.windowInfo.isCreated) {
-      const rootState = useRootState();
+      const rootState = useSystem()._rootState;
       rootState.system.windowTree.addChild(this);
       rootState.system.windowOrder.push(this);
       this.windowInfo.isCreated = true;
@@ -196,7 +196,7 @@ class BrowserWindow {
     // 关闭窗口
     this.emit('close', 'close');
     this.emit('state', 'close');
-    const rootState = useRootState();
+    const rootState = useSystem()._rootState;
     if (this.windowInfo.isCreated) {
       this.windowInfo.isCreated = false;
       rootState.system.windowTree.removeNode(this);

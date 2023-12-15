@@ -1,8 +1,8 @@
 import { toRaw, ref } from 'vue';
-import { useRootState } from '../state/Root';
 import { BrowserWindow } from '../window/BrowserWindow';
 import DialogVue from './DialogTemp.vue';
 import DialogProcessVue from './DialogProcess.vue';
+import { useSystem } from '../system';
 class Dialog {
   constructor() {
     // static class
@@ -97,13 +97,14 @@ class Dialog {
       alwaysOnTop: true,
     });
     dialogwin.show();
-    useRootState().system.windowOrder.forEach((win) => {
+
+    useSystem()._rootState.system.windowOrder.forEach((win) => {
       if (!(toRaw(win) === dialogwin)) {
         win.setDisable(true);
       }
     });
     dialogwin.on('close', () => {
-      useRootState().system.windowOrder.forEach((win) => {
+      useSystem()._rootState.system.windowOrder.forEach((win) => {
         if (!(toRaw(win) === dialogwin)) {
           win.setDisable(false);
         }

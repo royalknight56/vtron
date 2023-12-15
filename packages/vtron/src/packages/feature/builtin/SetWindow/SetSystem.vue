@@ -35,43 +35,20 @@
 </template>
 
 <script lang="ts" setup>
-// import WinButton from '@packages/components/WinButton.vue';
-// import WinSelect from '@packages/components/WinSelect.vue';
 import WinProcess from '@packages/components/WinProcess.vue';
 import { ref } from 'vue';
-// import { useSystem } from '@feature/system';
-// import { Dialog } from '@feature/dialog/Dialog';
-import { useRootState } from '../../state/Root';
 import { i18n } from '@feature/i18n';
+import { useSystem } from '../../system';
 
-const rootstate = useRootState();
-// const system = useSystem();
+const rootstate = useSystem()._rootState;
 
 const items = [i18n('screen')];
 
 const activeIndex = ref(0);
 
-// const modelvalue = ref(rootstate.system.info.brightness);
-
 const selectItem = (index: number) => {
   activeIndex.value = index;
 };
-
-// async function submit() {
-//   const config = await system?.fs.readFile(`${system._options.systemLocation}Vtron/config.json`);
-//   const configObj = JSON.parse(config || '{}');
-//   configObj.lang = modelvalue.value === 0 ? 'zh-CN' : 'en-US';
-//   await system?.fs.writeFile(`${system._options.systemLocation}Vtron/config.json`, {
-//     content: JSON.stringify(configObj),
-//   });
-//   Dialog.showMessageBox({
-//     message: i18n('save.success'),
-//     title: i18n('brightness'),
-//     type: 'info',
-//   }).then(() => {
-//     system?.reboot();
-//   });
-// }
 </script>
 <style scoped>
 @import './setStyle.css';

@@ -3,7 +3,7 @@
 </template>
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
-import { useRootState } from '@feature/state/Root';
+import { useSystem } from '@feature/system';
 
 const charMap = {
   noC: {
@@ -34,12 +34,12 @@ const charMap = {
 const iconDisplay = ref(`\uE850`);
 
 watchEffect(() => {
-  const props = useRootState();
-  if (props.system.info.battery.chargeLevel == 1) {
+  const rootState = useSystem()._rootState;
+  if (rootState.system.info.battery.chargeLevel == 1) {
     iconDisplay.value = charMap[`noC`][9];
   } else {
-    const level = Math.floor(props.system.info.battery.chargeLevel * 10);
-    iconDisplay.value = charMap[props.system.info.battery.isCharging ? `isC` : `noC`][level];
+    const level = Math.floor(rootState.system.info.battery.chargeLevel * 10);
+    iconDisplay.value = charMap[rootState.system.info.battery.isCharging ? `isC` : `noC`][level];
   }
 });
 </script>

@@ -1,30 +1,32 @@
 <template>
-  <div class="screen" @contextmenu.prevent ref="screen" :style="rootState?.system?.options?.rootStyle">
-    <template v-if="rootState.system.state == SystemStateEnum.close">
-      <CloseDesktop></CloseDesktop>
-    </template>
-    <template v-else-if="rootState.system.state == SystemStateEnum.opening">
-      <OpeningDesktop></OpeningDesktop>
-    </template>
-    <template
-      v-else-if="
-        rootState.system.state == SystemStateEnum.open || rootState.system.state == SystemStateEnum.lock
-      "
-    >
-      <Transition name="moveup">
-        <div class="login" v-if="rootState.system.state == SystemStateEnum.lock">
-          <LockDesktop> </LockDesktop>
-        </div>
-      </Transition>
-      <Transition name="fadeout">
-        <DesktopBackground
-          v-if="rootState.system.state == SystemStateEnum.lock"
-          class="mask"
-        ></DesktopBackground>
-      </Transition>
-      <OpenDesktop v-if="rootState.system.state == SystemStateEnum.open"></OpenDesktop>
-    </template>
-  </div>
+  <template v-if="rootState">
+    <div class="screen" @contextmenu.prevent ref="screen" :style="rootState?.system?.options?.rootStyle">
+      <template v-if="rootState.system.state == SystemStateEnum.close">
+        <CloseDesktop></CloseDesktop>
+      </template>
+      <template v-else-if="rootState.system.state == SystemStateEnum.opening">
+        <OpeningDesktop></OpeningDesktop>
+      </template>
+      <template
+        v-else-if="
+          rootState.system.state == SystemStateEnum.open || rootState.system.state == SystemStateEnum.lock
+        "
+      >
+        <Transition name="moveup">
+          <div class="login" v-if="rootState.system.state == SystemStateEnum.lock">
+            <LockDesktop> </LockDesktop>
+          </div>
+        </Transition>
+        <Transition name="fadeout">
+          <DesktopBackground
+            v-if="rootState.system.state == SystemStateEnum.lock"
+            class="mask"
+          ></DesktopBackground>
+        </Transition>
+        <OpenDesktop v-if="rootState.system.state == SystemStateEnum.open"></OpenDesktop>
+      </template>
+    </div>
+  </template>
 </template>
 <script lang="ts" setup>
 import CloseDesktop from '@feature/structure/desktop/CloseDesktop.vue';
@@ -34,9 +36,20 @@ import LockDesktop from '@feature/structure/desktop/LockDesktop.vue';
 import DesktopBackground from '@feature/structure/desktop/components/DesktopBackground.vue';
 
 import { SystemStateEnum } from '@packages/type/enum';
-import { useRootState } from '@feature/state/Root';
-
-const rootState = useRootState();
+import { System } from '@feature/system';
+import { ref } from 'vue';
+import { RootState } from '@/packages/plug';
+const rootState = ref<RootState | undefined>();
+System.onOpen((system: System) => {
+  rootState.value = system._rootState;
+});
+// const rootState = useSystem()
+//   ? useSystem()._rootState
+//   : {
+//       system: {
+//         state: SystemStateEnum.close,
+//       },
+//     };
 </script>
 <style lang="scss" scoped>
 @import '@packages/root.scss';

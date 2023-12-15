@@ -31,6 +31,10 @@
         <div class="propname">{{ i18n('location') }}：</div>
         <div class="propvalue">{{ file?.path }}</div>
       </div>
+      <div class="propitem">
+        <div class="propname">{{ i18n('size') }}：</div>
+        <div class="propvalue">{{ dealSize(file?.size) }}</div>
+      </div>
 
       <div class="propitem">
         <div class="propname">{{ i18n('permission') }}：</div>
@@ -67,6 +71,7 @@ import FileIcon from '@feature/builtin/FileIcon.vue';
 import { VtronFileWithoutContent } from '@packages/plug';
 import { basename, extname } from '@feature/core/Path';
 import { i18n } from '@feature/i18n';
+import { dealSize } from '@/packages/util/file';
 
 const window: BrowserWindow | undefined = inject('browserWindow');
 const file = ref<VtronFileWithoutContent | null>();

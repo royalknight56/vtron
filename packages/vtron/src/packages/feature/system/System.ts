@@ -30,7 +30,7 @@ import { pick } from '@/packages/util/modash';
 import { Tray, TrayOptions } from '@feature/tray/Tary';
 
 const logger = function (...args: any[]) {
-  return;
+  // return;
   if (process.env.NODE_ENV !== 'development') return;
   console.log(...args);
 };
@@ -47,6 +47,10 @@ export type FileOpener = {
  */
 class System {
   public static GLOBAL_SYSTEM: System;
+  public static _onOpen: ((system: System) => void) | null = null;
+  public static onOpen(func: (system: System) => void) {
+    System._onOpen = func;
+  }
   readonly _options: SystemOptions;
   /**
    * @internal
@@ -64,12 +68,13 @@ class System {
   _shell!: ShellInterface;
 
   constructor(options?: SystemOptions) {
-    logger('mountGlobalSystem');
-    System.GLOBAL_SYSTEM = this; // 挂载全局系统
     logger('initOptions');
     this._options = this.initOptions(options);
     logger('initRootState');
     this._rootState = this.initRootState();
+    logger('mountGlobalSystem');
+    System.GLOBAL_SYSTEM = this; // 挂载全局系统
+    System._onOpen && System._onOpen(this);
     logger('initEvent');
     this._eventer = this.initEvent();
     logger('initSystem');

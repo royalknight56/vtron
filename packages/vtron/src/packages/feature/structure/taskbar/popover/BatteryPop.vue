@@ -14,8 +14,9 @@
 </template>
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue';
-import { useRootState } from '@feature/state/Root';
 import WinProcess from '@/packages/components/WinProcess.vue';
+import { useSystem } from '@feature/system';
+const rootState = useSystem()._rootState;
 
 const charMap = {
   noC: {
@@ -44,7 +45,7 @@ const charMap = {
   } as Record<number, string>,
 };
 const iconDisplay = ref(`\uE850`);
-const props = useRootState();
+const props = rootState;
 watchEffect(() => {
   if (props.system.info.battery.chargeLevel == 1) {
     iconDisplay.value = charMap[`noC`][9];

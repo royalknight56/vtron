@@ -13,9 +13,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRootState } from '../state/Root';
+import { useSystem } from '../system';
 
-const notifyGroup = useRootState().system.notify;
+const notifyGroup = useSystem()._rootState.system.notify;
 </script>
 <style lang="scss" scoped>
 .notify {

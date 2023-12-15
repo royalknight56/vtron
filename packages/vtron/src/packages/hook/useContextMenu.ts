@@ -4,7 +4,6 @@ import { BrowserWindow } from '@feature/window/BrowserWindow';
 import FileProps from '@feature/builtin/FileProps.vue';
 import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
-import { useRootState } from '../feature/state/Root';
 import { Dialog } from '../plug';
 import OpenWiteDialogVue from '../feature/builtin/OpenWiteDialog.vue';
 
@@ -15,7 +14,6 @@ export type ContextMenu = {
 };
 
 function useContextMenu() {
-  const rootState = useRootState();
   async function createNewFile(path: string) {
     const system = useSystem();
     if (!system) return;
@@ -83,6 +81,7 @@ function useContextMenu() {
 
   async function copyFile(files: VtronFileWithoutContent[]) {
     const system = useSystem();
+    const rootState = system._rootState;
     if (!system) return;
     if (rootState.system.clipboard) {
       rootState.system.clipboard = files.map((file) => file.path);
@@ -91,6 +90,7 @@ function useContextMenu() {
   async function pasteFile(path: string) {
     const system = useSystem();
     if (!system) return;
+    const rootState = system._rootState;
     const clipLen = Object.keys(rootState.system.clipboard).length;
     if (clipLen) {
       const clipFiles = rootState.system.clipboard;

@@ -5,6 +5,7 @@ import { Notify } from '../feature/notification/Notification';
 import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
 import { ShellInterface } from '@feature/core/ShellType';
+import { Menu } from '../feature/menu/Menu';
 export type BuiltinApp = 'MyComputer' | 'AppStore';
 export interface InitFileItem {
   type: string;
@@ -112,6 +113,7 @@ export type RootState = {
     clipboard: any;
     settings: Setting[];
     options: SystemOptions;
+    contextMenu: Menu | undefined;
     error: string;
   };
 };

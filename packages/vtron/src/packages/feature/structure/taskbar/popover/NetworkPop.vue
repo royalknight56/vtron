@@ -15,8 +15,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRootState } from '@feature/state/Root';
-const sysInfo = useRootState().system.info;
+import { useSystem } from '@feature/system';
+const rootState = useSystem()._rootState;
+const sysInfo = rootState.system.info;
 </script>
 <style lang="scss" scoped>
 .outer {

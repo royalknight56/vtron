@@ -1,7 +1,7 @@
-import { useRootState } from '@feature/state/Root';
 import { nextTick } from 'vue';
-import { useSystem } from '../plug';
 import { VtronFileWithoutContent } from '../feature/core/FileSystem';
+import { useSystem } from '@feature/system';
+
 let isReadyUpdateAppList = false;
 function initAppList() {
   isReadyUpdateAppList = true;
@@ -39,13 +39,25 @@ function refershAppList() {
 
           switch (element) {
             case 'apps':
-              useRootState().system.apps.splice(0, useRootState().system.apps.length, ...tempList);
+              useSystem()._rootState.system.apps.splice(
+                0,
+                useSystem()._rootState.system.apps.length,
+                ...tempList
+              );
               break;
             case 'magnet':
-              useRootState().system.magnet.splice(0, useRootState().system.magnet.length, ...tempList);
+              useSystem()._rootState.system.magnet.splice(
+                0,
+                useSystem()._rootState.system.magnet.length,
+                ...tempList
+              );
               break;
             case 'menulist':
-              useRootState().system.menulist.splice(0, useRootState().system.menulist.length, ...tempList);
+              useSystem()._rootState.system.menulist.splice(
+                0,
+                useSystem()._rootState.system.menulist.length,
+                ...tempList
+              );
               break;
             default:
               break;
@@ -55,7 +67,7 @@ function refershAppList() {
   }
 }
 function useAppOpen(type: 'apps' | 'magnet' | 'menulist') {
-  const rootState = useRootState();
+  const rootState = useSystem()._rootState;
   const system = useSystem();
   const appList = rootState.system[type];
   function openapp(item: VtronFileWithoutContent) {

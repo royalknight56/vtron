@@ -21,7 +21,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { mountEvent, emitEvent } from '@feature/event';
-import { useRootState } from '@feature/state/Root';
 import { useSystem } from '@feature/system';
 import { ContextMenu } from '@/packages/hook/useContextMenu';
 const isVisiable = ref(false);
@@ -34,8 +33,8 @@ mountEvent('contextMenu.show', (source, data) => {
   }
   isVisiable.value = true;
   // get window inner width and height
-  const innerWidth = useRootState().system.info.screenWidth;
-  const innerHeight = useRootState().system.info.screenHeight;
+  const innerWidth = useSystem()._rootState.system.info.screenWidth;
+  const innerHeight = useSystem()._rootState.system.info.screenHeight;
   // get contextmenu width
   const contextmenuWidth = 160;
   // get contextmenu height

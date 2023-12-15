@@ -34,11 +34,12 @@
   </Transition>
 </template>
 <script setup lang="ts">
-import { useRootState } from '@feature/state/Root';
+import { useSystem } from '@feature/system';
 import { ref } from 'vue';
 import { mountEvent } from '@feature/event';
-const notifyGroup = useRootState().system.message.notify;
-const systemGroup = useRootState().system.message.system;
+const rootState = useSystem()._rootState;
+const notifyGroup = rootState.system.message.notify;
+const systemGroup = rootState.system.message.system;
 const isPopShow = ref(false);
 mountEvent('messagecenter.show', () => {
   isPopShow.value = !isPopShow.value;
@@ -47,7 +48,7 @@ mountEvent('messagecenter.hidden', () => {
   isPopShow.value = false;
 });
 function allClear() {
-  useRootState().system.message.notify.splice(0, notifyGroup.length);
+  rootState.system.message.notify.splice(0, notifyGroup.length);
 }
 </script>
 <style lang="scss" scoped>

@@ -76,6 +76,7 @@ export const enUS: AllText = {
   screen: 'Screen',
   brightness: 'Brightness',
 
+  size: 'Size',
   view: 'View',
   permission: 'Permission',
   'modification.time': 'Modification Time',

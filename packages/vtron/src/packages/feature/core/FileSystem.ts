@@ -307,14 +307,31 @@ class VtronFileSystem implements VtronFileInterface {
       this.onerror('Cannot write file to a non-exist path:' + path);
       return Promise.reject('Cannot write file to a non-exist path:' + path);
     }
-    const stats = await this.stat(path);
+
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
+
+    const stats: VtronFile | null = await new Promise((resolve, reject) => {
+      objectStore.index('path').openCursor(IDBKeyRange.only(path)).onsuccess = (event: any) => {
+        const cursor: IDBCursorWithValue = event.target.result;
+        if (cursor) {
+          const file: VtronFile = cursor.value;
+          if (file.isDirectory) {
+            reject('Cannot write file to a directory');
+          } else {
+            resolve(file);
+          }
+        } else {
+          resolve(null);
+        }
+      };
+    });
 
     if (!stats) {
       const request = objectStore.add(
         new VtronFile(path, data, {
           isFile: true,
+          size: data.length,
         })
       );
       return new Promise((resolve, reject) => {
@@ -329,15 +346,18 @@ class VtronFileSystem implements VtronFileInterface {
       });
     } else {
       if (opt?.flag === 'wx') {
+        // 排他模式
         return Promise.resolve();
       }
       if (opt?.flag === 'a') {
-        return await this.appendFile(path, data);
+        // 追加模式
+        data = stats.content + data;
       }
 
       const request = objectStore.put({
         ...stats,
         content: data,
+        size: data.length,
         mtime: new Date(),
       });
       return new Promise((resolve, reject) => {
@@ -374,6 +394,7 @@ class VtronFileSystem implements VtronFileInterface {
         const file: VtronFile = request.result;
         if (file) {
           file.content += content;
+          file.size = file.content.length;
           file.mtime = new Date();
           const request = objectStore.put(file);
           request.onerror = () => {

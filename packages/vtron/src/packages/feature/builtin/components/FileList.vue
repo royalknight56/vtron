@@ -1,4 +1,22 @@
 <template>
+  <template v-if="mode === 'detail'">
+    <div class="file-item file-bar mode-detail">
+      <div class="file-item_img"></div>
+      <div class="file-item_title"></div>
+      <div class="file-item_type">
+        <span>{{ i18n('size') }}</span>
+      </div>
+      <div class="file-item_type">
+        <span>{{ i18n('creation.time') }}</span>
+      </div>
+      <div class="file-item_type">
+        <span>{{ i18n('modification.time') }}</span>
+      </div>
+      <div class="file-item_type">
+        <span>{{ i18n('permission') }}</span>
+      </div>
+    </div>
+  </template>
   <div
     draggable="true"
     class="file-item"
@@ -30,7 +48,7 @@
     :ref="
       (ref) => {
         if (ref) {
-          appPositions[index] = ref as Element;
+          appPositions[index] = markRaw(ref as Element);
         }
       }
     "
@@ -56,10 +74,9 @@
       v-model="editName"
     ></textarea>
     <template v-if="mode === 'detail'">
-      <!-- <div class="file-item_type">
-        <span v-if="item.isDirectory">folder</span>
-        <span v-else>{{ extname(item.path) }}</span>
-      </div> -->
+      <div class="file-item_type">
+        <span>{{ item.isDirectory ? '-' : dealSize(item.size) }}</span>
+      </div>
       <div class="file-item_type">
         <span>{{ item.birthtime.toLocaleString() }}</span>
       </div>
@@ -81,10 +98,10 @@ import { basename, dirname, join } from '@feature/core/Path';
 import { VtronFileWithoutContent } from '@feature/core/FileSystem';
 import { i18n } from '@feature/i18n';
 import { useFileDrag } from '@packages/hook/useFileDrag';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, markRaw } from 'vue';
 import { Rect } from '@/packages/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
-
+import { dealSize } from '@/packages/util/file';
 const { openPropsWindow, copyFile, createLink, openWith } = useContextMenu();
 const sys = useSystem();
 const { startDrag, folderDrop } = useFileDrag(sys);
@@ -450,5 +467,10 @@ function dealI18nName(name: string) {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+
+.file-bar:hover {
+  background-color: unset;
+  user-select: none;
 }
 </style>

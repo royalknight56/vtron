@@ -78,6 +78,7 @@ export const zhCN = {
 
   view: '查看',
 
+  size: '大小',
   permission: '权限',
   'modification.time': '修改时间',
   'creation.time': '创建时间',

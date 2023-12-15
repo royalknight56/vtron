@@ -30,7 +30,7 @@ import { pick } from '@/packages/util/modash';
 import { Tray, TrayOptions } from '@feature/tray/Tary';
 
 const logger = function (...args: any[]) {
-  // return;
+  return;
   if (process.env.NODE_ENV !== 'development') return;
   console.log(...args);
 };

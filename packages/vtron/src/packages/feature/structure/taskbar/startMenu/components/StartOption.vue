@@ -42,35 +42,34 @@ import { i18n } from '@feature/i18n';
 import { Dialog } from '@feature/dialog/Dialog';
 // import Settingicon from '@packages/assets/setting.png';
 import { useSystem } from '@/packages/plug';
+import { Menu } from '@/packages/feature/menu/Menu';
 const sys = useSystem();
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
     case 0:
-      emitEvent('startMenu.close.click', {
-        mouse: ev,
-        menuList: [
-          {
-            name: i18n('startMenu.shutdown'),
-            click: () => {
-              emitEvent('system.shutdown');
-            },
+      Menu.buildFromTemplate([
+        {
+          label: i18n('startMenu.shutdown'),
+          click: () => {
+            emitEvent('system.shutdown');
           },
-          {
-            name: i18n('startMenu.recover'),
-            click: () => {
-              Dialog.showMessageBox({
-                title: i18n('startMenu.recover'),
-                message: i18n('is.recover'),
-                buttons: [i18n('startMenu.recover'), i18n('cancel')],
-              }).then((res) => {
-                if (res.response === 0) {
-                  emitEvent('system.recover');
-                }
-              });
-            },
+        },
+        {
+          label: i18n('startMenu.recover'),
+          click: () => {
+            Dialog.showMessageBox({
+              title: i18n('startMenu.recover'),
+              message: i18n('is.recover'),
+              buttons: [i18n('startMenu.recover'), i18n('cancel')],
+            }).then((res) => {
+              if (res.response === 0) {
+                emitEvent('system.recover');
+              }
+            });
           },
-        ],
-      });
+        },
+      ]).popup(ev);
+
       break;
     case 1: {
       emitEvent('startMenu.set.click', {

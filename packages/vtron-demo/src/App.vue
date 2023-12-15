@@ -152,28 +152,28 @@ NoteMd是和vtron契合的笔记软件
 [https://github.com/royalknight56/vtron](https://github.com/royalknight56/vtron)`
   );
 
-  readySystem.fs.writeFile(
-    '/C/Users/Desktop/Webdav使用教程.md',
-    `# Webdav使用教程
-## 设置
+  //   readySystem.fs.writeFile(
+  //     '/C/Users/Desktop/Webdav使用教程.md',
+  //     `# Webdav使用教程
+  // ## 设置
 
-点击左下角开始菜单->设置->Webdav设置
+  // 点击左下角开始菜单->设置->Webdav设置
 
-需要填写webdav的链接，用户名，密码
+  // 需要填写webdav的链接，用户名，密码
 
-推荐使用alist客户端
+  // 推荐使用alist客户端
 
-挂载路径推荐写一级路径，如：/D
+  // 挂载路径推荐写一级路径，如：/D
 
-挂载路径必须与webdav的文件夹相同
+  // 挂载路径必须与webdav的文件夹相同
 
-填写好信息后，点击确定，重启
-    
-## 使用
+  // 填写好信息后，点击确定，重启
 
-挂载成功后，可以在文件管理器（我的电脑）中看到挂载的文件夹
-    `
-  );
+  // ## 使用
+
+  // 挂载成功后，可以在文件管理器（我的电脑）中看到挂载的文件夹
+  //     `
+  //   );
   setTimeout(() => {
     if (readySystem.isFirstRun) {
       readySystem.openFile('/C/Users/Desktop/使用教程.md');

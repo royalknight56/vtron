@@ -1,4 +1,5 @@
 import { Ref, defineComponent, markRaw, ref } from 'vue';
+import { Menu } from '@feature/menu/Menu';
 
 export interface TrayOptions {
   image: string | ReturnType<typeof defineComponent>;
@@ -6,7 +7,7 @@ export interface TrayOptions {
 export class Tray {
   image: string | ReturnType<typeof defineComponent>;
   _id: string;
-  _contextMenu: ReturnType<typeof defineComponent>;
+  _contextMenu: ReturnType<typeof defineComponent> | Menu;
   _contextMenuShow = false;
   _contextMenuWidth = 100;
   _contextMenuHeight = 100;
@@ -20,7 +21,7 @@ export class Tray {
     Tray.trayList.value.push(this);
     this._id = Tray.trayList.value.length.toString();
   }
-  setContextMenu(content: ReturnType<typeof defineComponent>, width = 100, height = 100) {
+  setContextMenu(content: ReturnType<typeof defineComponent> | Menu, width = 100, height = 100) {
     this._contextMenu = markRaw(content);
     this._contextMenuWidth = width;
     this._contextMenuHeight = height;

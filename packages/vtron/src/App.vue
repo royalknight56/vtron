@@ -21,6 +21,7 @@ import { onMounted } from 'vue';
 import { System, VtronFile } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 import { Tray } from './packages/feature/tray/Tary';
+import { Menu } from './packages/feature/menu/Menu';
 
 // class TestShell {
 //   prefix = 'vtron@vtron:~$ ';
@@ -208,7 +209,17 @@ onMounted(() => {
     const aTray = new Tray({
       image: '/C/ic.png',
     });
-    aTray.setContextMenu(TestButton, 200, 200);
+    aTray.setContextMenu(
+      Menu.buildFromTemplate([
+        {
+          label: '测试',
+          click: () => {
+            console.log('测试');
+          },
+        },
+      ])
+    );
+
     new Tray({
       image: '/C/ic.png',
     }).setContextMenu(TestButton, 200, 200);

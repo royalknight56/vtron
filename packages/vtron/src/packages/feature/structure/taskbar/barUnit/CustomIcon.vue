@@ -1,7 +1,7 @@
 <template>
   <div class="custom-outer">
     <div class="state-item" v-for="item in traylst" :key="item._id">
-      <div class="state-icon" @click="handleClick(item)">
+      <div class="state-icon" @click="($event) => handleClick(item, $event)">
         <div class="inner">
           <VtronImage v-if="typeof item.image === 'string'" :path="item.image"></VtronImage>
           <component v-else :is="item.image"></component>
@@ -25,12 +25,15 @@
 <script setup lang="ts">
 import VtronImage from '@/packages/feature/builtin/components/VtronImage.vue';
 import { mountEvent } from '@/packages/feature/event';
+import { Menu } from '@/packages/feature/menu/Menu';
 import { Tray } from '@/packages/feature/tray/Tary';
 
 const traylst = Tray.trayList;
 
-function handleClick(item: Tray) {
-  if (item._contextMenu) {
+function handleClick(item: Tray, ev: MouseEvent) {
+  if (item._contextMenu instanceof Menu) {
+    item._contextMenu.popup(ev);
+  } else {
     item._contextMenuShow = !item._contextMenuShow;
   }
   Tray.trayList.value.forEach((tray) => {

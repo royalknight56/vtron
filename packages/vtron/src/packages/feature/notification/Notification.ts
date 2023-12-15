@@ -14,14 +14,14 @@ export class Notify {
     this.content = option.content;
     this.id = Notify.idcount++;
     const sys = useSystem();
-    sys._rootState.system.notify.push(this);
-    sys._rootState.system.message.notify.push(this);
+    sys._rootState.notify.push(this);
+    sys._rootState.message.notify.push(this);
     setTimeout(() => {
       this.close();
     }, option.timeout || 5000);
   }
   close() {
     const sys = useSystem();
-    sys._rootState.system.notify.splice(sys._rootState.system.notify.indexOf(this), 1);
+    sys._rootState.notify.splice(sys._rootState.notify.indexOf(this), 1);
   }
 }

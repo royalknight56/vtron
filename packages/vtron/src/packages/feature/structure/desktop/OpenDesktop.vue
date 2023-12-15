@@ -5,7 +5,7 @@
     @dragover.prevent
     @drop="refFileDrop($event, `${system._options.userLocation}Desktop`)"
     :style="{
-      filter: `brightness(${system._rootState.system.info.brightness * 2}%)`,
+      filter: `brightness(${system._rootState.info.brightness * 2}%)`,
     }"
   >
     <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown="userareaDown">
@@ -123,7 +123,7 @@ function handleRightClick(e: MouseEvent) {
             createNewDir(`${system._options.userLocation}Desktop`);
           },
         },
-        ...(system._rootState.system.options.contextMenus || []),
+        ...(system._rootState.options.contextMenus || []),
       ],
       (val) => val.name
     ),

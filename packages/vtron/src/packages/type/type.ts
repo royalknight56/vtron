@@ -72,48 +72,46 @@ export interface WinAppOptions {
 }
 
 export type RootState = {
-  system: {
-    ref: HTMLElement | undefined;
-    state: SystemStateEnum;
-    message: {
-      notify: Array<Notify>;
-      system: Array<Notify>;
-    };
-    apps: Array<VtronFileWithoutContent>;
-    magnet: Array<VtronFileWithoutContent>;
-    menulist: Array<VtronFileWithoutContent>;
+  ref: HTMLElement | undefined;
+  state: SystemStateEnum;
+  message: {
     notify: Array<Notify>;
-    windowTree: Tree<BrowserWindow>;
-    windowOrder: Array<BrowserWindow>;
-    windowMap: {
-      Desktop: Map<string, WinAppOptions>;
-      Magnet: Map<string, WinAppOptions>;
-      Menulist: Map<string, WinAppOptions>;
-      Builtin: Map<string, WinAppOptions>;
-      [key: string]: Map<string, WinAppOptions>;
-    };
-    winnum: number;
-    topWindow: BrowserWindow | undefined;
-    info: {
-      // 系统次级信息
-      screenWidth: number;
-      screenHeight: number;
-      brightness: number; // 亮度
-      battery: {
-        isCharging: boolean;
-        chargeLevel: number;
-      };
-      connection: {
-        effectiveType: string;
-        rtt: number;
-        downlink: number;
-        saveData: boolean;
-      };
-    };
-    clipboard: any;
-    settings: Setting[];
-    options: SystemOptions;
-    contextMenu: Menu | undefined;
-    error: string;
+    system: Array<Notify>;
   };
+  apps: Array<VtronFileWithoutContent>;
+  magnet: Array<VtronFileWithoutContent>;
+  menulist: Array<VtronFileWithoutContent>;
+  notify: Array<Notify>;
+  windowTree: Tree<BrowserWindow>;
+  windowOrder: Array<BrowserWindow>;
+  windowMap: {
+    Desktop: Map<string, WinAppOptions>;
+    Magnet: Map<string, WinAppOptions>;
+    Menulist: Map<string, WinAppOptions>;
+    Builtin: Map<string, WinAppOptions>;
+    [key: string]: Map<string, WinAppOptions>;
+  };
+  winnum: number;
+  topWindow: BrowserWindow | undefined;
+  info: {
+    // 系统次级信息
+    screenWidth: number;
+    screenHeight: number;
+    brightness: number; // 亮度
+    battery: {
+      isCharging: boolean;
+      chargeLevel: number;
+    };
+    connection: {
+      effectiveType: string;
+      rtt: number;
+      downlink: number;
+      saveData: boolean;
+    };
+  };
+  clipboard: any;
+  settings: Setting[];
+  options: SystemOptions;
+  contextMenu: Menu | undefined;
+  error: string;
 };

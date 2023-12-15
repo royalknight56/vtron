@@ -82,7 +82,7 @@ class System {
     logger('firstRun');
     this.firstRun();
     logger('setRef');
-    this.setRef(this._rootState.system.ref!);
+    this.setRef(this._rootState.ref!);
   }
 
   setRef(ref: HTMLElement) {
@@ -108,7 +108,7 @@ class System {
     /**
      * 过程：激活屏幕，桥接事件。
      */
-    this._rootState.system.state = SystemStateEnum.opening;
+    this._rootState.state = SystemStateEnum.opening;
     logger('initBuiltinFileOpener');
     initBuiltinFileOpener(this); // 注册内建文件打开器
     logger('initFileSystem');
@@ -145,15 +145,15 @@ class System {
    */
   private isLogin() {
     if (!this._options.login) {
-      this._rootState.system.state = SystemStateEnum.open;
+      this._rootState.state = SystemStateEnum.open;
       return;
     } else {
       if (this._options.login.init?.()) {
-        this._rootState.system.state = SystemStateEnum.open;
+        this._rootState.state = SystemStateEnum.open;
         return;
       }
 
-      this._rootState.system.state = SystemStateEnum.lock;
+      this._rootState.state = SystemStateEnum.lock;
       const tempCallBack = this._options.loginCallback;
       if (!tempCallBack) {
         throw new Error('没有设置登录回调函数');
@@ -161,7 +161,7 @@ class System {
       this._options.loginCallback = async (username: string, password: string) => {
         const res = await tempCallBack(username, password);
         if (res) {
-          this._rootState.system.state = SystemStateEnum.open;
+          this._rootState.state = SystemStateEnum.open;
           return true;
         }
         return false;
@@ -175,7 +175,7 @@ class System {
   private async initBackground() {
     const back = await this.fs.readFile(`${this._options.systemLocation}Vtron/background.txt`);
     if (back) {
-      this._rootState.system.options.background = back;
+      this._rootState.options.background = back;
     }
   }
   /**
@@ -188,13 +188,13 @@ class System {
     return initEventer();
   }
   private initApp() {
-    this._rootState.system.options.desktop?.forEach((item) => {
+    this._rootState.options.desktop?.forEach((item) => {
       this.addApp(item);
     });
-    this._rootState.system.options.magnet?.forEach((item) => {
+    this._rootState.options.magnet?.forEach((item) => {
       this.addMagnet(item);
     });
-    this._rootState.system.options.menulist?.forEach((item) => {
+    this._rootState.options.menulist?.forEach((item) => {
       this.addMenuList(item);
     });
   }
@@ -261,7 +261,7 @@ class System {
     const config = await this.fs.readFile(join(this._options.systemLocation || '', 'Vtron/config.json'));
     if (config) {
       try {
-        this._rootState.system.options = Object.assign(this._rootState.system.options, JSON.parse(config));
+        this._rootState.options = Object.assign(this._rootState.options, JSON.parse(config));
       } catch {
         new Notify({
           title: 'Vtron',
@@ -276,12 +276,12 @@ class System {
     value: T extends keyof SystemOptionsCertainly ? SystemOptionsCertainly[T] : unknown
   ): Promise<void>;
   setConfig<T extends keyof SystemOptionsCertainly>(key: string, value: SystemOptionsCertainly[T]) {
-    this._rootState.system.options[key] = value;
+    this._rootState.options[key] = value;
     if (Saveablekey.includes(key as any)) {
       return this.fs.writeFile(
         join(this._options.systemLocation || '', 'Vtron/config.json'),
 
-        JSON.stringify(pick(this._rootState.system.options, ...Saveablekey))
+        JSON.stringify(pick(this._rootState.options, ...Saveablekey))
       );
     } else {
       return Promise.resolve();
@@ -291,7 +291,7 @@ class System {
   getConfig<T extends keyof SystemOptionsCertainly>(key: T): SystemOptionsCertainly[T];
   getConfig<T extends string>(key: T): unknown;
   getConfig(key: string) {
-    return this._rootState.system.options[key];
+    return this._rootState.options[key];
   }
 
   private addWindowSysLink(loc: string, options: WinAppOptions, force = false) {
@@ -308,7 +308,7 @@ class System {
     } else {
       options.window.content = markRaw(options.window.content);
     }
-    this._rootState.system.windowMap[loc].set(options.name, options);
+    this._rootState.windowMap[loc].set(options.name, options);
   }
 
   async runPlugin(system: System) {
@@ -341,7 +341,7 @@ class System {
     this.addWindowSysLink('Menulist', options, force);
   }
   addBuiltInApp(options: WinAppOptions) {
-    this._rootState.system.windowMap['Builtin'].set(options.name, options);
+    this._rootState.windowMap['Builtin'].set(options.name, options);
   }
   createShell(): ShellInterface {
     if (this._options.shell) {
@@ -375,16 +375,16 @@ class System {
     }
   }
   shutdown() {
-    this._rootState.system.state = SystemStateEnum.close;
+    this._rootState.state = SystemStateEnum.close;
   }
   reboot() {
-    this._rootState.system.state = SystemStateEnum.close;
+    this._rootState.state = SystemStateEnum.close;
     window.location.reload();
   }
   recover() {
     this.fs.removeFileSystem();
     localStorage.removeItem('vtronFirstRun');
-    this._rootState.system.state = SystemStateEnum.close;
+    this._rootState.state = SystemStateEnum.close;
     window.location.reload();
   }
   emit(event: string, ...args: any[]) {
@@ -416,7 +416,7 @@ class System {
       ...setting,
       content: markRaw(setting.content),
     };
-    this._rootState.system.settings?.push(temp);
+    this._rootState.settings?.push(temp);
   }
   /**打开vtron 文件系统的文件 */
   async openFile(path: string) {
@@ -478,11 +478,11 @@ class System {
   errorHandler = 0;
   emitError(error: string) {
     this._error && this._error(error);
-    this._rootState.system.error = error;
+    this._rootState.error = error;
     this.errorHandler = Date.now();
     setTimeout(() => {
       if (Date.now() - this.errorHandler > 1000 * 3) {
-        this._rootState.system.error = '';
+        this._rootState.error = '';
       }
     }, 1000 * 4);
   }

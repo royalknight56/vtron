@@ -160,7 +160,7 @@ async function addAlert() {
   );
   const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
   const alredyNotes = await sys.fs.readFile(
-    join(sys._rootState.system.options.userLocation || '', '/Schedule', fileName)
+    join(sys._rootState.options.userLocation || '', '/Schedule', fileName)
   );
   if (alredyNotes) {
     const notes = JSON.parse(alredyNotes);
@@ -169,7 +169,7 @@ async function addAlert() {
       time: chosenDay.getTime(),
     });
     await sys.fs.writeFile(
-      join(sys._rootState.system.options.userLocation || '', '/Schedule', fileName),
+      join(sys._rootState.options.userLocation || '', '/Schedule', fileName),
       JSON.stringify(notes)
     );
   } else {
@@ -180,7 +180,7 @@ async function addAlert() {
       },
     ];
     await sys.fs.writeFile(
-      join(sys._rootState.system.options.userLocation || '', '/Schedule', fileName),
+      join(sys._rootState.options.userLocation || '', '/Schedule', fileName),
       JSON.stringify(notes)
     );
   }
@@ -201,16 +201,16 @@ async function deleteAlert(index: number) {
   );
   const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
   const alredyNotes = await sys.fs.readFile(
-    join(sys._rootState.system.options.userLocation || '', '/Schedule', fileName)
+    join(sys._rootState.options.userLocation || '', '/Schedule', fileName)
   );
   if (alredyNotes) {
     const notes = JSON.parse(alredyNotes);
     notes.splice(index, 1);
     if (notes.length === 0) {
-      await sys.fs.unlink(join(sys._rootState.system.options.userLocation || '', '/Schedule', fileName));
+      await sys.fs.unlink(join(sys._rootState.options.userLocation || '', '/Schedule', fileName));
     } else {
       await sys.fs.writeFile(
-        join(sys._rootState.system.options.userLocation || '', '/Schedule', fileName),
+        join(sys._rootState.options.userLocation || '', '/Schedule', fileName),
         JSON.stringify(notes)
       );
     }
@@ -229,7 +229,7 @@ async function readDateNotes() {
   );
   const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
   const alredyNotes = await sys.fs.readFile(
-    join(sys._rootState.system.options.userLocation || '', '/Schedule', fileName)
+    join(sys._rootState.options.userLocation || '', '/Schedule', fileName)
   );
   if (alredyNotes) {
     alertList.value = JSON.parse(alredyNotes);

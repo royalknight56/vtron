@@ -7,8 +7,8 @@ import { join } from '../core/Path';
 function initSizeEvent() {
   const rootState = useSystem()._rootState;
   function refreshDesktopSize(rootState: RootState) {
-    rootState.system.info.screenWidth = window?.innerWidth || 0;
-    rootState.system.info.screenHeight = window?.innerHeight || 0;
+    rootState.info.screenWidth = window?.innerWidth || 0;
+    rootState.info.screenHeight = window?.innerHeight || 0;
   }
   mountEvent('system.initSize', () => {
     refreshDesktopSize(rootState);
@@ -28,16 +28,16 @@ function initBatteryEvent() {
   nav
     .getBattery?.()
     .then((battery: any) => {
-      rootState.system.info.battery.isCharging = battery.charging;
-      rootState.system.info.battery.chargeLevel = battery.level;
+      rootState.info.battery.isCharging = battery.charging;
+      rootState.info.battery.chargeLevel = battery.level;
       battery.onchargingchange = () => {
-        rootState.system.info.battery.isCharging = battery.charging;
-        rootState.system.info.battery.chargeLevel = battery.level;
+        rootState.info.battery.isCharging = battery.charging;
+        rootState.info.battery.chargeLevel = battery.level;
       };
     })
     .catch(() => {
-      rootState.system.info.battery.isCharging = false;
-      rootState.system.info.battery.chargeLevel = 0;
+      rootState.info.battery.isCharging = false;
+      rootState.info.battery.chargeLevel = 0;
     });
 }
 function initNetworkEvent() {
@@ -49,9 +49,9 @@ function initNetworkEvent() {
   }
 
   const connection = nav.connection as any;
-  rootState.system.info.connection = connection;
+  rootState.info.connection = connection;
   connection.addEventListener('change', () => {
-    rootState.system.info.connection = connection;
+    rootState.info.connection = connection;
   });
 }
 function setAlertTask(time: number, callback: any) {
@@ -68,7 +68,7 @@ async function initAlertEvent() {
   const chosenDay = new Date();
   const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
   const alredyNotes = await sys.fs.readFile(
-    join(sys._rootState.system.options.userLocation || '', '/Schedule', fileName)
+    join(sys._rootState.options.userLocation || '', '/Schedule', fileName)
   );
   if (alredyNotes) {
     const alertList = JSON.parse(alredyNotes);

@@ -13,6 +13,7 @@
 
 //   })
 
+import { useSystem } from '../system';
 import { MenuItem, MenuItemConstructorOptions } from './MenuItem';
 export class Menu {
   public static buildFromTemplate(template: Array<MenuItemConstructorOptions | MenuItem>) {
@@ -28,6 +29,7 @@ export class Menu {
   items: MenuItem[] = [];
   popup: (e: MouseEvent) => void = () => {
     console.log('popup');
+    useSystem();
   };
   closePopup: () => void = () => {
     console.log('closePopup');

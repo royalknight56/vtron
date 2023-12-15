@@ -2,11 +2,11 @@
   <div
     class="error"
     :class="{
-      ani: system._rootState.system.error,
+      ani: system._rootState.error,
     }"
-    :key="system._rootState.system.error"
+    :key="system._rootState.error"
   >
-    {{ system._rootState.system.error }}
+    {{ system._rootState.error }}
   </div>
 </template>
 <script setup lang="ts">

@@ -19,9 +19,9 @@ function imgload() {
   loaded.value = true;
 }
 onMounted(() => {
-  refershBack(rootState.system.options.background);
+  refershBack(rootState.options.background);
 });
-watch(rootState.system.options, (nv) => {
+watch(rootState.options, (nv) => {
   refershBack(nv.background);
 });
 function refershBack(val: string | undefined) {

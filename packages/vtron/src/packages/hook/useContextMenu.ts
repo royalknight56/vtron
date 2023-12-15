@@ -83,17 +83,17 @@ function useContextMenu() {
     const system = useSystem();
     const rootState = system._rootState;
     if (!system) return;
-    if (rootState.system.clipboard) {
-      rootState.system.clipboard = files.map((file) => file.path);
+    if (rootState.clipboard) {
+      rootState.clipboard = files.map((file) => file.path);
     }
   }
   async function pasteFile(path: string) {
     const system = useSystem();
     if (!system) return;
     const rootState = system._rootState;
-    const clipLen = Object.keys(rootState.system.clipboard).length;
+    const clipLen = Object.keys(rootState.clipboard).length;
     if (clipLen) {
-      const clipFiles = rootState.system.clipboard;
+      const clipFiles = rootState.clipboard;
 
       if (!clipFiles.forEach) {
         return;

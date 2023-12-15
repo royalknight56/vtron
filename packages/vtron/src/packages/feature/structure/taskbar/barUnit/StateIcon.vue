@@ -23,7 +23,7 @@ function handleNotifyClick() {
   emitEvent('messagecenter.show');
 }
 function showDesk() {
-  sys._rootState.system.windowOrder.forEach((win) => {
+  sys._rootState.windowOrder.forEach((win) => {
     win.minimize();
   });
 }

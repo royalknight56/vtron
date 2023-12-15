@@ -121,7 +121,7 @@ const setList = ref([
   //   icon: e895,
   //   content: markRaw(SetUpdate),
   // },
-  ...(sys._rootState.system.settings ? sys._rootState.system.settings : []),
+  ...(sys._rootState.settings ? sys._rootState.settings : []),
 ]);
 </script>
 

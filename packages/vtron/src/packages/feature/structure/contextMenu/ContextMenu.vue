@@ -33,8 +33,8 @@ mountEvent('contextMenu.show', (source, data) => {
   }
   isVisiable.value = true;
   // get window inner width and height
-  const innerWidth = useSystem()._rootState.system.info.screenWidth;
-  const innerHeight = useSystem()._rootState.system.info.screenHeight;
+  const innerWidth = useSystem()._rootState.info.screenWidth;
+  const innerHeight = useSystem()._rootState.info.screenHeight;
   // get contextmenu width
   const contextmenuWidth = 160;
   // get contextmenu height

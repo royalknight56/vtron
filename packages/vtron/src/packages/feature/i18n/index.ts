@@ -4,9 +4,9 @@ import { useSystem } from '../system';
 
 export function i18n(key: keyof AllText): string {
   const rootState = useSystem()._rootState;
-  if (rootState.system.options.lang == 'zh-CN') {
+  if (rootState.options.lang == 'zh-CN') {
     return zhCN[key];
-  } else if (rootState.system.options.lang == 'en-US') {
+  } else if (rootState.options.lang == 'en-US') {
     return enUS[key];
   } else {
     return enUS[key];

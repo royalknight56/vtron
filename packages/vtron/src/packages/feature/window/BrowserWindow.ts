@@ -83,8 +83,8 @@ class BrowserWindow {
     }
 
     const rootState = useSystem()._rootState;
-    this.id = rootState.system.winnum;
-    rootState.system.winnum++;
+    this.id = rootState.winnum;
+    rootState.winnum++;
 
     this.windowInfo = reactive(Object.assign({}, BrowserWindow.defaultInfo, this._option));
     if (this._option.fullscreen) {
@@ -98,7 +98,7 @@ class BrowserWindow {
   _setZindex() {
     this.windowInfo.zindex =
       20 +
-      useSystem()._rootState.system.windowTree.findIndex(this, (val: Tree<BrowserWindow>) => {
+      useSystem()._rootState.windowTree.findIndex(this, (val: Tree<BrowserWindow>) => {
         return val.value.isVisible();
       });
   }
@@ -111,8 +111,8 @@ class BrowserWindow {
   private _getWinInner() {
     const rootState = useSystem()._rootState;
     return {
-      width: rootState.system.info.screenWidth,
-      height: rootState.system.info.screenHeight,
+      width: rootState.info.screenWidth,
+      height: rootState.info.screenHeight,
     };
   }
   private _makeWindowNotOverSize() {
@@ -144,15 +144,15 @@ class BrowserWindow {
   moveTop() {
     // 窗口置顶
     const rootState = useSystem()._rootState;
-    const tree = rootState.system.windowTree;
+    const tree = rootState.windowTree;
     const treeNode = tree.findNode(this);
     if (treeNode) {
       tree.removeChild(treeNode.value);
     }
     tree.addChild(this);
 
-    useSystem()._rootState.system.topWindow = this;
-    useSystem()._rootState.system.windowTree.traverseBFS((val) => {
+    useSystem()._rootState.topWindow = this;
+    useSystem()._rootState.windowTree.traverseBFS((val) => {
       if (val.value.id !== undefined) {
         val.value._setZindex();
         val.value.windowInfo.istop = false;
@@ -168,8 +168,8 @@ class BrowserWindow {
   show() {
     if (!this.windowInfo.isCreated) {
       const rootState = useSystem()._rootState;
-      rootState.system.windowTree.addChild(this);
-      rootState.system.windowOrder.push(this);
+      rootState.windowTree.addChild(this);
+      rootState.windowOrder.push(this);
       this.windowInfo.isCreated = true;
       if (this._option.center) {
         this.center();
@@ -199,14 +199,14 @@ class BrowserWindow {
     const rootState = useSystem()._rootState;
     if (this.windowInfo.isCreated) {
       this.windowInfo.isCreated = false;
-      rootState.system.windowTree.removeNode(this);
+      rootState.windowTree.removeNode(this);
       // Vue bug
       setTimeout(() => {
-        const ind = rootState.system.windowOrder.findIndex((val) => {
+        const ind = rootState.windowOrder.findIndex((val) => {
           return val === this;
         });
         if (ind === -1) return;
-        rootState.system.windowOrder.splice(ind, 1);
+        rootState.windowOrder.splice(ind, 1);
       }, 500);
     }
   }

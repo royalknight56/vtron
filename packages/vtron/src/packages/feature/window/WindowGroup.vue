@@ -5,7 +5,7 @@
 import WindowNode from './WindowNode.vue';
 import { useSystem } from '@feature/system';
 const rootState = useSystem()._rootState;
-const winArray = rootState.system.windowOrder;
+const winArray = rootState.windowOrder;
 </script>
 <style lang="scss" scoped>
 .window-node {

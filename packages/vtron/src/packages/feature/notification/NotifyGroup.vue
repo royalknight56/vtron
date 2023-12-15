@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { useSystem } from '../system';
 
-const notifyGroup = useSystem()._rootState.system.notify;
+const notifyGroup = useSystem()._rootState.notify;
 </script>
 <style lang="scss" scoped>
 .notify {

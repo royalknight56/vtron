@@ -20,9 +20,9 @@
         <div class="setting-item">
           <label> {{ i18n('brightness') }} </label>
           <div class="ctrl">
-            <WinProcess v-model="rootstate.system.info.brightness"></WinProcess>
+            <WinProcess v-model="rootstate.info.brightness"></WinProcess>
           </div>
-          {{ rootstate.system.info.brightness.toFixed(0) }}
+          {{ rootstate.info.brightness.toFixed(0) }}
         </div>
 
         <!-- <div class="setting-item">

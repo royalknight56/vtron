@@ -35,11 +35,11 @@ const iconDisplay = ref(`\uE850`);
 
 watchEffect(() => {
   const rootState = useSystem()._rootState;
-  if (rootState.system.info.battery.chargeLevel == 1) {
+  if (rootState.info.battery.chargeLevel == 1) {
     iconDisplay.value = charMap[`noC`][9];
   } else {
-    const level = Math.floor(rootState.system.info.battery.chargeLevel * 10);
-    iconDisplay.value = charMap[rootState.system.info.battery.isCharging ? `isC` : `noC`][level];
+    const level = Math.floor(rootState.info.battery.chargeLevel * 10);
+    iconDisplay.value = charMap[rootState.info.battery.isCharging ? `isC` : `noC`][level];
   }
 });
 </script>

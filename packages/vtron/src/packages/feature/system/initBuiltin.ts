@@ -105,7 +105,7 @@ export function initBuiltinFileOpener(system: System) {
       // exeContent[1]= loc
       // exeContent[2]= name
       // exeContent[3]= icon
-      const winopt = system._rootState.system.windowMap[exeContent[1]].get(exeContent[2]);
+      const winopt = system._rootState.windowMap[exeContent[1]].get(exeContent[2]);
       if (winopt) {
         if (winopt.multiple ?? true) {
           const win = new BrowserWindow(winopt.window);

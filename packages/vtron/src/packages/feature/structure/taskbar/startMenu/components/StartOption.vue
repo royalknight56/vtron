@@ -76,7 +76,7 @@ function handleClick(key: number, ev: MouseEvent) {
       emitEvent('startMenu.set.click', {
         mouse: ev,
       });
-      const winopt = sys._rootState.system.windowMap['Builtin'].get('设置');
+      const winopt = sys._rootState.windowMap['Builtin'].get('设置');
 
       if (winopt) {
         if (winopt._hasShow) {

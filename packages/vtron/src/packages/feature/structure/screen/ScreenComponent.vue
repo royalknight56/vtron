@@ -1,29 +1,24 @@
 <template>
   <template v-if="rootState">
-    <div class="screen" @contextmenu.prevent ref="screen" :style="rootState?.system?.options?.rootStyle">
-      <template v-if="rootState.system.state == SystemStateEnum.close">
+    <div class="screen" @contextmenu.prevent ref="screen" :style="rootState?.options?.rootStyle">
+      <template v-if="rootState.state == SystemStateEnum.close">
         <CloseDesktop></CloseDesktop>
       </template>
-      <template v-else-if="rootState.system.state == SystemStateEnum.opening">
+      <template v-else-if="rootState.state == SystemStateEnum.opening">
         <OpeningDesktop></OpeningDesktop>
       </template>
       <template
-        v-else-if="
-          rootState.system.state == SystemStateEnum.open || rootState.system.state == SystemStateEnum.lock
-        "
+        v-else-if="rootState.state == SystemStateEnum.open || rootState.state == SystemStateEnum.lock"
       >
         <Transition name="moveup">
-          <div class="login" v-if="rootState.system.state == SystemStateEnum.lock">
+          <div class="login" v-if="rootState.state == SystemStateEnum.lock">
             <LockDesktop> </LockDesktop>
           </div>
         </Transition>
         <Transition name="fadeout">
-          <DesktopBackground
-            v-if="rootState.system.state == SystemStateEnum.lock"
-            class="mask"
-          ></DesktopBackground>
+          <DesktopBackground v-if="rootState.state == SystemStateEnum.lock" class="mask"></DesktopBackground>
         </Transition>
-        <OpenDesktop v-if="rootState.system.state == SystemStateEnum.open"></OpenDesktop>
+        <OpenDesktop v-if="rootState.state == SystemStateEnum.open"></OpenDesktop>
       </template>
     </div>
   </template>

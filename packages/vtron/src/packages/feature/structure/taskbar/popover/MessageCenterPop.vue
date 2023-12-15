@@ -38,8 +38,8 @@ import { useSystem } from '@feature/system';
 import { ref } from 'vue';
 import { mountEvent } from '@feature/event';
 const rootState = useSystem()._rootState;
-const notifyGroup = rootState.system.message.notify;
-const systemGroup = rootState.system.message.system;
+const notifyGroup = rootState.message.notify;
+const systemGroup = rootState.message.system;
 const isPopShow = ref(false);
 mountEvent('messagecenter.show', () => {
   isPopShow.value = !isPopShow.value;
@@ -48,7 +48,7 @@ mountEvent('messagecenter.hidden', () => {
   isPopShow.value = false;
 });
 function allClear() {
-  rootState.system.message.notify.splice(0, notifyGroup.length);
+  rootState.message.notify.splice(0, notifyGroup.length);
 }
 </script>
 <style lang="scss" scoped>

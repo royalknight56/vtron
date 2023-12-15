@@ -39,25 +39,13 @@ function refershAppList() {
 
           switch (element) {
             case 'apps':
-              useSystem()._rootState.system.apps.splice(
-                0,
-                useSystem()._rootState.system.apps.length,
-                ...tempList
-              );
+              useSystem()._rootState.apps.splice(0, useSystem()._rootState.apps.length, ...tempList);
               break;
             case 'magnet':
-              useSystem()._rootState.system.magnet.splice(
-                0,
-                useSystem()._rootState.system.magnet.length,
-                ...tempList
-              );
+              useSystem()._rootState.magnet.splice(0, useSystem()._rootState.magnet.length, ...tempList);
               break;
             case 'menulist':
-              useSystem()._rootState.system.menulist.splice(
-                0,
-                useSystem()._rootState.system.menulist.length,
-                ...tempList
-              );
+              useSystem()._rootState.menulist.splice(0, useSystem()._rootState.menulist.length, ...tempList);
               break;
             default:
               break;
@@ -69,7 +57,7 @@ function refershAppList() {
 function useAppOpen(type: 'apps' | 'magnet' | 'menulist') {
   const rootState = useSystem()._rootState;
   const system = useSystem();
-  const appList = rootState.system[type];
+  const appList = rootState[type];
   function openapp(item: VtronFileWithoutContent) {
     system?.openFile(item.path);
   }

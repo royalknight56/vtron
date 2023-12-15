@@ -5,6 +5,6 @@
 <script setup lang="ts">
 import { useSystem } from '@feature/system';
 const rootState = useSystem()._rootState;
-const sysInfo = rootState.system.info;
+const sysInfo = rootState.info;
 </script>
 <style scoped></style>

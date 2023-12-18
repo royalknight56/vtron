@@ -17,8 +17,8 @@ vtron-plus 是 vtron 的插件系统，可以通过 vtron-plus 来扩展 vtron �
 尝试在 ready 之后，再去访问 system 的属性。
 
 ```js
-import { System } from "vtron";
-import { vtronPlus } from "vtron-plus";
+import { System } from 'vtron';
+import { vtronPlus } from 'vtron-plus';
 let system = new System({});
 system.whenReady().then(() => {
   // 在这里访问system的属性
@@ -50,24 +50,24 @@ system.whenReady().then(() => {
 
 ## 怎么调用右键菜单
 
-详见 api/event/contextMenu.show
+详见 api/Menu
 
-通过手动触发 contextMenu 事件，传入鼠标事件，和自定义菜单，触发右键菜单。
+通过创建Menu，然后调用popup方法，传入鼠标事件，就可以显示右键菜单了。
 
 ## 怎么在窗口内部获取 browserWindow 实例
 
 通过 inject 注入 browserWindow 实例
 
 ```ts
-import { BrowserWindow } from "vtron";
-let browserWindow = inject<BrowserWindow>("browserWindow");
+import { BrowserWindow } from 'vtron';
+let browserWindow = inject<BrowserWindow>('browserWindow');
 ```
 
 ## 怎么访问系统文件
 
 使用文件系统，详见 api/fs
 
-## exe 文件是什么格式
+<!-- ## exe 文件是什么格式
 
 exe 文件可以直接调用保存的窗口创建函数
 
@@ -81,7 +81,7 @@ url 文件打开后会直接显示设定的 url
 
 格式如下
 
-// content: `link::${options.link}::icon::${options.icon}`
+// content: `link::${options.link}::icon::${options.icon}` -->
 
 ## 怎么让无边框窗口可以拖动
 

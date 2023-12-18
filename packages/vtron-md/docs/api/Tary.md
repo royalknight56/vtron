@@ -33,6 +33,8 @@ tary.setContextMenu(BatteryPopVue, 200, 80);
 
 - 80: 右键菜单的高度
 
+setContextMenu 也可以传入 Menu 创建出的右键菜单
+
 ### destroy
 
 销毁

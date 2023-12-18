@@ -25,6 +25,7 @@ join("path/to","file") // path/to/file
 join("path/to","/file") // path/to/file
 join("path/to/file",'..') // path/to
 ```
+
 ## dirname
 
 获取指定路径的文件夹路径
@@ -46,4 +47,12 @@ extname(path: string): string;
 import { extname } from "vtron";
 
 extname("path/to/name.file") // .file
+```
+
+## resolve
+
+将路径片段解析为路径
+
+```typescript
+resolve(...paths: string[]): string;
 ```

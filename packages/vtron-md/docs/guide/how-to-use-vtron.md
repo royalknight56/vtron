@@ -147,6 +147,99 @@ let system = new System({
 </script>
 ```
 
+6. 窗口中的操作
+
+下面是包含了部分api操作的示例
+
+```vue
+<template>
+  <div class="outer">
+    {{ sys?.version }}
+  </div>
+</template>
+<script lang="ts" setup>
+import { Notify, BrowserWindow, useSystem } from 'vtron';
+import { onUnmounted, inject } from 'vue';
+// 通过inject导入本窗口的信息
+const browserWindow: BrowserWindow = inject('browserWindow') as BrowserWindow;
+// 通过useSystem 获取到系统的信息
+const sys = useSystem();
+
+// 获取本地保存的md文件 sys._rootState.options.userLocation 是用户的文件系统路径
+sys.fs.readFile(join(sys._rootState.options.userLocation || '', '/Note/test.md')).then((res) => {
+  console.log(res);
+});
+
+// 监听窗口的部分事件
+browserWindow.on('move', (...arg: any) => {
+  console.log('move', arg);
+});
+browserWindow.on('resize', (...arg: any) => {
+  console.log('resize', arg);
+});
+browserWindow.on('state', (...arg: any) => {
+  console.log('state', arg);
+});
+
+function nextStep(fun: () => void, time?: number) {
+  return new Promise((resolve) => {
+    const res = fun();
+    setTimeout(() => {
+      resolve(res);
+    }, time || 50);
+  });
+}
+await nextStep(() => {
+  // 获取窗口的位置大小
+  const [x, y] = browserWindow.getPosition();
+  const [width, height] = browserWindow.getSize();
+  // 调用系统提示
+  new Notify({
+    title: 'title',
+    content: `${x},${y},${width},${height}`,
+    timeout: 5000,
+  });
+}, 100);
+await nextStep(() => {
+  // 设置窗口的位置大小
+  browserWindow.setPosition(100, 100);
+  browserWindow.setSize(500, 500);
+}, 100);
+
+await nextStep(() => {
+  // 将窗口居中
+  browserWindow.center();
+}, 100);
+
+await nextStep(() => {
+  const title = browserWindow.getTitle();
+  browserWindow.setTitle('新标题');
+}, 100);
+await nextStep(() => {
+  // 窗口最大化
+  browserWindow.maximize();
+}, 200);
+await nextStep(() => {
+  // 恢复窗口状态
+  browserWindow.restore();
+}, 100);
+await nextStep(() => {
+  // 窗口最小化
+  browserWindow.minimize();
+}, 200);
+await nextStep(() => {
+  browserWindow.restore();
+}, 100);
+
+await nextStep(() => {
+  browserWindow.setFullScreen(true);
+}, 100);
+await nextStep(() => {
+  browserWindow.setFullScreen(false);
+}, 100);
+</script>
+```
+
 ## 常见问题
 
 为什么在 system 中添加了 app，桌面还是没有显示出 app

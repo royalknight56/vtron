@@ -22,6 +22,7 @@
       @backFolder="backFolder()"
       @refresh="handleNavRefresh"
       @search="handleNavSearch"
+      @changeHistory="handleHistoryChange"
     ></NavBar>
   </div>
   <div class="main" @click="handleOuterClick">
@@ -98,15 +99,23 @@ const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 const config = browserWindow?.config;
 
 const router_url = ref('');
+const router_url_history = ref<Array<string>>([]);
+const router_url_history_index = ref(0);
 const currentList = ref<Array<VtronFileWithoutContent>>([]);
 
 const system = useSystem();
 const { refFileDrop } = useFileDrag(system);
 const { createDesktopContextMenu } = useContextMenu();
+const setRouter = function (path: string) {
+  router_url.value = path;
+  if (router_url_history_index.value <= router_url_history.value.length - 1) {
+    router_url_history.value = router_url_history.value.slice(0, router_url_history_index.value + 1);
+  }
+  router_url_history_index.value = router_url_history.value.length;
+  router_url_history.value.push(path);
+};
 const { refersh, createFolder, backFolder, openFolder, onComputerMount } = useComputer({
-  setRouter(path) {
-    router_url.value = path;
-  },
+  setRouter: setRouter,
   getRouter() {
     return router_url.value;
   },
@@ -141,6 +150,14 @@ const { refersh, createFolder, backFolder, openFolder, onComputerMount } = useCo
     return system.fs.search(keyword);
   },
 });
+function handleHistoryChange(offset: number) {
+  if (router_url_history_index.value + offset < 0) return;
+  if (router_url_history_index.value + offset > router_url_history.value.length - 1) return;
+  router_url_history_index.value = router_url_history_index.value + offset;
+  router_url.value = router_url_history.value[router_url_history_index.value];
+
+  refersh();
+}
 const leftWidth = ref(200);
 function leftHandleDown(e: MouseEvent) {
   const startX = e.clientX;
@@ -266,22 +283,22 @@ function showOuterMenu(e: MouseEvent) {
 async function handleNavRefresh(path: string) {
   if (path == '') return;
   if (path.startsWith('search:')) {
-    router_url.value = path;
+    setRouter(path);
     refersh();
     return;
   }
 
   const res = await system.fs.stat(path);
   if (res) {
-    router_url.value = path;
+    setRouter(path);
     refersh();
   } else {
-    router_url.value = dirname(path);
+    setRouter(dirname(path));
     refersh();
   }
 }
 async function handleNavSearch(path: string) {
-  router_url.value = 'search:' + path;
+  setRouter('search:' + path);
   refersh();
 }
 /* ------------ 路径输入框end ---------*/

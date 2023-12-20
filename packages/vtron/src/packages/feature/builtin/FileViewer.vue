@@ -25,7 +25,6 @@ try {
   format.value = 'base64';
   input.value = base64String;
 } catch (error) {
-  console.log(error);
   format.value = 'text';
   input.value = browserWindow?.config.content;
 }

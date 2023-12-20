@@ -1,6 +1,6 @@
 <template>
   <div class="uper_nav">
-    <div class="uper_nav_button" @click="backFolder()">
+    <div class="uper_nav_button" @click="changeHistory(-1)">
       <svg
         t="1632984723698"
         class="icon"
@@ -15,7 +15,7 @@
         />
       </svg>
     </div>
-    <div class="uper_nav_button" @click="backFolder()">
+    <div class="uper_nav_button" @click="changeHistory(1)">
       <svg
         t="1632984737821"
         class="icon"
@@ -27,22 +27,6 @@
         <path
           d="M885.113 489.373L628.338 232.599c-12.496-12.497-32.758-12.497-45.254 0-12.497 12.497-12.497 32.758 0 45.255l203.3 203.3H158.025c-17.036 0-30.846 13.811-30.846 30.846 0 17.036 13.811 30.846 30.846 30.846h628.36L583.084 746.147c-12.497 12.496-12.497 32.758 0 45.255 6.248 6.248 14.438 9.372 22.627 9.372s16.379-3.124 22.627-9.372l256.775-256.775a31.999 31.999 0 0 0 0-45.254z"
           p-id="10250"
-        />
-      </svg>
-    </div>
-    <div class="uper_nav_button uper_nav_button_small" @click="backFolder()">
-      <svg
-        t="1639145779758"
-        class="icon"
-        viewBox="0 0 1024 1024"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        p-id="3080"
-      >
-        <path
-          d="M533.333333 516.266667l-174.933333-170.666667-64 59.733333 234.666667 234.666667L768 405.333333l-59.733333-59.733333-174.933334 170.666667z"
-          fill="#444444"
-          p-id="3081"
         />
       </svg>
     </div>
@@ -91,10 +75,13 @@ import { ref, nextTick } from 'vue';
 const props = defineProps<{
   modelValue?: string;
 }>();
-const emit = defineEmits(['update:modelValue', 'backFolder', 'refresh', 'search']);
+const emit = defineEmits(['update:modelValue', 'backFolder', 'changeHistory', 'refresh', 'search']);
 
 function backFolder() {
   emit('backFolder');
+}
+function changeHistory(num: number) {
+  emit('changeHistory', num);
 }
 
 /* ------------ 路径输入框 ------------*/

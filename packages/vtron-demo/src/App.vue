@@ -183,7 +183,7 @@ NoteMd是和vtron契合的笔记软件
   mountWebdav(system);
   localStorage.getItem('user') || localStorage.setItem('user', new Date().getTime().toString());
 
-  mountOpener(system);
+  // mountOpener(system);
   readySystem.setConfig('contextMenus', [
     {
       label: '新建.md文件',

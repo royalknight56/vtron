@@ -36,3 +36,8 @@ export type { RootState, SystemOptions, WinApp } from '@packages/type/type';
 export { vDragable } from '@feature/window/MakeDragable';
 export type { ShellInterface } from '@feature/core/ShellType';
 export type { VtronFileInterface } from '@feature/core/FIleInterface';
+export { i18n } from '@feature/i18n';
+export { Tray } from '@feature/tray/Tary';
+export { dealIcon } from '@packages/util/Icon';
+export { Menu } from '@feature/menu/Menu';
+export { MenuItem } from '@feature/menu/MenuItem';

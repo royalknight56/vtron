@@ -91,7 +91,7 @@ export function useFileDrag(system: System) {
     setProgress(101);
   }
 
-  async function refFileDrop(ev: DragEvent, path: string) {
+  async function dragFileToDrop(ev: DragEvent, path: string) {
     dragCallback();
     ev.preventDefault();
     const fromobj = ev?.dataTransfer?.getData('fromobj');
@@ -113,7 +113,6 @@ export function useFileDrag(system: System) {
   return {
     startDrag,
     folderDrop,
-    outerFileDrop,
-    refFileDrop,
+    dragFileToDrop,
   };
 }

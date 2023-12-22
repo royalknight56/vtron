@@ -49,7 +49,7 @@
       @contextmenu.self="showOuterMenu($event)"
       @dragenter.prevent
       @dragover.prevent
-      @drop.stop="refFileDrop($event, router_url)"
+      @drop.stop="dragFileToDrop($event, router_url)"
       @click.self="onBackClick"
       @mousedown="backgroundDown"
     >
@@ -104,7 +104,7 @@ const router_url_history_index = ref(0);
 const currentList = ref<Array<VtronFileWithoutContent>>([]);
 
 const system = useSystem();
-const { refFileDrop } = useFileDrag(system);
+const { dragFileToDrop } = useFileDrag(system);
 const { createDesktopContextMenu } = useContextMenu();
 const setRouter = function (path: string) {
   router_url.value = path;

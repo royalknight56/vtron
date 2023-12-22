@@ -3,7 +3,7 @@
     class="desktop"
     @dragenter.prevent
     @dragover.prevent
-    @drop="refFileDrop($event, `${system._options.userLocation}Desktop`)"
+    @drop="dragFileToDrop($event, `${system._options.userLocation}Desktop`)"
     :style="{
       filter: `brightness(${system._rootState.info.brightness * 2}%)`,
     }"
@@ -42,7 +42,7 @@ import { onErrorCaptured } from 'vue';
 const { createDesktopContextMenu } = useContextMenu();
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 const system = useSystem();
-const { refFileDrop } = useFileDrag(system);
+const { dragFileToDrop } = useFileDrag(system);
 
 let chosenCallback: (rect: Rect) => void = () => {
   //

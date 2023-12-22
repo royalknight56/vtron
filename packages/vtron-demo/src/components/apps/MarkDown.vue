@@ -12,7 +12,13 @@ onMounted(() => {
   if (win?.config.path) {
     sys?.fs.readFile(win.config.path).then((res) => {
       if (res) {
-        value.value = res;
+        try {
+          const base64String = decodeURIComponent(escape(atob(res)));
+          value.value = base64String;
+        } catch (error) {
+          console.log(error);
+          value.value = res;
+        }
       }
     });
   }
@@ -23,7 +29,7 @@ function save(markdown: string, html: string) {
   if (!path) {
     path = "/C/Users/Desktop/Untitled.md";
   }
-  sys?.fs.writeFile(path, markdown).then((res) => {
+  sys?.fs.writeFile(path,  btoa(unescape(encodeURIComponent(markdown)))).then((res) => {
     new Notify({
       title: "保存成功",
       content: "文件已保存到桌面",

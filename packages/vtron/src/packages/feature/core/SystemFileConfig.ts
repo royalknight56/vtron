@@ -21,16 +21,6 @@ const InitSystemFile = {
           content: version,
           mode: 0o111,
         },
-        // {
-        //     name: 'Vtron.exe',
-        //     type: 'file',
-        //     content: {
-        //         content: 'link:Program Files:Vtron:Vtron.exe',
-        //         name: 'Vtron.exe',
-        //         icon: 'https://img.alicdn.com/tfs/TB1ZQ9Xb4v1gK0jSZFFXXb0sXXa-256-256.png',
-        //         type: 'link'
-        //     }
-        // }
       ],
     },
   ],

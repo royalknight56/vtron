@@ -18,14 +18,14 @@
         <Transition name="fadeout">
           <DesktopBackground v-if="rootState.state == SystemStateEnum.lock" class="mask"></DesktopBackground>
         </Transition>
-        <OpenDesktop v-if="rootState.state == SystemStateEnum.open"></OpenDesktop>
+        <Desktop v-if="rootState.state == SystemStateEnum.open"></Desktop>
       </template>
     </div>
   </template>
 </template>
 <script lang="ts" setup>
 import CloseDesktop from '@feature/structure/desktop/CloseDesktop.vue';
-import OpenDesktop from '@feature/structure/desktop/OpenDesktop.vue';
+import Desktop from '@feature/structure/desktop/Desktop.vue';
 import OpeningDesktop from '@feature/structure/desktop/OpeningDesktop.vue';
 import LockDesktop from '@feature/structure/desktop/LockDesktop.vue';
 import DesktopBackground from '@feature/structure/desktop/components/DesktopBackground.vue';
@@ -38,13 +38,6 @@ const rootState = ref<RootState | undefined>(useSystem()?._rootState);
 System.onOpen((system: System) => {
   rootState.value = system._rootState;
 });
-// const rootState = useSystem()
-//   ? useSystem()._rootState
-//   : {
-//       system: {
-//         state: SystemStateEnum.close,
-//       },
-//     };
 </script>
 <style lang="scss" scoped>
 @import '@packages/root.scss';

@@ -55,18 +55,11 @@
 </template>
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
-import { mountEvent } from '@feature/event';
 import { useSystem } from '@feature/system';
 import { WinButtonVue, join } from '@/packages/plug';
 import { initAlertEvent } from '@/packages/feature/event/SystemEvent';
+
 const sys = useSystem();
-const isDataPopShow = ref(false);
-mountEvent('datetime.show', () => {
-  isDataPopShow.value = !isDataPopShow.value;
-});
-mountEvent('datetime.hidden', () => {
-  isDataPopShow.value = false;
-});
 const timeDisplay = ref(`00:00:00`);
 const dateDisplay = ref(`0000/00/00`);
 const weeksPrefix = ['日', '一', '二', '三', '四', '五', '六'];

@@ -1,9 +1,8 @@
 import { InitFileItem } from '@/packages/type/type';
-import { System } from '.';
-import { join } from '../core/Path';
+import { join } from './Path';
+import { VtronFileSystem } from './FileSystem';
 
-export const createInitFile = async (system: System, file: InitFileItem, path = '') => {
-  const fs = system.fs;
+export const createInitFile = async (fs: VtronFileSystem, file: InitFileItem, path = '') => {
   if (file.type === 'file') {
     if (file.content) {
       await fs.writeFile(join(path, file.name), file.content, {
@@ -18,7 +17,7 @@ export const createInitFile = async (system: System, file: InitFileItem, path = 
 
     if (file.children?.length) {
       for (let i = 0; i < file.children.length; i++) {
-        await createInitFile(system, file.children[i], tempPath);
+        await createInitFile(fs, file.children[i], tempPath);
       }
     }
   }

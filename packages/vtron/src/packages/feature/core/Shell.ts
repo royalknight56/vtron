@@ -73,10 +73,6 @@ class Shell implements ShellInterface {
       this.output('\x1b[2m' + 'Type "help" for more information.' + '\x1b[0m\r\n');
       this.output(this.prefix);
     }
-    // this.user = user;
-    // this.setRouter(router);
-    // this.output('\x1b[2m' + 'Welcome to Vtron Terminal' + '\x1b[0m\r\n');
-    // this.output(this.prefix);
   }
   on(event: 'message', callback: (message: string) => void) {
     this.output = callback;

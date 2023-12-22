@@ -25,22 +25,14 @@
           {{ i18n('setting') }}
         </div>
       </div>
-      <!-- <div class="s-option-button">
-                <div class="s-option-button_img">
-                </div>
-                <div class="s-option-button_title">
-                </div>
-            </div> -->
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { emitEvent } from '@feature/event';
-// import Setting from '@feature/builtin/Setting.vue';
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 import { Dialog } from '@feature/dialog/Dialog';
-// import Settingicon from '@packages/assets/setting.png';
 import { useSystem } from '@/packages/plug';
 import { Menu } from '@/packages/feature/menu/Menu';
 const sys = useSystem();

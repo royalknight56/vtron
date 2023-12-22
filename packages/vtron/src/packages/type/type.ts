@@ -7,7 +7,17 @@ import { VtronFileInterface } from '@feature/core/FIleInterface';
 import { ShellInterface } from '@feature/core/ShellType';
 import { Menu } from '../feature/menu/Menu';
 import { MenuItem, MenuItemConstructorOptions } from '@feature/menu/MenuItem';
-export type BuiltinApp = 'MyComputer' | 'AppStore';
+export type BuiltinFeature =
+  | 'MyComputer'
+  | 'AppStore'
+  | 'DataTimeTray'
+  | 'BatteryTray'
+  | 'NetworkTray'
+  | 'ImageOpener'
+  | 'UrlOpener'
+  | 'TextOpener'
+  | 'ShortCutOpener'
+  | 'ExeOpener';
 export interface InitFileItem {
   type: string;
   name: string;
@@ -36,7 +46,7 @@ export interface SystemOptionsCertainly {
   logo?: string;
   background?: string;
   rootStyle?: any;
-  builtinApp?: BuiltinApp[];
+  builtinFeature?: BuiltinFeature[];
   desktop?: WinAppOptions[];
   magnet?: WinAppOptions[];
   menulist?: WinAppOptions[];

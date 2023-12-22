@@ -5,8 +5,9 @@
 </template>
 <script lang="ts" setup>
 import { mountEvent } from '@/packages/feature/event';
+import { useSystem } from '@/packages/plug';
 import FileList from '@feature/builtin/components/FileList.vue';
-import { useAppOpen, initAppList } from '@packages/hook/useAppOpen';
+import { useAppOpen } from '@packages/hook/useAppOpen';
 import { onMounted } from 'vue';
 
 const { openapp, appList } = useAppOpen('apps');
@@ -18,7 +19,7 @@ const props = defineProps({
 });
 onMounted(() => {
   mountEvent('file.props.edit', async () => {
-    initAppList();
+    useSystem().initAppList();
   });
 });
 </script>

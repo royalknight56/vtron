@@ -1,5 +1,5 @@
 import { defineComponent, h, ref } from 'vue';
-import RectChosenVue from '../components/RectChosen.vue';
+import RectChosenVue from './components/RectChosen.vue';
 export interface Rect {
   left: number;
   top: number;

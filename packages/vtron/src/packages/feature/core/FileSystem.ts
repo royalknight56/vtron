@@ -1,5 +1,8 @@
 import * as fspath from '@feature/core/Path';
 import { VtronFileInterface } from './FIleInterface';
+import { SystemOptions } from '@/packages/type/type';
+import { InitSystemFile, InitUserFile } from './SystemFileConfig';
+import { createInitFile } from './createInitFile';
 type DateLike = Date | string | number;
 export enum VtronFileMode {
   Read = 0b001, //1
@@ -144,8 +147,13 @@ class VtronFileSystem implements VtronFileInterface {
     };
   }
 
-  async initFileSystem() {
+  async initFileSystem(option: SystemOptions) {
     await this.whenReady();
+    await this.mkdir('/C');
+    await this.chmod('/C', VtronFileMode.Read);
+    await createInitFile(this, option.initFile || InitUserFile, option.userLocation);
+    await createInitFile(this, option.initFile || InitSystemFile, option.systemLocation);
+
     return this;
   }
   on(event: 'error', func: (e: any) => void) {

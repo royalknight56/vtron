@@ -1,6 +1,6 @@
 import { initRootState } from '@feature/state/Root';
 import { SystemStateEnum } from '@packages/type/enum';
-import { markRaw } from 'vue';
+import { markRaw, nextTick } from 'vue';
 import {
   RootState,
   Saveablekey,
@@ -9,9 +9,9 @@ import {
   SystemOptionsCertainly,
   WinAppOptions,
 } from '@packages/type/type';
-import { initEventer, Eventer, initEventListener, emitEvent, mountEvent } from '@feature/event';
+import { initEventer, Eventer, initEventListener } from '@feature/event';
 import { VtronFileSystem } from '@/packages/feature/core/FileSystem';
-import { initAppList } from '@packages/hook/useAppOpen';
+// import { initAppList } from '@packages/hook/useAppOpen';
 
 import { version } from '../../../../package.json';
 import { BrowserWindow, BrowserWindowOption } from '@feature/window/BrowserWindow';
@@ -21,8 +21,6 @@ import { initBuiltinApp, initBuiltinFileOpener } from './initBuiltin';
 import { Shell } from '@feature/core/Shell';
 import { defaultConfig } from './initConfig';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
-import { InitSystemFile, InitUserFile } from '@/packages/feature/system/SystemFileConfig';
-import { createInitFile } from './createInitFile';
 import { Notify, NotifyConstructorOptions } from '@feature/notification/Notification';
 import { ShellInterface } from '@feature/core/ShellType';
 import { Dialog } from '../dialog/Dialog';
@@ -35,7 +33,7 @@ const logger = function (...args: any[]) {
   console.log(...args);
 };
 
-export type VtronPlugin = (system: System, rootState: RootState) => void;
+export type VtronPlugin = (system: System) => void;
 export type FileOpener = {
   name?: string;
   icon: string;
@@ -122,7 +120,7 @@ class System {
     logger('initApp');
     this.initApp(); // 初始化配置应用到app文件夹中
     logger('initAppList');
-    initAppList(); // 刷新app文件夹，展示应用
+    this.initAppList(); // 刷新app文件夹，展示应用
     logger('isLogin');
     // 判断是否登录
     this.isLogin();
@@ -135,9 +133,9 @@ class System {
     this.runPlugin(this); // 运行fs中插件
     logger('initBackground');
     this.initBackground(); // 初始化壁纸
-    logger('initEvent');
+    logger('initCheckVersion');
     this.initCheckVersion(); // 检查版本
-    logger('initEvent');
+    logger('start');
     this.emit('start');
   }
   /**
@@ -198,29 +196,82 @@ class System {
       this.addMenuList(item);
     });
   }
+
+  private refershAppList() {
+    const APP_TYPE = ['apps', 'magnet', 'menulist'];
+    const system = useSystem();
+    for (let i = 0; i < APP_TYPE.length; i++) {
+      const element = APP_TYPE[i];
+      system?.fs
+        .readdir(
+          `${system._options.userLocation}${
+            {
+              apps: 'Desktop',
+              magnet: 'Magnet',
+              menulist: 'Menulist',
+            }[element]
+          }`
+        )
+        .then((res) => {
+          if (res) {
+            const list = res;
+            const tempList = [];
+            for (let j = 0; j < list.length; j++) {
+              const item = list[j];
+
+              tempList.push(item);
+            }
+
+            switch (element) {
+              case 'apps':
+                useSystem()._rootState.apps.splice(0, useSystem()._rootState.apps.length, ...tempList);
+                break;
+              case 'magnet':
+                useSystem()._rootState.magnet.splice(0, useSystem()._rootState.magnet.length, ...tempList);
+                break;
+              case 'menulist':
+                useSystem()._rootState.menulist.splice(
+                  0,
+                  useSystem()._rootState.menulist.length,
+                  ...tempList
+                );
+                break;
+              default:
+                break;
+            }
+          }
+        });
+    }
+  }
+
+  isReadyUpdateAppList = false;
+  initAppList() {
+    this.isReadyUpdateAppList = true;
+    nextTick(() => {
+      if (this.isReadyUpdateAppList) {
+        this.isReadyUpdateAppList = false;
+        this.refershAppList();
+      }
+    });
+  }
+
   private async initFileSystem() {
     // 如果传入了自定义fs，就使用传入的fs
     if (this._options.fs) {
       this.fs = this._options.fs;
     } else {
-      logger(this.fs);
-      this.fs = await new VtronFileSystem().initFileSystem();
+      this.fs = await new VtronFileSystem().initFileSystem(this._options);
       (this.fs as VtronFileSystem).on('error', (err: string) => {
         this.emitError(err);
       });
-      logger(this.fs);
-      await this.fs.mkdir('/C');
-      await this.fs.chmod('/C', 0o111);
-      await createInitFile(this, this._options.initFile || InitUserFile, this._options.userLocation);
-      await createInitFile(this, this._options.initFile || InitSystemFile, this._options.systemLocation);
       this.fs.registerWatcher(new RegExp(`^${this._options.userLocation}`), () => {
-        initAppList();
+        this.initAppList();
       });
     }
   }
   replaceFileSystem(fs: VtronFileInterface) {
     this.fs = fs;
-    initAppList();
+    this.initAppList();
   }
   mountVolume(path: string, fs: VtronFileInterface) {
     if (this.fs instanceof VtronFileSystem) {
@@ -301,7 +352,7 @@ class System {
         `link::${loc}::${options.name}::${options.icon}`
       );
     } else {
-      initAppList();
+      this.initAppList();
     }
     if (typeof options.window.content === 'string') {
       // TODO: 当content是string的时候
@@ -343,6 +394,7 @@ class System {
   addBuiltInApp(options: WinAppOptions) {
     this._rootState.windowMap['Builtin'].set(options.name, options);
   }
+
   createShell(): ShellInterface {
     if (this._options.shell) {
       return this._options.shell;
@@ -387,18 +439,35 @@ class System {
     this._rootState.state = SystemStateEnum.close;
     window.location.reload();
   }
+  getEventer() {
+    return this._eventer;
+  }
   emit(event: string, ...args: any[]) {
     this.emitEvent(event, ...args);
   }
   emitEvent(event: string, ...args: any[]) {
-    emitEvent(event, ...args);
+    const eventArray = event.split('.');
+    eventArray.forEach((item, index) => {
+      const tempEvent = eventArray.slice(0, index + 1).join('.');
+      this._eventer.emit(tempEvent, event, args);
+    });
+    this._eventer.emit('system', event, args);
   }
   on(event: string, callback: (...args: any[]) => void): void {
     this.mountEvent(event, callback);
   }
-  mountEvent(event: string, callback: (...args: any[]) => void) {
-    mountEvent(event, callback);
+  mountEvent(event: string | string[], callback: (...args: any[]) => void) {
+    if (Array.isArray(event)) {
+      event.forEach((item) => {
+        this.mountEvent(item, callback);
+      });
+      return;
+    } else {
+      this._eventer.on(event, callback);
+    }
   }
+
+  /** 注册文件打开器 */
   registerFileOpener(type: string | string[], opener: FileOpener) {
     if (Array.isArray(type)) {
       type.forEach((item) => {
@@ -408,9 +477,14 @@ class System {
     }
     this._flieOpenerMap.set(type, opener);
   }
+  getOpener(type: string) {
+    return this._flieOpenerMap.get(type);
+  }
   getAllFileOpener() {
     return this._flieOpenerMap;
   }
+
+  /** 注册设置app的设置页面 */
   registerSettingPanel(setting: Setting) {
     const temp = {
       ...setting,
@@ -434,12 +508,9 @@ class System {
         ?.func.call(this, path, fileContent || '');
     }
   }
-  getOpener(type: string) {
-    return this._flieOpenerMap.get(type);
-  }
   // 插件系统
   use(func: VtronPlugin): void {
-    return func(this, this._rootState);
+    return func(this);
   }
   // 状态序列化和反序列化
   async serializeState(): Promise<string> {
@@ -470,7 +541,7 @@ class System {
   createDialog() {
     return Dialog;
   }
-
+  /** 方便的通过system创建Tray */
   createTray(options: TrayOptions) {
     return new Tray(options);
   }

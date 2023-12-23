@@ -48,7 +48,7 @@ function initRootState(options: SystemOptions) {
       },
     },
     options: {} as SystemOptions,
-    clipboard: {},
+    clipboard: {} as any,
     settings: [] as Setting[],
     contextMenu: null as Menu | null,
     error: '',

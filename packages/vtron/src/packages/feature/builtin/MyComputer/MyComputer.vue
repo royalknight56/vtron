@@ -277,7 +277,9 @@ function onBackClick() {
 
 function showOuterMenu(e: MouseEvent) {
   e.preventDefault();
-  createDesktopContextMenu(e);
+  createDesktopContextMenu(e, router_url.value, () => {
+    refersh();
+  });
 }
 /* ------------ 路径输入框 ------------*/
 async function handleNavRefresh(path: string) {

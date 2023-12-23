@@ -34,7 +34,11 @@ export function createTaskbarIconContextMenu(e: MouseEvent, windowNode: UnwrapNe
   ]).popup(e);
 }
 function useContextMenu() {
-  function createDesktopContextMenu(e: MouseEvent) {
+  function createDesktopContextMenu(
+    e: MouseEvent,
+    path = `${useSystem()._options.userLocation}Desktop`,
+    callback?: () => void
+  ) {
     const system = useSystem();
     if (!system) return;
     const menu = Menu.buildFromTemplate(
@@ -43,7 +47,7 @@ function useContextMenu() {
           {
             label: i18n('refresh'),
             click: () => {
-              //
+              callback?.();
             },
           },
           {
@@ -52,7 +56,9 @@ function useContextMenu() {
               {
                 label: i18n('new.file'),
                 click: () => {
-                  createNewFile(`${system._options.userLocation}Desktop`);
+                  createNewFile(path).then(() => {
+                    callback?.();
+                  });
                 },
               },
             ],
@@ -60,13 +66,17 @@ function useContextMenu() {
           {
             label: i18n('paste'),
             click: () => {
-              pasteFile(`${system._options.userLocation}Desktop`);
+              pasteFile(path).then(() => {
+                callback?.();
+              });
             },
           },
           {
             label: i18n('new.folder'),
             click: () => {
-              createNewDir(`${system._options.userLocation}Desktop`);
+              createNewDir(path).then(() => {
+                callback?.();
+              });
             },
           },
           ...(system._rootState.options.contextMenus || []),

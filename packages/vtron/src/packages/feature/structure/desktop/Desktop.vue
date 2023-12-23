@@ -86,7 +86,9 @@ function backgroundUp(e: MouseEvent) {
 
 function handleRightClick(e: MouseEvent) {
   e.preventDefault();
-  createDesktopContextMenu(e);
+  createDesktopContextMenu(e, `${system._options.userLocation}Desktop`, () => {
+    system.initAppList();
+  });
 }
 
 onErrorCaptured((err) => {

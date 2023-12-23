@@ -32,7 +32,7 @@ export { System, useSystem } from '@feature/system/index';
 export { BrowserWindow } from '@feature/window/BrowserWindow';
 export { Notify } from '@feature/notification/Notification';
 export { Dialog } from '@feature/dialog/Dialog';
-export type { RootState, SystemOptions, WinApp } from '@packages/type/type';
+export type { SystemOptions, WinApp } from '@packages/type/type';
 export { vDragable } from '@feature/window/MakeDragable';
 export type { ShellInterface } from '@feature/core/ShellType';
 export type { VtronFileInterface } from '@feature/core/FIleInterface';

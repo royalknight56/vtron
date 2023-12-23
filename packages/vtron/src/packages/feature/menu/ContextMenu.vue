@@ -39,7 +39,7 @@ watch(
     // get contextmenu height
     const contextmenuHeight = 24 * (contextMenu?.items.length || 0);
     // get mouse position
-    const outer = useSystem()?.ref;
+    const outer = useSystem()?.rootRef;
     const mouseX = (contextMenu?._mouse?.x || 0) - (outer?.offsetLeft || 0);
     const mouseY = (contextMenu?._mouse?.y || 0) - (outer?.offsetTop || 0);
 

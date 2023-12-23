@@ -1,11 +1,6 @@
-import { BrowserWindow, BrowserWindowOption } from '../feature/window/BrowserWindow';
-import { Tree } from '@packages/util/Tree';
-import { SystemStateEnum } from './enum';
-import { Notify } from '../feature/notification/Notification';
-import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
+import { BrowserWindowOption } from '../feature/window/BrowserWindow';
 import { VtronFileInterface } from '@feature/core/FIleInterface';
 import { ShellInterface } from '@feature/core/ShellType';
-import { Menu } from '../feature/menu/Menu';
 import { MenuItem, MenuItemConstructorOptions } from '@feature/menu/MenuItem';
 export type BuiltinFeature =
   | 'MyComputer'
@@ -78,48 +73,3 @@ export interface WinAppOptions {
   window: BrowserWindowOption;
   _hasShow?: boolean;
 }
-
-export type RootState = {
-  ref: HTMLElement | undefined;
-  state: SystemStateEnum;
-  message: {
-    notify: Array<Notify>;
-    system: Array<Notify>;
-  };
-  apps: Array<VtronFileWithoutContent>;
-  magnet: Array<VtronFileWithoutContent>;
-  menulist: Array<VtronFileWithoutContent>;
-  notify: Array<Notify>;
-  windowTree: Tree<BrowserWindow>;
-  windowOrder: Array<BrowserWindow>;
-  windowMap: {
-    Desktop: Map<string, WinAppOptions>;
-    Magnet: Map<string, WinAppOptions>;
-    Menulist: Map<string, WinAppOptions>;
-    Builtin: Map<string, WinAppOptions>;
-    [key: string]: Map<string, WinAppOptions>;
-  };
-  winnum: number;
-  topWindow: BrowserWindow | undefined;
-  info: {
-    // 系统次级信息
-    screenWidth: number;
-    screenHeight: number;
-    brightness: number; // 亮度
-    battery: {
-      isCharging: boolean;
-      chargeLevel: number;
-    };
-    connection: {
-      effectiveType: string;
-      rtt: number;
-      downlink: number;
-      saveData: boolean;
-    };
-  };
-  clipboard: any;
-  settings: Setting[];
-  options: SystemOptions;
-  contextMenu: Menu | null;
-  error: string;
-};

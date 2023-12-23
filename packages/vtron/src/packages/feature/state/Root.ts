@@ -1,20 +1,24 @@
 import { SystemStateEnum } from '@packages/type/enum';
-import { RootState, SystemOptions, WinAppOptions } from '@packages/type/type';
+import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { reactive, markRaw } from 'vue';
 import { Tree } from '@packages/util/Tree';
 import { BrowserWindow } from '../window/BrowserWindow';
+import { VtronFileWithoutContent } from '../core/FileSystem';
+import { Notify } from '../notification/Notification';
+import { Menu } from '../menu/Menu';
+export type RootState = ReturnType<typeof initRootState>;
 
-function initRootState(options: SystemOptions): RootState {
-  const rootState: RootState = reactive({
+function initRootState(options: SystemOptions) {
+  const rootState = reactive({
     ref: undefined,
-    state: SystemStateEnum.close,
-    apps: [],
-    magnet: [],
-    menulist: [],
-    notify: [],
+    state: SystemStateEnum.close as SystemStateEnum,
+    apps: [] as Array<VtronFileWithoutContent>,
+    magnet: [] as Array<VtronFileWithoutContent>,
+    menulist: [] as Array<VtronFileWithoutContent>,
+    notify: [] as Array<Notify>,
     message: {
-      notify: [],
-      system: [],
+      notify: [] as Array<Notify>,
+      system: [] as Array<Notify>,
     },
     windowTree: new Tree<BrowserWindow>(),
     windowOrder: new Array<BrowserWindow>(),
@@ -23,8 +27,10 @@ function initRootState(options: SystemOptions): RootState {
       Magnet: new Map<string, WinAppOptions>(),
       Menulist: new Map<string, WinAppOptions>(),
       Builtin: new Map<string, WinAppOptions>(),
+    } as {
+      [key: string]: Map<string, WinAppOptions>;
     },
-    topWindow: undefined,
+    topWindow: undefined as BrowserWindow | undefined,
     winnum: 0,
     info: {
       screenWidth: window?.innerWidth || 0,
@@ -41,12 +47,12 @@ function initRootState(options: SystemOptions): RootState {
         saveData: false,
       },
     },
-    options: {},
+    options: {} as SystemOptions,
     clipboard: {},
-    settings: [],
-    contextMenu: null,
+    settings: [] as Setting[],
+    contextMenu: null as Menu | null,
     error: '',
-  } as RootState) as unknown as RootState;
+  });
   options.desktop?.forEach((item) => {
     if (typeof item.window.content !== 'string') {
       item.window.content = markRaw(item.window.content);

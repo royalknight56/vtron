@@ -1,8 +1,7 @@
-import { initRootState } from '@feature/state/Root';
+import { initRootState, RootState } from '@feature/state/Root';
 import { SystemStateEnum } from '@packages/type/enum';
 import { markRaw, nextTick } from 'vue';
 import {
-  RootState,
   Saveablekey,
   Setting,
   SystemOptions,
@@ -40,28 +39,32 @@ export type FileOpener = {
   hiddenInChosen?: boolean;
   func: (path: string, content: string) => void;
 };
+export class Bios {
+  public static _onOpen: ((system: System) => void) | null = null;
+  public static onOpen(func: (system: System) => void) {
+    this._onOpen = func;
+  }
+  constructor() {
+    //
+  }
+}
+
 /**
  * @description: System 类，在初始化的过程中需要提供挂载点，以及一些配置
  */
-class System {
+export class System {
   public static GLOBAL_SYSTEM: System;
-  public static _onOpen: ((system: System) => void) | null = null;
-  public static onOpen(func: (system: System) => void) {
-    System._onOpen = func;
-  }
+
   readonly _options: SystemOptions;
-  /**
-   * @internal
-   */
+
   _rootState: RootState;
   private _eventer: Eventer;
   private _ready: ((value: System) => void) | null = null;
   private _error: ((reason: unknown) => void) | null = null;
-  private _readyToUpdata = false;
   private _flieOpenerMap: Map<string, FileOpener> = new Map();
   version = version;
   isFirstRun = true;
-  ref!: HTMLElement;
+  rootRef: HTMLElement | undefined = undefined;
   fs!: VtronFileInterface;
   _shell!: ShellInterface;
 
@@ -72,20 +75,15 @@ class System {
     this._rootState = this.initRootState();
     logger('mountGlobalSystem');
     System.GLOBAL_SYSTEM = this; // 挂载全局系统
-    System._onOpen && System._onOpen(this);
+    Bios._onOpen && Bios._onOpen(this);
     logger('initEvent');
     this._eventer = this.initEvent();
     logger('initSystem');
     this.initSystem();
     logger('firstRun');
     this.firstRun();
-    logger('setRef');
-    this.setRef(this._rootState.ref!);
   }
 
-  setRef(ref: HTMLElement) {
-    this.ref = ref;
-  }
   /**
    * @description: pure 初始化配置选项
    */
@@ -558,7 +556,6 @@ class System {
     }, 1000 * 4);
   }
 }
-function useSystem() {
+export function useSystem() {
   return System.GLOBAL_SYSTEM!;
 }
-export { System, useSystem };

@@ -30,7 +30,7 @@ import Taskbar from '@feature/structure/taskbar/Taskbar.vue';
 import DesktopBackground from '@feature/structure/desktop/components/DesktopBackground.vue';
 import { emitEvent } from '@feature/event';
 import WindowGroup from '@feature/window/WindowGroup.vue';
-import ContextMenu from '@feature/structure/contextMenu/ContextMenu.vue';
+import ContextMenu from '@feature/menu/ContextMenu.vue';
 import NotificationGroup from '@feature/notification/NotifyGroup.vue';
 import MessageCenterPop from '@feature/structure/taskbar/popover/MessageCenterPop.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';

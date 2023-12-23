@@ -1,5 +1,5 @@
 import { mountEvent, emitEvent } from './EventHook';
-import type { RootState } from '@packages/type/type';
+import { RootState } from '@feature/state/Root';
 
 import { useSystem } from '../system';
 import { join } from '../core/Path';

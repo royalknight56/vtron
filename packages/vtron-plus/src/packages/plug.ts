@@ -1,5 +1,4 @@
 import { BrowserWindow, System } from 'vtron';
-import type { RootState } from 'vtron';
 import Browser from './apps/Browser.vue';
 // import ImageViewer from "./apps/ImageViewer.vue";
 import PdfViewer from './apps/PdfViewer.vue';
@@ -36,7 +35,7 @@ import MusicStoreVue from './apps/MusicStore.vue';
 import PictureStoreVue from './apps/PictureStore.vue';
 import ZipBackupVue from './apps/ZipBackup.vue';
 
-function vtronPlus(system: System, rootState: RootState) {
+function vtronPlus(system: System) {
   /**------------------ 桌面右键菜单--------------- */
   //#region
   //#endregion

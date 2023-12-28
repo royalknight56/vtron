@@ -88,9 +88,9 @@ function handleClick() {
 }
 
 .appicon:hover {
-  background-color: var(--color-gray-hover);
+  background-color: var(--color-gray-hover-op);
 }
 .appicon-top:hover {
-  background-color: var(--color-gray-active);
+  background-color: var(--color-gray-active-op);
 }
 </style>

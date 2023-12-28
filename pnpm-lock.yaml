@@ -45,6 +45,7 @@ importers:
       vite-plugin-style-import: ^1.2.1
       vitest: ^0.31.1
       vue: ^3.2.37
+      vue-accessible-color-picker: ^5.0.1
       vue-eslint-parser: ^9.3.1
       vue-tsc: ^0.40.1
       vue3-sfc-loader: ^0.8.4
@@ -52,6 +53,7 @@ importers:
       xterm-addon-fit: ^0.7.0
     dependencies:
       vue: 3.2.47
+      vue-accessible-color-picker: 5.0.1_vue@3.2.47
       vue3-sfc-loader: r2.cnpmjs.org/vue3-sfc-loader/0.8.4
       xterm: 5.3.0
       xterm-addon-fit: 0.7.0_xterm@5.3.0
@@ -4612,6 +4614,14 @@ packages:
   /vscode-textmate/8.0.0:
     resolution: {integrity: sha512-AFbieoL7a5LMqcnOF04ji+rpXadgOXnZsxQr//r83kLPr7biP7am3g9zbaZIaBGwBRWeSvoMD4mgPdX3e4NWBg==}
     dev: true
+
+  /vue-accessible-color-picker/5.0.1_vue@3.2.47:
+    resolution: {integrity: sha512-IaxDTzW652blWmaNNbqQZzORQAbP19sdO7oJ5fvJIfVizWr2fVV+3z39ORI210Ee7l8YiD5FhpOY/XrToQCBwg==}
+    peerDependencies:
+      vue: ^3.2.x
+    dependencies:
+      vue: 3.2.47
+    dev: false
 
   /vue-demi/0.13.11_vue@3.2.47:
     resolution: {integrity: sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A==}

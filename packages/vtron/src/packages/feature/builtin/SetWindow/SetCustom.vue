@@ -43,11 +43,7 @@
 
           <div class="setting-item">
             <label></label>
-            <div class="color-selects">
-              <div class="color-select" v-for="item in colors" :key="item" @click="choseColor(item)">
-                <div class="color" :style="{ background: item }"></div>
-              </div>
-            </div>
+            <ColorPicker v-model="backgroundColor"></ColorPicker>
           </div>
         </template>
         <template v-if="backgroundType === 'image'">
@@ -85,11 +81,7 @@
 
         <div class="setting-item">
           <label></label>
-          <div class="color-selects">
-            <div class="color-select" v-for="item in colors" :key="item" @click="choseTextColor(item)">
-              <div class="color" :style="{ background: item }"></div>
-            </div>
-          </div>
+          <ColorPicker v-model="textColor"></ColorPicker>
         </div>
 
         <div class="setting-item">
@@ -101,11 +93,7 @@
 
         <div class="setting-item">
           <label></label>
-          <div class="color-selects">
-            <div class="color-select" v-for="item in colors" :key="item" @click="choseTaskBarColor(item)">
-              <div class="color" :style="{ background: item }"></div>
-            </div>
-          </div>
+          <ColorPicker v-model="taskBarColor"></ColorPicker>
         </div>
 
         <div class="setting-item">
@@ -126,7 +114,7 @@
 import WinButton from '@packages/components/WinButton.vue';
 import WinSelect from '@packages/components/WinSelect.vue';
 import WinInput from '@packages/components/WinInput.vue';
-// import WinCheckBox from '@/packages/components/WinCheckBox.vue';
+import ColorPicker from './components/ColorPicker.vue';
 
 import { ref } from 'vue';
 import { useSystem } from '@feature/system';
@@ -134,11 +122,7 @@ import { Dialog } from '@feature/dialog/Dialog';
 import { i18n } from '@feature/i18n';
 
 const system = useSystem();
-const items = [
-  i18n('background'),
-  i18n('style'),
-  // '版本',
-];
+const items = [i18n('background'), i18n('style')];
 
 const activeIndex = ref(0);
 
@@ -153,30 +137,6 @@ const textColor = ref(system.getConfig('rootStyle')?.['--icon-title-color'] || '
 const taskBarColor = ref(system.getConfig('rootStyle')?.['--task-bar-color'] || '#ededed');
 
 const winRadius = ref(system.getConfig('rootStyle')?.['--window-border-radius']);
-
-const colors = [
-  '#b8cca3',
-  '#ff6633',
-  '#cfe6a1',
-  '#cfe6e6',
-  '#a1e6b8',
-  '#66e6cc',
-  '#ededed',
-  '#ccc',
-  '#999',
-  '#666',
-  '#333',
-  '#111',
-];
-function choseTextColor(color: string) {
-  textColor.value = color;
-}
-function choseTaskBarColor(color: string) {
-  taskBarColor.value = color;
-}
-function choseColor(color: string) {
-  backgroundColor.value = color;
-}
 
 /** 提交背景设置 */
 async function submit() {

@@ -41,7 +41,7 @@
       </div>
       <div class="exist-sch">
         <div class="no-sch" v-if="alertList.length <= 0">今日无日程</div>
-        <div class="sch-item" v-for="(item, index) in alertList" :key="item.text">
+        <div class="sch-item" v-for="(item, index) in alertList" :key="item.text" @click="clickDetail(item)">
           <span class="sch-time"
             >{{ new Date(item.time).getHours() }}时{{ new Date(item.time).getMinutes() }}分：</span
           >
@@ -56,8 +56,9 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { useSystem } from '@feature/system';
-import { WinButtonVue, join } from '@/packages/plug';
+import { BrowserWindow, WinButtonVue, join } from '@/packages/plug';
 import { initAlertEvent } from '@/packages/feature/event/SystemEvent';
+import DateNote from '@/packages/feature/builtin/DateNote.vue';
 
 const sys = useSystem();
 const timeDisplay = ref(`00:00:00`);
@@ -78,6 +79,8 @@ const chosen = reactive({
   weekIndex: today.weekIndex,
   dayIndex: today.dayIndex,
 });
+
+// 选择日期
 function onDayClick(weekIndex: number, dayIndex: number) {
   if (month.value[weekIndex][dayIndex] === '') {
     return;
@@ -211,7 +214,12 @@ async function deleteAlert(index: number) {
   readDateNotes();
 }
 
-const alertList = ref<Array<any>>([]);
+const alertList = ref<
+  Array<{
+    text: string;
+    time: number;
+  }>
+>([]);
 async function readDateNotes() {
   const chosenDay = new Date(
     today.year,
@@ -229,6 +237,26 @@ async function readDateNotes() {
   } else {
     alertList.value = [];
   }
+}
+const win = new BrowserWindow({
+  title: '日程详情',
+  content: DateNote,
+  width: 300,
+  height: 200,
+});
+/** 点击日程，打开详情 */
+function clickDetail(item: { text: string; time: number }) {
+  const chosenDay = new Date(
+    today.year,
+    today.month - 1,
+    parseInt(month.value[chosen.weekIndex][chosen.dayIndex])
+  );
+  win.config = {
+    text: item.text,
+    day: chosenDay,
+    time: item.time,
+  };
+  win.show();
 }
 </script>
 <style lang="scss" scoped>

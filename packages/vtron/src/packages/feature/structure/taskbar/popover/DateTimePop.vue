@@ -47,7 +47,7 @@
           >
           <span class="sch-text">{{ item.text }}</span>
 
-          <WinButtonVue @click="deleteAlert(index)">删除</WinButtonVue>
+          <WinButtonVue @click.stop="deleteAlert(index)">删除</WinButtonVue>
         </div>
       </div>
     </div>
@@ -350,7 +350,7 @@ function clickDetail(item: { text: string; time: number }) {
           background-color: var(--color-gray-op9);
         }
         .istoday.chosen {
-          box-shadow: inset 0 0 0px 3px var(--color-dark);
+          box-shadow: inset 0 0 0px 3px var(--color-dark-hover);
           border: 3px solid white;
         }
         .istoday.chosen:hover {

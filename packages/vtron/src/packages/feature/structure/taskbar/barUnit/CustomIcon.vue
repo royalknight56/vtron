@@ -24,7 +24,7 @@
 </template>
 <script setup lang="ts">
 import VtronImage from '@/packages/feature/builtin/components/VtronImage.vue';
-import { mountEvent } from '@/packages/feature/event';
+import { emitEvent, mountEvent } from '@/packages/feature/event';
 import { Menu } from '@/packages/feature/menu/Menu';
 import { Tray } from '@/packages/feature/tray/Tary';
 
@@ -41,6 +41,7 @@ function handleClick(item: Tray, ev: MouseEvent) {
       tray._contextMenuShow = false;
     }
   });
+  emitEvent('tray.show', item);
 }
 mountEvent('tray.hidden', () => {
   Tray.trayList.value.forEach((item) => {

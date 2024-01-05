@@ -107,4 +107,6 @@ export const enUS: AllText = {
 
   'cannot.create.shortcut': 'Cannot Create Shortcut',
   'shortcut.has.been.created': 'Shortcut Has Been Created',
+
+  'system.message': 'System Message',
 };

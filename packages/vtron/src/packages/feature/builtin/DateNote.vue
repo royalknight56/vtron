@@ -42,11 +42,17 @@ const time = day;
   margin-top: 6px;
   overflow: auto;
   padding: 0 20px;
+  margin: 10px;
   height: 100%;
+  word-break: break-all;
   //   font-size: 24px;
   //   font-weight: bold;
   color: #1c1c1c;
-  border-top: 1px solid #363636;
+  border: 1px solid #3636364e;
   background-color: white;
+  transition: all 0.1s;
+}
+.text:hover {
+  border: 1px solid #363636;
 }
 </style>

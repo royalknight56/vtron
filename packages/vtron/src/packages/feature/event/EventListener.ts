@@ -35,14 +35,13 @@ const eventTranslateMap: {
   'uipop.hidden': [
     'contextMenu.hidden',
     'startmenu.hidden',
-    'datetime.hidden',
     'messagecenter.hidden',
     'edit.end',
     'computerpop.hidden',
     'tray.hidden',
   ],
-  'datetime.show': ['messagecenter.hidden'],
-  'messagecenter.show': ['datetime.hidden'],
+  'tray.show': ['messagecenter.hidden'],
+  'messagecenter.show': ['tray.hidden'],
 };
 function eventTransitCenter() {
   for (const key in eventTranslateMap) {

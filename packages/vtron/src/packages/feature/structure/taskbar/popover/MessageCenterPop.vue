@@ -4,23 +4,10 @@
       <div class="notify-center">
         <div class="message-title">
           共{{ notifyGroup.length }}条提醒
-          <span @click="allClear" class="allclear">全部清除</span>
+          <span @click="allClear" class="allclear">×</span>
         </div>
         <div class="message-group scroll-bar">
           <div class="message-item" v-for="notify in notifyGroup" :key="notify.id">
-            <div class="message-item-title">
-              <span>{{ notify.title }}</span>
-            </div>
-            <div class="message-item-body">
-              <span>{{ notify.content }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="system-center">
-        <div class="message-title">系统消息</div>
-        <div class="message-group scroll-bar">
-          <div class="message-item" v-for="notify in systemGroup" :key="notify.id">
             <div class="message-item-title">
               <span>{{ notify.title }}</span>
             </div>
@@ -39,7 +26,7 @@ import { ref } from 'vue';
 import { mountEvent } from '@feature/event';
 const rootState = useSystem()._rootState;
 const notifyGroup = rootState.message.notify;
-const systemGroup = rootState.message.system;
+// const systemGroup = rootState.message.system;
 const isPopShow = ref(false);
 mountEvent('messagecenter.show', () => {
   isPopShow.value = !isPopShow.value;
@@ -85,7 +72,7 @@ function allClear() {
     }
   }
   .notify-center {
-    height: 50%;
+    height: 100%;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -95,17 +82,17 @@ function allClear() {
     overflow: auto;
   }
   .message-item {
-    padding: 20px;
+    padding: 10px 16px;
     background: var(--color-gray-active);
     width: var(--message-inner-width);
     overflow: hidden;
-    margin: 5px auto;
+    margin: 4px auto;
     border: var(--border-transparent);
     transition: all 0.2s ease;
     .message-item-title {
       font-size: 16px;
       font-weight: bold;
-      margin-bottom: 5px;
+      margin-bottom: 2px;
       text-overflow: ellipsis;
       overflow: hidden;
     }

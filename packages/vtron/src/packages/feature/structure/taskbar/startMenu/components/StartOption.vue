@@ -1,7 +1,7 @@
 <template>
   <div class="s-option">
     <div class="s-option-inner">
-      <div class="s-option-button" @click.stop="($ev) => handleClick(0, $ev)">
+      <div class="s-option-button" @click.stop="($ev) => handleClick(0, $ev)" v-glowing>
         <div class="s-option-button_img">
           <svg draggable="false" class="icon" viewBox="0 0 1024 1024">
             <path
@@ -13,7 +13,7 @@
           {{ i18n('startMenu.power') }}
         </div>
       </div>
-      <div class="s-option-button" @click.stop="($ev) => handleClick(1, $ev)">
+      <div class="s-option-button" @click.stop="($ev) => handleClick(1, $ev)" v-glowing>
         <div class="s-option-button_img">
           <svg class="icon" viewBox="0 0 1024 1024">
             <path
@@ -35,6 +35,8 @@ import { i18n } from '@feature/i18n';
 import { Dialog } from '@feature/dialog/Dialog';
 import { useSystem } from '@/packages/plug';
 import { Menu } from '@/packages/feature/menu/Menu';
+import { vGlowing } from '@/packages/util/glowingBorder';
+
 const sys = useSystem();
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
@@ -102,6 +104,8 @@ function handleClick(key: number, ev: MouseEvent) {
     height: 100%;
     width: var(--startmenu-icon-size);
     background-color: var(--color-startmenu);
+    // background-color: var(--theme-main-color-opacity);
+
     transition: all 0.1s ease-in-out;
     transition-delay: 0s;
     display: flex;
@@ -114,6 +118,8 @@ function handleClick(key: number, ev: MouseEvent) {
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
+      z-index: 1;
 
       .s-option-button_img {
         height: var(--start-option-size);
@@ -138,7 +144,7 @@ function handleClick(key: number, ev: MouseEvent) {
     }
 
     .s-option-button:hover {
-      background-color: var(--color-gray-hover);
+      // background-color: var(--color-gray-hover);
     }
   }
 }

@@ -12,7 +12,10 @@
   --ui-button-width: 80px;
   --ui-button-height: 26px;
 
-  --task-bar-color: #ededed;
+  --theme-main-color: #ededed;
+  --theme-main-color-light: #e4e4e4;
+  --theme-main-color-opacity: #edededdc;
+
   
   --task-bar-height: 40px;
   --menu-bar-height: 30px;
@@ -49,7 +52,7 @@
   --color-gray-dark: #d0d0d0;
   --color-gray-dark-op9: #d0d0d0e6;
   --color-gray-op9: #ededede1;
-  --color-gray-hover-light: #e1e1e1;
+  --color-gray-hover-light: #e1e1e1e4;
   --color-gray-hover: #f1f1f1;
   --color-gray-hover-op: rgba(255, 255, 255, 0.519);
   --color-gray-active: #ffffff;

@@ -134,7 +134,7 @@ const backgroundUrl = ref(
   system.getConfig('background')?.startsWith('#') ? '' : system.getConfig('background')
 );
 const textColor = ref(system.getConfig('rootStyle')?.['--icon-title-color'] || '#111');
-const taskBarColor = ref(system.getConfig('rootStyle')?.['--task-bar-color'] || '#ededed');
+const taskBarColor = ref(system.getConfig('rootStyle')?.['--theme-main-color'] || '#ededed');
 
 const winRadius = ref(system.getConfig('rootStyle')?.['--window-border-radius']);
 
@@ -161,7 +161,7 @@ async function submitStyle() {
     ...rootStyle,
     '--icon-title-color': textColor.value,
     '--window-border-radius': winRadius.value,
-    '--task-bar-color': taskBarColor.value,
+    '--theme-main-color': taskBarColor.value,
   };
   await system.setConfig('rootStyle', rootStyle);
 

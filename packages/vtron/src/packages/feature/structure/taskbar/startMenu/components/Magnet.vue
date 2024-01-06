@@ -60,6 +60,7 @@ function handle(item: VtronFileWithoutContent) {
     will-change: transform;
     transition: all 0.2s;
     animation: transin both;
+    position: relative;
     .magnet-item_img {
       width: 40%;
       height: 40%;

@@ -23,7 +23,7 @@ async function test() {
   new Notify({
     title: 'title',
     content: '111',
-    timeout: 5000,
+    timeout: 555000,
   });
 }
 </script>

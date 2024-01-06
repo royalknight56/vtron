@@ -1,7 +1,7 @@
 <template>
   <div class="notify">
     <TransitionGroup name="list" tag="div">
-      <div class="notify-item" v-for="notify in notifyGroup" :key="notify.id">
+      <div class="notify-item" v-for="notify in notifyGroup" :key="notify.id" v-glowing>
         <div class="notify-item-title">
           <span> {{ notify.title }}</span>
         </div>
@@ -13,6 +13,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { vGlowing } from '@/packages/util/glowingBorder';
 import { useSystem } from '../system';
 
 const notifyGroup = useSystem()._rootState.notify;
@@ -35,20 +36,22 @@ const notifyGroup = useSystem()._rootState.notify;
     position: relative;
     padding: 18px;
     margin-bottom: 10px;
-    background-color: var(--color-notify);
+    background-color: var(--theme-main-color-opacity);
     transition: all 0.3s ease;
     .notify-item-title {
       font-size: 16px;
       font-weight: bold;
       margin-bottom: 5px;
+      color: black;
     }
 
     .notify-item-body {
       font-size: 14px;
+      color: black;
     }
   }
   .notify-item:hover {
-    transform: scale(1.05);
+    // transform: scale(1.05);
   }
 
   .list-move,

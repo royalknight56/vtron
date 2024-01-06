@@ -81,19 +81,23 @@ Bios.onOpen((system: System) => {
 }
 .glowing-hover-child {
   mask-repeat: no-repeat;
-  mask-size: 160px 160px;
-  mask-image: radial-gradient(circle at center, transparent 0%, transparent 80px);
+  mask-image: radial-gradient(circle at center, transparent 0%, transparent 80%);
   position: absolute;
   width: calc(100% + 2px);
   height: calc(100% + 2px);
   left: -1px;
   top: -1px;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.993);
   will-change: color;
   z-index: -1;
   transition: all 0.1s;
 }
 .glowing-hover:hover .glowing-hover-child {
-  mask-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.656) 0%, transparent 80px);
+  mask-image: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.714) 0%,
+    rgba(255, 255, 255, 0.614) 20%,
+    transparent 80%
+  );
 }
 </style>

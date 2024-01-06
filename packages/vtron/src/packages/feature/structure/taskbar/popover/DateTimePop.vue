@@ -21,6 +21,7 @@
               chosen: chosen.weekIndex === weekIndex && chosen.dayIndex === dayIndex,
               invday: perday === '',
             }"
+            v-glowing
             v-for="(perday, dayIndex) in perweek"
             :key="perday"
             @click="onDayClick(weekIndex, dayIndex)"
@@ -59,6 +60,7 @@ import { useSystem } from '@feature/system';
 import { BrowserWindow, WinButtonVue, join } from '@/packages/plug';
 import { initAlertEvent } from '@/packages/feature/event/SystemEvent';
 import DateNote from '@/packages/feature/builtin/DateNote.vue';
+import { vGlowing } from '@/packages/util/glowingBorder';
 
 const sys = useSystem();
 const timeDisplay = ref(`00:00:00`);
@@ -303,6 +305,7 @@ function clickDetail(item: { text: string; time: number }) {
       display: flex;
       margin: 1px 0px;
       .day {
+        position: relative;
         width: 14.28%;
         height: 100%;
         display: flex;

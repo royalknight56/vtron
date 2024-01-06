@@ -14,7 +14,7 @@ import StateIcon from '@feature/structure/taskbar/barUnit/StateIcon.vue';
 .taskbar {
   width: 100%;
   height: var(--task-bar-height);
-  background-color: var(--task-bar-color);
+  background-color: var(--theme-main-color);
   display: flex;
   position: relative;
 }

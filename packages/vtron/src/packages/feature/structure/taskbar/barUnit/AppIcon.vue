@@ -64,7 +64,7 @@ function handleClick() {
 }
 .appicon-top {
   // background-color: var(--color-gray-active);
-  background-color: var(--task-bar-color);
+  background-color: var(--theme-main-color);
   filter: brightness(110%);
 }
 .appicon-top::after {

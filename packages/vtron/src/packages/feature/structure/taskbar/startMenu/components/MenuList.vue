@@ -9,6 +9,7 @@
         animationDelay: `${index * 0.01}s`,
         animationDuration: `${index * 0.01 + 0.1}s`,
       }"
+      v-glowing
     >
       <FileIcon class="magnet-item_img" :file="item" />
       <span class="magnet-item_title">{{ basename(item.path) }}</span>
@@ -21,6 +22,7 @@ import { emitEvent } from '@feature/event';
 import { basename } from '@feature/core/Path';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { VtronFileWithoutContent } from '@feature/core/FileSystem';
+import { vGlowing } from '@/packages/util/glowingBorder';
 
 const { openapp, appList } = useAppOpen('menulist');
 function handle(item: VtronFileWithoutContent) {

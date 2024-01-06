@@ -35,6 +35,8 @@ function initRootState(options: SystemOptions) {
     info: {
       screenWidth: window?.innerWidth || 0,
       screenHeight: window?.innerHeight || 0,
+      mouseX: 0,
+      mouseY: 0,
       battery: {
         isCharging: false,
         chargeLevel: 0,

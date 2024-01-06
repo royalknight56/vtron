@@ -8,6 +8,7 @@
         animationDuration: `${Math.floor(index / 4) * 0.04 + 0.1}s`,
       }"
       v-for="(item, index) in appList"
+      v-glowing
       :key="basename(item.path)"
     >
       <FileIcon class="magnet-item_img" :file="item" />
@@ -21,6 +22,7 @@ import { emitEvent } from '@feature/event';
 import { basename } from '@feature/core/Path';
 import FileIcon from '@feature/builtin/FileIcon.vue';
 import { VtronFileWithoutContent } from '@feature/core/FileSystem';
+import { vGlowing } from '@/packages/util/glowingBorder';
 
 const { openapp, appList } = useAppOpen('magnet');
 function handle(item: VtronFileWithoutContent) {
@@ -85,10 +87,6 @@ function handle(item: VtronFileWithoutContent) {
     to {
       transform: translateY(0px);
     }
-  }
-  .magnet-item:hover {
-    background-color: var(--color-gray-hover);
-    border-color: var(--color-gray-active);
   }
 }
 </style>

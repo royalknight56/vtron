@@ -465,6 +465,10 @@ export class System {
     }
   }
 
+  offEvent(event?: string, callback?: (...args: any[]) => void): void {
+    this._eventer.off(event, callback);
+  }
+
   /** 注册文件打开器 */
   registerFileOpener(type: string | string[], opener: FileOpener) {
     if (Array.isArray(type)) {

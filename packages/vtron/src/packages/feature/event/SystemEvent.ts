@@ -3,6 +3,7 @@ import { RootState } from '@feature/state/Root';
 
 import { useSystem } from '../system';
 import { join } from '../core/Path';
+import { throttle } from '@/packages/util/debounce';
 
 function initSizeEvent() {
   const rootState = useSystem()._rootState;
@@ -16,6 +17,20 @@ function initSizeEvent() {
   window?.addEventListener('resize', () => {
     emitEvent('system.resize');
   });
+
+  mountEvent('system.mousemove', (_, events) => {
+    const event = events[0];
+    rootState.info.mouseX = event?.clientX || 0;
+    rootState.info.mouseY = event?.clientY || 0;
+    useSystem().rootRef?.style.setProperty('--mouseX', `${event?.clientX || 0}px`);
+    useSystem().rootRef?.style.setProperty('--mouseY', `${event?.clientY || 0}px`);
+  });
+  window?.addEventListener(
+    'mousemove',
+    throttle((e) => {
+      emitEvent('system.mousemove', e);
+    }, 100)
+  );
 }
 
 function initBatteryEvent() {

@@ -1,40 +1,15 @@
 <template>
   <template v-if="rootState">
-    <div class="screen" @contextmenu.prevent ref="screenref" :style="rootState?.options?.rootStyle">
-      <template v-if="rootState.state == SystemStateEnum.close">
-        <CloseDesktop></CloseDesktop>
-      </template>
-      <template v-else-if="rootState.state == SystemStateEnum.opening">
-        <OpeningDesktop></OpeningDesktop>
-      </template>
-      <template
-        v-else-if="rootState.state == SystemStateEnum.open || rootState.state == SystemStateEnum.lock"
-      >
-        <Transition name="moveup">
-          <div class="login" v-if="rootState.state == SystemStateEnum.lock">
-            <LockDesktop> </LockDesktop>
-          </div>
-        </Transition>
-        <Transition name="fadeout">
-          <DesktopBackground v-if="rootState.state == SystemStateEnum.lock" class="mask"></DesktopBackground>
-        </Transition>
-        <Desktop v-if="rootState.state == SystemStateEnum.open"></Desktop>
-      </template>
-    </div>
+    <ScreenContent :rootState="rootState"> </ScreenContent>
   </template>
 </template>
 <script lang="ts" setup>
-import CloseDesktop from '@feature/structure/desktop/CloseDesktop.vue';
-import Desktop from '@feature/structure/desktop/Desktop.vue';
-import OpeningDesktop from '@feature/structure/desktop/OpeningDesktop.vue';
-import LockDesktop from '@feature/structure/desktop/LockDesktop.vue';
-import DesktopBackground from '@feature/structure/desktop/components/DesktopBackground.vue';
-
-import { SystemStateEnum } from '@packages/type/enum';
 import { Bios, System, useSystem } from '@feature/system';
 import { ref } from 'vue';
 import { RootState } from '@feature/state/Root';
-const screenref = ref<HTMLDivElement | undefined>(undefined);
+import ScreenContent from './ScreenContent.vue';
+
+const screenref = ref();
 const rootState = ref<RootState | undefined>(useSystem()?._rootState);
 Bios.onOpen((system: System) => {
   rootState.value = system._rootState;
@@ -43,13 +18,6 @@ Bios.onOpen((system: System) => {
 </script>
 <style lang="scss" scoped>
 @import '@packages/root.scss';
-
-.screen {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
 </style>
 <style>
 @font-face {
@@ -110,5 +78,22 @@ Bios.onOpen((system: System) => {
 .fadeout-enter-from,
 .fadeout-leave-to {
   opacity: 0;
+}
+.glowing-hover-child {
+  mask-repeat: no-repeat;
+  mask-size: 160px 160px;
+  mask-image: radial-gradient(circle at center, transparent 0%, transparent 80px);
+  position: absolute;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  left: -1px;
+  top: -1px;
+  background-color: white;
+  will-change: color;
+  z-index: -1;
+  transition: all 0.1s;
+}
+.glowing-hover:hover .glowing-hover-child {
+  mask-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.656) 0%, transparent 80px);
 }
 </style>

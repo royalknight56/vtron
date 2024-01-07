@@ -79,6 +79,9 @@ Bios.onOpen((system: System) => {
 .fadeout-leave-to {
   opacity: 0;
 }
+.glowing-hover {
+  /* box-sizing: border-box; */
+}
 .glowing-hover-child {
   mask-repeat: no-repeat;
   mask-image: radial-gradient(circle at center, transparent 0%, transparent 80%);
@@ -87,10 +90,19 @@ Bios.onOpen((system: System) => {
   height: calc(100% + 2px);
   left: -1px;
   top: -1px;
-  background-color: rgba(255, 255, 255, 0.993);
+  background-color: white;
   will-change: color;
-  z-index: -1;
+  z-index: -2;
   transition: all 0.1s;
+}
+.glowing-hover-mask {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  background-color: inherit;
 }
 .glowing-hover:hover .glowing-hover-child {
   mask-image: radial-gradient(

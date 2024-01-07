@@ -28,7 +28,16 @@
         </div>
         <div class="outer_main">
           <div class="main_uper">
-            <div class="set_item" v-for="item in setList" :key="item.title" @click="openSet(item.key)">
+            <div
+              class="set_item"
+              v-for="item in setList"
+              :key="item.title"
+              @click="openSet(item.key)"
+              v-glowing="{
+                color: '#3c3c3ce4',
+                scale: 0.6,
+              }"
+            >
               <div class="set_item-img">
                 <img class="set_item-img-img" :src="item.icon" />
               </div>
@@ -60,6 +69,8 @@ import { i18n } from '@feature/i18n';
 import { useSystem } from '@feature/system';
 import { vDragable } from '../window/MakeDragable';
 import SetLang from './SetWindow/SetLang.vue';
+import { vGlowing } from '@/packages/util/glowingBorder';
+
 const browserWindow = inject<BrowserWindow>('browserWindow')!;
 const sys = useSystem();
 const currentRouter = ref(browserWindow.config?.router || 'main');
@@ -216,8 +227,11 @@ const setList = ref([
   width: 200px;
   display: flex;
   align-items: center;
+  background-color: white;
   border: 1px solid #99999900;
   transition: all 0.1s;
+  position: relative;
+  z-index: 2;
 
   .set_item-img {
     width: 30px;
@@ -239,10 +253,6 @@ const setList = ref([
     font-size: 10px;
     color: #999999;
   }
-}
-
-.set_item:hover {
-  border: 1px solid #9999998a;
 }
 
 .uper_tab {

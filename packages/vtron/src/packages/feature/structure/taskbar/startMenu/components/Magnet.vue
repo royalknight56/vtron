@@ -51,7 +51,7 @@ function handle(item: VtronFileWithoutContent) {
     width: var(--magnet-item-size);
     height: var(--magnet-item-size);
     font-size: var(--ui-font-size);
-    background-color: var(--color-magnet-item);
+    background-color: #f2f2f252;
     border: 1px solid;
     border-color: var(--color-gray-hover);
     display: flex;

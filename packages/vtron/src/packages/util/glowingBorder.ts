@@ -4,7 +4,7 @@ const vGlowing: Directive<HTMLElement> = {
   mounted(el, binding) {
     setTimeout(() => {
       const rect = el.getBoundingClientRect();
-      const maxBorder = Math.max(rect.width, rect.height) * (binding.value?.scale || 1);
+      const maxBorder = Math.max(rect.width, rect.height) * (binding.value?.scale || 2);
       el.classList.add('glowing-hover');
       const childE = document.createElement('div');
       childE.style.maskPosition = `calc(var(--mouseX) - ${(rect.x + maxBorder / 2).toFixed(

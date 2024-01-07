@@ -5,7 +5,7 @@
       width: width,
     }"
   >
-    <input type="text" :placeholder="placeholder" :value="modelValue" @input="handleChange" />
+    <input :type="type" :placeholder="placeholder" :value="modelValue" @input="handleChange" />
   </div>
 </template>
 
@@ -16,6 +16,10 @@ defineProps({
   modelValue: {
     type: String,
     default: '',
+  },
+  type: {
+    type: String,
+    default: 'text',
   },
   placeholder: {
     type: String,
@@ -53,7 +57,7 @@ function handleChange(e: any) {
   // }
 }
 
-.win-input input[type='text'] {
+.win-input input {
   display: block;
   width: 100%;
   height: 100%;
@@ -66,7 +70,7 @@ function handleChange(e: any) {
   outline: none;
 }
 
-.win-input input[type='text']:focus {
+.win-input input:focus {
   box-shadow: 0 0 0 1px var(--color-blue);
   // border-width: 1px;
   // border-color: var(--color-blue);

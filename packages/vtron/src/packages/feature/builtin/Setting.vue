@@ -57,18 +57,21 @@ import { inject, ref, markRaw } from 'vue';
 // import SetUpdate from '@feature/builtin/SetWindow/SetUpdate.vue';
 import SetCustom from '@feature/builtin/SetWindow/SetCustom.vue';
 import SetSystem from '@feature/builtin/SetWindow/SetSystem.vue';
+import SetLang from '@feature/builtin/SetWindow/SetLang.vue';
+import SetAccount from '@feature/builtin/SetWindow/SetAccount.vue';
+
 import WinUpButtonGroup from '@/packages/components/WinUpButtonGroup.vue';
 import e7f8 from '../../../assets/icon/e7f8.png'; //系统设置
 // import e774 from '../../../assets/icon/e774.png'; //网络
 import e771 from '../../../assets/icon/e771.png'; //个性化
 // import e895 from '../../../assets/icon/e895.png'; //更新
 import e775 from '../../../assets/icon/e775.png'; //语言
+import e77b from '../../../assets/icon/e77b.png'; //账户
 
 import { BrowserWindow } from '@feature/window/BrowserWindow';
 import { i18n } from '@feature/i18n';
 import { useSystem } from '@feature/system';
 import { vDragable } from '../window/MakeDragable';
-import SetLang from './SetWindow/SetLang.vue';
 import { vGlowing } from '@/packages/util/glowingBorder';
 
 const browserWindow = inject<BrowserWindow>('browserWindow')!;
@@ -121,6 +124,14 @@ const setList = ref([
     desc: i18n('language'),
     icon: e775,
     content: markRaw(SetLang),
+  },
+
+  {
+    key: 'account',
+    title: i18n('account'),
+    desc: i18n('your.account'),
+    icon: e77b,
+    content: markRaw(SetAccount),
   },
 
   // {
@@ -254,7 +265,10 @@ const setList = ref([
     color: #999999;
   }
 }
-
+.set_item:hover {
+  border: 1px solid #99999954;
+  box-shadow: 0 0 0 1px #999999 inset;
+}
 .uper_tab {
   /* width: 90%; */
   margin: 10px 10px -1px 10px;

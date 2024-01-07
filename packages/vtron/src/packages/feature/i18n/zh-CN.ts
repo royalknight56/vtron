@@ -97,6 +97,10 @@ export const zhCN = {
   style: '样式',
   'is.recover': '是否恢复出厂设置？',
   version: '版本',
+  account: '账户',
+  password: '密码',
+  'your.account': '你的账户',
+  'account.info': '账户信息',
 
   copy: '复制',
   paste: '粘贴',

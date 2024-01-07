@@ -17,4 +17,17 @@ export const defaultConfig: SystemOptions = {
   ],
   userLocation: '/C/Users/',
   systemLocation: '/C/System/',
+  login: {
+    username: localStorage.getItem('vtron-username') || 'admin',
+    password: 'admin',
+    init: () => {
+      return !localStorage.getItem('vtron-username');
+    },
+  },
+  async loginCallback(username, password) {
+    return (
+      username === localStorage.getItem('vtron-username') &&
+      password === localStorage.getItem('vtron-password')
+    );
+  },
 };

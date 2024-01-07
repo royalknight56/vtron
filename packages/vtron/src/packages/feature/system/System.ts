@@ -434,6 +434,10 @@ export class System {
   recover() {
     this.fs.removeFileSystem();
     localStorage.removeItem('vtronFirstRun');
+    localStorage.removeItem('vtron-username');
+    localStorage.removeItem('vtron-password');
+    localStorage.removeItem('vtronCommandHistory');
+
     this._rootState.state = SystemStateEnum.close;
     window.location.reload();
   }

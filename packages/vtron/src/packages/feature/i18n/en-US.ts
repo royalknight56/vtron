@@ -95,6 +95,10 @@ export const enUS: AllText = {
   style: 'Style',
   'is.recover': 'Is Recover?',
   version: 'Version',
+  account: 'Account',
+  password: 'Password',
+  'your.account': 'Your Account',
+  'account.info': 'Account Info',
 
   copy: 'Copy',
   paste: 'Paste',

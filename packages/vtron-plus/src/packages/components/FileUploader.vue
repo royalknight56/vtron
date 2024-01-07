@@ -33,7 +33,9 @@ function uploadFile(e: any) {
   outline: none;
   cursor: pointer;
   font-size: 16px;
-  height: 40px;
+  height: 34px;
+  width: 200px;
+  position: relative;
 }
 
 .upload-input::-webkit-file-upload-button {
@@ -45,9 +47,11 @@ function uploadFile(e: any) {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #428bca;
-  color: #fff;
-  padding: 6px 12px;
+  height: 100%;
+  box-sizing: border-box;
+  // background: #56565698;
+  color: #000000;
+  padding: 4px 1px;
   outline: none;
   white-space: nowrap;
   -webkit-user-select: none;
@@ -55,11 +59,26 @@ function uploadFile(e: any) {
   -ms-user-select: none;
   user-select: none;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 0px;
+  border: 2px solid #565656;
+  transition: all 0.1s;
 }
-
+.upload-input::after {
+  position: absolute;
+  content: '';
+  display: block;
+  height: 100%;
+  width: 0%;
+  top: 0;
+  left: 0;
+  background-color: #35353533;
+  transition: all 0.1s;
+}
 .upload-input:hover::before {
-  background-color: #3071a9;
+  background-color: #cecece60;
+}
+.upload-input:hover::after {
+  width: 100%;
 }
 
 .upload-loading {

@@ -198,7 +198,7 @@ async function importZipFile() {
   }
 }
 </script>
-<style scoped lang="scss">
+<style scoped>
 .outer {
   position: absolute;
   width: calc(100% - 200px);

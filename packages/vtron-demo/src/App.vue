@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import desktopConfig from './DesktopSet';
+import { desktopConfig, magnetConfig } from './DesktopSet';
 
 import { System, BrowserWindow, Notify } from 'vtron';
 import { vtronPlus } from 'vtron-plus';
@@ -28,7 +28,7 @@ import OpenSource from './components/apps/OpenSource.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
 
 import { mountWebdav } from './hook/mountWebdav';
-import { mountOpener } from './hook/mountOpener';
+// import { mountOpener } from './hook/mountOpener';
 // 在App中组织桌面图标t
 // 先清空再添加，防止热更新加入多重图标
 const system = new System({
@@ -60,6 +60,7 @@ const system = new System({
         resizable: false,
       },
     },
+    ...addListToDesktop(magnetConfig),
   ],
   menulist: [
     {

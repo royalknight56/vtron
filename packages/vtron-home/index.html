@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vtron Home Page</title>
+</head>
+
+<body>
+    <div class="outer">
+        <div class="content">
+            <div class="title">Vtron</div>
+            <div class="title2">全新官网即将上线。。。</div>
+            <div class="button">
+                <a class="button-a" href="https://win.myim.online/">点击前往Vtron Win10 模拟器</a>
+            </div>
+
+        </div>
+        <div class="bottom">
+            <a href="https://beian.miit.gov.cn/">豫ICP备19041315号</a>
+        </div>
+    </div>
+
+</body>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Microsoft YaHei', '微软雅黑', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background-color: #f1f1f1;
+
+    }
+
+    .outer {
+        box-sizing: border-box;
+        padding: 4px;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .title {
+        font-size: 50px;
+        font-weight: bold;
+        text-align: center;
+        margin: 10px;
+    }
+    .title2{
+        font-size: 30px;
+        /* font-weight: bold; */
+        text-align: center;
+        margin: 10px;
+    }
+
+    .button {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+    .button-a {
+        width: 400px;
+        height: 50px;
+        background-color: #9b9b9b;
+        color: white;
+        text-decoration: none;
+        text-align: center;
+        line-height: 50px;
+        border-radius: 12px;
+        font-size: 20px;
+    }
+
+    .bottom {
+        width: 100%;
+        text-align: center;
+        font-size: 10px;
+        color: #999;
+        margin-bottom: 10px;
+
+    }
+    @media screen and (max-width: 600px) {
+        .title {
+            font-size: 30px;
+        }
+        .title2 {
+            font-size: 20px;
+        }
+        .button-a {
+            width: 300px;
+            height: 40px;
+            font-size: 16px;
+            line-height: 40px;
+        }
+        
+    }
+</style>
+<script>
+    if (location.href.indexOf('myim.online') > -1) {
+        fetch('https://myim.online:3100/api/visit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user: localStorage.getItem('user'),
+                type: 'view',
+                content: `${document.referrer}`,
+            }),
+        });
+    }
+
+</script>
+
+</html>

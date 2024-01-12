@@ -1,12 +1,12 @@
 # This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Demo CI
+name: Home CI
 
 on:
   push:
     tags:
-      - demo**
+      - home**
 
 jobs:
   build:
@@ -27,16 +27,12 @@ jobs:
         with:
           version: 7.22.0
           cache: 'pnpm'
-      - run: pnpm install
-      - run: npx pnpm run vtron bl
-      - run: npx pnpm run plus bl
-      - run: npx pnpm run demo-build
       - name: Deploy to Staging server
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          SOURCE: 'packages/vtron-demo/dist/'
+          SOURCE: 'packages/vtron-home/'
           REMOTE_HOST: ${{ secrets.DEPLOY_HOST }}
           REMOTE_USER: ${{ secrets.DEPLOY_USER }}
           REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
-          TARGET: ${{ secrets.DEPLOY_REMOTE_DEMO_DIR }}
+          TARGET: ${{ secrets.DEPLOY_REMOTE_DIR }}

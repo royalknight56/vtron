@@ -250,7 +250,7 @@ NoteMd是和vtron契合的笔记软件
       },
       body: JSON.stringify({
         user: localStorage.getItem('user'),
-        type: 'view',
+        type: 'enter',
         content: `${document.referrer}`,
       }),
     });

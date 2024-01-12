@@ -9,8 +9,8 @@ import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { BrowserWindow } from 'vtron';
 // import PythonWorker from './lib/pythonWorker?worker&inline';
-import workerUrl from './lib/pythonWorker?worker&url';
-const worker = new Worker(workerUrl, { type: 'module' });
+import { PythonCall } from './lib/pythonWorker';
+// const worker = new Worker(workerUrl, { type: 'module' });
 
 const browserWindow = inject<BrowserWindow>('browserWindow');
 
@@ -34,11 +34,13 @@ onMounted(() => {
 
   // const worker = new PythonWorker();
   let isInit = false;
-  worker.onmessage = (e) => {
+  const pythonCall = new PythonCall();
+  pythonCall.create();
+  pythonCall.onmessage((e) => {
     if (!isInit) {
       isInit = true;
       // 初次执行
-      worker.postMessage(
+      pythonCall.postMessage(
         browserWindow?.config.code ||
           `import sys
 from pyodide.ffi import to_js
@@ -58,21 +60,19 @@ def clear_console():
 `
       );
     } else {
-      term.write(e.data);
+      term.write(e);
     }
-  };
-  worker.addEventListener('error', (e) => {
-    console.log(e);
   });
 
   const handleInputText = async () => {
     // console.log(command);
     term.write('\r\n');
     term.write(prefix);
-
-    inputTextList.push(inputText);
-    currentIndex = inputTextList.length;
-    worker.postMessage(inputText);
+    if (inputText) {
+      inputTextList.push(inputText);
+      currentIndex = inputTextList.length;
+    }
+    pythonCall.postMessage(inputText);
   };
 
   const TERMINAL_INPUT_KEY = {

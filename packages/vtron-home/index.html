@@ -10,11 +10,11 @@
 <body>
     <div class="outer">
         <div class="content">
-            <img class="title-img" src="./vtron-logo-nobg.png">
+            <img draggable="false" class="title-img" src="./vtron-logo-nobg.png">
             <!-- <div class="title">Vtron</div> -->
-            <div class="title2">全新官网即将上线。。。</div>
+            <!-- <div class="title2">全新官网即将上线。。。</div> -->
             <div class="button">
-                <a class="button-a" href="https://win.myim.online/">点击前往Vtron Win10 模拟器</a>
+                <a class="button-a" href="https://win.myim.online/">启动 Win10 模拟器</a>
             </div>
 
         </div>
@@ -60,14 +60,44 @@
         margin: 10px;
     }
     .title2{
-        font-size: 30px;
+        font-size: 14px;
         /* font-weight: bold; */
         text-align: center;
         margin: 10px;
+        transform: translateX(100%);
+        clip-path: inset(0 100% 0 0px);
+        animation: textshowanim 1s ease-in-out forwards;
+        animation-delay: 1.5s;
+        user-select: none;
     }
     .title-img{
         width: 30vw;
         margin: 10px;
+        user-select: none;
+        transform: translateX(10vw);
+        clip-path: inset(0 20vw 0 0px);
+        animation: showanim 1s ease-in-out forwards;
+        animation-delay: 1s;
+    }
+    @keyframes showanim {
+        0% {
+            transform: translateX(10vw);
+            clip-path: inset(0 20vw 0 0px);
+        }
+        100% {
+            transform: translateX(0);
+            clip-path: inset(0 0 0 0);
+        }
+    }
+    @keyframes textshowanim {
+        0% {
+            transform: translateX(100%);
+            clip-path: inset(0 100 0 0px);
+        }
+        100% {
+            transform: translateX(0);
+            clip-path: inset(0 0 0 0);
+        }
     }
 
     .button {
@@ -79,26 +109,29 @@
     }
 
     .button-a {
-        width: 400px;
-        height: 50px;
-        background-color: #819cc9;
+        width: 200px;
+        height: 60px;
+        background-color: #3e7cc7;
         color: white;
         text-decoration: none;
         text-align: center;
-        line-height: 50px;
+        line-height: 60px;
         border-radius: 12px;
-        font-size: 20px;
+        font-size: 14px;
+        transition: all 0.1s;
+        user-select: none;
     }
     .button-a:hover{
-        background-color: #6b8dbb;
+        background-color: #8dabd2;
     }
 
-    .bottom {
+    .bottom a{
         width: 100%;
         text-align: center;
         font-size: 10px;
-        color: #999;
+        color: #656565;
         margin-bottom: 10px;
+        text-decoration: none;
 
     }
     @media screen and (max-width: 600px) {
@@ -106,13 +139,13 @@
             font-size: 30px;
         }
         .title2 {
-            font-size: 20px;
+            font-size: 12px;
         }
         .button-a {
-            width: 300px;
-            height: 40px;
-            font-size: 16px;
-            line-height: 40px;
+            width: 200px;
+            height: 60px;
+            font-size: 12px;
+            line-height: 60px;
         }
         
     }

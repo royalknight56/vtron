@@ -10,7 +10,8 @@
 <body>
     <div class="outer">
         <div class="content">
-            <div class="title">Vtron</div>
+            <img class="title-img" src="./vtron-logo-nobg.png">
+            <!-- <div class="title">Vtron</div> -->
             <div class="title2">全新官网即将上线。。。</div>
             <div class="button">
                 <a class="button-a" href="https://win.myim.online/">点击前往Vtron Win10 模拟器</a>
@@ -43,6 +44,15 @@
         align-items: center;
     }
 
+    .content{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
     .title {
         font-size: 50px;
         font-weight: bold;
@@ -53,6 +63,10 @@
         font-size: 30px;
         /* font-weight: bold; */
         text-align: center;
+        margin: 10px;
+    }
+    .title-img{
+        width: 30vw;
         margin: 10px;
     }
 
@@ -67,13 +81,16 @@
     .button-a {
         width: 400px;
         height: 50px;
-        background-color: #9b9b9b;
+        background-color: #819cc9;
         color: white;
         text-decoration: none;
         text-align: center;
         line-height: 50px;
         border-radius: 12px;
         font-size: 20px;
+    }
+    .button-a:hover{
+        background-color: #6b8dbb;
     }
 
     .bottom {

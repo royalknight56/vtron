@@ -23,6 +23,7 @@ import xlsxIcon from './assets/xlsx.png';
 import musicAppIcon from './assets/musicApp.png';
 import galleryIcon from './assets/gallery.png';
 import backupIcon from './assets/e895.png';
+import pythonIcon from './assets/Python.png';
 
 import audioIcon from './assets/audio.png';
 import videoIcon from './assets/video.png';
@@ -34,6 +35,7 @@ import Terminal from './apps/Terminal.vue';
 import MusicStoreVue from './apps/MusicStore.vue';
 import PictureStoreVue from './apps/PictureStore.vue';
 import ZipBackupVue from './apps/ZipBackup.vue';
+import PythonVue from './apps/Python.vue';
 
 function vtronPlus(system: System) {
   /**------------------ 桌面右键菜单--------------- */
@@ -100,6 +102,26 @@ function vtronPlus(system: System) {
       pdfwindow.show();
     },
   });
+  system.registerFileOpener('.py', {
+    name: 'Python',
+    icon: pythonIcon,
+    func: (path, content) => {
+      new BrowserWindow({
+        title: path,
+        icon: pythonIcon,
+        width: 800,
+        height: 600,
+        resizable: true,
+        center: true,
+        content: PythonVue,
+        config: {
+          path: path,
+          code: content,
+        },
+      }).show();
+    },
+  });
+
   // const imgType = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
   // const imgOpener = (path: string, content: any) => {
   //   let imgwindow = new BrowserWindow({
@@ -202,6 +224,41 @@ function vtronPlus(system: System) {
 
   /**------------------ 应用区--------------- */
   //#region
+
+  const pythonTerminal = {
+    name: 'Python',
+    icon: pythonIcon,
+    window: {
+      width: 700,
+      height: 470,
+      center: true,
+      title: 'Python',
+      icon: pythonIcon,
+      content: PythonVue,
+      // resizable: false,
+      config: {
+        path: '/',
+      },
+    },
+  };
+  (system as any).runPython = (code: string) => {
+    new BrowserWindow({
+      width: 700,
+      height: 470,
+      center: true,
+      title: 'Python',
+      icon: pythonIcon,
+      content: PythonVue,
+      // resizable: false,
+      config: {
+        path: '/',
+        code,
+      },
+    }).show();
+  };
+
+  system.addApp(pythonTerminal);
+
   const terminal = {
     name: 'Terminal',
     icon: termIcon,

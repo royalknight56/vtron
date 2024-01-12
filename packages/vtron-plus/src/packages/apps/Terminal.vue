@@ -1,20 +1,20 @@
 <template>
   <div class="outer">
-    <div id="terminal"></div>
+    <div :id="'terminal' + browserWindow?.id"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { inject, onMounted, onUnmounted } from "vue";
-import { Terminal } from "xterm";
+import { inject, onMounted, onUnmounted } from 'vue';
+import { Terminal } from 'xterm';
 
-import { FitAddon } from "xterm-addon-fit";
-import { basename, BrowserWindow, System } from "vtron";
+import { FitAddon } from 'xterm-addon-fit';
+import { basename, BrowserWindow, System } from 'vtron';
 
-const sys = inject<System>("system");
-const browserWindow = inject<BrowserWindow>("browserWindow");
+const sys = inject<System>('system');
+const browserWindow = inject<BrowserWindow>('browserWindow');
 let currentIndex = 0;
-let inputText = "";
+let inputText = '';
 let inputTextList: string[] = [];
 
 const TERMINAL_INPUT_KEY = {
@@ -26,8 +26,8 @@ const TERMINAL_INPUT_KEY = {
   RIGHT: 39, // 方向盘右键
 };
 
-const getCursorOffsetLength = (offsetLength: number, subString = "") => {
-  let cursorOffsetLength = "";
+const getCursorOffsetLength = (offsetLength: number, subString = '') => {
+  let cursorOffsetLength = '';
   for (let offset = 0; offset < offsetLength; offset++) {
     cursorOffsetLength += subString;
   }
@@ -37,14 +37,11 @@ const getCursorOffsetLength = (offsetLength: number, subString = "") => {
 onMounted(() => {
   if (sys) {
     const shell = sys.createShell();
-    shell.on("message", (msg) => {
+    shell.on('message', (msg) => {
       term.write(msg);
     });
 
-    inputTextList =
-      (JSON.parse(
-        localStorage.getItem("vtronCommandHistory") || "[]"
-      ) as string[]) || [];
+    inputTextList = (JSON.parse(localStorage.getItem('vtronCommandHistory') || '[]') as string[]) || [];
     currentIndex = inputTextList.length;
     const fitAddon = new FitAddon();
     const term = new Terminal({
@@ -54,11 +51,11 @@ onMounted(() => {
     setTimeout(() => {
       fitAddon.fit();
     }, 100);
-    browserWindow?.on("resize", () => {
+    browserWindow?.on('resize', () => {
       fitAddon.fit();
     });
-    term.open(document.getElementById("terminal")!);
-    shell.emit("start", "/");
+    term.open(document.getElementById('terminal' + browserWindow?.id)!);
+    shell.emit('start', '/');
     // shell;
     // shell.router = "/";
     // shell.prefix = `root />`;
@@ -76,7 +73,7 @@ onMounted(() => {
     }
 
     const handleInputText = () => {
-      term.write("\r\n");
+      term.write('\r\n');
       if (!inputText.trim()) {
         prompt(term);
         return;
@@ -84,10 +81,7 @@ onMounted(() => {
 
       if (inputTextList.indexOf(inputText) === -1) {
         inputTextList.push(inputText);
-        localStorage.setItem(
-          "vtronCommandHistory",
-          JSON.stringify(inputTextList)
-        );
+        localStorage.setItem('vtronCommandHistory', JSON.stringify(inputTextList));
         currentIndex = inputTextList.length;
       }
 
@@ -101,7 +95,7 @@ onMounted(() => {
       const printAble = !(altKey || ctrlKey || metaKey); // 禁止相关按键
       const totalOffsetLength = inputText.length + shell.prefix.length; // 总偏移量
       const currentOffsetLength = term.buffer.active.cursorX; // 当前x偏移量
-      (shell as any).emit("key", key, key);
+      (shell as any).emit('key', key, key);
       sys._shell;
 
       switch (keyCode) {
@@ -109,13 +103,10 @@ onMounted(() => {
           if (currentOffsetLength > shell.prefix.length) {
             const cursorOffSetLength = getCursorOffsetLength(
               totalOffsetLength - currentOffsetLength,
-              "\x1b[D"
+              '\x1b[D'
             ); // 保留原来光标位置
-            term.write("\x1b[D");
-            term.write(
-              "\x1b[?K" +
-                inputText.slice(currentOffsetLength - shell.prefix.length)
-            );
+            term.write('\x1b[D');
+            term.write('\x1b[?K' + inputText.slice(currentOffsetLength - shell.prefix.length));
             term.write(cursorOffSetLength);
             inputText = `${inputText.slice(
               0,
@@ -125,28 +116,22 @@ onMounted(() => {
           break;
         case TERMINAL_INPUT_KEY.ENTER:
           handleInputText();
-          inputText = "";
+          inputText = '';
           break;
         case TERMINAL_INPUT_KEY.UP: {
           if (!inputTextList[currentIndex - 1]) break;
-          const offsetLength = getCursorOffsetLength(
-            inputText.length,
-            "\x1b[D"
-          );
+          const offsetLength = getCursorOffsetLength(inputText.length, '\x1b[D');
           inputText = inputTextList[currentIndex - 1];
-          term.write(offsetLength + "\x1b[?K");
+          term.write(offsetLength + '\x1b[?K');
           term.write(inputTextList[currentIndex - 1]);
           currentIndex--;
           break;
         }
         case TERMINAL_INPUT_KEY.DOWN: {
           if (!inputTextList[currentIndex + 1]) break;
-          const offsetLength = getCursorOffsetLength(
-            inputText.length,
-            "\x1b[D"
-          );
+          const offsetLength = getCursorOffsetLength(inputText.length, '\x1b[D');
           inputText = inputTextList[currentIndex + 1];
-          term.write(offsetLength + "\x1b[?K");
+          term.write(offsetLength + '\x1b[?K');
           term.write(inputTextList[currentIndex + 1]);
           currentIndex++;
           break;
@@ -166,7 +151,7 @@ onMounted(() => {
         // tab:
         case 9:
           {
-            const splitArr = inputText.split(" ");
+            const splitArr = inputText.split(' ');
             const unready = splitArr[splitArr.length - 1] || inputText;
             const res = await sys?.fs.readdir(shell.router);
             const list: string[] = [];
@@ -178,7 +163,7 @@ onMounted(() => {
             });
             if (matchList.length) {
               inputText += matchList[0].slice(unready.length);
-              term.write("\x1b[?K" + matchList[0].slice(unready.length));
+              term.write('\x1b[?K' + matchList[0].slice(unready.length));
             }
           }
           break;
@@ -190,17 +175,10 @@ onMounted(() => {
             inputText += key;
             break;
           }
-          const cursorOffSetLength = getCursorOffsetLength(
-            totalOffsetLength - currentOffsetLength,
-            "\x1b[D"
-          );
+          const cursorOffSetLength = getCursorOffsetLength(totalOffsetLength - currentOffsetLength, '\x1b[D');
           // 在当前的坐标写上 key 和坐标后面的字符
           // term.write('\x1b[?K' + `${key}${inputText.slice(currentOffsetLength - prefix.length)}`)
-          term.write(
-            "\x1b[?K" +
-              key +
-              inputText.slice(currentOffsetLength - shell.prefix.length)
-          );
+          term.write('\x1b[?K' + key + inputText.slice(currentOffsetLength - shell.prefix.length));
           term.write(cursorOffSetLength); // 移动停留在当前位置的光标
           inputText =
             inputText.slice(0, currentOffsetLength - shell.prefix.length) +
@@ -227,5 +205,5 @@ onMounted(() => {
 </style>
 
 <style>
-@import "xterm/css/xterm.css";
+@import 'xterm/css/xterm.css';
 </style>

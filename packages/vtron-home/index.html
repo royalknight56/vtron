@@ -18,6 +18,15 @@
             </div>
 
         </div>
+        <div class="screen content">
+            <img draggable="false" class="title-img" src="./vtron-logo-nobg.png">
+            <!-- <div class="title">Vtron</div> -->
+            <div class="title2">全新官网即将上线。。。</div>
+            <div class="button">
+                <a class="button-a" href="https://win.myim.online/">启动 Win10 模拟器</a>
+            </div>
+        </div>
+
         <div class="bottom">
             <a href="https://beian.miit.gov.cn/">豫ICP备19041315号</a>
         </div>
@@ -37,7 +46,7 @@
         box-sizing: border-box;
         padding: 4px;
         width: 100%;
-        height: 100vh;
+        height: 200vh;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -46,7 +55,7 @@
 
     .content{
         width: 100%;
-        height: 100%;
+        height: 100vh;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -76,6 +85,7 @@
         user-select: none;
         transform: translateX(10vw);
         clip-path: inset(0 20vw 0 0px);
+        will-change: transform, clip-path;
         animation: showanim 1s ease-in-out forwards;
         animation-delay: 1s;
     }

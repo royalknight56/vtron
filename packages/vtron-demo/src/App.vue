@@ -187,6 +187,28 @@ NoteMd是和vtron契合的笔记软件
   // mountOpener(system);
   readySystem.setConfig('contextMenus', [
     {
+      label: '新建.py文件',
+      async click() {
+        const ifstat = await readySystem.fs.stat('/C/Users/Desktop/新建文件.py');
+        if (ifstat) {
+          let i = 1;
+          while (i < 10) {
+            const ifstat = await readySystem.fs.stat(`/C/Users/Desktop/新建文件(${i}).py`);
+            if (ifstat) {
+              i++;
+            } else {
+              readySystem.fs.writeFile(`/C/Users/Desktop/新建文件(${i}).py`, `print('hello, world')`);
+              break;
+            }
+          }
+          return;
+        } else {
+          readySystem.fs.writeFile(`/C/Users/Desktop/新建文件.py`, `print('hello, world')`);
+        }
+      },
+    },
+
+    {
       label: '新建.md文件',
       async click() {
         const ifstat = await readySystem.fs.stat('/C/Users/Desktop/新建文件.md');

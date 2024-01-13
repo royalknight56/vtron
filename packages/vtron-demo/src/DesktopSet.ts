@@ -7,6 +7,7 @@ import friendLinkicon from './assets/friendLink.png';
 import bird1icon from './assets/bird1.png';
 import signalicon from './assets/signal.png';
 import kiometicon from './assets/kiomet.webp';
+import beaticon from './assets/beat.ico';
 // import galleryicon from './assets/gallery.png';
 
 import GitStars from './components/apps/GitStars.vue';
@@ -15,6 +16,7 @@ import GotoReadMe from './components/apps/GotoReadMe.vue';
 import FriendLink from './components/apps/FriendLink.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
 import NoteMd from './components/apps/NoteMd.vue';
+import CommentVue from './components/apps/Comment.vue';
 // import Gallery from './components/apps/Gallery.vue';
 const magnetConfig = [
   {
@@ -25,15 +27,6 @@ const magnetConfig = [
     center: true,
     content: 'https://static.myim.online/yabird/',
     backgroundColor: '#71c5cf',
-    resizable: true,
-  },
-  {
-    title: 'python',
-    icon: 'data:image/x-icon;base64,AAABAAEAICAQAAEABADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYUUYAr6GMAOvn4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREAAiIiIiIiIgAAABERERERAAIiIiIiIiIAAAAREREREQACIiIiIiIiAAAAEREREREAAiIiIiIiIgAAABERERERAAIiIiIiIiIAAAAREREREQACIAAAAiIiAAAAEREREREAAiAAAAIiIgAAABERERERAAIgAAACIiIAAAAREREREQACIAAAAiIiAAAAEREREREAAiIiIiIiIgAAABERERERAAIiIiIiIiIAAAAREREREQACIiIiIiIiAAAAERAAAREAAiAAAAIiIgAAABEQAAERAAIgAAACIiIAAAAREAABEQACIAAAAiIiAAAAERAAAREAAiAAAAIiIgAAABERERERAAIiIiIiIiIAAAAREREREQACIiIiIiIiAAAAEREREREAAiIiIiIiIgAAABEQAAERAAIgAAACIiIAAAAREAABEQACIAAAAiIiAAAAERAAAREAAiAAAAIiIgAAABEQAAERAAIgAAACIiIAAAAREREREQACIiIiIiIiAAAAEREREREAAiIiIiIiIgAAABERERERAAIiIiIiIiIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
-    width: 800,
-    height: 600,
-    center: true,
-    content: 'https://pyodide.org/en/stable/console.html',
     resizable: true,
   },
   {
@@ -54,6 +47,32 @@ const magnetConfig = [
     center: true,
     content: 'https://map.baidu.com/',
     resizable: true,
+  },
+  {
+    title: '创建网络链接',
+    icon: signalicon,
+    width: 400,
+    height: 400,
+    center: true,
+    content: CreateUrl,
+    resizable: false,
+  },
+  {
+    title: '点个star',
+    icon: GitHub,
+    width: 170,
+    height: 100,
+    center: true,
+    content: GitStars,
+  },
+  {
+    title: '意见反馈',
+    icon: beaticon,
+    width: 400,
+    height: 400,
+    center: true,
+    content: CommentVue,
+    resizable: false,
   },
 ];
 const desktopConfig = [
@@ -155,13 +174,6 @@ const desktopConfig = [
   //   resizable: true,
   //   content: PPT,
   // },
-  {
-    title: '点个star',
-    icon: GitHub,
-    width: 170,
-    height: 100,
-    content: GitStars,
-  },
   {
     title: '文档',
     icon: winv3icon,

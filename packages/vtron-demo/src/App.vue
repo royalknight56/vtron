@@ -19,7 +19,6 @@ import { vtronPlus } from 'vtron-plus';
 import MarkDown from './components/apps/MarkDown.vue';
 import 'vtron-plus/distlib/style.css';
 import backimg from './assets/back.jpg';
-import CommentVue from './components/apps/Comment.vue';
 import beaticon from './assets/beat.ico';
 import markdownicon from './assets/markdown.png';
 import onetocicon from './assets/onetoc.png';
@@ -32,36 +31,8 @@ import { mountWebdav } from './hook/mountWebdav';
 // 在App中组织桌面图标t
 // 先清空再添加，防止热更新加入多重图标
 const system = new System({
-  desktop: [
-    {
-      name: '意见反馈',
-      icon: beaticon,
-      window: {
-        title: '意见反馈',
-        width: 400,
-        height: 400,
-        center: true,
-        content: CommentVue,
-        resizable: false,
-      },
-    },
-    ...addListToDesktop(desktopConfig),
-  ],
-  magnet: [
-    {
-      name: '意见反馈',
-      icon: beaticon,
-      window: {
-        title: '意见反馈',
-        width: 400,
-        height: 400,
-        center: true,
-        content: CommentVue,
-        resizable: false,
-      },
-    },
-    ...addListToDesktop(magnetConfig),
-  ],
+  desktop: [...addListToDesktop(desktopConfig)],
+  magnet: [...addListToDesktop(magnetConfig)],
   menulist: [
     {
       name: '开源项目',
@@ -305,7 +276,7 @@ NoteMd是和vtron契合的笔记软件
       });
   }, 100);
 });
-function addListToDesktop(list: typeof desktopConfig) {
+function addListToDesktop(list: any[]) {
   const res: any[] = [];
   list.forEach((item) => {
     res.push({

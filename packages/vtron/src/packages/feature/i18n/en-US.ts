@@ -113,6 +113,7 @@ export const enUS: AllText = {
   'shortcut.has.been.created': 'Shortcut Has Been Created',
 
   'system.message': 'System Message',
+  'no.message': 'No Message',
 
   'how.do.you.want.to.open.this.file': 'How Do You Want To Open This File?',
 };

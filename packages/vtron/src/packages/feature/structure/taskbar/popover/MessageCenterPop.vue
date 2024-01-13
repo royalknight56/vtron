@@ -3,10 +3,12 @@
     <div v-if="isPopShow" class="message scroll-bar" @mousedown.stop="">
       <div class="notify-center">
         <div class="message-title">
-          共{{ notifyGroup.length }}条提醒
           <span @click="allClear" class="allclear">×</span>
         </div>
         <div class="message-group scroll-bar">
+          <div v-if="notifyGroup.length === 0" class="no-message">
+            {{ i18n('no.message') }}
+          </div>
           <div class="message-item" v-for="notify in notifyGroup" :key="notify.id">
             <div class="message-item-title">
               <span>{{ notify.title }}</span>
@@ -24,6 +26,7 @@
 import { useSystem } from '@feature/system';
 import { ref } from 'vue';
 import { mountEvent } from '@feature/event';
+import { i18n } from '@/packages/plug';
 const rootState = useSystem()._rootState;
 const notifyGroup = rootState.message.notify;
 // const systemGroup = rootState.message.system;
@@ -80,6 +83,18 @@ function allClear() {
   .message-group {
     height: 100%;
     overflow: auto;
+  }
+  .no-message {
+    padding: 10px 16px;
+    width: var(--message-inner-width);
+    overflow: hidden;
+    margin: 4px auto;
+    transform: translateY(50%);
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    color: #494949;
   }
   .message-item {
     padding: 10px 16px;

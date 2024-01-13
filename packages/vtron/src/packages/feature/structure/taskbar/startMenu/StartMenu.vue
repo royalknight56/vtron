@@ -31,7 +31,7 @@ function handleClick(e: MouseEvent) {
   z-index: 40;
   display: flex;
   overflow: hidden;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.241);
 }
 .startmenu-item {
   position: relative;

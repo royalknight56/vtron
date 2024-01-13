@@ -19,11 +19,11 @@
         </div>
         <div class="setting-item">
           <label> {{ i18n('account') }} </label>
-          <WinInput v-model="account" />
+          <WinInput v-model="account" placeholder="" />
         </div>
         <div class="setting-item">
           <label> {{ i18n('password') }} </label>
-          <WinInput v-model="password" type="password" />
+          <WinInput v-model="password" placeholder="" type="password" />
         </div>
 
         <div class="setting-item">

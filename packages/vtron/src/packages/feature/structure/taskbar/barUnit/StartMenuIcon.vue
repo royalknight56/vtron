@@ -34,6 +34,7 @@ function emitClick(e: MouseEvent) {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 41;
 }
 
 .startmenuicon-img {

@@ -115,4 +115,6 @@ export const zhCN = {
   'shortcut.has.been.created': '快捷方式已创建',
 
   'system.message': '系统消息',
+
+  'how.do.you.want.to.open.this.file': '你要如何打开这个文件？',
 };

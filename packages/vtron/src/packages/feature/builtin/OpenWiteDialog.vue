@@ -1,12 +1,21 @@
 <template>
   <div class="outer">
+    <div class="opener-title">{{ i18n('how.do.you.want.to.open.this.file') }}</div>
     <div class="opener">
-      <div class="opener-item" v-for="item in openerList" :key="item.name" @click="openFile(item)">
+      <div
+        class="opener-item opener-hover"
+        v-for="item in openerList"
+        :key="item.name"
+        @click="openFile(item)"
+      >
         <div class="opener-icon">
           <img :src="item.icon" />
         </div>
         <span class="opener-name">{{ item.name }}</span>
       </div>
+    </div>
+    <div class="cancel">
+      <button @click="window?.close()">{{ i18n('cancel') }}</button>
     </div>
   </div>
 </template>
@@ -15,7 +24,7 @@ import { inject, ref, onMounted } from 'vue';
 import { useSystem } from '../system';
 import { BrowserWindow } from '../window/BrowserWindow';
 
-import { VtronFileWithoutContent } from '@packages/plug';
+import { VtronFileWithoutContent, i18n } from '@packages/plug';
 
 const window: BrowserWindow | undefined = inject('browserWindow');
 const sys = useSystem();
@@ -61,29 +70,42 @@ async function openFile(item: TempOpener) {
 <style lang="scss" scoped>
 .outer {
   height: 100%;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  user-select: none;
+  .opener-title {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    padding: 10px;
+    padding-left: 20px;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-weight: 600;
+  }
   .opener {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100%;
+    height: calc(100% - 90px);
+    width: 100%;
     overflow: auto;
     .opener-item {
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      width: 240px;
-      height: 60px;
-      margin: 2px;
+      width: 100%;
+      height: 50px;
+      // margin: 2px;
       padding: 10px;
-      border-radius: 4px;
+
+      box-sizing: border-box;
       flex-grow: 0;
-      cursor: pointer;
-      &:hover {
-        background-color: #eeeeee94;
-      }
+      transition: all 0.1s ease-in-out;
       .opener-icon {
-        width: 130px;
-        height: 50px;
+        width: 60px;
+        height: 36px;
         flex-shrink: 0;
         display: flex;
         align-items: center;
@@ -94,9 +116,35 @@ async function openFile(item: TempOpener) {
         }
       }
       .opener-name {
-        margin-top: 10px;
+        font-size: 12px;
         display: flex;
         align-items: center;
+      }
+    }
+    .opener-hover:hover {
+      cursor: pointer;
+      background-color: #60606043;
+    }
+  }
+  .cancel {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    button {
+      width: 100px;
+      height: 30px;
+      margin-right: 30px;
+      // border-radius: 5px;
+      border: none;
+      background-color: #60606043;
+      transition: all 0.1s ease-in-out;
+      &:hover {
+        color: white;
+        cursor: pointer;
+        background-color: #606060;
       }
     }
   }

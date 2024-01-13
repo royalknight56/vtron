@@ -141,9 +141,11 @@ function useContextMenu() {
       config: {
         content: file.path,
       },
-      width: 400,
-      height: 400,
+      width: 300,
+      height: 300,
       center: true,
+      frame: false,
+      resizable: false,
     });
     tempWin.on('blur', () => {
       tempWin.close();

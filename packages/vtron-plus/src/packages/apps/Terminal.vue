@@ -1,6 +1,6 @@
 <template>
   <div class="outer">
-    <div :id="'terminal' + browserWindow?.id"></div>
+    <div class="terminal" :id="'terminal' + browserWindow?.id"></div>
   </div>
 </template>
 
@@ -33,6 +33,8 @@ const getCursorOffsetLength = (offsetLength: number, subString = '') => {
   }
   return cursorOffsetLength;
 };
+
+let handle: any = null;
 
 onMounted(() => {
   if (sys) {
@@ -89,7 +91,7 @@ onMounted(() => {
     };
 
     term.clear();
-    term.onKey(async (e) => {
+    const onKey = async (e: { key: string; domEvent: KeyboardEvent }) => {
       const { key, domEvent } = e;
       const { keyCode, altKey, ctrlKey, metaKey } = domEvent;
       const printAble = !(altKey || ctrlKey || metaKey); // 禁止相关按键
@@ -186,8 +188,24 @@ onMounted(() => {
             inputText.slice(currentOffsetLength - shell.prefix.length);
         }
       }
-    });
+    };
+    term.onKey(onKey);
+    handle = function (event: any) {
+      onKey({
+        key: event.data,
+        domEvent: {
+          keyCode: event.data.charCodeAt(0),
+          altKey: false,
+          ctrlKey: false,
+          metaKey: false,
+        } as any,
+      });
+    };
+    document.addEventListener('input', handle);
   }
+});
+onUnmounted(() => {
+  document.removeEventListener('input', handle);
 });
 </script>
 
@@ -197,7 +215,7 @@ onMounted(() => {
   height: 100%;
 }
 
-#terminal {
+.terminal {
   width: 100%;
   height: 100%;
   background-color: black;

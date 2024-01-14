@@ -116,4 +116,5 @@ export const enUS: AllText = {
   'no.message': 'No Message',
 
   'how.do.you.want.to.open.this.file': 'How Do You Want To Open This File?',
+  'change.encoding': 'Change Encoding',
 };

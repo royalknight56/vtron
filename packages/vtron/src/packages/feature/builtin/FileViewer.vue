@@ -2,10 +2,16 @@
   <div class="txt">
     <div class="txt-upper">
       <div class="txt-button" @click="handleButton">{{ i18n('file') }}(F)</div>
-      <div class="txt-button" @click="changeFormat">{{ format }}</div>
+      <div class="txt-button" @click="changeFormat">{{ i18n('change.encoding') }}</div>
     </div>
     <div class="txt-content">
       <textarea class="txt-input" v-model="input"> </textarea>
+    </div>
+    <div class="bottom">
+      <div class="bottom-item">Windows(CRLF)</div>
+      <div class="bottom-item">
+        {{ format }}
+      </div>
     </div>
   </div>
 </template>
@@ -98,7 +104,7 @@ function handleButton(e: MouseEvent) {
 
 .txt-content {
   width: 100%;
-  height: calc(100% - 20px);
+  height: calc(100% - 40px);
   background-color: #ffffff;
 }
 
@@ -110,5 +116,26 @@ function handleButton(e: MouseEvent) {
   border: none;
   outline: none;
   resize: none;
+}
+.bottom {
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  border-top: #ddd solid 1px;
+  overflow: hidden;
+  background-color: #eee;
+  font-size: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+.bottom-item {
+  /* width: 100px; */
+  padding: 0 20px;
+  text-align: center;
+  color: #444;
+  background-color: #eee;
+  border-left: #ddd solid 1px;
+  border-right: #ddd solid 1px;
+  user-select: none;
 }
 </style>

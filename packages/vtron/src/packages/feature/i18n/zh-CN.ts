@@ -118,4 +118,5 @@ export const zhCN = {
   'no.message': '没有新通知',
 
   'how.do.you.want.to.open.this.file': '你要如何打开这个文件？',
+  'change.encoding': '更改编码',
 };

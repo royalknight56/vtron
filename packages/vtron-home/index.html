@@ -9,6 +9,20 @@
 
 <body>
     <div class="outer">
+        <div class="left">
+            <div  class="left-item" >
+                <a class="left-item-a" href="https://v3w10.myim.online/" >
+                    文档
+                </a>
+            </div>
+
+            <div  class="left-item" >
+                <a class="left-item-a" href="https://github.com/royalknight56/vtron" >
+                    Github
+                </a>
+            </div>
+
+        </div>
         <div class="content">
             <img draggable="false" class="title-img" src="./vtron-logo-nobg.png">
             <!-- <div class="title">Vtron</div> -->
@@ -19,12 +33,12 @@
 
         </div>
         <div class="screen content">
-            <img draggable="false" class="title-img" src="./vtron-logo-nobg.png">
-            <!-- <div class="title">Vtron</div> -->
+
+            <!-- <img draggable="false" class="title-img" src="./vtron-logo-nobg.png">
             <div class="title2">全新官网即将上线。。。</div>
             <div class="button">
                 <a class="button-a" href="https://win.myim.online/">启动 Win10 模拟器</a>
-            </div>
+            </div> -->
         </div>
 
         <div class="bottom">
@@ -44,13 +58,81 @@
 
     .outer {
         box-sizing: border-box;
-        padding: 4px;
         width: 100%;
         height: 200vh;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
+    }
+    
+    .left{
+        position: fixed;
+        width: 100px;
+        height: 200vh;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        background-color: #3e7cc7;
+        animation: leftanim 0.3s ease-in-out forwards;
+        display: flex;
+        justify-content: flex-start;
+        transform:translateX(-100%);
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    }
+    @keyframes leftanim {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+
+    }
+
+    .left-item{
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.1s;
+        border: none;
+        background: none;
+    }
+
+    .left-item:hover{
+        background-color: #8dabd2;
+    }
+    .left-item-input{
+        display: none;
+    }
+    .left-item-input:checked + .left-item{
+        animation: jump 0.2s ease-in-out forwards;
+    }
+    .left-item-a{
+        width: 100%;
+        height: 100%;
+        text-decoration: none;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    @keyframes jump {
+        0% {
+        }
+        100% {
+            width: 100vw;
+            height: 100vh;
+            background-color: #3e7cc7;
+        }
     }
 
     .content{
@@ -130,6 +212,7 @@
         font-size: 14px;
         transition: all 0.1s;
         user-select: none;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
     }
     .button-a:hover{
         background-color: #8dabd2;

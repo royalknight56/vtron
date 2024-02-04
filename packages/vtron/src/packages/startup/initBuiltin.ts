@@ -14,10 +14,10 @@ import { i18n } from '@packages/sys';
 import { WinAppOptions } from '@/packages/type/type';
 
 import { dealIcon } from '@/packages/util/Icon';
-import { basename } from '@packages/kernel';
+import { basename, join } from '@packages/kernel';
 import ImageViewerVue from '@packages/application/ImageViewer.vue';
-import { Dialog } from '../../sys/dialog/Dialog';
-import { Tray } from '../../sys/tray/Tary';
+import { Dialog } from '@packages/sys/dialog/Dialog';
+import { Tray } from '@packages/sys/tray/Tary';
 import BatteryVue from '@packages/sys/taskbar/barUnit/Battery.vue';
 import BatteryPopVue from '@packages/sys/taskbar/popover/BatteryPop.vue';
 import NetWorkVue from '@packages/sys/taskbar/barUnit/NetWork.vue';
@@ -256,5 +256,27 @@ export function initBuiltinFileOpener(system: System) {
       image: BatteryVue,
     });
     batteryT.setContextMenu(BatteryPopVue, 200, 80);
+  }
+}
+
+export async function initBackground(system: System) {
+  const back = await system.fs.readFile(`${system._options.systemLocation}Vtron/background.txt`);
+  if (back) {
+    system._rootState.options.background = back;
+  }
+}
+
+export async function initCheckVersion(system: System) {
+  const programVersion = system.version;
+  const systemVersion = await system.fs.readFile(
+    join(system._options.systemLocation || '', 'Vtron/version.txt')
+  );
+  if (systemVersion && programVersion) {
+    if (programVersion !== systemVersion) {
+      system.createNotify({
+        title: 'Vtron',
+        content: '本地程序和文件版本不一致，请恢复出厂设置',
+      });
+    }
   }
 }

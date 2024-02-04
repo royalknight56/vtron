@@ -10,13 +10,9 @@ import {
 } from '@packages/type/type';
 import { initEventer, Eventer, initEventListener } from '@/packages/kernel/event';
 import { VtronFileSystem } from '@/packages/kernel/file/FileSystem';
-// import { initAppList } from '@packages/hook/useAppOpen';
-
 import { version } from '../../../../package.json';
-import { BrowserWindow, BrowserWindowOption } from '@/packages/sys/window/BrowserWindow';
-
+import { BrowserWindow, BrowserWindowOption } from '@packages/sys/window/BrowserWindow';
 import { extname, join } from '@/packages/kernel/file/Path';
-import { initBuiltinApp, initBuiltinFileOpener } from './initBuiltin';
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { defaultConfig } from './initConfig';
 import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
@@ -25,6 +21,7 @@ import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { Dialog } from '@/packages/sys/dialog/Dialog';
 import { pick } from '@/packages/util/modash';
 import { Tray, TrayOptions } from '@/packages/sys/tray/Tary';
+import { systemStartup } from '@/packages/startup';
 
 const logger = function (...args: any[]) {
   return;
@@ -105,34 +102,27 @@ export class System {
      * 过程：激活屏幕，桥接事件。
      */
     this._rootState.state = SystemStateEnum.opening;
-    logger('initBuiltinFileOpener');
-    initBuiltinFileOpener(this); // 注册内建文件打开器
+
     logger('initFileSystem');
     await this.initFileSystem(); // 初始化文件系统
     logger('initSavedConfig');
     await this.initSavedConfig(); // 初始化保存的配置
     logger('initShell');
     await this.initShell(); // 初始化shell
-    logger('initBuiltinApp');
-    initBuiltinApp(this); // 初始化内建应用
     logger('initApp');
     this.initApp(); // 初始化配置应用到app文件夹中
     logger('initAppList');
     this.initAppList(); // 刷新app文件夹，展示应用
     logger('isLogin');
-    // 判断是否登录
-    this.isLogin();
-    logger('_ready');
+    this.isLogin(); // 判断是否登录
     logger('initEventListener');
     initEventListener(); // 初始化事件侦听
-
     this._ready && this._ready(this);
     logger('runPlugin');
     this.runPlugin(this); // 运行fs中插件
-    logger('initBackground');
-    this.initBackground(); // 初始化壁纸
-    logger('initCheckVersion');
-    this.initCheckVersion(); // 检查版本
+
+    systemStartup(this); // 系统应用启动
+
     logger('start');
     this.emit('start');
   }
@@ -165,15 +155,6 @@ export class System {
     }
   }
 
-  /**
-   * @description: 初始化壁纸
-   */
-  private async initBackground() {
-    const back = await this.fs.readFile(`${this._options.systemLocation}Vtron/background.txt`);
-    if (back) {
-      this._rootState.options.background = back;
-    }
-  }
   /**
    * @description: 初始化事件系统
    */
@@ -285,24 +266,7 @@ export class System {
       this._shell = new Shell(this, '/', 'root');
     }
   }
-  /**
-   * @description: 检查版本
-   * @return {*}
-   */
-  private async initCheckVersion() {
-    const programVersion = this.version;
-    const systemVersion = await this.fs.readFile(
-      join(this._options.systemLocation || '', 'Vtron/version.txt')
-    );
-    if (systemVersion && programVersion) {
-      if (programVersion !== systemVersion) {
-        this.createNotify({
-          title: 'Vtron',
-          content: '本地程序和文件版本不一致，请恢复出厂设置',
-        });
-      }
-    }
-  }
+
   /**
    * @description: 初始化保存的配置
    */

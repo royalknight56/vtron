@@ -20,8 +20,7 @@ import VtronPerfTest from './apps/VtronPerfTest.vue';
 import { onMounted } from 'vue';
 import { System, VtronFile } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
-import { Tray } from './packages/feature/tray/Tary';
-import { Menu } from './packages/feature/menu/Menu';
+import { Tray,Menu } from '@packages/sys';
 
 // class TestShell {
 //   prefix = 'vtron@vtron:~$ ';
@@ -355,3 +354,4 @@ body {
   /* overflow: hidden; */
 }
 </style>
+./packages/sys/tray/Tary./packages/sys/menu/Menu

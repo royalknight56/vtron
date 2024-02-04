@@ -1,5 +1,4 @@
-import { VtronFileWithoutContent } from '../feature/core/FileSystem';
-import { useSystem } from '@feature/system';
+import { useSystem, VtronFileWithoutContent } from '@packages/kernel';
 function useAppOpen(type: 'apps' | 'magnet' | 'menulist') {
   const rootState = useSystem()._rootState;
   const system = useSystem();

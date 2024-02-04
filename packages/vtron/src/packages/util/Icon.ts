@@ -1,4 +1,4 @@
-import { VtronFileSystem, VtronFileWithoutContent } from '../feature/core/FileSystem';
+import { VtronFileSystem, VtronFileWithoutContent } from '../kernel/file/FileSystem';
 import foldericon from '@packages/assets/folder.png';
 import unknownicon from '@packages/assets/unknown.png';
 import audioicon from '@packages/assets/audio.png';

@@ -1,8 +1,6 @@
-import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
-import { System } from '@feature/system';
-import * as FsPath from '@feature/core/Path';
-import { emitEvent } from '@feature/event';
-import { Dialog } from '../feature/dialog/Dialog';
+import { System, VtronFileWithoutContent, emitEvent } from '@packages/kernel';
+import * as FsPath from '@packages/kernel/file/Path';
+import { Dialog } from '@packages/sys';
 let dragCallback = () => {
   //
 };

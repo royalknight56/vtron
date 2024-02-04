@@ -1,13 +1,8 @@
-import * as fspath from '@feature/core/Path';
-import { useSystem } from '@feature/system';
-import { BrowserWindow } from '@feature/window/BrowserWindow';
-import FileProps from '@feature/builtin/FileProps.vue';
-import { VtronFileWithoutContent } from '@/packages/feature/core/FileSystem';
-import { i18n } from '@feature/i18n';
-import { Dialog } from '../plug';
-import OpenWiteDialogVue from '../feature/builtin/OpenWiteDialog.vue';
-// import { MenuItem } from '../feature/menu/MenuItem';
-import { Menu } from '@feature/menu/Menu';
+import * as fspath from '@packages/kernel/file/Path';
+import FileProps from '@packages/application/FileProps.vue';
+import { VtronFileWithoutContent,useSystem } from '@packages/kernel';
+import { i18n,Dialog,Menu,BrowserWindow } from '@packages/sys';
+import OpenWiteDialogVue from '@packages/application/OpenWiteDialog.vue';
 import { uniqBy } from '../util/modash';
 import { UnwrapNestedRefs } from 'vue';
 

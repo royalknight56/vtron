@@ -11,8 +11,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Notify } from '@feature/notification/Notification';
-import { BrowserWindow, useSystem } from '@packages/plug';
+import { BrowserWindow, useSystem ,Notify} from '@packages/plug';
 import { onUnmounted, inject } from 'vue';
 import TestButton from './TestButton.vue';
 
@@ -90,3 +89,4 @@ onUnmounted(() => {
   font-size: 30px;
 }
 </style>
+@/packages/sys/notification/Notification

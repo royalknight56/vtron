@@ -118,8 +118,8 @@ import ColorPicker from './components/ColorPicker.vue';
 
 import { ref } from 'vue';
 import { useSystem } from '@packages/kernel';
-import { Dialog } from '@packages/sys';
-import { i18n } from '@packages/sys';
+import { Dialog } from '@packages/ui';
+import { i18n } from '@packages/ui';
 
 const system = useSystem();
 const items = [i18n('background'), i18n('style')];
@@ -204,4 +204,3 @@ async function submitStyle() {
   /* border-radius: 50%; */
 }
 </style>
-@/packages/kernel/system@/packages/sys/dialog/Dialog@/packages/sys/i18n

@@ -9,21 +9,21 @@ import MyComputerVue from '@packages/application/MyComputer/MyComputer.vue';
 import UrlBrowser from '@packages/application/UrlBrowser.vue';
 import AppStore from '@packages/application/AppStore.vue';
 import type { System } from '@packages/kernel';
-import { BrowserWindow } from '@packages/sys';
-import { i18n } from '@packages/sys';
+import { BrowserWindow } from '@packages/ui';
+import { i18n } from '@packages/ui';
 import { WinAppOptions } from '@/packages/type/type';
 
 import { dealIcon } from '@/packages/util/Icon';
 import { basename, join } from '@packages/kernel';
 import ImageViewerVue from '@packages/application/ImageViewer.vue';
-import { Dialog } from '@packages/sys/dialog/Dialog';
-import { Tray } from '@packages/sys/tray/Tary';
-import BatteryVue from '@packages/sys/taskbar/barUnit/Battery.vue';
-import BatteryPopVue from '@packages/sys/taskbar/popover/BatteryPop.vue';
-import NetWorkVue from '@packages/sys/taskbar/barUnit/NetWork.vue';
-import DateTimeVue from '@packages/sys/taskbar/barUnit/DateTime.vue';
-import DateTimePopVue from '@packages/sys/taskbar/popover/DateTimePop.vue';
-import NetworkPopVue from '@packages/sys/taskbar/popover/NetworkPop.vue';
+import { Dialog } from '@packages/ui/dialog/Dialog';
+import { Tray } from '@packages/ui/tray/Tary';
+import BatteryVue from '@packages/ui/taskbar/barUnit/Battery.vue';
+import BatteryPopVue from '@packages/ui/taskbar/popover/BatteryPop.vue';
+import NetWorkVue from '@packages/ui/taskbar/barUnit/NetWork.vue';
+import DateTimeVue from '@packages/ui/taskbar/barUnit/DateTime.vue';
+import DateTimePopVue from '@packages/ui/taskbar/popover/DateTimePop.vue';
+import NetworkPopVue from '@packages/ui/taskbar/popover/NetworkPop.vue';
 import SettingVue from '@packages/application/Setting.vue';
 
 export function initBuiltinApp(system: System) {

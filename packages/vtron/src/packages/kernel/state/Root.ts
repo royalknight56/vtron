@@ -2,10 +2,10 @@ import { SystemStateEnum } from '@packages/type/enum';
 import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { reactive, markRaw } from 'vue';
 import { Tree } from '@packages/util/Tree';
-import { BrowserWindow } from '@/packages/sys/window/BrowserWindow';
+import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
 import { VtronFileWithoutContent } from '@/packages/kernel/file/FileSystem';
-import { Notify } from '@/packages/sys/notification/Notification';
-import { Menu } from '@/packages/sys/menu/Menu';
+import { Notify } from '@/packages/ui/notification/Notification';
+import { Menu } from '@/packages/ui/menu/Menu';
 export type RootState = ReturnType<typeof initRootState>;
 
 function initRootState(options: SystemOptions) {

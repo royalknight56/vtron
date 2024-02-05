@@ -11,7 +11,7 @@
 </template>
 <script setup lang="ts">
 import { inject } from 'vue';
-import { BrowserWindow } from '@packages/sys';
+import { BrowserWindow } from '@packages/ui';
 
 const win = inject<BrowserWindow>('browserWindow')!;
 const day = new Date(win.config.day);
@@ -56,4 +56,3 @@ const time = day;
   border: 1px solid #363636;
 }
 </style>
-../../sys/window/BrowserWindow

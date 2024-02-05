@@ -23,7 +23,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { i18n } from '@packages/sys';
+import { i18n } from '@packages/ui';
 import { defineEmits, ref } from 'vue';
 const props = defineProps({
   modelValue: {
@@ -101,4 +101,3 @@ function changeView(view: string) {
   }
 }
 </style>
-@/packages/sys/i18n

@@ -1,7 +1,7 @@
 import * as fspath from '@packages/kernel/file/Path';
 import FileProps from '@packages/application/FileProps.vue';
-import { VtronFileWithoutContent,useSystem } from '@packages/kernel';
-import { i18n,Dialog,Menu,BrowserWindow } from '@packages/sys';
+import { VtronFileWithoutContent, useSystem } from '@packages/kernel';
+import { i18n, Dialog, Menu, BrowserWindow } from '@packages/ui';
 import OpenWiteDialogVue from '@packages/application/OpenWiteDialog.vue';
 import { uniqBy } from '../util/modash';
 import { UnwrapNestedRefs } from 'vue';

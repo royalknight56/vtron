@@ -51,8 +51,8 @@ import WinSelect from '@packages/components/WinSelect.vue';
 
 import { ref } from 'vue';
 import { useSystem } from '@packages/kernel';
-import { Dialog } from '@packages/sys';
-import { i18n } from '@packages/sys';
+import { Dialog } from '@packages/ui';
+import { i18n } from '@packages/ui';
 
 const system = useSystem();
 
@@ -80,4 +80,3 @@ async function submit() {
 <style scoped>
 @import './setStyle.css';
 </style>
-@/packages/kernel/system@/packages/sys/dialog/Dialog@/packages/sys/i18n

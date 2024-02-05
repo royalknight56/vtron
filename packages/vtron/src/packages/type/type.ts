@@ -1,7 +1,7 @@
-import { BrowserWindowOption } from '../sys/window/BrowserWindow';
-import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
-import { ShellInterface } from '@/packages/kernel/shell/ShellType';
-import { MenuItem, MenuItemConstructorOptions } from '@/packages/sys/menu/MenuItem';
+import { BrowserWindowOption } from '../ui/window/BrowserWindow';
+import { VtronFileInterface } from '@packages/kernel/file/FIleInterface';
+import { ShellInterface } from '@packages/kernel/shell/ShellType';
+import { MenuItem, MenuItemConstructorOptions } from '@packages/ui/menu/MenuItem';
 export type BuiltinFeature =
   | 'MyComputer'
   | 'AppStore'

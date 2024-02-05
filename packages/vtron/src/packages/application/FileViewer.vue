@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import { inject, ref } from 'vue';
-import { Notify, i18n, BrowserWindow, Menu } from '@packages/sys';
+import { Notify, i18n, BrowserWindow, Menu } from '@packages/ui';
 import { useSystem } from '@packages/kernel';
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
@@ -138,4 +138,3 @@ function handleButton(e: MouseEvent) {
   user-select: none;
 }
 </style>
-../../kernel/system../../sys/window/BrowserWindow../../sys/notification/Notification@/packages/sys/menu/Menu@/packages/sys/i18n

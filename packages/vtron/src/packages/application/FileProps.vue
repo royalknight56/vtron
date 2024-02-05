@@ -67,7 +67,7 @@ import { inject, ref } from 'vue';
 import EditFileName from './EditFileName.vue';
 import FileIcon from '@packages/application/FileIcon.vue';
 import { dealSize } from '@/packages/util/file';
-import { i18n, BrowserWindow } from '@packages/sys';
+import { i18n, BrowserWindow } from '@packages/ui';
 import { VtronFileWithoutContent, basename, extname, useSystem } from '@packages/kernel';
 
 const window: BrowserWindow | undefined = inject('browserWindow');
@@ -192,4 +192,3 @@ function editFileName() {
   }
 }
 </style>
-../../kernel/system@/packages/kernel/file/Path../../sys/window/BrowserWindow@/packages/sys/i18n

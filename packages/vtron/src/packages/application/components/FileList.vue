@@ -18,27 +18,41 @@
     </div>
   </template>
   <div
-draggable="true" class="file-item" :class="{
-    chosen: chosenIndexs.includes(index),
-    'no-chosen': !chosenIndexs.includes(index),
-    'mode-icon': mode === 'icon',
-    'mode-list': mode === 'list',
-    'mode-big': mode === 'big',
-    'mode-middle': mode === 'middle',
-    'mode-detail': mode === 'detail',
-    'drag-over': hoverIndex === index,
-  }" :style="{
-  '--theme-color': theme === 'light' ? '#ffffff6b' : '#3bdbff3d',
-}" v-for="(item, index) in fileList" :key="item.path" @dblclick="handleOnOpen(item)"
-    @touchstart.passive="doubleTouch($event, item)" @contextmenu.stop.prevent="handleRightClick($event, item, index)"
-    @drop="hadnleDrop($event, item.path)" @dragenter.prevent="handleDragEnter($event, item, index)" @dragover.prevent
-    @dragleave="handleDragLeave()" @dragstart.stop="startDragApp($event, item)" @click="handleClick(index)"
-    @mousedown.stop :ref="(ref) => {
-      if (ref) {
-        appPositions[index] = markRaw(ref as Element);
+    draggable="true"
+    class="file-item"
+    :class="{
+      chosen: chosenIndexs.includes(index),
+      'no-chosen': !chosenIndexs.includes(index),
+      'mode-icon': mode === 'icon',
+      'mode-list': mode === 'list',
+      'mode-big': mode === 'big',
+      'mode-middle': mode === 'middle',
+      'mode-detail': mode === 'detail',
+      'drag-over': hoverIndex === index,
+    }"
+    :style="{
+      '--theme-color': theme === 'light' ? '#ffffff6b' : '#3bdbff3d',
+    }"
+    v-for="(item, index) in fileList"
+    :key="item.path"
+    @dblclick="handleOnOpen(item)"
+    @touchstart.passive="doubleTouch($event, item)"
+    @contextmenu.stop.prevent="handleRightClick($event, item, index)"
+    @drop="hadnleDrop($event, item.path)"
+    @dragenter.prevent="handleDragEnter($event, item, index)"
+    @dragover.prevent
+    @dragleave="handleDragLeave()"
+    @dragstart.stop="startDragApp($event, item)"
+    @click="handleClick(index)"
+    @mousedown.stop
+    :ref="
+      (ref) => {
+        if (ref) {
+          appPositions[index] = markRaw(ref as Element);
+        }
       }
-    }
-      ">
+    "
+  >
     <div class="file-item_img">
       <FileIcon :file="item" />
     </div>
@@ -46,9 +60,19 @@ draggable="true" class="file-item" :class="{
       {{ dealI18nName(basename(item.path)) }}
     </span>
     <textarea
-autofocus draggable="false" @dragover.stop @dragstart.stop @dragenter.stop @mousedown.stop @dblclick.stop
-      @click.stop @blur="onEditNameEnd" v-if="editIndex === index" class="file-item_title file-item_editing"
-      v-model="editName"></textarea>
+      autofocus
+      draggable="false"
+      @dragover.stop
+      @dragstart.stop
+      @dragenter.stop
+      @mousedown.stop
+      @dblclick.stop
+      @click.stop
+      @blur="onEditNameEnd"
+      v-if="editIndex === index"
+      class="file-item_title file-item_editing"
+      v-model="editName"
+    ></textarea>
     <template v-if="mode === 'detail'">
       <div class="file-item_type">
         <span>{{ item.isDirectory ? '-' : dealSize(item.size) }}</span>
@@ -67,8 +91,16 @@ autofocus draggable="false" @dragover.stop @dragstart.stop @dragenter.stop @mous
 </template>
 <script lang="ts" setup>
 import { onMounted, ref, markRaw } from 'vue';
-import { VtronFileWithoutContent, basename, dirname, join, useSystem, emitEvent, mountEvent } from '@packages/kernel';
-import { i18n, Menu } from '@packages/sys';
+import {
+  VtronFileWithoutContent,
+  basename,
+  dirname,
+  join,
+  useSystem,
+  emitEvent,
+  mountEvent,
+} from '@packages/kernel';
+import { i18n, Menu } from '@packages/ui';
 import FileIcon from '@packages/application/FileIcon.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
@@ -460,4 +492,3 @@ function dealI18nName(name: string) {
   user-select: none;
 }
 </style>
-@/packages/kernel/file/Path@/packages/kernel/file/FileSystem@/packages/sys/menu/Menu@/packages/kernel/event@/packages/sys/i18n

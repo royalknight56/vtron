@@ -58,7 +58,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { i18n } from '@packages/sys';
+import { i18n } from '@packages/ui';
 import packagejson from '/package.json?raw';
 const items = [
   // i18n('backup'), // '备份',
@@ -128,4 +128,3 @@ const selectItem = (index: number) => {
 <style scoped>
 @import './setStyle.css';
 </style>
-@/packages/sys/i18n

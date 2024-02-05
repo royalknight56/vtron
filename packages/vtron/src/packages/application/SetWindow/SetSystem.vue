@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import WinProcess from '@packages/components/WinProcess.vue';
 import { ref } from 'vue';
-import { i18n } from '@packages/sys';
+import { i18n } from '@packages/ui';
 import { useSystem } from '@packages/kernel';
 
 const rootstate = useSystem()._rootState;
@@ -60,4 +60,3 @@ const selectItem = (index: number) => {
   align-items: center;
 }
 </style>
-../../../kernel/system@/packages/sys/i18n

@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BrowserWindow, WindowStateEnum } from '@packages/sys';
+import { BrowserWindow, WindowStateEnum } from '@packages/ui';
 import { UnwrapNestedRefs } from 'vue';
 
 const props = defineProps<{
@@ -105,4 +105,3 @@ function handleEvent(event: string) {
   }
 }
 </style>
-@/packages/sys/window/BrowserWindow

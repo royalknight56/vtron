@@ -2,7 +2,12 @@
   <div class="outer">
     <div class="opener-title">{{ i18n('how.do.you.want.to.open.this.file') }}</div>
     <div class="opener">
-      <div class="opener-item opener-hover" v-for="item in openerList" :key="item.name" @click="openFile(item)">
+      <div
+        class="opener-item opener-hover"
+        v-for="item in openerList"
+        :key="item.name"
+        @click="openFile(item)"
+      >
         <div class="opener-icon">
           <img :src="item.icon" />
         </div>
@@ -16,9 +21,8 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref, onMounted } from 'vue';
-import { i18n, BrowserWindow } from '@packages/sys';
+import { i18n, BrowserWindow } from '@packages/ui';
 import { VtronFileWithoutContent, useSystem } from '@packages/kernel';
-
 
 // import { VtronFileWithoutContent, i18n } from '@packages/plug';
 
@@ -155,5 +159,5 @@ async function openFile(item: TempOpener) {
       }
     }
   }
-}</style>
-../../kernel/system../../sys/window/BrowserWindow
+}
+</style>

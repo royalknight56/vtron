@@ -3,8 +3,11 @@
     <div class="nav">
       <ul>
         <li
-v-for="(item, index) in items" :key="index" @click="selectItem(index)"
-          :class="{ active: index === activeIndex }">
+          v-for="(item, index) in items"
+          :key="index"
+          @click="selectItem(index)"
+          :class="{ active: index === activeIndex }"
+        >
           {{ item }}
         </li>
       </ul>
@@ -36,7 +39,7 @@ v-for="(item, index) in items" :key="index" @click="selectItem(index)"
 import WinButton from '@packages/components/WinButton.vue';
 import { ref } from 'vue';
 import { useSystem } from '@packages/kernel';
-import { Dialog, i18n } from '@packages/sys';
+import { Dialog, i18n } from '@packages/ui';
 import { WinInput } from '@/packages/plug';
 
 const system = useSystem();
@@ -69,4 +72,3 @@ async function submit() {
 <style scoped>
 @import './setStyle.css';
 </style>
-@/packages/kernel/system@/packages/sys/dialog/Dialog@/packages/sys/i18n

@@ -2,12 +2,12 @@
   <mavon-editor class="editor" v-model="value" @save="save" />
 </template>
 <script setup lang="ts">
-import { BrowserWindow, Notify, basename, useSystem } from "vtron";
-import { inject, onMounted, ref } from "vue";
+import { BrowserWindow, Notify, useSystem } from 'vtron';
+import { inject, onMounted, ref } from 'vue';
 
-const value = ref("# hello, markdown!");
+const value = ref('# hello, markdown!');
 const sys = useSystem();
-const win = inject<BrowserWindow>("browserWindow");
+const win = inject<BrowserWindow>('browserWindow');
 onMounted(() => {
   if (win?.config.path) {
     sys?.fs.readFile(win.config.path).then((res) => {
@@ -24,15 +24,16 @@ onMounted(() => {
   }
 });
 function save(markdown: string, html: string) {
+  html;
   let path = win?.config?.path;
 
   if (!path) {
-    path = "/C/Users/Desktop/Untitled.md";
+    path = '/C/Users/Desktop/Untitled.md';
   }
-  sys?.fs.writeFile(path,  btoa(unescape(encodeURIComponent(markdown)))).then((res) => {
+  sys?.fs.writeFile(path, btoa(unescape(encodeURIComponent(markdown)))).then(() => {
     new Notify({
-      title: "保存成功",
-      content: "文件已保存到桌面",
+      title: '保存成功',
+      content: '文件已保存到桌面',
     });
   });
 }

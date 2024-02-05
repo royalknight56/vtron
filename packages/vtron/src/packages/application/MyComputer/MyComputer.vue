@@ -80,7 +80,7 @@ import FileList from '@packages/application/components/FileList.vue';
 import FileTree from '@packages/application/components/FileTree.vue';
 import UpPopover from './components/UpPopover.vue';
 import { VtronFileWithoutContent, dirname, useSystem, emitEvent, mountEvent } from '@packages/kernel';
-import { BrowserWindow, Notify,i18n } from '@packages/sys';
+import { BrowserWindow, Notify, i18n } from '@packages/ui';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { useComputer } from './hooks/useComputer';
@@ -430,4 +430,3 @@ async function handleNavSearch(path: string) {
   color: white;
 }
 </style>
-@/packages/kernel/system@/packages/sys/notification/Notification@/packages/kernel/event@/packages/sys/i18n

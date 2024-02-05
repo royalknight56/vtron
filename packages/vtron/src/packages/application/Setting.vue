@@ -1,8 +1,10 @@
 <template>
   <div
-class="window-outer" :class="{
-    focus: focusState && currentRouter !== 'main',
-  }">
+    class="window-outer"
+    :class="{
+      focus: focusState && currentRouter !== 'main',
+    }"
+  >
     <div class="upbar" v-dragable>
       <div class="upbar-left">
         <div class="back-arr" v-if="currentRouter !== 'main'" @click="back">←</div>
@@ -27,10 +29,15 @@ class="window-outer" :class="{
         <div class="outer_main">
           <div class="main_uper">
             <div
-class="set_item" v-for="item in setList" :key="item.title" @click="openSet(item.key)" v-glowing="{
-              color: '#3c3c3ce4',
-              scale: 0.6,
-            }">
+              class="set_item"
+              v-for="item in setList"
+              :key="item.title"
+              @click="openSet(item.key)"
+              v-glowing="{
+                color: '#3c3c3ce4',
+                scale: 0.6,
+              }"
+            >
               <div class="set_item-img">
                 <img class="set_item-img-img" :src="item.icon" />
               </div>
@@ -60,9 +67,9 @@ import e771 from '@/assets/icon/e771.png'; //个性化
 import e775 from '@/assets/icon/e775.png'; //语言
 import e77b from '@/assets/icon/e77b.png'; //账户
 
-import { vDragable } from '@packages/sys/window/MakeDragable';
+import { vDragable } from '@packages/ui/window/MakeDragable';
 
-import { i18n, BrowserWindow } from '@packages/sys';
+import { i18n, BrowserWindow } from '@packages/ui';
 import { useSystem } from '@packages/kernel';
 
 import { vGlowing } from '@/packages/util/glowingBorder';
@@ -351,4 +358,3 @@ const setList = ref([
   opacity: 0;
 }
 </style>
-@/packages/kernel/system@/packages/sys/window/BrowserWindow../../sys/window/MakeDragable@/packages/sys/i18n

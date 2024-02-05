@@ -17,7 +17,7 @@
 import { inject, onMounted, ref } from 'vue';
 import { useSystem } from '@packages/kernel';
 import { BrowserWindow, Dialog, basename, vDragable } from '@packages/plug';
-import { i18n } from '@packages/sys';
+import { i18n } from '@packages/ui';
 
 const sys = useSystem();
 const storeRef = ref<HTMLIFrameElement | null>(null);
@@ -211,4 +211,3 @@ function closeWin() {
   }
 }
 </style>
-../../kernel/system@/packages/sys/i18n

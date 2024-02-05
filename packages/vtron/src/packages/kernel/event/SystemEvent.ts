@@ -1,7 +1,7 @@
 import { mountEvent, emitEvent } from './EventHook';
 import { RootState } from '@packages/kernel';
 
-import { useSystem } from '../system';
+import { useSystem } from '../../system';
 import { join } from '../file/Path';
 import { throttle } from '@/packages/util/debounce';
 

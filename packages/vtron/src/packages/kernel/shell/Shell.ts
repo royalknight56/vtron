@@ -1,4 +1,4 @@
-import { System } from '../system';
+import { System } from '../../system';
 import * as vPath from '../file/Path';
 import { ShellInterface } from './ShellType';
 import { commandMap } from './shellCommand/commandMap';

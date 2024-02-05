@@ -7,7 +7,7 @@
 import { mountEvent } from '@packages/kernel';
 import { useSystem } from '@/packages/plug';
 import FileList from '@packages/application/components/FileList.vue';
-import { useAppOpen } from '@packages/hook/useAppOpen';
+import { useAppOpen } from '@packages/sys/hook/useAppOpen';
 import { onMounted } from 'vue';
 
 const { openapp, appList } = useAppOpen('apps');
@@ -31,4 +31,3 @@ onMounted(() => {
   height: 100%;
 }
 </style>
-@/packages/kernel/event

@@ -17,7 +17,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useAppOpen } from '@packages/hook/useAppOpen';
+import { useAppOpen } from '@packages/sys/hook/useAppOpen';
 import { emitEvent } from '@packages/kernel';
 import { basename } from '@packages/kernel';
 import FileIcon from '@packages/application/FileIcon.vue';

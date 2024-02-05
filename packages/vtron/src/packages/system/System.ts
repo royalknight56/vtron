@@ -10,7 +10,7 @@ import {
 } from '@packages/type/type';
 import { initEventer, Eventer, initEventListener } from '@/packages/kernel/event';
 import { VtronFileSystem } from '@/packages/kernel/file/FileSystem';
-import { version } from '../../../../package.json';
+import { version } from '../../../package.json';
 import { BrowserWindow, BrowserWindowOption } from '@packages/sys/window/BrowserWindow';
 import { extname, join } from '@/packages/kernel/file/Path';
 import { Shell } from '@/packages/kernel/shell/Shell';

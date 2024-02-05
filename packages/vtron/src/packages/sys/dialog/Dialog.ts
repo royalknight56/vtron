@@ -2,7 +2,7 @@ import { toRaw, ref } from 'vue';
 import { BrowserWindow } from '../window/BrowserWindow';
 import DialogVue from './DialogTemp.vue';
 import DialogProcessVue from './DialogProcess.vue';
-import { useSystem } from '../../kernel/system';
+import { useSystem } from '../../system';
 class Dialog {
   constructor() {
     // static class

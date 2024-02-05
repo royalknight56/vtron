@@ -1,6 +1,6 @@
 import { AllText, zhCN } from './zh-CN';
 import { enUS } from './en-US';
-import { useSystem } from '../../kernel/system';
+import { useSystem } from '../../system';
 
 export function i18n(key: keyof AllText): string {
   const rootState = useSystem()._rootState;

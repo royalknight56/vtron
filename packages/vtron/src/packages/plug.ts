@@ -28,7 +28,7 @@ export default plug;
 export * from '@/packages/kernel/shell/Shell';
 export * from '@/packages/kernel/file/Path';
 export * from '@/packages/kernel/file/FileSystem';
-export { System, useSystem } from '@/packages/kernel/system/index';
+export { System, useSystem } from '@/packages/system/index';
 export { BrowserWindow } from '@/packages/sys/window/BrowserWindow';
 export { Notify } from '@/packages/sys/notification/Notification';
 export { Dialog } from '@/packages/sys/dialog/Dialog';

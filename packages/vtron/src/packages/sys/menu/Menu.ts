@@ -13,7 +13,7 @@
 
 //   })
 
-import { useSystem } from '../../kernel/system';
+import { useSystem } from '../../system';
 import { MenuItem, MenuItemConstructorOptions } from './MenuItem';
 export class Menu {
   public static buildFromTemplate(template: Array<MenuItemConstructorOptions | MenuItem>) {

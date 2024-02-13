@@ -11,6 +11,14 @@ module.exports = {
         crossorigin: 'anonymous',
       },
     ],
+    // <meta name="google-adsense-account" content="ca-pub-7516773950965588"></meta>
+    [
+      'meta',
+      {
+        name: 'google-adsense-account',
+        content: 'ca-pub-7516773950965588',
+      }
+    ]
   ],
   locales: {
     root: {

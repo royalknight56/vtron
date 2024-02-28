@@ -17,8 +17,8 @@ module.exports = {
       {
         name: 'google-adsense-account',
         content: 'ca-pub-7516773950965588',
-      }
-    ]
+      },
+    ],
   ],
   locales: {
     root: {
@@ -43,7 +43,7 @@ module.exports = {
       { text: 'VtronPlus', link: '/plus/VtronPlus.md' },
       { text: '更新', link: '/update/README.md' },
       { text: 'GitHub', link: 'https://github.com/royalknight56/vtron' },
-      { text: 'Demo', link: 'http://myim.online' },
+      { text: 'Demo', link: 'http://vtron.site' },
     ],
     sidebar: {
       '/api/': [

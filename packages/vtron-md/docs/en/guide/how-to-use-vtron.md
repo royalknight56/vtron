@@ -1,6 +1,6 @@
 # How to use Vtron
 
-<p align="center"><a href="https://myim.online" target="_blank" rel="noopener noreferrer"><img width="200" src="./vtron-logo-nobg.png" alt="vtron logo"></a></p>
+<p align="center"><a href="https://vtron.site" target="_blank" rel="noopener noreferrer"><img width="200" src="./vtron-logo-nobg.png" alt="vtron logo"></a></p>
 
 <div align="center">
 
@@ -10,7 +10,7 @@ vtron, a Win10 UI framework based on Vue3
 
 <div align="center">
 
-<a href="http://v3w10.myim.online" target="_blank">Doc</a>|<a href="http://v3w10.myim.online" target="_blank">Offical Website</a>|<a href="http://myim.online" target="_blank">Demo</a>
+<a href="http://v3w10.vtron.site" target="_blank">Doc</a>|<a href="http://v3w10.vtron.site" target="_blank">Offical Website</a>|<a href="http://vtron.site" target="_blank">Demo</a>
 
 </div>
 
@@ -28,24 +28,24 @@ This framework can make your page like a win10 window system, run a win10 system
 2. use vtron in vue
 
 ```js
-import vtron from "vtron";
+import vtron from 'vtron';
 ```
 
 import style file "vtron/distlib/style.css"
 
 ```js
-import "vtron/distlib/style.css";
+import 'vtron/distlib/style.css';
 ```
 
 usage
 
 ```js
-import { createApp } from "vue";
-import App from "./App.vue";
-import vtron from "vtron";
-import "vtron/distlib/style.css";
+import { createApp } from 'vue';
+import App from './App.vue';
+import vtron from 'vtron';
+import 'vtron/distlib/style.css';
 
-createApp(App).use(vtron).mount("#app");
+createApp(App).use(vtron).mount('#app');
 ```
 
 3. import Screen component
@@ -56,7 +56,7 @@ First, we need to create a system object, which manages all the status informati
 // App.vue
 <Screen></Screen>
 <script setup>
-import { System } from "vtron";
+import { System } from 'vtron';
 let system = new System();
 </script>
 ```
@@ -105,14 +105,14 @@ desktop is the configuration item of the desktop, which can configure multiple a
 ```vue
 <Screen></Screen>
 <script setup>
-import { System, BrowserWindow } from "vtron";
-import { App } from "./apps/App.vue";
-import someicon from "./assets/someicon.png";
-import HelloWorld from "./apps/HelloWorld.vue";
+import { System, BrowserWindow } from 'vtron';
+import { App } from './apps/App.vue';
+import someicon from './assets/someicon.png';
+import HelloWorld from './apps/HelloWorld.vue';
 let system = new System({
   desktop: [
     {
-      name: "HelloWorld",
+      name: 'HelloWorld',
       icon: someicon,
       window: {
         content: HelloWorld,

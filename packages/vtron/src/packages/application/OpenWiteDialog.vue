@@ -24,8 +24,6 @@ import { inject, ref, onMounted } from 'vue';
 import { i18n, BrowserWindow } from '@packages/ui';
 import { useSystem } from '@packages/kernel';
 
-// import { VtronFileWithoutContent, i18n } from '@packages/plug';
-
 const window: BrowserWindow | undefined = inject('browserWindow');
 const sys = useSystem();
 

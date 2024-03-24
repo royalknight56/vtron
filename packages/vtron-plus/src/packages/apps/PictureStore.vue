@@ -54,6 +54,7 @@
           <img
             v-if="content"
             :src="content"
+            draggable="false"
             :style="{
               transform: `scale(${scale})`,
             }"

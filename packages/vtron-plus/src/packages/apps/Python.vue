@@ -32,6 +32,8 @@ onMounted(() => {
     term.dispose();
   });
 
+  term.write('Loading... Please Wait\r\n');
+
   // const worker = new PythonWorker();
   let isInit = false;
   const pythonCall = new PythonCall();

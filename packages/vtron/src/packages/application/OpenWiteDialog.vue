@@ -22,14 +22,11 @@
 <script lang="ts" setup>
 import { inject, ref, onMounted } from 'vue';
 import { i18n, BrowserWindow } from '@packages/ui';
-import { VtronFileWithoutContent, useSystem } from '@packages/kernel';
-
-// import { VtronFileWithoutContent, i18n } from '@packages/plug';
+import { useSystem } from '@packages/kernel';
 
 const window: BrowserWindow | undefined = inject('browserWindow');
 const sys = useSystem();
-const file = ref<VtronFileWithoutContent | null>();
-file.value = await sys?.fs.stat(window?.config.content);
+
 type TempOpener = {
   name: string;
   icon: string;

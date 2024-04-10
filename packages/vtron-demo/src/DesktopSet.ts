@@ -4,6 +4,8 @@ import winv3icon from './assets/winv3.png';
 import baidumapicon from './assets/baidumap.png';
 import markdownicon from './assets/markdown.png';
 import friendLinkicon from './assets/friendLink.png';
+import flowicon from './assets/flowicon.png';
+
 import bird1icon from './assets/bird1.png';
 import signalicon from './assets/signal.png';
 import kiometicon from './assets/kiomet.webp';
@@ -144,6 +146,16 @@ const desktopConfig = [
 
     resizable: true,
   },
+  {
+    title: 'Flow-epub阅读器',
+    icon: flowicon,
+    width: 800,
+    height: 600,
+    center: true,
+    content: "https://app.flowoss.com/zh-CN",
+    resizable: true,
+  },
+
   // {
   //   title: '图库',
   //   icon: galleryicon,

@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "vue": "^3.2.37",
-    "vue-accessible-color-picker": "^5.0.1",
+    "vue-accessible-color-picker": "^5.0.1"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.2.5",

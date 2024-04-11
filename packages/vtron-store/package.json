@@ -10,8 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.2.47",
-    "webdav": "^5.3.0"
+    "vue": "^3.2.47"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",

@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import AppItem from './components/AppItem.vue';
-// import defaulticon from "./assets/default.png";
 import moon from './assets/moon.base?raw';
-// import webdav from "./appout/webdav.es.js?raw";
-// import demoApp from "./appout/demoApp.es.js?raw";
 import jiepaiqi from './assets/jiepaiqi.base?raw';
 import shimo from './assets/shimo.base?raw';
 import zhengqiji from './assets/zhengqiji.base?raw';

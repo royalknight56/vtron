@@ -28,12 +28,18 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('examples/basic-pnpm/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./packages/vtron-e2e
+          runTests: false
       - name: Cypress run
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./packages/vtron-e2e
           browser: chrome
+          install: false
           # Starts web server for E2E tests - replace with your own server invocation
           # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
           # start: npm start

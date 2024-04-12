@@ -1,0 +1,19 @@
+{
+  "name": "vtron-e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "cypress run --browser chrome",
+    "open": "cypress open"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.7.3"
+  },
+  "dependencies": {
+    "typescript": "^5.4.5"
+  }
+}

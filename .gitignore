@@ -33,3 +33,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+packages/vtron-e2e/cypress/videos/

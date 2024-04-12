@@ -5,6 +5,7 @@
     "demo": "pnpm -C packages/vtron-demo",
     "shop": "pnpm -C packages/vtron-store",
     "md": "pnpm -C packages/vtron-md",
+    "e2e": "pnpm -C packages/vtron-e2e",
     "demo-build": "pnpm -C ./packages/vtron-demo build",
     "prepare": "husky install",
     "pre": "lint-staged",

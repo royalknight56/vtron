@@ -1,311 +1,321 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="./vtron-icon-nobg.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vtron</title>
+    <meta name="baidu-site-verification" content="codeva-Fe0iNgnooI" />
+    <meta
+      data-vue-meta="true"
+      name="keywords"
+      content="vtron,Vtron,在线编辑,网页版win10,系统,windows,微软,网页版,前端"
+    />
+    <meta
+      data-vue-meta="true"
+      name="description"
+      content="Vtron,网页版win10，可以进行一些文件的编辑，修改，保存，都在浏览器上完成，完全不需要客户端和后端"
+    />
+    <meta name="google-adsense-account" content="ca-pub-7516773950965588" />
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7516773950965588"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" href="./vtron-icon-nobg.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vtron</title>
-  <meta name="baidu-site-verification" content="codeva-Fe0iNgnooI">
-  <meta data-vue-meta="true" name="keywords" content="vtron,Vtron,在线编辑,网页版win10,系统,windows,微软,网页版,前端" />
-  <meta data-vue-meta="true" name="description" content="Vtron,网页版win10，可以进行一些文件的编辑，修改，保存，都在浏览器上完成，完全不需要客户端和后端" />
-  <meta name="google-adsense-account" content="ca-pub-7516773950965588" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7516773950965588"
-    crossorigin="anonymous"></script>
-</head>
-
-<body>
-  <div class="outer">
-    <div class="left">
-      <!-- <div  class="left-item" >
+  <body>
+    <div class="outer">
+      <div class="left">
+        <!-- <div  class="left-item" >
                 <a class="left-item-a" href="#main" >
                     首页
                 </a>
             </div> -->
 
-      <div class="left-item">
-        <a class="left-item-a" href="https://v3w10.vtron.site/"> Vtron文档 </a>
+        <div class="left-item">
+          <a class="left-item-a" href="https://v3w10.vtron.site/"> Vtron文档 </a>
+        </div>
+
+        <div class="left-item">
+          <a class="left-item-a" href="https://blog.vtron.site/blog/index.html"> 博客Blog </a>
+        </div>
+
+        <div class="left-item">
+          <a class="left-item-a" href="https://friend.vtron.site/"> 朋友圈 </a>
+        </div>
+
+        <div class="left-item">
+          <a class="left-item-a" href="https://github.com/royalknight56/vtron"> Github </a>
+        </div>
+
+        <div class="left-item">
+          <a class="left-item-a" href="#friendhash"> 友情链接 </a>
+        </div>
+      </div>
+      <div class="content" id="main">
+        <img draggable="false" class="title-img" src="./vtron-logo-nobg.png" />
+        <!-- <div class="title">Vtron</div> -->
+        <!-- <div class="title2">全新官网即将上线。。。</div> -->
+        <div class="button">
+          <a class="button-a" href="https://win.vtron.site/">启动 Win10 模拟器</a>
+        </div>
+      </div>
+      <div class="screen content" id="friendhash">
+        <div>友情链接</div>
+        <div id="loading">loading...</div>
+        <div id="friend"></div>
       </div>
 
-      <div class="left-item">
-        <a class="left-item-a" href="https://blog.vtron.site/blog/index.html"> 博客Blog </a>
-      </div>
-
-
-      <div class="left-item">
-        <a class="left-item-a" href="https://friend.vtron.site/"> 朋友圈 </a>
-      </div>
-
-      <div class="left-item">
-        <a class="left-item-a" href="https://github.com/royalknight56/vtron"> Github </a>
-      </div>
-
-      <div class="left-item">
-        <a class="left-item-a" href="#friendhash"> 友情链接 </a>
+      <div class="bottom">
+        <a href="https://beian.miit.gov.cn/">豫ICP备19041315号</a>
       </div>
     </div>
-    <div class="content" id="main">
-      <img draggable="false" class="title-img" src="./vtron-logo-nobg.png" />
-      <!-- <div class="title">Vtron</div> -->
-      <!-- <div class="title2">全新官网即将上线。。。</div> -->
-      <div class="button">
-        <a class="button-a" href="https://win.vtron.site/">启动 Win10 模拟器</a>
-      </div>
-    </div>
-    <div class="screen content" id="friendhash">
-      <div>友情链接</div>
-      <div id="loading">loading...</div>
-      <div id="friend"></div>
-    </div>
-
-    <div class="bottom">
-      <a href="https://beian.miit.gov.cn/">豫ICP备19041315号</a>
-    </div>
-  </div>
-</body>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Microsoft YaHei', '微软雅黑', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #f1f1f1;
-  }
-
-  .outer {
-    box-sizing: border-box;
-    width: 100%;
-    height: 200vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .left {
-    position: fixed;
-    width: 100px;
-    height: 200vh;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    background-color: #3e7cc7;
-    animation: leftanim 0.3s ease-in-out forwards;
-    display: flex;
-    justify-content: flex-start;
-    transform: translateX(-100%);
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-  }
-
-  @keyframes leftanim {
-    0% {
-      transform: translateX(-100%);
+  </body>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Microsoft YaHei', '微软雅黑', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f1f1f1;
     }
 
-    100% {
-      transform: translateX(0);
+    .outer {
+      box-sizing: border-box;
+      width: 100%;
+      height: 200vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
     }
-  }
 
-  .left-item {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.1s;
-    border: none;
-    background: none;
-  }
-
-  .left-item:hover {
-    background-color: #8dabd2;
-  }
-
-  .left-item-input {
-    display: none;
-  }
-
-  .left-item-input:checked+.left-item {
-    animation: jump 0.2s ease-in-out forwards;
-  }
-
-  .left-item-a {
-    width: 100%;
-    height: 100%;
-    text-decoration: none;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  @keyframes jump {
-    0% {}
-
-    100% {
-      width: 100vw;
-      height: 100vh;
+    .left {
+      position: fixed;
+      width: 100px;
+      height: 200vh;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
       background-color: #3e7cc7;
-    }
-  }
-
-  .content {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .title {
-    font-size: 50px;
-    font-weight: bold;
-    text-align: center;
-    margin: 10px;
-  }
-
-  .title2 {
-    font-size: 14px;
-    /* font-weight: bold; */
-    text-align: center;
-    margin: 10px;
-    transform: translateX(100%);
-    clip-path: inset(0 100% 0 0px);
-    animation: textshowanim 1s ease-in-out forwards;
-    animation-delay: 1.5s;
-    user-select: none;
-  }
-
-  .title-img {
-    width: 30vw;
-    margin: 10px;
-    user-select: none;
-    transform: translateX(10vw);
-    clip-path: inset(0 20vw 0 0px);
-    will-change: transform, clip-path;
-    animation: showanim 1s ease-in-out forwards;
-    animation-delay: 1s;
-  }
-
-  @keyframes showanim {
-    0% {
-      transform: translateX(10vw);
-      clip-path: inset(0 20vw 0 0px);
+      animation: leftanim 0.3s ease-in-out forwards;
+      display: flex;
+      justify-content: flex-start;
+      transform: translateX(-100%);
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
     }
 
-    100% {
-      transform: translateX(0);
-      clip-path: inset(0 0 0 0);
-    }
-  }
+    @keyframes leftanim {
+      0% {
+        transform: translateX(-100%);
+      }
 
-  @keyframes textshowanim {
-    0% {
-      transform: translateX(100%);
-      clip-path: inset(0 100 0 0px);
+      100% {
+        transform: translateX(0);
+      }
     }
 
-    100% {
-      transform: translateX(0);
-      clip-path: inset(0 0 0 0);
+    .left-item {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.1s;
+      border: none;
+      background: none;
     }
-  }
 
-  .button {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    .left-item:hover {
+      background-color: #8dabd2;
+    }
 
-  .button-a {
-    width: 200px;
-    height: 60px;
-    background-color: #3e7cc7;
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    line-height: 60px;
-    border-radius: 12px;
-    font-size: 14px;
-    transition: all 0.1s;
-    user-select: none;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-  }
+    .left-item-input {
+      display: none;
+    }
 
-  .button-a:hover {
-    background-color: #8dabd2;
-  }
+    .left-item-input:checked + .left-item {
+      animation: jump 0.2s ease-in-out forwards;
+    }
 
-  .bottom a {
-    width: 100%;
-    text-align: center;
-    font-size: 10px;
-    color: #656565;
-    margin-bottom: 10px;
-    text-decoration: none;
-  }
+    .left-item-a {
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  @media screen and (max-width: 600px) {
+    @keyframes jump {
+      0% {
+      }
+
+      100% {
+        width: 100vw;
+        height: 100vh;
+        background-color: #3e7cc7;
+      }
+    }
+
+    .content {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
     .title {
-      font-size: 30px;
+      font-size: 50px;
+      font-weight: bold;
+      text-align: center;
+      margin: 10px;
     }
 
     .title2 {
-      font-size: 12px;
+      font-size: 14px;
+      /* font-weight: bold; */
+      text-align: center;
+      margin: 10px;
+      transform: translateX(100%);
+      clip-path: inset(0 100% 0 0px);
+      animation: textshowanim 1s ease-in-out forwards;
+      animation-delay: 1.5s;
+      user-select: none;
+    }
+
+    .title-img {
+      width: 30vw;
+      margin: 10px;
+      user-select: none;
+      transform: translateX(10vw);
+      clip-path: inset(0 20vw 0 0px);
+      will-change: transform, clip-path;
+      animation: showanim 1s ease-in-out forwards;
+      animation-delay: 1s;
+    }
+
+    @keyframes showanim {
+      0% {
+        transform: translateX(10vw);
+        clip-path: inset(0 20vw 0 0px);
+      }
+
+      100% {
+        transform: translateX(0);
+        clip-path: inset(0 0 0 0);
+      }
+    }
+
+    @keyframes textshowanim {
+      0% {
+        transform: translateX(100%);
+        clip-path: inset(0 100 0 0px);
+      }
+
+      100% {
+        transform: translateX(0);
+        clip-path: inset(0 0 0 0);
+      }
+    }
+
+    .button {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .button-a {
       width: 200px;
       height: 60px;
-      font-size: 12px;
+      background-color: #3e7cc7;
+      color: white;
+      text-decoration: none;
+      text-align: center;
       line-height: 60px;
+      border-radius: 12px;
+      font-size: 14px;
+      transition: all 0.1s;
+      user-select: none;
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
     }
-  }
 
-  .loading {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-</style>
-<script>
-  if (location.href.indexOf('myim.online') > -1 || location.href.indexOf('vtron.site') > -1) {
-    fetch('https://myim.online:3100/api/visit', {
+    .button-a:hover {
+      background-color: #8dabd2;
+    }
+
+    .bottom a {
+      width: 100%;
+      text-align: center;
+      font-size: 10px;
+      color: #656565;
+      margin-bottom: 10px;
+      text-decoration: none;
+    }
+
+    @media screen and (max-width: 600px) {
+      .title {
+        font-size: 30px;
+      }
+
+      .title2 {
+        font-size: 12px;
+      }
+
+      .button-a {
+        width: 200px;
+        height: 60px;
+        font-size: 12px;
+        line-height: 60px;
+      }
+    }
+
+    .loading {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+  <script>
+    if (location.href.indexOf('myim.online') > -1 || location.href.indexOf('vtron.site') > -1) {
+      fetch('https://myim.online:3100/api/visit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user: localStorage.getItem('user'),
+          type: 'view',
+          content: `${document.referrer}`,
+        }),
+      });
+    }
+
+    fetch('https://myim.online:3100/api/friend', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user: localStorage.getItem('user'),
-        type: 'view',
-        content: `${document.referrer}`,
-      }),
-    });
-  }
-
-  fetch('https://myim.online:3100/api/friend', {
-    method: 'POST',
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      let loading = document.getElementById('loading');
-      loading.style.display = 'none';
-      let friend = document.getElementById('friend');
-      data.data.forEach((item) => {
-        if (!item.content) {
-          return;
-        }
-        let a = document.createElement('a');
-        a.style = `
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        let loading = document.getElementById('loading');
+        loading.style.display = 'none';
+        let friend = document.getElementById('friend');
+        data.data.forEach((item) => {
+          if (!item.content) {
+            return;
+          }
+          let a = document.createElement('a');
+          a.style = `
                     display: block;
                     width: 100%;
                     height: 50px;
@@ -320,12 +330,11 @@
                     background: none;
                     text-decoration: none;
                 `;
-        a.target = '_blank';
-        a.href = item.content;
-        a.innerText = item.title;
-        friend.appendChild(a);
+          a.target = '_blank';
+          a.href = item.content;
+          a.innerText = item.title;
+          friend.appendChild(a);
+        });
       });
-    });
-</script>
-
+  </script>
 </html>

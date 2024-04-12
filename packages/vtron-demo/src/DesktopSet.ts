@@ -1,24 +1,24 @@
-import vscode from './assets/vscode.png';
 import GitHub from './assets/GitHub.png';
-import winv3icon from './assets/winv3.png';
 import baidumapicon from './assets/baidumap.png';
-import markdownicon from './assets/markdown.png';
-import friendLinkicon from './assets/friendLink.png';
 import flowicon from './assets/flowicon.png';
+import friendLinkicon from './assets/friendLink.png';
+import markdownicon from './assets/markdown.png';
+import vscode from './assets/vscode.png';
+import winv3icon from './assets/winv3.png';
 
-import bird1icon from './assets/bird1.png';
-import signalicon from './assets/signal.png';
-import kiometicon from './assets/kiomet.webp';
 import beaticon from './assets/beat.ico';
+import bird1icon from './assets/bird1.png';
+import kiometicon from './assets/kiomet.webp';
+import signalicon from './assets/signal.png';
 // import galleryicon from './assets/gallery.png';
 
 import GitStars from './components/apps/GitStars.vue';
 import GotoReadMe from './components/apps/GotoReadMe.vue';
 
-import FriendLink from './components/apps/FriendLink.vue';
-import CreateUrl from './components/apps/CreateUrl.vue';
-import NoteMd from './components/apps/NoteMd.vue';
 import CommentVue from './components/apps/Comment.vue';
+import CreateUrl from './components/apps/CreateUrl.vue';
+import FriendLink from './components/apps/FriendLink.vue';
+import NoteMd from './components/apps/NoteMd.vue';
 // import Gallery from './components/apps/Gallery.vue';
 const magnetConfig = [
   {
@@ -152,7 +152,7 @@ const desktopConfig = [
     width: 800,
     height: 600,
     center: true,
-    content: "https://app.flowoss.com/zh-CN",
+    content: 'https://app.flowoss.com/zh-CN',
     resizable: true,
   },
 
@@ -195,4 +195,4 @@ const desktopConfig = [
     resizable: true,
   },
 ];
-export { magnetConfig, desktopConfig };
+export { desktopConfig, magnetConfig };

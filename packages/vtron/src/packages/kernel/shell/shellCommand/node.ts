@@ -1,6 +1,6 @@
-import type { Shell } from '../Shell';
-import * as vPath from '../../file/Path';
 import * as ivue from 'vue';
+import * as vPath from '../../file/Path';
+import type { Shell } from '../Shell';
 async function node(input: string, output: (text: string) => void, shell: Shell) {
   const path = input.split(' ')[1];
   if (path) {

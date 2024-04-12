@@ -1,5 +1,5 @@
-import { Ref, defineComponent, markRaw, ref } from 'vue';
 import { Menu } from '@/packages/ui';
+import { Ref, defineComponent, markRaw, ref } from 'vue';
 
 export interface TrayOptions {
   image: string | ReturnType<typeof defineComponent>;

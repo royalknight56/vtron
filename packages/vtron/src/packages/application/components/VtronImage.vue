@@ -43,4 +43,3 @@ function replaceIcon() {
   object-fit: contain;
 }
 </style>
-../../../kernel/system

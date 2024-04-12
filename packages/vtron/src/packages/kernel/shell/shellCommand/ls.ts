@@ -1,5 +1,5 @@
-import type { Shell } from '../Shell';
 import { basename } from '@/packages/kernel/file/Path';
+import type { Shell } from '../Shell';
 async function ls(input: string, output: (text: string) => void, shell: Shell) {
   const path = input.split(' ')[1];
   if (path) {

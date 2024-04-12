@@ -16,7 +16,6 @@
   --theme-main-color-light: #e4e4e4;
   --theme-main-color-opacity: #edededdc;
 
-  
   --task-bar-height: 40px;
   --menu-bar-height: 30px;
   --menu-bar-button-size: 12px;
@@ -34,8 +33,8 @@
   --message-width: 240px;
   --message-inner-width: 220px;
 
-  --aniline:cubic-bezier(0, 0.83, 0.09, 1);
-// 通过option 控制的属性
+  --aniline: cubic-bezier(0, 0.83, 0.09, 1);
+  // 通过option 控制的属性
   --file-item-color: #111;
 
   --color-notify: #333333e3;
@@ -44,7 +43,7 @@
   --color-startmenu-opacity: #d0d0d0da;
   --color-startmenu: #d0d0d0;
   --color-dark-light: #33333322;
-  --color-dark:#333333e3;
+  --color-dark: #333333e3;
   --color-dark-hover: #33333360;
   --color-gray: #ededed;
   --color-gray-op6: #ededed92;

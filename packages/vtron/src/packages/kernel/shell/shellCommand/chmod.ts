@@ -1,5 +1,5 @@
-import type { Shell } from '../Shell';
 import * as vPath from '../../file/Path';
+import type { Shell } from '../Shell';
 async function chmod(input: string, output: (text: string) => void, shell: Shell) {
   const path = input.split(' ')[2];
   if (path) {

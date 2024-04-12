@@ -2,26 +2,21 @@
   <div class="links">
     <!-- <div class="link" v-for="link in FriendLinks" :key="link.name"> -->
     <!-- <span class="link-title"></span> -->
-    <a
-      class="link"
-      v-for="link in FriendLinks"
-      :key="link.name"
-      :href="link.url"
-      target="_blank"
-      >{{ link.name }}</a
-    >
+    <a class="link" v-for="link in FriendLinks" :key="link.name" :href="link.url" target="_blank">{{
+      link.name
+    }}</a>
   </div>
   <!-- </div> -->
 </template>
 <script setup lang="ts">
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive } from 'vue';
 
 const FriendLinks = reactive<any[]>([]);
 onMounted(() => {
-  fetch("https://myim.online:3100/api/friend", {
-    method: "POST",
+  fetch('https://myim.online:3100/api/friend', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       id: 1,

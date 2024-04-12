@@ -1,30 +1,29 @@
 import vtronStoreLogoIcon from '@/assets/vtron-stroe-icon-nobg.png?url';
 import myComputerLogoIcon from '@packages/assets/computer.png?url';
-import unknownIcon from '@packages/assets/unknown.png';
 import imageicon from '@packages/assets/image.png';
 import settingicon from '@packages/assets/setting.png';
+import unknownIcon from '@packages/assets/unknown.png';
 
+import { WinAppOptions } from '@/packages/type/type';
+import AppStore from '@packages/application/AppStore.vue';
 import FileViewer from '@packages/application/FileViewer.vue';
 import MyComputerVue from '@packages/application/MyComputer/MyComputer.vue';
 import UrlBrowser from '@packages/application/UrlBrowser.vue';
-import AppStore from '@packages/application/AppStore.vue';
 import type { System } from '@packages/kernel';
-import { BrowserWindow } from '@packages/ui';
-import { i18n } from '@packages/ui';
-import { WinAppOptions } from '@/packages/type/type';
+import { BrowserWindow, i18n } from '@packages/ui';
 
 import { dealIcon } from '@/packages/util/Icon';
-import { basename, join } from '@packages/kernel';
 import ImageViewerVue from '@packages/application/ImageViewer.vue';
+import SettingVue from '@packages/application/Setting.vue';
+import { basename, join } from '@packages/kernel';
 import { Dialog } from '@packages/ui/dialog/Dialog';
-import { Tray } from '@packages/ui/tray/Tary';
 import BatteryVue from '@packages/ui/taskbar/barUnit/Battery.vue';
-import BatteryPopVue from '@packages/ui/taskbar/popover/BatteryPop.vue';
-import NetWorkVue from '@packages/ui/taskbar/barUnit/NetWork.vue';
 import DateTimeVue from '@packages/ui/taskbar/barUnit/DateTime.vue';
+import NetWorkVue from '@packages/ui/taskbar/barUnit/NetWork.vue';
+import BatteryPopVue from '@packages/ui/taskbar/popover/BatteryPop.vue';
 import DateTimePopVue from '@packages/ui/taskbar/popover/DateTimePop.vue';
 import NetworkPopVue from '@packages/ui/taskbar/popover/NetworkPop.vue';
-import SettingVue from '@packages/application/Setting.vue';
+import { Tray } from '@packages/ui/tray/Tary';
 
 export function initBuiltinApp(system: System) {
   const setting = {

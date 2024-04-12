@@ -9,10 +9,9 @@ import App from './App.vue';
 import vtron from 'vtron';
 import 'vtron/distlib/style.css';
 import 'xterm/css/xterm.css';
-import backimg from './assets/back.jpg';
 
-import * as Sentry from '@sentry/vue';
 import { BrowserTracing } from '@sentry/tracing';
+import * as Sentry from '@sentry/vue';
 // import PrimeVue from 'primevue/config';
 
 import mavonEditor from 'mavon-editor';

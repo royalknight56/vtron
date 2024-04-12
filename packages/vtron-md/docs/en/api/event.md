@@ -27,32 +27,32 @@ when this event is triggered, contextMenu will be shown
 usage:
 
 ```typescript
-import { useSystem } from "vtron";
+import { useSystem } from 'vtron';
 const system = useSystem();
-ev:MouseEvent
+ev: MouseEvent;
 system?.emitEvent('contextMenu.show', {
-        mouse: ev,
-        menuList: [
-            {
-                name: '打开',
-                click: () => {
-                    openFolder(item)
-                }
-            },
-            {
-                name: '删除',
-                click: () => {
-                    if (item.type == 'dir') {
-                        system?.fs.rmdir(item.path).then(() => {
-                            refersh(router_url.value)
-                        });
-                    } else {
-                        system?.fs.unlink(item.path).then(() => {
-                            refersh(router_url.value)
-                        });
-                    }
-                }
-            },
-        ]
-    })
+  mouse: ev,
+  menuList: [
+    {
+      name: '打开',
+      click: () => {
+        openFolder(item);
+      },
+    },
+    {
+      name: '删除',
+      click: () => {
+        if (item.type == 'dir') {
+          system?.fs.rmdir(item.path).then(() => {
+            refersh(router_url.value);
+          });
+        } else {
+          system?.fs.unlink(item.path).then(() => {
+            refersh(router_url.value);
+          });
+        }
+      },
+    },
+  ],
+});
 ```

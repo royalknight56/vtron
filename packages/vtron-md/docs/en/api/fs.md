@@ -53,6 +53,7 @@ import { useSystem } from "vtron";
 const system = useSystem();
 system.fs.appendFile("path/to/file","hello world")
 ```
+
 ## mkdir
 
 创建一个文件夹
@@ -66,7 +67,6 @@ import { useSystem } from "vtron";
 const system = useSystem();
 system.fs.mkdir("path/to/folder")
 ```
-
 
 ## readdir
 
@@ -96,6 +96,7 @@ system.fs.readdir("path/to/folder").then((files)=>{
     })
 })
 ```
+
 ## exists
 
 判断指定路径的文件或文件夹是否存在
@@ -142,6 +143,7 @@ import { useSystem } from "vtron";
 const system = useSystem();
 system.fs.unlink("path/to/file")
 ```
+
 ## rmdir
 
 删除指定路径的文件夹，这个操作会删除这个文件夹下的所有文件和文件夹
@@ -169,4 +171,3 @@ import { useSystem } from "vtron";
 const system = useSystem();
 system.fs.rename("path/to/file","path/to/new/file")
 ```
-

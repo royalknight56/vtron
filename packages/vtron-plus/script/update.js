@@ -1,3 +1,4 @@
+/* eslint-env node */
 const { exec } = require('child_process');
 const fs = require('fs');
 function waitExec(cmd) {

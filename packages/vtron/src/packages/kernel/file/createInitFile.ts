@@ -1,6 +1,6 @@
 import { InitFileItem } from '@/packages/type/type';
-import { join } from './Path';
 import { VtronFileSystem } from './FileSystem';
+import { join } from './Path';
 
 export const createInitFile = async (fs: VtronFileSystem, file: InitFileItem, path = '') => {
   if (file.type === 'file') {

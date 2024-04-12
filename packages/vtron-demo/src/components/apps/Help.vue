@@ -5,12 +5,10 @@
  * @FilePath: /myindex/src/components/window/apps/Help.vue
 -->
 <template>
-    <div class="outer">
-        About:Windows-vue-0.1 alpha
-    </div>
+  <div class="outer">About:Windows-vue-0.1 alpha</div>
 </template>
 <style scoped>
 .outer {
-    color: black;
+  color: black;
 }
 </style>

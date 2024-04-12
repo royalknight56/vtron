@@ -1,11 +1,11 @@
-import { VtronFileSystem, VtronFileWithoutContent } from '../kernel/file/FileSystem';
-import foldericon from '@packages/assets/folder.png';
-import unknownicon from '@packages/assets/unknown.png';
 import audioicon from '@packages/assets/audio.png';
-import videoicon from '@packages/assets/video.png';
+import foldericon from '@packages/assets/folder.png';
 import imageicon from '@packages/assets/image.png';
-import volumeNetIcon from '@packages/assets/volume-net.png';
+import unknownicon from '@packages/assets/unknown.png';
+import videoicon from '@packages/assets/video.png';
 import volumeLocalIcon from '@packages/assets/volume-local.png';
+import volumeNetIcon from '@packages/assets/volume-net.png';
+import { VtronFileSystem, VtronFileWithoutContent } from '../kernel/file/FileSystem';
 
 import { System, extname } from '../plug';
 export function dealExeIcon(content: string | null | undefined) {

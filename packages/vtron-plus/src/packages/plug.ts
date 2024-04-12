@@ -3,8 +3,8 @@ import Browser from './apps/Browser.vue';
 // import ImageViewer from "./apps/ImageViewer.vue";
 import PdfViewer from './apps/PdfViewer.vue';
 // import MarkDown from "./apps/MarkDown.vue";
-import UrlBrowser from './apps/UrlBrowser.vue';
 import PPT from './apps/PPT.vue';
+import UrlBrowser from './apps/UrlBrowser.vue';
 
 import Version from './apps/Version.vue';
 // @ts-ignore
@@ -13,29 +13,29 @@ import mycomicon from './assets/computer.ico';
 import helpicon from './assets/help.ico';
 import termIcon from './assets/term.png';
 // import markdownicon from "./assets/markdown.png";
-import chromeicon from './assets/chromeicon.png';
+import pythonIcon from './assets/Python.png';
 import calcicon from './assets/calcicon.png';
+import chromeicon from './assets/chromeicon.png';
+import docxIcon from './assets/docx.png';
+import backupIcon from './assets/e895.png';
+import galleryIcon from './assets/gallery.png';
+import musicAppIcon from './assets/musicApp.png';
+import pdfIcon from './assets/pdf.png';
 import ppticon from './assets/ppt.png';
 import pptxIcon from './assets/pptx.png';
-import pdfIcon from './assets/pdf.png';
-import docxIcon from './assets/docx.png';
 import xlsxIcon from './assets/xlsx.png';
-import musicAppIcon from './assets/musicApp.png';
-import galleryIcon from './assets/gallery.png';
-import backupIcon from './assets/e895.png';
-import pythonIcon from './assets/Python.png';
 
-import audioIcon from './assets/audio.png';
-import videoIcon from './assets/video.png';
-import MusicViewerVue from './apps/MusicViewer.vue';
-import VideoViewerVue from './apps/VideoViewer.vue';
 import DocxViewerVue from './apps/DocxViewer.vue';
 import ExeclViewerVue from './apps/ExeclViewer.vue';
-import Terminal from './apps/Terminal.vue';
 import MusicStoreVue from './apps/MusicStore.vue';
+import MusicViewerVue from './apps/MusicViewer.vue';
 import PictureStoreVue from './apps/PictureStore.vue';
-import ZipBackupVue from './apps/ZipBackup.vue';
 import PythonVue from './apps/Python.vue';
+import Terminal from './apps/Terminal.vue';
+import VideoViewerVue from './apps/VideoViewer.vue';
+import ZipBackupVue from './apps/ZipBackup.vue';
+import audioIcon from './assets/audio.png';
+import videoIcon from './assets/video.png';
 
 function vtronPlus(system: System) {
   /**------------------ 桌面右键菜单--------------- */

@@ -1,3 +1,3 @@
-export { Eventer } from './Eventer';
-export { initEventer, emitEvent, mountEvent, offEvent } from './EventHook';
+export { emitEvent, initEventer, mountEvent, offEvent } from './EventHook';
 export { initEventListener } from './EventListener';
+export { Eventer } from './Eventer';

@@ -19,4 +19,4 @@ function redirectEvent(source: string, target: string) {
     emitEvent(target, data);
   });
 }
-export { initEventer, emitEvent, mountEvent, offEvent, redirectEvent };
+export { emitEvent, initEventer, mountEvent, offEvent, redirectEvent };

@@ -1,6 +1,6 @@
-import Test from './test.vue';
 import * as Vue from 'vue';
 import { AuthType, createClient } from 'webdav';
+import Test from './test.vue';
 declare type DateLike = Date | string | number;
 declare class VtronFileInfo {
   isFile: boolean;

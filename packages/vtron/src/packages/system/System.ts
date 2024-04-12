@@ -1,6 +1,16 @@
+import { Eventer, initEventer, initEventListener } from '@/packages/kernel/event';
+import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
+import { VtronFileSystem } from '@/packages/kernel/file/FileSystem';
+import { extname, join } from '@/packages/kernel/file/Path';
+import { Shell } from '@/packages/kernel/shell/Shell';
+import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { initRootState, RootState } from '@/packages/kernel/state/Root';
+import { systemStartup } from '@/packages/startup';
+import { Dialog } from '@/packages/ui/dialog/Dialog';
+import { Notify, NotifyConstructorOptions } from '@/packages/ui/notification/Notification';
+import { Tray, TrayOptions } from '@/packages/ui/tray/Tary';
+import { pick } from '@/packages/util/modash';
 import { SystemStateEnum } from '@packages/type/enum';
-import { markRaw, nextTick } from 'vue';
 import {
   Saveablekey,
   Setting,
@@ -8,20 +18,10 @@ import {
   SystemOptionsCertainly,
   WinAppOptions,
 } from '@packages/type/type';
-import { initEventer, Eventer, initEventListener } from '@/packages/kernel/event';
-import { VtronFileSystem } from '@/packages/kernel/file/FileSystem';
-import { version } from '../../../package.json';
 import { BrowserWindow, BrowserWindowOption } from '@packages/ui/window/BrowserWindow';
-import { extname, join } from '@/packages/kernel/file/Path';
-import { Shell } from '@/packages/kernel/shell/Shell';
+import { markRaw, nextTick } from 'vue';
+import { version } from '../../../package.json';
 import { defaultConfig } from './initConfig';
-import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
-import { Notify, NotifyConstructorOptions } from '@/packages/ui/notification/Notification';
-import { ShellInterface } from '@/packages/kernel/shell/ShellType';
-import { Dialog } from '@/packages/ui/dialog/Dialog';
-import { pick } from '@/packages/util/modash';
-import { Tray, TrayOptions } from '@/packages/ui/tray/Tary';
-import { systemStartup } from '@/packages/startup';
 
 const logger = function (...args: any[]) {
   return;

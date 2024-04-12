@@ -1,4 +1,5 @@
 # System
+
 ## useSystem
 
 整个vue应用只能有一个system，所以这个方法用来获取当前的system
@@ -8,7 +9,7 @@ there is only one system in vue app, so this method is used to get current syste
 usage:
 
 ```typescript
-import { useSystem } from "vtron";
+import { useSystem } from 'vtron';
 const system = useSystem();
 ```
 
@@ -24,14 +25,15 @@ interface SystemOptions {
 }
 constructor(options?: SystemOptions)
 ```
+
 logo：可以设置系统的logo，如果不设置则使用默认的logo
 
 ### Usage
 
 ```typescript
-import { System } from "vtron";
+import { System } from 'vtron';
 const system = new System({
-    //...options
+  //...options
 });
 ```
 
@@ -40,6 +42,7 @@ const system = new System({
 ```typescript
 whenReady(): Promise<System>
 ```
+
 只有在系统准备之后，才能对system进行操作，如添加app到桌面
 
 only after system ready, you can add app to desktop and so on
@@ -47,14 +50,13 @@ only after system ready, you can add app to desktop and so on
 Usage:
 
 ```typescript
-import { System } from "vtron";
+import { System } from 'vtron';
 const system = new System();
 
-system.whenReady().then((system)=>{
-    //...
-})
+system.whenReady().then((system) => {
+  //...
+});
 ```
-
 
 ## fs
 
@@ -69,11 +71,9 @@ see api/fs for more
 ### Usage
 
 ```typescript
-import { useSystem } from "vtron";
+import { useSystem } from 'vtron';
 const system = useSystem();
-system.fs.readFile("path/to/file").then((data)=>{
-
-})
+system.fs.readFile('path/to/file').then((data) => {});
 ```
 
 ## emitEvent
@@ -137,6 +137,7 @@ system.registerFileOpener("text/plain",(path,content)=>{
     pdfwindow.show()
 })
 ```
+
 ## openFile
 
 打开一个文件，会调用对应类型的文件打开器
@@ -148,9 +149,9 @@ open a file, will call the opener with this type
 see api/fs for more
 
 ```typescript
-import { useSystem } from "vtron";
+import { useSystem } from 'vtron';
 const system = useSystem();
-system.openFile("path/to/file")
+system.openFile('path/to/file');
 ```
 
 ## use
@@ -205,6 +206,7 @@ system.whenReady().then((readySystem)=>{
     })
 })
 ```
+
 ## addMagnet
 
 add app to Magnet
@@ -228,8 +230,9 @@ usage same as addApp
 ## shutdown
 
 ```typescript
-shutdown()
+shutdown();
 ```
+
 关闭系统，屏幕会黑屏，只有刷新页面才能重新打开
 
 shutdown system, screen will be black, you can only refresh page to open system again
@@ -237,7 +240,7 @@ shutdown system, screen will be black, you can only refresh page to open system 
 Usage:
 
 ```typescript
-import { System } from "vtron";
+import { System } from 'vtron';
 const system = new System();
 
 system.shutdown();
@@ -246,7 +249,7 @@ system.shutdown();
 ## reboot
 
 ```typescript
-reboot()
+reboot();
 ```
 
 恢复系统，恢复的过程是：清除本地的localStorage，清楚本地的文件系统。
@@ -256,9 +259,8 @@ reboot system, the process is: clear localStorage, clear file system.
 Usage:
 
 ```typescript
-import { System } from "vtron";
+import { System } from 'vtron';
 const system = new System();
 
 system.reboot();
 ```
-

@@ -1,16 +1,16 @@
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
+import vue from '@vitejs/plugin-vue';
+import { defineConfig } from 'vite';
 function myPlugin() {
   return {
-    name: "transform-file",
+    name: 'transform-file',
 
     generateBundle(options, bundle) {
       for (const fileName in bundle) {
-        console.log("fileName", fileName);
+        console.log('fileName', fileName);
         // if (fileName == "webdav.es.js") {
         bundle[fileName].code = bundle[fileName].code?.replace(
           /import\s*\{\s*([\w\s,]+)\s*\}\s*from 'vue'/g,
-          "const {$1} = vue"
+          'const {$1} = vue'
         );
         // console.log(bundle[fileName].code);
         // } else {
@@ -29,33 +29,33 @@ export default defineConfig({
     port: 3001,
   },
   build: {
-    target: "esnext",
+    target: 'esnext',
     // lib: {
     //   name: "webdav",
     //   entry: ["webdav.ts", "demoApp.ts"],
     // },
     minify: false,
-    outDir: "./src/appout",
+    outDir: './src/appout',
     rollupOptions: {
-      input: ["./src/apps/webdav.ts", "./src/apps/demoApp.ts"],
+      input: ['./src/apps/webdav.ts', './src/apps/demoApp.ts'],
 
       output: {
-        entryFileNames: "[name].[format].js",
-        chunkFileNames: "[name].[format].js",
+        entryFileNames: '[name].[format].js',
+        chunkFileNames: '[name].[format].js',
         // assetFileNames: "[name].[format].js",
-        dir: "./src/appout",
-        format: "esm",
+        dir: './src/appout',
+        format: 'esm',
         // name: "webdav",
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
-          vue: "Vue",
+          vue: 'Vue',
         },
       },
 
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["vue"],
+      external: ['vue'],
     },
   },
 });

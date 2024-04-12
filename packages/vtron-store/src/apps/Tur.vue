@@ -13,6 +13,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-const msg = ref("安装引导程序");
+import { ref } from 'vue';
+const msg = ref('安装引导程序');
 </script>

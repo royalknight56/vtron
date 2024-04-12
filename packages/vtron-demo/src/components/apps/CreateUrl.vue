@@ -4,9 +4,7 @@
       <div class="title">创建网络链接</div>
     </div>
     <div class="content" v-if="step === 0">
-      <div class="txt">
-        本程序将引导您在桌面创建其他网站的快捷链接，点击下一步继续
-      </div>
+      <div class="txt">本程序将引导您在桌面创建其他网站的快捷链接，点击下一步继续</div>
     </div>
     <div class="content" v-if="step === 1">
       <div class="txt">
@@ -24,26 +22,26 @@
   </div>
 </template>
 <script setup lang="ts">
-import { BrowserWindow, Dialog, System, WinButtonVue, join } from "vtron";
-import { inject, ref } from "vue";
+import { BrowserWindow, Dialog, System, WinButtonVue, join } from 'vtron';
+import { inject, ref } from 'vue';
 const step = ref(0);
-const link = ref("");
-const name = ref("");
-const sys = inject<System>("system");
-const win = inject<BrowserWindow>("browserWindow");
+const link = ref('');
+const name = ref('');
+const sys = inject<System>('system');
+const win = inject<BrowserWindow>('browserWindow');
 
 function next() {
   if (step.value === 1 && link.value && name.value) {
     sys?.fs
       .writeFile(
-        join(sys._options.userLocation || "", "Desktop", name.value + ".url"),
-        `link::url::${link.value}::${link.value + "/favicon.ico"}`
+        join(sys._options.userLocation || '', 'Desktop', name.value + '.url'),
+        `link::url::${link.value}::${link.value + '/favicon.ico'}`
       )
       .then(async () => {
         await Dialog.showMessageBox({
-          message: "创建成功",
-          type: "info",
-          title: "提示",
+          message: '创建成功',
+          type: 'info',
+          title: '提示',
         });
         win?.close();
       });

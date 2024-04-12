@@ -1,5 +1,5 @@
-import type { Shell } from '../Shell';
 import * as vPath from '../../file/Path';
+import type { Shell } from '../Shell';
 async function mkdir(input: string, output: (text: string) => void, shell: Shell) {
   const fileName = input.split(' ')[1].trim();
   const res = await shell.system.fs.stat(vPath.join(shell.router, fileName));

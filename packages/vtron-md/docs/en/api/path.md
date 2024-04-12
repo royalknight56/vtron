@@ -25,6 +25,7 @@ join("path/to","file") // path/to/file
 join("path/to","/file") // path/to/file
 join("path/to/file",'..') // path/to
 ```
+
 ## dirname
 
 获取指定路径的文件夹路径

@@ -15,9 +15,9 @@ constructor(system:System,router: string = '/C',user: string = 'root')
 usage
 
 ```typescript
-import { useSystem ,Shell} from "vtron";
+import { useSystem, Shell } from 'vtron';
 const system = useSystem();
-const shell = new Shell(system,'/C','root')
+const shell = new Shell(system, '/C', 'root');
 ```
 
 ## handleCommand
@@ -79,8 +79,8 @@ node后面如果是文件地址，则执行文件中的内容
 例如：
 
 ```js
-function main(system){
-    system.fs
+function main(system) {
+  system.fs;
 }
 ```
 
@@ -94,8 +94,6 @@ main函数可以接收一个参数，是当前的system。
 echo "hello world" > hello.txt
 ```
 
-
 ## 终端(Terminal)
 
 提供了一个终端，可以执行以上的命令
-

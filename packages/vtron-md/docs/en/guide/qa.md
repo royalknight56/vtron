@@ -17,8 +17,8 @@ vtron-plus 是 vtron 的插件系统，可以通过 vtron-plus 来扩展 vtron �
 尝试在 ready 之后，再去访问 system 的属性。
 
 ```js
-import { System } from "vtron";
-import { vtronPlus } from "vtron-plus";
+import { System } from 'vtron';
+import { vtronPlus } from 'vtron-plus';
 let system = new System({});
 system.whenReady().then(() => {
   // 在这里访问system的属性
@@ -59,8 +59,8 @@ system.whenReady().then(() => {
 通过 inject 注入 browserWindow 实例
 
 ```ts
-import { BrowserWindow } from "vtron";
-let browserWindow = inject<BrowserWindow>("browserWindow");
+import { BrowserWindow } from 'vtron';
+let browserWindow = inject<BrowserWindow>('browserWindow');
 ```
 
 ## 怎么访问系统文件

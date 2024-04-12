@@ -1,15 +1,15 @@
-import { ls } from './ls';
-import { cd } from './cd';
-import { touch } from './touch';
 import { cat } from './cat';
+import { cd } from './cd';
+import { chmod } from './chmod';
 import { echo } from './echo';
+import { ls } from './ls';
+import { mkdir } from './mkdir';
+import { node } from './node';
+import { open } from './open';
+import { pwd } from './pwd';
 import { rm } from './rm';
 import { sh } from './sh';
-import { pwd } from './pwd';
-import { open } from './open';
-import { node } from './node';
-import { mkdir } from './mkdir';
-import { chmod } from './chmod';
+import { touch } from './touch';
 const commandMap = [
   {
     name: 'ls',

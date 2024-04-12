@@ -6,9 +6,9 @@
  */
 //vite --config my-config.js
 
-import { defineConfig } from 'vite';
-import path from 'path';
 import vue from '@vitejs/plugin-vue';
+import path from 'path';
+import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 // import { visualizer } from 'rollup-plugin-visualizer';
 // https://vitejs.dev/config/

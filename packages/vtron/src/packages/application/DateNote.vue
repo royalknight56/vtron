@@ -28,16 +28,19 @@ const time = day;
   height: 100%;
   background-color: #f5f5f5;
 }
+
 .tip {
   padding: 6px 20px;
   font-size: 12px;
 }
+
 .time {
   margin-top: 2px;
   font-size: 16px;
   color: #1c1c1c;
   padding: 4px 20px;
 }
+
 .text {
   margin-top: 6px;
   overflow: auto;
@@ -52,6 +55,7 @@ const time = day;
   background-color: white;
   transition: all 0.1s;
 }
+
 .text:hover {
   border: 1px solid #363636;
 }

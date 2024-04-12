@@ -1,7 +1,6 @@
-import { defineComponent, reactive, markRaw } from 'vue';
+import { Eventer, useSystem } from '@/packages/kernel';
 import { Tree } from '@packages/util/Tree';
-import { Eventer } from '@/packages/kernel';
-import { useSystem } from '@/packages/kernel';
+import { defineComponent, markRaw, reactive } from 'vue';
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
 // implements BrowserWindowModel
 export const enum WindowStateEnum {

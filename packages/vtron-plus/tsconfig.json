@@ -9,17 +9,17 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     // "esModuleInterop": true,
-    "allowSyntheticDefaultImports":true,
+    "allowSyntheticDefaultImports": true,
     "lib": ["ESNext", "dom"],
     "skipLibCheck": true,
     "declaration": true,
     "declarationDir": "distlib",
-    "typeRoots": ["./types","./node_modules/@types"],
+    "typeRoots": ["./types", "./node_modules/@types"],
     "baseUrl": ".",
-    "paths":{
+    "paths": {
       "@/*": ["src/*"],
-      "@packages/*": ["src/packages/*"],
-     },
+      "@packages/*": ["src/packages/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

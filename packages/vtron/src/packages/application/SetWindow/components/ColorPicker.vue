@@ -1,5 +1,5 @@
 <template>
-  <ColorPicker :visibleFormats="['hex']" :color="color" @color-change="throttleFunc"> </ColorPicker>
+  <ColorPicker :visible-formats="['hex']" :color="color" @color-change="throttleFunc"> </ColorPicker>
 </template>
 <script setup lang="ts">
 import { throttle } from '@/packages/util/debounce';

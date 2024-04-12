@@ -131,12 +131,15 @@ function dealI18nName(name: string) {
   border-top: none;
   transition: all 0.1s;
 }
+
 .hide-arrow {
   border-color: transparent;
 }
+
 .open-arrow {
   transform: translateY(-2px) translateX(2px) rotate(90deg);
 }
+
 .file-item {
   position: relative;
   display: flex;
@@ -155,9 +158,11 @@ function dealI18nName(name: string) {
 .file-item:hover {
   background-color: #b1f1ff4c;
 }
+
 .chosen {
   border: 1px dashed #3bdbff3d;
   background-color: #9595956b;
+
   .file-item_title {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -166,11 +171,14 @@ function dealI18nName(name: string) {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
   }
+
   //   background-color: var(--theme-color);
 }
+
 .chosen:hover {
   background-color: #9595956b;
 }
+
 .no-chosen {
   .file-item_title {
     overflow: hidden;
@@ -181,6 +189,7 @@ function dealI18nName(name: string) {
     -webkit-line-clamp: 1;
   }
 }
+
 .mode-icon {
   .file-item_img {
     width: 60%;
@@ -199,6 +208,7 @@ function dealI18nName(name: string) {
     flex-grow: 0;
   }
 }
+
 .mode-list {
   display: flex;
   flex-direction: row;
@@ -213,6 +223,7 @@ function dealI18nName(name: string) {
     user-select: none;
     flex-shrink: 0;
   }
+
   .file-item_title {
     height: min-content;
 
@@ -226,4 +237,3 @@ function dealI18nName(name: string) {
   }
 }
 </style>
-@/packages/kernel/file/Path@/packages/kernel/file/FileSystem

@@ -3,7 +3,7 @@
   <img v-else draggable="false" :src="iconimg" @error="replaceIcon" />
 </template>
 <script setup lang="ts">
-import { useSystem,VtronFileWithoutContent } from '@packages/kernel';
+import { useSystem, VtronFileWithoutContent } from '@packages/kernel';
 import { dealIcon } from '@/packages/util/Icon';
 import unknownicon from '@packages/assets/unknown.png';
 import { ref } from 'vue';
@@ -21,4 +21,3 @@ function replaceIcon() {
   iconimg.value = unknownicon;
 }
 </script>
-@/packages/kernel/system@/packages/kernel/file/FileSystem

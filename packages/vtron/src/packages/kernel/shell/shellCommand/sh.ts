@@ -1,5 +1,5 @@
-import { Shell } from '../Shell';
 import * as vPath from '../../file/Path';
+import { Shell } from '../Shell';
 async function sh(input: string, output: (text: string) => void, shell: Shell) {
   const path = input.split(' ')[1];
   if (path) {

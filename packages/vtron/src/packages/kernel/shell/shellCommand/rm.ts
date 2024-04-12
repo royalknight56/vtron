@@ -1,5 +1,5 @@
-import type { Shell } from '../Shell';
 import * as vPath from '../../file/Path';
+import type { Shell } from '../Shell';
 async function rm(input: string, output: (text: string) => void, shell: Shell) {
   // rm -f test.txt
   // rm -rf testdi

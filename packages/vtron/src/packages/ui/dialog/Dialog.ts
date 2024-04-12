@@ -1,8 +1,8 @@
-import { toRaw, ref } from 'vue';
-import { BrowserWindow } from '../window/BrowserWindow';
-import DialogVue from './DialogTemp.vue';
-import DialogProcessVue from './DialogProcess.vue';
+import { ref, toRaw } from 'vue';
 import { useSystem } from '../../system';
+import { BrowserWindow } from '../window/BrowserWindow';
+import DialogProcessVue from './DialogProcess.vue';
+import DialogVue from './DialogTemp.vue';
 class Dialog {
   constructor() {
     // static class

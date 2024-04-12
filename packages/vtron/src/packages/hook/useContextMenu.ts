@@ -1,10 +1,10 @@
-import * as fspath from '@packages/kernel/file/Path';
 import FileProps from '@packages/application/FileProps.vue';
-import { VtronFileWithoutContent, useSystem } from '@packages/kernel';
-import { i18n, Dialog, Menu, BrowserWindow } from '@packages/ui';
 import OpenWiteDialogVue from '@packages/application/OpenWiteDialog.vue';
-import { uniqBy } from '../util/modash';
+import { VtronFileWithoutContent, useSystem } from '@packages/kernel';
+import * as fspath from '@packages/kernel/file/Path';
+import { BrowserWindow, Dialog, Menu, i18n } from '@packages/ui';
 import { UnwrapNestedRefs } from 'vue';
+import { uniqBy } from '../util/modash';
 
 export function createTaskbarIconContextMenu(e: MouseEvent, windowNode: UnwrapNestedRefs<BrowserWindow>) {
   Menu.buildFromTemplate([

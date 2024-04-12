@@ -1,37 +1,18 @@
+/* eslint-env node */
 module.exports = {
-  env: {
-    browser: true,
-    es2021: true,
-  },
+  root: true,
   extends: [
-    'plugin:vue/strongly-recommended',
+    'plugin:vue/vue3-essential',
     'eslint:recommended',
-    '@vue/typescript/recommended',
+    '@vue/eslint-config-typescript',
+    '@vue/eslint-config-prettier/skip-formatting',
     'plugin:prettier/recommended',
   ],
-  overrides: [
-    {
-      env: {
-        node: true,
-      },
-      files: ['.eslintrc.{js,cjs}'],
-      parserOptions: {
-        sourceType: 'script',
-      },
-    },
-  ],
   parserOptions: {
-    parser: '@typescript-eslint/parser',
     ecmaVersion: 'latest',
-    sourceType: 'module',
   },
-  plugins: ['vue'],
+  plugins: ['prettier'],
   rules: {
-    'vue/no-setup-props-destructure': 'off',
-    'vue/no-multiple-template-root': 'off',
-    'vue/multi-word-component-names': 'off',
-    'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': 'error',
     'prettier/prettier': [
       'error',
       {

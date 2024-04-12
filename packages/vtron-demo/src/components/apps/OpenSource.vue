@@ -6,16 +6,12 @@
     >
   </div>
   <div>
-    mavon-editor :<a
-      href="https://github.com/hinesboy/mavonEditor"
-      target="_blank"
+    mavon-editor :<a href="https://github.com/hinesboy/mavonEditor" target="_blank"
       >https://github.com/hinesboy/mavonEditor</a
     >
   </div>
   <div>
-    @vue-office :<a
-      href="https://github.com/501351981/vue-office"
-      target="_blank"
+    @vue-office :<a href="https://github.com/501351981/vue-office" target="_blank"
       >https://github.com/501351981/vue-office</a
     >
   </div>

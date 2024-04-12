@@ -1,61 +1,59 @@
 <template>
-<div class="wrapper">
-  <div class="calculator">
-    <div class="calculator__result">
-      <input type="text" class="calculator__result-secondary" disabled>
-      <input type="text" class="calculator__result-primary" value="0" readonly>
-    </div>
-    <div class="calculator__mem-buttons">
-      <button class="calculator__m-btn" disabled>MC</button>
-      <button class="calculator__m-btn" disabled>MR</button>
-      <button class="calculator__m-btn" disabled>M+</button>
-      <button class="calculator__m-btn" disabled>M-</button>
-      <button class="calculator__m-btn" disabled>MS</button>
-      <button class="calculator__m-btn" disabled>M</button>
-    </div>
-    <div class="calculator__buttons">
-      <button class="calculator__btn" data-operator="percent">%</button>
-      <button class="calculator__btn" data-option="clearEntry">CE</button>
-      <button class="calculator__btn" data-option="clear">C</button>
-      <button class="calculator__btn calculator__btn--backspace" data-option="undo"></button>
-      
-      <button class="calculator__btn" data-operator="fraction">&sup1;/ ₓ</button>
-      <button class="calculator__btn" data-operator="pow">x&sup2;</button>
-      <button class="calculator__btn" data-operator="sqrt">&radic;</button>
-      <button class="calculator__btn" data-operator="divide">&divide;</button>
+  <div class="wrapper">
+    <div class="calculator">
+      <div class="calculator__result">
+        <input type="text" class="calculator__result-secondary" disabled />
+        <input type="text" class="calculator__result-primary" value="0" readonly />
+      </div>
+      <div class="calculator__mem-buttons">
+        <button class="calculator__m-btn" disabled>MC</button>
+        <button class="calculator__m-btn" disabled>MR</button>
+        <button class="calculator__m-btn" disabled>M+</button>
+        <button class="calculator__m-btn" disabled>M-</button>
+        <button class="calculator__m-btn" disabled>MS</button>
+        <button class="calculator__m-btn" disabled>M</button>
+      </div>
+      <div class="calculator__buttons">
+        <button class="calculator__btn" data-operator="percent">%</button>
+        <button class="calculator__btn" data-option="clearEntry">CE</button>
+        <button class="calculator__btn" data-option="clear">C</button>
+        <button class="calculator__btn calculator__btn--backspace" data-option="undo"></button>
 
-      <button class="calculator__btn calculator__btn--number" data-number>7</button>
-      <button class="calculator__btn calculator__btn--number" data-number>8</button>
-      <button class="calculator__btn calculator__btn--number" data-number>9</button>
-      <button class="calculator__btn" data-operator="multiply">&times;</button>
-      
-      <button class="calculator__btn calculator__btn--number" data-number>4</button>
-      <button class="calculator__btn calculator__btn--number" data-number>5</button>
-      <button class="calculator__btn calculator__btn--number" data-number>6</button>
-      <button class="calculator__btn" data-operator="minus">&minus;</button>
+        <button class="calculator__btn" data-operator="fraction">&sup1;/ ₓ</button>
+        <button class="calculator__btn" data-operator="pow">x&sup2;</button>
+        <button class="calculator__btn" data-operator="sqrt">&radic;</button>
+        <button class="calculator__btn" data-operator="divide">&divide;</button>
 
-      <button class="calculator__btn calculator__btn--number" data-number>1</button>
-      <button class="calculator__btn calculator__btn--number" data-number>2</button>
-      <button class="calculator__btn calculator__btn--number" data-number>3</button>
-      <button class="calculator__btn" data-operator="plus">+</button>
+        <button class="calculator__btn calculator__btn--number" data-number>7</button>
+        <button class="calculator__btn calculator__btn--number" data-number>8</button>
+        <button class="calculator__btn calculator__btn--number" data-number>9</button>
+        <button class="calculator__btn" data-operator="multiply">&times;</button>
 
-      <button class="calculator__btn calculator__btn--number" data-option="reverse">+/-</button>
-      <button class="calculator__btn calculator__btn--number" data-number>0</button>
-      <button class="calculator__btn calculator__btn--number" data-option="dot">,</button>
-      <button class="calculator__btn calculator__btn--equals" data-operator="equal">=</button>
+        <button class="calculator__btn calculator__btn--number" data-number>4</button>
+        <button class="calculator__btn calculator__btn--number" data-number>5</button>
+        <button class="calculator__btn calculator__btn--number" data-number>6</button>
+        <button class="calculator__btn" data-operator="minus">&minus;</button>
+
+        <button class="calculator__btn calculator__btn--number" data-number>1</button>
+        <button class="calculator__btn calculator__btn--number" data-number>2</button>
+        <button class="calculator__btn calculator__btn--number" data-number>3</button>
+        <button class="calculator__btn" data-operator="plus">+</button>
+
+        <button class="calculator__btn calculator__btn--number" data-option="reverse">+/-</button>
+        <button class="calculator__btn calculator__btn--number" data-number>0</button>
+        <button class="calculator__btn calculator__btn--number" data-option="dot">,</button>
+        <button class="calculator__btn calculator__btn--equals" data-operator="equal">=</button>
+      </div>
     </div>
   </div>
-</div>
 </template>
 <script setup>
 // @ts-nocheck
 import { onMounted } from 'vue';
 
 class Calculations {
-  
   static doMath = (currentResult = null, value = null, operator = null) => {
-    
-    switch(operator) {
+    switch (operator) {
       case 'plus':
         return currentResult + value;
 
@@ -68,11 +66,10 @@ class Calculations {
       case 'divide':
         return currentResult / value;
     }
-  }
+  };
 
   static returnOperator = (operator = null) => {
-
-    switch(operator) {
+    switch (operator) {
       case 'plus':
         return '+';
 
@@ -88,135 +85,126 @@ class Calculations {
       case 'equal':
         return '=';
     }
-  }
+  };
 }
 class Calculator {
   constructor() {
-
     this.result = document.querySelector('.calculator__result-primary');
     this.subRes = document.querySelector('.calculator__result-secondary');
     this.numbers = [...document.querySelectorAll('[data-number]')];
     this.options = [...document.querySelectorAll('[data-option]')];
     this.operators = [...document.querySelectorAll('[data-operator]')];
-    
-    this.numbers.forEach(number => number.addEventListener('click', this.addNumber));
-    this.options.forEach(option => option.addEventListener('click', this.addOption));
-    this.operators.forEach(operator => operator.addEventListener('click', this.calculate));
-    
+
+    this.numbers.forEach((number) => number.addEventListener('click', this.addNumber));
+    this.options.forEach((option) => option.addEventListener('click', this.addOption));
+    this.operators.forEach((operator) => operator.addEventListener('click', this.calculate));
+
     this.calculations = [];
     this.newNumber = false;
     this.reset = false;
     this.lastOperator = null;
     this.currentResult = 0;
-    
+
     this.clear();
   }
 
   addNumber = (e) => {
+    if (this.reset) this.clear();
 
-    if(this.reset) this.clear();
-    
     this.number = e.target.textContent;
 
-    if(this.result.value === '0') this.result.value = this.number;
-    else if(this.newNumber) this.result.value = this.number;
+    if (this.result.value === '0') this.result.value = this.number;
+    else if (this.newNumber) this.result.value = this.number;
     else this.result.value += this.number;
 
     this.newNumber = false;
-  }
+  };
 
   addOption = (e) => {
-    
     this.option = e.target.dataset.option;
     this.lastChar = this.result.value[this.result.value.length - 1];
-    
-    if(this.option === 'dot') {
-      (this.lastChar === '.' || this.result.value.indexOf('.') !== -1) 
+
+    if (this.option === 'dot') {
+      this.lastChar === '.' || this.result.value.indexOf('.') !== -1
         ? this.result.value
-        : this.result.value += '.';
+        : (this.result.value += '.');
+    } else if (this.option === 'clearEntry') this.result.value = '0';
+    else if (this.option === 'clear') this.clear();
+    else if (this.option === 'reverse') this.result.value = this.result.value * -1;
+    else if (this.option === 'undo') {
+      this.result.value.length === 1
+        ? (this.result.value = '0')
+        : (this.result.value = this.result.value.substring(0, this.result.value.length - 1));
     }
-    
-    else if(this.option === 'clearEntry') this.result.value = '0';
-    
-    else if(this.option === 'clear') this.clear();
-    
-    else if(this.option === 'reverse') this.result.value = this.result.value * -1;
-
-    else if(this.option === 'undo') {
-
-      (this.result.value.length === 1) 
-        ? this.result.value = '0' 
-        : this.result.value = this.result.value.substring(0, this.result.value.length - 1);
-    }
-  }
+  };
 
   calculate = (e) => {
-
     this.operator = e.target.dataset.operator;
     this.value = Number(this.result.value);
     this.subRes.style.visibility = 'visible';
 
-    if(this.operator === 'pow') {
+    if (this.operator === 'pow') {
       this.subRes.value = ` sqr(${this.result.value})`;
       this.result.value = Math.pow(this.result.value, 2);
-    }
-
-    else if(this.operator === 'sqrt') {
+    } else if (this.operator === 'sqrt') {
       this.subRes.value = ` ${e.target.textContent}(${this.result.value})`;
       this.result.value = Math.sqrt(this.result.value);
-    }
-
-    else if(this.operator === 'fraction') {
+    } else if (this.operator === 'fraction') {
       this.subRes.value = ` 1/(${this.result.value})`;
       this.result.value = 1 / this.result.value;
-    }
-
-    else if(this.operator === 'percent') this.result.value = parseFloat(((this.currentResult * this.value) / 100).toPrecision(14));
-
+    } else if (this.operator === 'percent')
+      this.result.value = parseFloat(((this.currentResult * this.value) / 100).toPrecision(14));
     else {
+      if (
+        this.operator === 'equal' &&
+        this.newNumber &&
+        this.lastOperator !== null &&
+        this.lastOperator !== 'equal'
+      ) {
+        if (this.calculations.length > 2)
+          this.value = this.calculations
+            .map((item) => item)
+            .reverse()
+            .find((item) => typeof item === 'number');
 
-      if(this.operator === 'equal' && this.newNumber && this.lastOperator !== null && this.lastOperator !== 'equal'){
-        
-        if(this.calculations.length > 2) 
-        this.value = this.calculations.map(item => item).reverse().find(item => typeof item === 'number');
+        this.calculations = [
+          this.currentResult,
+          Calculations.returnOperator(this.lastOperator),
+          this.value,
+          Calculations.returnOperator(this.operator),
+        ];
 
-        this.calculations = [this.currentResult, Calculations.returnOperator(this.lastOperator), this.value, Calculations.returnOperator(this.operator)];
-        
         this.currentResult = Calculations.doMath(this.currentResult, this.value, this.lastOperator);
-        this.currentResult = (parseFloat(this.currentResult.toPrecision(14)));
-        
+        this.currentResult = parseFloat(this.currentResult.toPrecision(14));
+
         this.result.value = this.currentResult;
         this.subRes.value = this.calculations.join(' ');
-
       } else {
-
-        if(this.newNumber) {
+        if (this.newNumber) {
           this.lastOperator = this.operator;
-          this.calculations[this.calculations.length-1] = Calculations.returnOperator(this.operator);
+          this.calculations[this.calculations.length - 1] = Calculations.returnOperator(this.operator);
           this.subRes.value = this.calculations.join(' ');
           this.reset = false;
           return;
         }
-        
-        (this.lastOperator === null) 
-          ? this.currentResult = this.value
-          : this.currentResult = Calculations.doMath(this.currentResult, this.value, this.lastOperator);
-         
-        (this.operator !== 'equal')
-          ? this.lastOperator = this.operator 
-          : this.reset = true;
-        
+
+        this.lastOperator === null
+          ? (this.currentResult = this.value)
+          : (this.currentResult = Calculations.doMath(this.currentResult, this.value, this.lastOperator));
+
+        this.operator !== 'equal' ? (this.lastOperator = this.operator) : (this.reset = true);
+
         this.newNumber = true;
         this.calculations.push(this.value);
         this.calculations.push(Calculations.returnOperator(this.operator));
 
-        this.currentResult = (parseFloat(this.currentResult.toPrecision(14)));
+        this.currentResult = parseFloat(this.currentResult.toPrecision(14));
         this.result.value = this.currentResult;
 
         this.subRes.value = this.calculations.join(' ');
       }
     }
-  }
+  };
 
   clear = () => {
     this.subRes.style.visibility = 'hidden';
@@ -227,14 +215,13 @@ class Calculator {
     this.reset = false;
     this.lastOperator = null;
     this.currentResult = 0;
-  }
+  };
 }
-onMounted(()=>{
+onMounted(() => {
   new Calculator();
-})
+});
 </script>
 <style scoped>
-
 html,
 body,
 div,
@@ -353,12 +340,14 @@ q {
   quotes: none;
 }
 
-blockquote:before, blockquote:after {
+blockquote:before,
+blockquote:after {
   content: '';
   content: none;
 }
 
-q:before, q:after {
+q:before,
+q:after {
   content: '';
   content: none;
 }
@@ -375,18 +364,19 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
 * {
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   background-color: #252525;
-  font-family: "Noto Sans JP", sans-serif;
+  font-family: 'Noto Sans JP', sans-serif;
   color: #111111;
 }
 
@@ -400,11 +390,11 @@ html, body {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
 }
 
 .calculator {
@@ -413,43 +403,44 @@ html, body {
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   min-width: 320px;
   padding: 4px;
   background-color: #bcbcbc;
   -webkit-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
-          box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
 }
 
 .calculator__result {
   -ms-flex-preferred-size: 100%;
-      flex-basis: 100%;
+  flex-basis: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: flex-end;
+  -ms-flex-align: end;
+  align-items: flex-end;
   -webkit-box-pack: end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
   padding: 20px;
   background-color: #bcbcbc;
 }
 
-.calculator__result-primary, .calculator__result-secondary {
+.calculator__result-primary,
+.calculator__result-secondary {
   background-color: transparent;
   border: none;
   text-align: right;
   font-weight: 700;
   font-size: 2.6rem;
   padding-left: 30px;
-  font-family: "Noto Sans JP", sans-serif;
+  font-family: 'Noto Sans JP', sans-serif;
   color: #111111;
 }
 
@@ -470,19 +461,19 @@ html, body {
 
 .calculator__m-btn {
   -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  -ms-flex: 1;
+  flex: 1;
   border: none;
   background-color: #bcbcbc;
-  font-family: "Noto Sans JP", sans-serif;
+  font-family: 'Noto Sans JP', sans-serif;
   padding: 15px;
 }
 
 .calculator__buttons {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (1fr)[4];
-      grid-template-columns: repeat(4, 1fr);
+  -ms-grid-columns: (1fr) [4];
+  grid-template-columns: repeat(4, 1fr);
   gap: 2px;
   background-color: #bcbcbc;
 }
@@ -492,13 +483,13 @@ html, body {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   border: none;
-  font-family: "Noto Sans JP", sans-serif;
+  font-family: 'Noto Sans JP', sans-serif;
   font-size: 1.3rem;
   font-weight: 100;
   padding: 10px 0;

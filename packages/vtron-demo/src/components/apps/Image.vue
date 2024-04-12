@@ -8,13 +8,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { inject, onMounted, ref } from "vue";
+import { inject, onMounted, ref } from 'vue';
 
-import { BrowserWindow, System, VtronFileSystem, WinLoadingVue } from "vtron";
+import { BrowserWindow, System, VtronFileSystem, WinLoadingVue } from 'vtron';
 
-const browserWindow: BrowserWindow | undefined = inject("browserWindow");
-const sys = inject<System>("system")!;
-const content = ref("");
+const browserWindow: BrowserWindow | undefined = inject('browserWindow');
+const sys = inject<System>('system')!;
+const content = ref('');
 
 onMounted(() => {
   const path = browserWindow?.config.content;
@@ -22,12 +22,12 @@ onMounted(() => {
   if (sys.fs instanceof VtronFileSystem) {
     sys.fs.checkVolumePath(path);
   }
-  if (path?.startsWith("http")) {
+  if (path?.startsWith('http')) {
     // http://admin:admin@example.com:5244/dav/a.jpg to admin:admin
     const url = new URL(path);
-    const cred = url.password ? `${url.username}:${url.password}` : "";
+    const cred = url.password ? `${url.username}:${url.password}` : '';
     if (cred) {
-      const resource = url.href.replace(`${url.username}:${url.password}@`, "");
+      const resource = url.href.replace(`${url.username}:${url.password}@`, '');
       const headers = new Headers({
         Authorization: `Basic ${btoa(cred)}`,
       });

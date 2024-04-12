@@ -1,9 +1,9 @@
-import { mountEvent, emitEvent } from './EventHook';
 import { RootState } from '@packages/kernel';
+import { emitEvent, mountEvent } from './EventHook';
 
+import { throttle } from '@/packages/util/debounce';
 import { useSystem } from '../../system';
 import { join } from '../file/Path';
-import { throttle } from '@/packages/util/debounce';
 
 function initSizeEvent() {
   const rootState = useSystem()._rootState;
@@ -100,4 +100,4 @@ async function initAlertEvent() {
     });
   }
 }
-export { initSizeEvent, initBatteryEvent, initNetworkEvent, initAlertEvent };
+export { initAlertEvent, initBatteryEvent, initNetworkEvent, initSizeEvent };

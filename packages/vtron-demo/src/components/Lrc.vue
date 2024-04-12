@@ -1,8 +1,4 @@
 <template>
-    <div>
-        LRC
-    </div>
+  <div>LRC</div>
 </template>
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>

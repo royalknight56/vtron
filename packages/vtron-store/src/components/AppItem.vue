@@ -1,19 +1,11 @@
 <template>
   <div class="app-item">
-    <img
-      v-if="item?.icon"
-      draggable="false"
-      class="app-img"
-      :src="item?.icon"
-      alt=""
-    />
+    <img v-if="item?.icon" draggable="false" class="app-img" :src="item?.icon" alt="" />
     <div class="app-content">
       <div class="app-title">{{ item?.name }}</div>
       <div class="app-desc">{{ item?.desc }}</div>
       <div class="app-button">
-        <div
-          v-if="installedList?.some((install: any) => install.name == item?.name + '.js')"
-        >
+        <div v-if="installedList?.some((install: any) => install.name == item?.name + '.js')">
           <button @click="uninstall?.(item)">卸载</button>
         </div>
         <div v-else>

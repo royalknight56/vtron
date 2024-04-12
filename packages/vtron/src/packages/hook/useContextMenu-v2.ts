@@ -10,7 +10,8 @@ export class ContextMenusUtil {
   createDesktopContextMenu(
     e: MouseEvent,
     path = `${useSystem()._options.userLocation}Desktop`,
-    callback?: () => void
+    callback?: () => void,
+    sdk?: any
   ) {
     const system = useSystem();
     if (!system) return;

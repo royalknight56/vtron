@@ -3,10 +3,7 @@
     <div class="tip">请输入您的意见</div>
     <div class="alr">
       在这里提意见之前，可以首先转到github提供issue，可以得到及时的跟踪反馈
-      <a
-        target="_blank"
-        href="https://github.com/royalknight56/vtron/issues/new"
-      >
+      <a target="_blank" href="https://github.com/royalknight56/vtron/issues/new">
         https://github.com/royalknight56/vtron/issues/new
       </a>
     </div>
@@ -20,27 +17,27 @@
   <div class="comment-loading" v-if="state === 'loading'"></div>
 </template>
 <script setup lang="ts">
-import { inject, ref } from "vue";
-import { Dialog, BrowserWindow, WinButtonVue } from "vtron";
-const comment = ref("");
-const user = ref("");
-const state = ref("ready");
-let browserWindow = <BrowserWindow>inject("browserWindow");
+import { inject, ref } from 'vue';
+import { Dialog, BrowserWindow, WinButtonVue } from 'vtron';
+const comment = ref('');
+const user = ref('');
+const state = ref('ready');
+let browserWindow = <BrowserWindow>inject('browserWindow');
 
 function submit() {
   if (!user.value || !comment.value) {
     Dialog.showMessageBox({
-      type: "error",
-      message: "请填写昵称或联系方式以及您的意见！",
+      type: 'error',
+      message: '请填写昵称或联系方式以及您的意见！',
     });
     return;
   }
-  state.value = "loading";
+  state.value = 'loading';
 
-  fetch("https://myim.online:3100/api/comment", {
-    method: "POST",
+  fetch('https://myim.online:3100/api/comment', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       user: user.value,
@@ -49,10 +46,10 @@ function submit() {
   })
     .then((res) => res.json())
     .then((res) => {
-      state.value = "success";
+      state.value = 'success';
       Dialog.showMessageBox({
-        type: "info",
-        message: "感谢您的意见！我们已经收到了您的反馈，我们会尽快处理！",
+        type: 'info',
+        message: '感谢您的意见！我们已经收到了您的反馈，我们会尽快处理！',
       }).finally(() => {
         browserWindow.close();
       });

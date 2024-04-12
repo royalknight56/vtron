@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         uses: cypress-io/github-action@v6
         with:
-          working-directory: ./packages/vtron-e2e
+          working-directory: ./
           runTests: false
       - name: Cypress run
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action

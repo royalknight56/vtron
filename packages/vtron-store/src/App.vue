@@ -7,7 +7,6 @@ import shimo from './assets/shimo.base?raw';
 import zhengqiji from './assets/zhengqiji.base?raw';
 import vtbshuju from './assets/vtbshuju.base?raw';
 import defaulticon from './assets/default.base?raw';
-import chatGPTIcon from './assets/chatGPT.base?raw';
 import redalertIcon from './assets/redalert.base?raw';
 
 const isready = ref(false);
@@ -108,13 +107,13 @@ const temp = [
   //     }`,
   // },
 
-  {
-    name: 'webdav',
-    desc: '支持连接webdav，在“设置”中进行设置',
-    // type: "all",
-    icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAk0lEQVRYw2P8z0AZYBw1YHgYcLF9JVk6wyv1wQZccHxPpt2C+0EmMIavJNv14StABlDi//8wA8gJSMYRbMCKLIZpEZQYIPSeQfDdgBpAsRdG08HwNYDiAmWIG/CfiIAiu2Ya4gYwogXWSDXgPxEBORwNYMST2/4PUwNwFRTEKPw/TAz4T0ygkBsLQ9SA0U7XiDQAAHeffgFWSH/RAAAAAElFTkSuQmCC',
-    // content: webdav,
-  },
+  // {
+  //   name: 'webdav',
+  //   desc: '支持连接webdav，在“设置”中进行设置',
+  //   // type: "all",
+  //   icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAk0lEQVRYw2P8z0AZYBw1YHgYcLF9JVk6wyv1wQZccHxPpt2C+0EmMIavJNv14StABlDi//8wA8gJSMYRbMCKLIZpEZQYIPSeQfDdgBpAsRdG08HwNYDiAmWIG/CfiIAiu2Ya4gYwogXWSDXgPxEBORwNYMST2/4PUwNwFRTEKPw/TAz4T0ygkBsLQ9SA0U7XiDQAAHeffgFWSH/RAAAAAElFTkSuQmCC',
+  //   // content: webdav,
+  // },
   transSimpleUrlApp('看月亮', 'https://static.vtron.site/moon/', moon),
   // transSimpleUrlApp('语音ChatGPT', 'https://gpt.myim.online/#/about', chatGPTIcon),
   transSimpleUrlApp('红警', 'https://game.bun.sh.cn/', redalertIcon),

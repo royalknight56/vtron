@@ -60,7 +60,7 @@
     "sass": "^1.45.1",
     "semantic-release": "^21.1.1",
     "typescript": "^5.1.6",
-    "vite": "^3.0.9",
+    "vite": "^4.3.9",
     "vite-plugin-dts": "^0.8.3",
     "vite-plugin-style-import": "^1.2.1",
     "vitest": "^0.31.1",

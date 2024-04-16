@@ -27,7 +27,7 @@ const magnetConfig = [
     width: 800,
     height: 600,
     center: true,
-    content: 'https://static.myim.online/yabird/',
+    content: 'https://static.vtron.site/yabird/',
     backgroundColor: '#71c5cf',
     resizable: true,
   },

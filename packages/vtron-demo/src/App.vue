@@ -241,7 +241,7 @@ NoteMd是和vtron契合的笔记软件
 
   setTimeout(() => {
     if (process.env.NODE_ENV === 'development') return;
-    fetch('https://myim.online:3100/api/visit', {
+    fetch('https://vtron.site:3100/api/visit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -253,7 +253,7 @@ NoteMd是和vtron契合的笔记软件
       }),
     });
 
-    fetch('https://myim.online:3100/api/notify', {
+    fetch('https://vtron.site:3100/api/notify', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

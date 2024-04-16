@@ -115,8 +115,8 @@ const temp = [
     icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAk0lEQVRYw2P8z0AZYBw1YHgYcLF9JVk6wyv1wQZccHxPpt2C+0EmMIavJNv14StABlDi//8wA8gJSMYRbMCKLIZpEZQYIPSeQfDdgBpAsRdG08HwNYDiAmWIG/CfiIAiu2Ya4gYwogXWSDXgPxEBORwNYMST2/4PUwNwFRTEKPw/TAz4T0ygkBsLQ9SA0U7XiDQAAHeffgFWSH/RAAAAAElFTkSuQmCC',
     // content: webdav,
   },
-  transSimpleUrlApp('看月亮', 'https://static.myim.online/moon/', moon),
-  transSimpleUrlApp('语音ChatGPT', 'https://gpt.myim.online/#/about', chatGPTIcon),
+  transSimpleUrlApp('看月亮', 'https://static.vtron.site/moon/', moon),
+  // transSimpleUrlApp('语音ChatGPT', 'https://gpt.myim.online/#/about', chatGPTIcon),
   transSimpleUrlApp('红警', 'https://game.bun.sh.cn/', redalertIcon),
   transSimpleUrlApp(
     '在线工具',

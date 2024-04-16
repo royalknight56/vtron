@@ -13,7 +13,7 @@ import { onMounted, reactive } from 'vue';
 
 const FriendLinks = reactive<any[]>([]);
 onMounted(() => {
-  fetch('https://myim.online:3100/api/friend', {
+  fetch('https://vtron.site:3100/api/friend', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

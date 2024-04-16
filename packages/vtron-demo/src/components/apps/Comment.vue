@@ -34,7 +34,7 @@ function submit() {
   }
   state.value = 'loading';
 
-  fetch('https://myim.online:3100/api/comment', {
+  fetch('https://vtron.site:3100/api/comment', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

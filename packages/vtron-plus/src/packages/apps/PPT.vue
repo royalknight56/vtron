@@ -1,5 +1,5 @@
 <template>
-  <iframe class="setiframe" allow="fullscreen" ref="storeRef" src="https://myim.online/ppt"></iframe>
+  <iframe class="setiframe" allow="fullscreen" ref="storeRef" src="https://vtron.site/ppt"></iframe>
 </template>
 <script lang="ts" setup>
 import { BrowserWindow, Notify, System } from 'vtron';

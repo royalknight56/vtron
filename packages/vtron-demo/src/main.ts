@@ -26,7 +26,7 @@ Sentry.init({
   dsn: 'https://2d8aca35eff545bc92eb2bd1a4015b5e@o1342161.ingest.sentry.io/6615966',
   integrations: [
     new BrowserTracing({
-      tracingOrigins: ['localhost', 'myim.online', /^\//],
+      tracingOrigins: ['localhost', 'vtron.site', /^\//],
     }),
   ],
   // Set tracesSampleRate to 1.0 to capture 100%

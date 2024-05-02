@@ -309,7 +309,7 @@
 </style>
 <script>
   if (location.href.indexOf('myim.online') > -1 || location.href.indexOf('vtron.site') > -1) {
-    fetch('https://vtron.site:3100/api/visit', {
+    fetch('https://api.vtron.site/api/visit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -322,7 +322,7 @@
     });
   }
 
-  fetch('https://vtron.site:3100/api/friend', {
+  fetch('https://api.vtron.site/api/friend', {
     method: 'POST',
   })
     .then((res) => res.json())

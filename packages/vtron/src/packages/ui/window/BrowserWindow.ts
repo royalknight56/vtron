@@ -134,6 +134,12 @@ class BrowserWindow {
       }
     }
   }
+  addEventListener(event: string, callback: (...arg: any) => void) {
+    this.eventer.on(event, callback);
+  }
+  removeEventListener(event: string, callback?: (...arg: any) => void) {
+    this.eventer.off(event, callback);
+  }
   on(event: string, callback: (...arg: any) => void) {
     this.eventer.on(event, callback);
   }

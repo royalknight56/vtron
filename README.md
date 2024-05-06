@@ -174,6 +174,74 @@ let system = new System({
 </script>
 ```
 
+## 调试流程
+
+### 项目结构
+
+项目是monorepo项目，
+
+包含多个子项目，存在于packages下，每个文件夹是一个子项目。
+
+vtron: 核心项目，包含核心逻辑，vtronjs包。
+
+vtron-demo: demo项目，也是线上win.vtron.site的项目。
+
+vtron-e2e: e2e测试监控项目。
+
+vtron-home: 主页介绍，指线上vtron.site。
+
+vtron-md: 文档项目，指线上v3w10.vtron.site。
+
+vtron-plus: plus插件，包含了部分占用体积的附加功能。
+
+vtron-store: 应用商店，线上应用商店打开时的内嵌网页，可以与vtron框架交互，提供应用安装功能。
+
+### 启动项目
+
+首先安装所有依赖，建议使用pnpm。
+
+```bash
+pnpm i
+```
+
+安装依赖之后，启动对应子项目，
+
+对于vtron 项目，运行：
+
+```bash
+pnpm vtron dev
+```
+
+对于plus项目，运行：
+
+```bash
+pnpm plus dev
+```
+
+对于demo项目，运行：
+
+```bash
+pnpm demo dev
+```
+
+对于md项目，运行：
+
+```bash
+pnpm md dev
+```
+
+对于shop项目，运行：
+
+```bash
+pnpm shop dev
+```
+
+对于e2e项目，运行：
+
+```bash
+pnpm e2e dev
+```
+
 # 感谢Star
 
 欢迎PR，意见，想法，感谢各位大佬的支持

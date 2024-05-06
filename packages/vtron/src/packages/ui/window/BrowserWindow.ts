@@ -94,7 +94,7 @@ class BrowserWindow {
     };
   }
 
-  _setZindex() {
+  private _setZindex() {
     this.windowInfo.zindex =
       20 +
       useSystem()._rootState.windowTree.findIndex(this, (val: Tree<BrowserWindow>) => {
@@ -134,9 +134,19 @@ class BrowserWindow {
       }
     }
   }
+  /**
+   * Adds a listener to the window.
+   * @param event The event name.
+   * @param callback The callback function.
+   */
   addEventListener(event: string, callback: (...arg: any) => void) {
     this.eventer.on(event, callback);
   }
+  /**
+   * Removes a listener from the window.
+   * @param event The event name.
+   * @param callback The callback function.
+   */
   removeEventListener(event: string, callback?: (...arg: any) => void) {
     this.eventer.off(event, callback);
   }

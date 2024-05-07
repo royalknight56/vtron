@@ -101,7 +101,7 @@ export class System {
     /**
      * 过程：激活屏幕，桥接事件。
      */
-    this._rootState.state = SystemStateEnum.opening;
+    this._rootState.systemState = SystemStateEnum.opening;
 
     logger('initFileSystem');
     await this.initFileSystem(); // 初始化文件系统
@@ -131,15 +131,15 @@ export class System {
    */
   private isLogin() {
     if (!this._options.login) {
-      this._rootState.state = SystemStateEnum.open;
+      this._rootState.systemState = SystemStateEnum.open;
       return;
     } else {
       if (this._options.login.init?.()) {
-        this._rootState.state = SystemStateEnum.open;
+        this._rootState.systemState = SystemStateEnum.open;
         return;
       }
 
-      this._rootState.state = SystemStateEnum.lock;
+      this._rootState.systemState = SystemStateEnum.lock;
       const tempCallBack = this._options.loginCallback;
       if (!tempCallBack) {
         throw new Error('没有设置登录回调函数');
@@ -147,7 +147,7 @@ export class System {
       this._options.loginCallback = async (username: string, password: string) => {
         const res = await tempCallBack(username, password);
         if (res) {
-          this._rootState.state = SystemStateEnum.open;
+          this._rootState.systemState = SystemStateEnum.open;
           return true;
         }
         return false;
@@ -389,10 +389,10 @@ export class System {
     }
   }
   shutdown() {
-    this._rootState.state = SystemStateEnum.close;
+    this._rootState.systemState = SystemStateEnum.close;
   }
   reboot() {
-    this._rootState.state = SystemStateEnum.close;
+    this._rootState.systemState = SystemStateEnum.close;
     window.location.reload();
   }
   recover() {
@@ -402,7 +402,7 @@ export class System {
     localStorage.removeItem('vtron-password');
     localStorage.removeItem('vtronCommandHistory');
 
-    this._rootState.state = SystemStateEnum.close;
+    this._rootState.systemState = SystemStateEnum.close;
     window.location.reload();
   }
   getEventer() {

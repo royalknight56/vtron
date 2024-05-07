@@ -7,7 +7,7 @@ import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { initRootState, RootState } from '@/packages/kernel/state/Root';
 import { systemStartup } from '@/packages/startup';
 import { Dialog } from '@/packages/ui/dialog/Dialog';
-import { Notify, NotifyConstructorOptions } from '@/packages/ui/notification/Notification';
+import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
 import { Tray, TrayOptions } from '@/packages/ui/tray/Tary';
 import { pick } from '@/packages/util/modash';
 import { SystemStateEnum } from '@packages/type/enum';

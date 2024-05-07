@@ -35,7 +35,7 @@ export { Dialog } from '@/packages/ui/dialog/Dialog';
 export { i18n } from '@/packages/ui/i18n';
 export { Menu } from '@/packages/ui/menu/Menu';
 export { MenuItem } from '@/packages/ui/menu/MenuItem';
-export { Notify } from '@/packages/ui/notification/Notification';
+export { Notify } from '@/packages/services/notification/Notification';
 export { Tray } from '@/packages/ui/tray/Tary';
 export { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
 export { vDragable } from '@/packages/ui/window/MakeDragable';

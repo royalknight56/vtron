@@ -7,7 +7,9 @@
 <script setup lang="ts">
 import WinButton from '@packages/components/WinButton.vue';
 import { inject, ref } from 'vue';
-import { Dialog, Notify, i18n, BrowserWindow } from '@packages/ui';
+import { Dialog, i18n, BrowserWindow } from '@packages/ui';
+import { Notify } from '@/packages/services/notification/Notification';
+
 import { VtronFileWithoutContent, basename, join, useSystem, emitEvent } from '@packages/kernel';
 
 const browserWindow: BrowserWindow = inject('browserWindow')!;

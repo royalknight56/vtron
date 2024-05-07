@@ -17,7 +17,8 @@
 </template>
 <script setup lang="ts">
 import { inject, ref } from 'vue';
-import { Notify, i18n, BrowserWindow, Menu } from '@packages/ui';
+import { i18n, BrowserWindow, Menu } from '@packages/ui';
+import { Notify } from '@/packages/services/notification/Notification';
 import { useSystem } from '@packages/kernel';
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');

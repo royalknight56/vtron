@@ -1,5 +1,52 @@
-const stateOrigin = {
-  state: SystemStateEnum.close as SystemStateEnum,
+import { VtronFileWithoutContent } from '@/packages/kernel/file/FileSystem';
+import { SystemStateEnum } from '@/packages/type/enum';
+import { Notify } from '@/packages/services/notification/Notification';
+import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
+import { Tree } from '@/packages/util/Tree';
+import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
+import { Menu } from '@/packages/ui/menu/Menu';
+
+type OriginStateType = {
+  systemState: SystemStateEnum;
+  apps: Array<VtronFileWithoutContent>;
+  magnet: Array<VtronFileWithoutContent>;
+  menulist: Array<VtronFileWithoutContent>;
+  notify: Array<Notify>;
+  message: {
+    notify: Array<Notify>;
+    system: Array<Notify>;
+  };
+  windowTree: Tree<BrowserWindow>;
+  windowOrder: Array<BrowserWindow>;
+  windowMap: { [key: string]: Map<string, WinAppOptions> };
+  topWindow: BrowserWindow | undefined;
+  winnum: number;
+  info: {
+    screenWidth: number;
+    screenHeight: number;
+    mouseX: number;
+    mouseY: number;
+    battery: {
+      isCharging: boolean;
+      chargeLevel: number;
+    };
+    brightness: number;
+    connection: {
+      effectiveType: string;
+      rtt: number;
+      downlink: number;
+      saveData: boolean;
+    };
+  };
+  options: SystemOptions;
+  clipboard: any;
+  settings: Array<Setting>;
+  contextMenu: Menu | null;
+  error: string;
+};
+
+const stateOrigin: OriginStateType = {
+  systemState: SystemStateEnum.close as SystemStateEnum,
   apps: [] as Array<VtronFileWithoutContent>,
   magnet: [] as Array<VtronFileWithoutContent>,
   menulist: [] as Array<VtronFileWithoutContent>,

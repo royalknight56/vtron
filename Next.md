@@ -146,10 +146,58 @@ PS1：终端提示符的格式设置。
 
 ## window 设置url内容
 
-## 创建文件时 name选项不必要
-
 ## 新建文件时，会覆盖原有的
 
 ## 无法重命名文件
 
 ## 在窗口加载时，在标题后面添加loading
+
+# 重构2（代码就是在不断的重构中成长的！）
+
+又不兼容了！！
+
+## system 初始化api设计
+
+现在在Screen组件中没有传入system参数，这样不太对，因为没有体现两个实体之间的联系。
+
+下一版改为需要传入system参数，这样就能体现联系。
+
+改为 <Screen :system="system">
+
+## 系统状态
+
+现在状态管理比较混乱，考虑引入pinia来管理状态。
+一个state，不止保存值，也要给出action。
+
+## 高内聚，低耦合
+
+UI和逻辑分离的不彻底
+
+核心逻辑和其他逻辑分离的不彻底。
+
+new System 创建的实例，这里的逻辑都应该属于kernel层。
+
+创建出来的实例，需要传入Screen，Screen组件接收之后的显示逻辑，都属于UI层。
+
+借此逻辑，整个项目分为三层文件夹：kernel、ui、services
+
+kernel
+｜- file 文件系统组件，负责文件的增删改查
+｜- state 状态管理
+｜- event 事件管理
+
+ui
+｜- screen 屏幕组件（暂定）比较重要，因为这个组件接收system实例，是kernel层和ui层的桥梁
+｜- application 存放系统内置应用
+｜- widgets 存放UI组件，例如按钮，输入框
+｜- layout 组织布局
+｜- shell 终端，也属于ui，tui
+
+services 存放可供系统调用的组件
+|- dialog
+|- tray
+|- menu
+|- notification
+|- window
+
+utils

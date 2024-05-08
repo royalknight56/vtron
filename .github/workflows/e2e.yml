@@ -41,7 +41,7 @@ jobs:
         with:
           working-directory: ./packages/vtron-e2e
           browser: chrome
-          install: false
+          install: true
           # Starts web server for E2E tests - replace with your own server invocation
           # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
           # start: npm start

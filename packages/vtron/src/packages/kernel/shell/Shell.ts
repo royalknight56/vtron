@@ -1,5 +1,5 @@
+import * as vPath from '@/packages/kernel/file/Path';
 import { System } from '@/packages/kernel/system';
-import * as vPath from '../file/Path';
 import { ShellInterface } from './ShellType';
 import { commandMap } from './shellCommand/commandMap';
 

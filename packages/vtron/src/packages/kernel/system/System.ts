@@ -20,8 +20,9 @@ import {
   WinAppOptions,
 } from '@packages/type/type';
 import { BrowserWindow, BrowserWindowOption } from '@packages/ui/window/BrowserWindow';
-import { markRaw, nextTick } from 'vue';
+import { markRaw } from 'vue';
 import { version } from '../../../../package.json';
+import { AppOperations } from './appOperations/AppOperations';
 import { defaultConfig } from './initConfig';
 
 const logger = function (...args: any[]) {
@@ -66,13 +67,15 @@ export class System {
   fs!: VtronFileInterface;
   _shell!: ShellInterface;
 
-  fileSystemOperations: FileSystemOperations;
+  private fileSystemOperations: FileSystemOperations;
+  private appOperations: AppOperations;
 
   constructor(options?: SystemOptions) {
     logger('initOptions');
     this._options = this.initOptions(options);
 
     this.fileSystemOperations = new FileSystemOperations(this._options);
+    this.appOperations = new AppOperations(this);
 
     logger('initRootState');
     this._rootState = this.initRootState();
@@ -117,9 +120,9 @@ export class System {
     logger('initShell');
     await this.initShell(); // 初始化shell
     logger('initApp');
-    this.initApp(); // 初始化配置应用到app文件夹中
+    this.appOperations.initAppFileFromOption(); // 初始化配置应用到app文件夹中
     logger('initAppList');
-    this.initAppList(); // 刷新app文件夹，展示应用
+    this.appOperations.refershApp(); // 刷新app文件夹，展示应用
     logger('isLogin');
     this.isLogin(); // 判断是否登录
     logger('initEventListener');
@@ -171,75 +174,6 @@ export class System {
      */
     return initEventer();
   }
-  private initApp() {
-    this._rootState.options.desktop?.forEach((item) => {
-      this.addApp(item);
-    });
-    this._rootState.options.magnet?.forEach((item) => {
-      this.addMagnet(item);
-    });
-    this._rootState.options.menulist?.forEach((item) => {
-      this.addMenuList(item);
-    });
-  }
-
-  private refershAppList() {
-    const APP_TYPE = ['apps', 'magnet', 'menulist'];
-    const system = useSystem();
-    for (let i = 0; i < APP_TYPE.length; i++) {
-      const element = APP_TYPE[i];
-      system?.fs
-        .readdir(
-          `${system._options.userLocation}${
-            {
-              apps: 'Desktop',
-              magnet: 'Magnet',
-              menulist: 'Menulist',
-            }[element]
-          }`
-        )
-        .then((res) => {
-          if (res) {
-            const list = res;
-            const tempList = [];
-            for (let j = 0; j < list.length; j++) {
-              const item = list[j];
-
-              tempList.push(item);
-            }
-
-            switch (element) {
-              case 'apps':
-                useSystem()._rootState.apps.splice(0, useSystem()._rootState.apps.length, ...tempList);
-                break;
-              case 'magnet':
-                useSystem()._rootState.magnet.splice(0, useSystem()._rootState.magnet.length, ...tempList);
-                break;
-              case 'menulist':
-                useSystem()._rootState.menulist.splice(
-                  0,
-                  useSystem()._rootState.menulist.length,
-                  ...tempList
-                );
-                break;
-              default:
-                break;
-            }
-          }
-        });
-    }
-  }
-
-  isReadyUpdateAppList = false;
-  initAppList() {
-    this.isReadyUpdateAppList = true;
-    nextTick(() => {
-      if (this.isReadyUpdateAppList) {
-        this.isReadyUpdateAppList = false;
-        this.refershAppList();
-      }
-    });
-  }
 
   private async initFileSystem() {
     this.fs = await this.fileSystemOperations.updateFs(this._options);
@@ -249,13 +183,13 @@ export class System {
       this.emitError(err);
     });
     this.fileSystemOperations.registerWatcher(new RegExp(`^${this._options.userLocation}`), () => {
-      this.initAppList();
+      this.appOperations.refershApp();
     });
   }
 
   replaceFileSystem(fs: VtronFileInterface) {
     this.fs = fs;
-    this.initAppList();
+    this.appOperations.refershApp();
   }
   mountVolume(path: string, fs: VtronFileInterface) {
     if (this.fs instanceof VtronFileSystem) {
@@ -312,23 +246,6 @@ export class System {
     return this._rootState.options[key];
   }
 
-  private addWindowSysLink(loc: string, options: WinAppOptions, force = false) {
-    if (this.isFirstRun || force) {
-      this.fs.writeFile(
-        `${this._options.userLocation}${loc}/` + options.name + '.exe',
-        `link::${loc}::${options.name}::${options.icon}`
-      );
-    } else {
-      this.initAppList();
-    }
-    if (typeof options.window.content === 'string') {
-      // TODO: 当content是string的时候
-    } else {
-      options.window.content = markRaw(options.window.content);
-    }
-    this._rootState.windowMap[loc].set(options.name, options);
-  }
-
   async runPlugin(system: System) {
     const pluginsFile = await this.fs.readdir(`${this._options.systemLocation}plugs`);
     if (pluginsFile) {
@@ -350,14 +267,15 @@ export class System {
    * force 表示强制，在每次启动时都会添加
    */
   addApp(options: WinAppOptions, force = false) {
-    this.addWindowSysLink('Desktop', options, force);
+    this.appOperations.addApp(options, force);
   }
   addMagnet(options: WinAppOptions, force = false) {
-    this.addWindowSysLink('Magnet', options, force);
+    this.appOperations.addMagnet(options, force);
   }
   addMenuList(options: WinAppOptions, force = false) {
-    this.addWindowSysLink('Menulist', options, force);
+    this.appOperations.addMenuList(options, force);
   }
+
   addBuiltInApp(options: WinAppOptions) {
     this._rootState.windowMap['Builtin'].set(options.name, options);
   }

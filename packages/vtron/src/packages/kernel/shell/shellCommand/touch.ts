@@ -1,4 +1,4 @@
-import * as vPath from '../../file/Path';
+import * as vPath from '@/packages/kernel/file/Path';
 import type { Shell } from '../Shell';
 async function touch(input: string, output: (text: string) => void, shell: Shell) {
   const fileName = input.split(' ')[1].trim();

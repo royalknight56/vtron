@@ -1,8 +1,8 @@
+import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
+import { join } from '@/packages/kernel/file/Path';
 import { InitFileItem } from '@/packages/type/type';
-import { VtronFileSystem } from './FileSystem';
-import { join } from './Path';
 
-export const createInitFile = async (fs: VtronFileSystem, file: InitFileItem, path = '') => {
+export const createInitFile = async (fs: VtronFileInterface, file: InitFileItem, path = '') => {
   if (file.type === 'file') {
     if (file.content) {
       await fs.writeFile(join(path, file.name), file.content, {

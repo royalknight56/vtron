@@ -5,11 +5,12 @@ import { extname, join } from '@/packages/kernel/file/Path';
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { initRootState, RootState } from '@/packages/kernel/state/Root';
+import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
 import { systemStartup } from '@/packages/startup';
 import { Dialog } from '@/packages/ui/dialog/Dialog';
-import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
 import { Tray, TrayOptions } from '@/packages/ui/tray/Tary';
 import { pick } from '@/packages/util/modash';
+import { FileSystemOperations } from '@packages/system/fileSystemOperations/FileSystemOperations';
 import { SystemStateEnum } from '@packages/type/enum';
 import {
   Saveablekey,
@@ -65,9 +66,14 @@ export class System {
   fs!: VtronFileInterface;
   _shell!: ShellInterface;
 
+  fileSystemOperations: FileSystemOperations;
+
   constructor(options?: SystemOptions) {
     logger('initOptions');
     this._options = this.initOptions(options);
+
+    this.fileSystemOperations = new FileSystemOperations(this._options);
+
     logger('initRootState');
     this._rootState = this.initRootState();
     logger('mountGlobalSystem');
@@ -75,6 +81,7 @@ export class System {
     Bios._onOpen && Bios._onOpen(this);
     logger('initEvent');
     this._eventer = this.initEvent();
+
     logger('initSystem');
     this.initSystem();
     logger('firstRun');
@@ -235,19 +242,17 @@ export class System {
   }
 
   private async initFileSystem() {
-    // 如果传入了自定义fs，就使用传入的fs
-    if (this._options.fs) {
-      this.fs = this._options.fs;
-    } else {
-      this.fs = await new VtronFileSystem().initFileSystem(this._options);
-      (this.fs as VtronFileSystem).on('error', (err: string) => {
-        this.emitError(err);
-      });
-      this.fs.registerWatcher(new RegExp(`^${this._options.userLocation}`), () => {
-        this.initAppList();
-      });
-    }
+    this.fs = await this.fileSystemOperations.updateFs(this._options);
+    await this.fileSystemOperations.init(this.fs);
+
+    this.fileSystemOperations.on('error', (err: string) => {
+      this.emitError(err);
+    });
+    this.fileSystemOperations.registerWatcher(new RegExp(`^${this._options.userLocation}`), () => {
+      this.initAppList();
+    });
   }
+
   replaceFileSystem(fs: VtronFileInterface) {
     this.fs = fs;
     this.initAppList();

@@ -1,6 +1,6 @@
 import { VtronFileWithoutContent } from '@/packages/kernel/file/FileSystem';
-import { Menu } from '@/packages/ui/menu/Menu';
 import { Notify } from '@/packages/services/notification/Notification';
+import { Menu } from '@/packages/ui/menu/Menu';
 import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
 import { SystemStateEnum } from '@packages/type/enum';
 import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';

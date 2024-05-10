@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "conventionalCommits.scopes": [
+    "blah"
+  ],
+  "eslint.experimental.useFlatConfig": false,
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+}

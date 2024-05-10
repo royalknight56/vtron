@@ -25,6 +25,7 @@ import { version } from '../../../../package.json';
 import { AppOperations } from './appOperations/AppOperations';
 import { defaultConfig } from './initConfig';
 import { PowerOperations } from './powerOperations/PowerOperations';
+import { ConfigOperations } from './configOperations/ConfigOperations';
 
 const logger = function (...args: any[]) {
   return;
@@ -71,6 +72,7 @@ export class System {
   private fileSystemOperations: FileSystemOperations;
   private appOperations: AppOperations;
   private powerOperations: PowerOperations;
+  private configOperations: ConfigOperations;
 
   constructor(options?: SystemOptions) {
     logger('initOptions');
@@ -79,6 +81,7 @@ export class System {
     this.fileSystemOperations = new FileSystemOperations(this._options);
     this.appOperations = new AppOperations(this);
     this.powerOperations = new PowerOperations(this);
+    this.configOperations = new ConfigOperations(this);
 
     logger('initRootState');
     this._rootState = this.initRootState();
@@ -119,15 +122,15 @@ export class System {
     logger('initFileSystem');
     await this.initFileSystem(); // 初始化文件系统
     logger('initSavedConfig');
-    await this.initSavedConfig(); // 初始化保存的配置
+    await this.configOperations.initSavedConfig(); // 初始化保存的配置
     logger('initShell');
     await this.initShell(); // 初始化shell
-    logger('initApp');
+    logger('initAppFileFromOption');
     this.appOperations.initAppFileFromOption(); // 初始化配置应用到app文件夹中
-    logger('initAppList');
+    logger('refershApp');
     this.appOperations.refershApp(); // 刷新app文件夹，展示应用
     logger('isLogin');
-    this.isLogin(); // 判断是否登录
+    this.powerOperations.isLogin(); // 判断是否登录
     logger('initEventListener');
     initEventListener(); // 初始化事件侦听
     this._ready && this._ready(this);
@@ -197,46 +200,13 @@ export class System {
       }
     }
   }
-  setConfig<T extends keyof SystemOptionsCertainly>(key: T, value: SystemOptionsCertainly[T]): Promise<void>;
-  setConfig<T extends string>(
-    key: T,
-    value: T extends keyof SystemOptionsCertainly ? SystemOptionsCertainly[T] : unknown
-  ): Promise<void>;
-  setConfig<T extends keyof SystemOptionsCertainly>(key: string, value: SystemOptionsCertainly[T]) {
-    this._rootState.options[key] = value;
-    if (Saveablekey.includes(key as any)) {
-      return this.fs.writeFile(
-        join(this._options.systemLocation || '', 'Vtron/config.json'),
+  setConfig: ConfigOperations['setConfig'] = (key: string, value: any) => {
+    return this.configOperations.setConfig(key, value);
+  };
+  getConfig: ConfigOperations['getConfig'] = (key: string) => {
+    return this.configOperations.getConfig(key);
+  };
 
-        JSON.stringify(pick(this._rootState.options, ...Saveablekey))
-      );
-    } else {
-      return Promise.resolve();
-    }
-  }
-
-  getConfig<T extends keyof SystemOptionsCertainly>(key: T): SystemOptionsCertainly[T];
-  getConfig<T extends string>(key: T): unknown;
-  getConfig(key: string) {
-    return this._rootState.options[key];
-  }
-
-  async runPlugin(system: System) {
-    const pluginsFile = await this.fs.readdir(`${this._options.systemLocation}plugs`);
-    if (pluginsFile) {
-      await Promise.all(
-        pluginsFile.map(async (file) => {
-          const fileContent = await this.fs.readFile(file.path);
-          if (file.isFile) {
-            const content = fileContent;
-            if (content) {
-              new Shell(system, '/', 'root').exec('node ' + file.path);
-            }
-          }
-        })
-      );
-    }
-  }
   /**
    * @description: 添加应用
    * force 表示强制，在每次启动时都会添加
@@ -285,13 +255,6 @@ export class System {
       this.emit('firstRun');
       return true;
     }
-  }
-
-  /**
-   * @description: 判断是否登录
-   */
-  private isLogin() {
-    this.powerOperations.isLogin();
   }
 
   shutdown() {
@@ -380,6 +343,23 @@ export class System {
   // 插件系统
   use(func: VtronPlugin): void {
     return func(this);
+  }
+
+  async runPlugin(system: System) {
+    const pluginsFile = await this.fs.readdir(`${this._options.systemLocation}plugs`);
+    if (pluginsFile) {
+      await Promise.all(
+        pluginsFile.map(async (file) => {
+          const fileContent = await this.fs.readFile(file.path);
+          if (file.isFile) {
+            const content = fileContent;
+            if (content) {
+              new Shell(system, '/', 'root').exec('node ' + file.path);
+            }
+          }
+        })
+      );
+    }
   }
   // 状态序列化和反序列化
   async serializeState(): Promise<string> {

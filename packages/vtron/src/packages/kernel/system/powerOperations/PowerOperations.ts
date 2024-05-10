@@ -6,6 +6,7 @@ export class PowerOperations {
   constructor(system: System) {
     this.system = system;
   }
+
   /**
    * @description: 判断是否登录
    */

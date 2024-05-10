@@ -1,5 +1,5 @@
 import { ref, toRaw } from 'vue';
-import { useSystem } from '../../system';
+import { useSystem } from '../../kernel/system';
 import { BrowserWindow } from '../window/BrowserWindow';
 import DialogProcessVue from './DialogProcess.vue';
 import DialogVue from './DialogTemp.vue';

@@ -1,8 +1,8 @@
 import { RootState } from '@packages/kernel';
 import { emitEvent, mountEvent } from './EventHook';
 
+import { useSystem } from '@/packages/kernel/system';
 import { throttle } from '@/packages/util/debounce';
-import { useSystem } from '../../system';
 import { join } from '../file/Path';
 
 function initSizeEvent() {

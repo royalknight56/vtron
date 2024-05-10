@@ -1,4 +1,4 @@
-import { useSystem } from '../../system';
+import { useSystem } from '@/packages/kernel/system';
 export interface NotifyConstructorOptions {
   title: string;
   content: string;

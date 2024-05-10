@@ -1,4 +1,4 @@
-import { useSystem } from '../../system';
+import { useSystem } from '@/packages/kernel/system';
 import { enUS } from './en-US';
 import { AllText, zhCN } from './zh-CN';
 

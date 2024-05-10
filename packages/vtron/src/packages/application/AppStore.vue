@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { inject, onMounted, ref } from 'vue';
-import { useSystem } from '@packages/kernel';
+import { useSystem } from '@/packages/kernel/system';
 import { BrowserWindow, Dialog, basename, vDragable } from '@packages/plug';
 import { i18n } from '@packages/ui';
 

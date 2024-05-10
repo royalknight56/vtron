@@ -5,12 +5,12 @@ import { extname, join } from '@/packages/kernel/file/Path';
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { initRootState, RootState } from '@/packages/kernel/state/Root';
+import { FileSystemOperations } from '@/packages/kernel/system/fileSystemOperations/FileSystemOperations';
 import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
 import { systemStartup } from '@/packages/startup';
 import { Dialog } from '@/packages/ui/dialog/Dialog';
 import { Tray, TrayOptions } from '@/packages/ui/tray/Tary';
 import { pick } from '@/packages/util/modash';
-import { FileSystemOperations } from '@packages/system/fileSystemOperations/FileSystemOperations';
 import { SystemStateEnum } from '@packages/type/enum';
 import {
   Saveablekey,
@@ -21,7 +21,7 @@ import {
 } from '@packages/type/type';
 import { BrowserWindow, BrowserWindowOption } from '@packages/ui/window/BrowserWindow';
 import { markRaw, nextTick } from 'vue';
-import { version } from '../../../package.json';
+import { version } from '../../../../package.json';
 import { defaultConfig } from './initConfig';
 
 const logger = function (...args: any[]) {

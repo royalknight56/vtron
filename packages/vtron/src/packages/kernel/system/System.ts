@@ -24,6 +24,7 @@ import { markRaw } from 'vue';
 import { version } from '../../../../package.json';
 import { AppOperations } from './appOperations/AppOperations';
 import { defaultConfig } from './initConfig';
+import { PowerOperations } from './powerOperations/PowerOperations';
 
 const logger = function (...args: any[]) {
   return;
@@ -69,6 +70,7 @@ export class System {
 
   private fileSystemOperations: FileSystemOperations;
   private appOperations: AppOperations;
+  private powerOperations: PowerOperations;
 
   constructor(options?: SystemOptions) {
     logger('initOptions');
@@ -76,6 +78,7 @@ export class System {
 
     this.fileSystemOperations = new FileSystemOperations(this._options);
     this.appOperations = new AppOperations(this);
+    this.powerOperations = new PowerOperations(this);
 
     logger('initRootState');
     this._rootState = this.initRootState();
@@ -135,34 +138,6 @@ export class System {
 
     logger('start');
     this.emit('start');
-  }
-  /**
-   * @description: 判断是否登录
-   */
-  private isLogin() {
-    if (!this._options.login) {
-      this._rootState.systemState = SystemStateEnum.open;
-      return;
-    } else {
-      if (this._options.login.init?.()) {
-        this._rootState.systemState = SystemStateEnum.open;
-        return;
-      }
-
-      this._rootState.systemState = SystemStateEnum.lock;
-      const tempCallBack = this._options.loginCallback;
-      if (!tempCallBack) {
-        throw new Error('没有设置登录回调函数');
-      }
-      this._options.loginCallback = async (username: string, password: string) => {
-        const res = await tempCallBack(username, password);
-        if (res) {
-          this._rootState.systemState = SystemStateEnum.open;
-          return true;
-        }
-        return false;
-      };
-    }
   }
 
   /**
@@ -311,23 +286,24 @@ export class System {
       return true;
     }
   }
+
+  /**
+   * @description: 判断是否登录
+   */
+  private isLogin() {
+    this.powerOperations.isLogin();
+  }
+
   shutdown() {
-    this._rootState.systemState = SystemStateEnum.close;
+    this.powerOperations.shutdown();
   }
   reboot() {
-    this._rootState.systemState = SystemStateEnum.close;
-    window.location.reload();
+    this.powerOperations.reboot();
   }
   recover() {
-    this.fs.removeFileSystem();
-    localStorage.removeItem('vtronFirstRun');
-    localStorage.removeItem('vtron-username');
-    localStorage.removeItem('vtron-password');
-    localStorage.removeItem('vtronCommandHistory');
-
-    this._rootState.systemState = SystemStateEnum.close;
-    window.location.reload();
+    this.powerOperations.recover();
   }
+
   getEventer() {
     return this._eventer;
   }

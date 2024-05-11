@@ -1,7 +1,6 @@
 import { Notify } from '@/packages/services/notification/Notification';
 import { Menu } from '@/packages/ui/menu/Menu';
 import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
-import { Tree } from '@packages/util/Tree';
 import { UnwrapNestedRefs, markRaw, reactive } from 'vue';
 import { System } from '../system';
 import { AppListState } from './subStates/AppListState';
@@ -9,6 +8,7 @@ import { OptionsState } from './subStates/OptionsState';
 import { PowerState } from './subStates/PowerState';
 import { SettingState } from './subStates/SettingState';
 import { WindowMapState } from './subStates/WindowMapState';
+import { WindowTreeState } from './subStates/WindowTreeState';
 
 export type OriginStateType = {
   notify: Array<Notify>;
@@ -16,7 +16,6 @@ export type OriginStateType = {
     notify: Array<Notify>;
     system: Array<Notify>;
   };
-  windowTree: Tree<BrowserWindow>;
   windowOrder: Array<BrowserWindow>;
   topWindow: BrowserWindow | undefined;
   winnum: number;
@@ -48,7 +47,6 @@ const stateOrigin = {
     notify: [] as Array<Notify>,
     system: [] as Array<Notify>,
   },
-  windowTree: new Tree<BrowserWindow>(),
   windowOrder: new Array<BrowserWindow>(),
   topWindow: undefined as BrowserWindow | undefined,
   winnum: 0,
@@ -75,12 +73,14 @@ const stateOrigin = {
 };
 
 export class StateManager {
+  private system: System;
   state: UnwrapNestedRefs<OriginStateType>;
-  system: System;
   windowMap = new WindowMapState();
   appList = new AppListState();
   settings = new SettingState();
   powerState = new PowerState();
+  windowTree = new WindowTreeState();
+
   options: OptionsState;
 
   constructor(system: System) {

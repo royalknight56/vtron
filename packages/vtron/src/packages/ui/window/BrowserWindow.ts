@@ -97,7 +97,7 @@ class BrowserWindow {
   private _setZindex() {
     this.windowInfo.zindex =
       20 +
-      useSystem()._rootState.windowTree.findIndex(this, (val: Tree<BrowserWindow>) => {
+      useSystem().stateManager.windowTree.findIndex(this, (val: Tree<BrowserWindow>) => {
         return val.value.isVisible();
       });
   }
@@ -158,7 +158,7 @@ class BrowserWindow {
   }
   moveTop() {
     // 窗口置顶
-    const rootState = useSystem()._rootState;
+    const rootState = useSystem().stateManager;
     const tree = rootState.windowTree;
     const treeNode = tree.findNode(this);
     if (treeNode) {
@@ -167,7 +167,7 @@ class BrowserWindow {
     tree.addChild(this);
 
     useSystem()._rootState.topWindow = this;
-    useSystem()._rootState.windowTree.traverseBFS((val) => {
+    useSystem().stateManager.windowTree.traverseBFS((val) => {
       if (val.value.id !== undefined) {
         val.value._setZindex();
         val.value.windowInfo.istop = false;
@@ -182,9 +182,9 @@ class BrowserWindow {
   }
   show() {
     if (!this.windowInfo.isCreated) {
-      const rootState = useSystem()._rootState;
+      const rootState = useSystem().stateManager;
       rootState.windowTree.addChild(this);
-      rootState.windowOrder.push(this);
+      rootState.windowTree.windowOrder.push(this);
       this.windowInfo.isCreated = true;
       if (this._option.center) {
         this.center();
@@ -211,17 +211,17 @@ class BrowserWindow {
     // 关闭窗口
     this.emit('close', 'close');
     this.emit('state', 'close');
-    const rootState = useSystem()._rootState;
+    const rootState = useSystem().stateManager;
     if (this.windowInfo.isCreated) {
       this.windowInfo.isCreated = false;
       rootState.windowTree.removeNode(this);
       // Vue bug
       setTimeout(() => {
-        const ind = rootState.windowOrder.findIndex((val) => {
+        const ind = rootState.windowTree.windowOrder.findIndex((val) => {
           return val === this;
         });
         if (ind === -1) return;
-        rootState.windowOrder.splice(ind, 1);
+        rootState.windowTree.windowOrder.splice(ind, 1);
       }, 500);
     }
   }

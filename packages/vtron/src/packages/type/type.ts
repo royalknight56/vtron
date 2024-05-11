@@ -50,6 +50,7 @@ export interface SystemOptionsCertainly {
   systemLocation?: string;
   initFile?: InitFileItem;
   shell?: ShellInterface;
+  brightness?: number;
   login?: {
     username: string;
     password: string;

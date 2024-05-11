@@ -27,13 +27,12 @@ import { MenuItem } from '@packages/ui/menu/MenuItem';
 const x = ref(0);
 const y = ref(0);
 const menuList = ref<MenuItem[]>([]);
-const rootState = useSystem()._rootState;
+const rootState = useSystem().stateManager;
 watch(
-  () => rootState.contextMenu,
+  () => rootState.contextMenu.current.value,
   (contextMenu) => {
     // get window inner width and height
-    const innerWidth = rootState.info.screenWidth;
-    const innerHeight = rootState.info.screenHeight;
+    const { width: innerWidth, height: innerHeight } = rootState.rect.getScreenSize();
     // get contextmenu width
     const contextmenuWidth = 160;
     // get contextmenu height
@@ -54,7 +53,7 @@ watch(
 );
 
 mountEvent('contextMenu.hidden', () => {
-  useSystem()._rootState.contextMenu = null;
+  useSystem().stateManager.contextMenu.setContextMenu(null);
 });
 
 function handleClick(item: MenuItem) {

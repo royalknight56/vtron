@@ -92,14 +92,14 @@ function openSet(key: string) {
   currentRouter.value = key;
 }
 const setList = ref([
-  {
-    key: 'system',
-    title: i18n('system'),
-    // desc: '显示，声音，通知，电源',
-    desc: i18n('brightness'),
-    icon: e7f8,
-    content: markRaw(SetSystem),
-  },
+  // {
+  //   key: 'system',
+  //   title: i18n('system'),
+  //   // desc: '显示，声音，通知，电源',
+  //   desc: i18n('brightness'),
+  //   icon: e7f8,
+  //   content: markRaw(SetSystem),
+  // },
   // {
   //     title: '网络和Internet',
   //     desc: 'WLAN，飞行模式，VPN',

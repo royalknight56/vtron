@@ -11,30 +11,16 @@ import { WindowMapState } from './subStates/WindowMapState';
 import { WindowTreeState } from './subStates/WindowTreeState';
 import { NotifyState } from './subStates/NotifyState';
 import { NavigatorState } from './subStates/NavigatorState';
+import { RectState } from './subStates/RectState';
+import { ContextMenuState } from './subStates/ContextMenuState';
 
 export type OriginStateType = {
-  info: {
-    screenWidth: number;
-    screenHeight: number;
-    mouseX: number;
-    mouseY: number;
-    brightness: number;
-  };
   clipboard: any;
-  contextMenu: Menu | null;
   error: string;
 };
 
 const stateOrigin = {
-  info: {
-    screenWidth: window?.innerWidth || 0,
-    screenHeight: window?.innerHeight || 0,
-    mouseX: 0,
-    mouseY: 0,
-    brightness: 50,
-  },
   clipboard: {} as any,
-  contextMenu: null as Menu | null,
   error: '',
 };
 
@@ -48,6 +34,8 @@ export class StateManager {
   windowTree = new WindowTreeState();
   notify = new NotifyState();
   navigator = new NavigatorState();
+  rect = new RectState();
+  contextMenu = new ContextMenuState();
 
   options: OptionsState;
 

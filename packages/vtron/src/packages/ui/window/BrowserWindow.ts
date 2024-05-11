@@ -108,11 +108,9 @@ class BrowserWindow {
     this.windowInfo.state = state;
   }
   private _getWinInner() {
-    const rootState = useSystem()._rootState;
-    return {
-      width: rootState.info.screenWidth,
-      height: rootState.info.screenHeight,
-    };
+    const rootState = useSystem().stateManager;
+
+    return rootState.rect.getScreenSize();
   }
   private _makeWindowNotOverSize() {
     // 使窗口不超过屏幕大小

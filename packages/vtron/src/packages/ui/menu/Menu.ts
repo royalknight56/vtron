@@ -31,10 +31,10 @@ export class Menu {
   items: MenuItem[] = [];
   popup: (e: MouseEvent) => void = (e) => {
     this._mouse = e;
-    useSystem()._rootState.contextMenu = this;
+    useSystem().stateManager.contextMenu.setContextMenu(this);
   };
   closePopup: () => void = () => {
-    useSystem()._rootState.contextMenu = null;
+    useSystem().stateManager.contextMenu.setContextMenu(null);
   };
   append: (item: MenuItem) => void = (item: MenuItem) => {
     this.items.push(item);

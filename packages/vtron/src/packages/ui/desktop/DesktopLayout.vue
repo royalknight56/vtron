@@ -4,9 +4,6 @@
     @dragenter.prevent
     @dragover.prevent
     @drop="dragFileToDrop($event, `${system._options.userLocation}Desktop`)"
-    :style="{
-      filter: `brightness(${system._rootState.info.brightness * 2}%)`,
-    }"
   >
     <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown="userareaDown">
       <div @mousedown="backgroundDown">

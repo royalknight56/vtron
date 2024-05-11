@@ -5,10 +5,9 @@ import { throttle } from '@/packages/util/debounce';
 import { join } from '../file/Path';
 
 function initSizeEvent() {
-  const rootState = useSystem()._rootState;
+  const rootState = useSystem().stateManager;
   function refreshDesktopSize() {
-    rootState.info.screenWidth = window?.innerWidth || 0;
-    rootState.info.screenHeight = window?.innerHeight || 0;
+    rootState.rect.setScreenSize(window?.innerWidth || 0, window?.innerHeight || 0);
   }
   mountEvent('system.initSize', () => {
     refreshDesktopSize();
@@ -19,8 +18,7 @@ function initSizeEvent() {
 
   mountEvent('system.mousemove', (_, events) => {
     const event = events[0];
-    rootState.info.mouseX = event?.clientX || 0;
-    rootState.info.mouseY = event?.clientY || 0;
+    rootState.rect.setMousePosition(event?.clientX || 0, event?.clientY || 0);
     useSystem().rootRef?.style.setProperty('--mouseX', `${event?.clientX || 0}px`);
     useSystem().rootRef?.style.setProperty('--mouseY', `${event?.clientY || 0}px`);
   });

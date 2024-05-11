@@ -20,9 +20,8 @@
 </template>
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import { mountEvent, emitEvent } from '@packages/kernel';
-import { useSystem } from '@packages/kernel';
-import { MenuItem } from '@packages/ui/menu/MenuItem';
+import { mountEvent, emitEvent, useSystem } from '@packages/kernel';
+import { MenuItem } from '@packages/services';
 
 const x = ref(-100);
 const y = ref(-100);

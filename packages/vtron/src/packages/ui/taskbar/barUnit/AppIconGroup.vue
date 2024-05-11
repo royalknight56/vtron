@@ -12,8 +12,8 @@
 <script lang="ts" setup>
 import AppIcon from './AppIcon.vue';
 import { useSystem } from '@packages/kernel';
-const rootState = useSystem()._rootState;
-const treeRoot = rootState.windowOrder;
+const windowTree = useSystem().stateManager.windowTree;
+const treeRoot = windowTree.windowOrder;
 </script>
 <style lang="scss" scoped>
 .appicon-group {

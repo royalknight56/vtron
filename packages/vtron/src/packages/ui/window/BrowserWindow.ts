@@ -81,9 +81,9 @@ class BrowserWindow {
       this.content = this._option.content;
     }
 
-    const rootState = useSystem()._rootState;
-    this.id = rootState.winnum;
-    rootState.winnum++;
+    const windowTree = useSystem().stateManager.windowTree;
+    this.id = windowTree.winnum;
+    windowTree.winnum++;
 
     this.windowInfo = reactive(Object.assign({}, BrowserWindow.defaultInfo, this._option));
     if (this._option.fullscreen) {
@@ -166,7 +166,6 @@ class BrowserWindow {
     }
     tree.addChild(this);
 
-    useSystem()._rootState.topWindow = this;
     useSystem().stateManager.windowTree.traverseBFS((val) => {
       if (val.value.id !== undefined) {
         val.value._setZindex();

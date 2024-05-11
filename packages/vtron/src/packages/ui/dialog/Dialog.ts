@@ -98,13 +98,13 @@ class Dialog {
     });
     dialogwin.show();
 
-    useSystem()._rootState.windowOrder.forEach((win) => {
+    useSystem().stateManager.windowTree.windowOrder.forEach((win) => {
       if (!(toRaw(win) === dialogwin)) {
         win.setDisable(true);
       }
     });
     dialogwin.on('close', () => {
-      useSystem()._rootState.windowOrder.forEach((win) => {
+      useSystem().stateManager.windowTree.windowOrder.forEach((win) => {
         if (!(toRaw(win) === dialogwin)) {
           win.setDisable(false);
         }

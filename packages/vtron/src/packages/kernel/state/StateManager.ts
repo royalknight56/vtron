@@ -16,9 +16,6 @@ export type OriginStateType = {
     notify: Array<Notify>;
     system: Array<Notify>;
   };
-  windowOrder: Array<BrowserWindow>;
-  topWindow: BrowserWindow | undefined;
-  winnum: number;
   info: {
     screenWidth: number;
     screenHeight: number;
@@ -47,9 +44,6 @@ const stateOrigin = {
     notify: [] as Array<Notify>,
     system: [] as Array<Notify>,
   },
-  windowOrder: new Array<BrowserWindow>(),
-  topWindow: undefined as BrowserWindow | undefined,
-  winnum: 0,
   info: {
     screenWidth: window?.innerWidth || 0,
     screenHeight: window?.innerHeight || 0,

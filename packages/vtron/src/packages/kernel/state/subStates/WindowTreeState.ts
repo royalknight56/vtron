@@ -4,7 +4,6 @@ import { reactive } from 'vue';
 export class WindowTreeState {
   windowTree = reactive(new Tree<BrowserWindow>());
   windowOrder = reactive(new Array<BrowserWindow>());
-  topWindow: BrowserWindow | undefined;
   winnum = 0;
   constructor() {}
   findNode(node: BrowserWindow) {

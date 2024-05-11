@@ -4,8 +4,8 @@
 <script lang="ts" setup>
 import WindowNode from './WindowNode.vue';
 import { useSystem } from '@packages/kernel';
-const rootState = useSystem()._rootState;
-const winArray = rootState.windowOrder;
+const windowTree = useSystem().stateManager.windowTree;
+const winArray = windowTree.windowOrder;
 </script>
 <style lang="scss" scoped>
 .window-node {
@@ -13,4 +13,3 @@ const winArray = rootState.windowOrder;
   z-index: 3;
 }
 </style>
-@/packages/kernel/system

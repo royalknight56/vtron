@@ -13,14 +13,13 @@ import { NotifyState } from './subStates/NotifyState';
 import { NavigatorState } from './subStates/NavigatorState';
 import { RectState } from './subStates/RectState';
 import { ContextMenuState } from './subStates/ContextMenuState';
+import { ClipboardState } from './subStates/ClipboardState';
 
 export type OriginStateType = {
-  clipboard: any;
   error: string;
 };
 
 const stateOrigin = {
-  clipboard: {} as any,
   error: '',
 };
 
@@ -36,6 +35,7 @@ export class StateManager {
   navigator = new NavigatorState();
   rect = new RectState();
   contextMenu = new ContextMenuState();
+  clipboard = new ClipboardState();
 
   options: OptionsState;
 

@@ -129,19 +129,17 @@ export class ContextMenusUtil {
 
   async copyFile(files: VtronFileWithoutContent[]) {
     const system = useSystem();
-    const rootState = system._rootState;
+    const rootState = system.stateManager;
     if (!system) return;
-    if (rootState.clipboard) {
-      rootState.clipboard = files.map((file) => file.path);
-    }
+    rootState.clipboard.setClipboard(files.map((file) => file.path));
   }
   async pasteFile(path: string) {
     const system = useSystem();
     if (!system) return;
-    const rootState = system._rootState;
+    const rootState = system.stateManager;
     const clipLen = Object.keys(rootState.clipboard).length;
     if (clipLen) {
-      const clipFiles = rootState.clipboard;
+      const clipFiles = rootState.clipboard.getClipboard();
 
       if (!clipFiles.forEach) {
         return;
@@ -335,19 +333,17 @@ function useContextMenu() {
 
   async function copyFile(files: VtronFileWithoutContent[]) {
     const system = useSystem();
-    const rootState = system._rootState;
+    const rootState = system.stateManager;
     if (!system) return;
-    if (rootState.clipboard) {
-      rootState.clipboard = files.map((file) => file.path);
-    }
+    rootState.clipboard.setClipboard(files.map((file) => file.path));
   }
   async function pasteFile(path: string) {
     const system = useSystem();
     if (!system) return;
-    const rootState = system._rootState;
+    const rootState = system.stateManager;
     const clipLen = Object.keys(rootState.clipboard).length;
     if (clipLen) {
-      const clipFiles = rootState.clipboard;
+      const clipFiles = rootState.clipboard.getClipboard();
 
       if (!clipFiles.forEach) {
         return;

@@ -1,11 +1,9 @@
 import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
-import { VtronFileSystem } from '@/packages/kernel/file/FileSystem';
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { initRootState, RootState } from '@/packages/kernel/state/Root';
 import { FileSystemOperations } from '@/packages/kernel/system/fileSystemOperations/FileSystemOperations';
 import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
-import { systemStartup } from '@/packages/startup';
 import { Dialog } from '@/packages/ui/dialog/Dialog';
 import { Tray, TrayOptions } from '@/packages/ui/tray/Tary';
 import { SystemStateEnum } from '@packages/type/enum';
@@ -79,12 +77,14 @@ export class System {
 
     logger('initRootState');
     this._rootState = this.initRootState();
+
     logger('mountGlobalSystem');
     System.GLOBAL_SYSTEM = this; // 挂载全局系统
     Bios._onOpen && Bios._onOpen(this);
 
     logger('initSystem');
     this.initSystem();
+
     logger('firstRun');
     this.firstRun();
   }
@@ -112,7 +112,6 @@ export class System {
     this._rootState.systemState = SystemStateEnum.opening;
 
     logger('initFileSystem');
-    // await this.initFileSystem(); // 初始化文件系统
     await this.fileSystemOperations.initFileSystem(); // 初始化文件系统
     logger('initSavedConfig');
     await this.configOperations.initSavedConfig(); // 初始化保存的配置
@@ -122,6 +121,8 @@ export class System {
     this.appOperations.initAppFileFromOption(); // 初始化配置应用到app文件夹中
     logger('refershApp');
     this.appOperations.refershApp(); // 刷新app文件夹，展示应用
+    logger('initFileOpener');
+    this.fileOpenerOperations.init(); // 初始化打开方式
     logger('isLogin');
     this.powerOperations.isLogin(); // 判断是否登录
     logger('initEventListener');
@@ -131,23 +132,15 @@ export class System {
     logger('runPlugin');
     this.runPlugin(this); // 运行fs中插件
 
-    systemStartup(this); // 系统应用启动
-
     logger('start');
     this.emit('start');
   }
 
   replaceFileSystem(fs: VtronFileInterface) {
-    // this.fs = fs;
-    // this.appOperations.refershApp();
-    this.fileSystemOperations.replaceFileSystem(fs);
+    return this.fileSystemOperations.replaceFileSystem(fs);
   }
   mountVolume(path: string, fs: VtronFileInterface) {
-    if (this.fs instanceof VtronFileSystem) {
-      this.fs.mountVolume(path, fs);
-    } else {
-      console.error('自定义文件系统不支持挂载卷');
-    }
+    return this.fileSystemOperations.mountVolume(path, fs);
   }
   private async initShell() {
     if (this._options.shell) {

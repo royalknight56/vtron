@@ -26,6 +26,32 @@ export class ConfigOperations {
         });
       }
     }
+
+    this.initBackground();
+    this.initCheckVersion();
+  }
+
+  async initBackground() {
+    // 初始化背景设置
+    const back = await this.system.fs.readFile(`${this.system._options.systemLocation}Vtron/background.txt`);
+    if (back) {
+      this.system._rootState.options.background = back;
+    }
+  }
+
+  async initCheckVersion() {
+    const programVersion = this.system.version;
+    const systemVersion = await this.system.fs.readFile(
+      join(this.system._options.systemLocation || '', 'Vtron/version.txt')
+    );
+    if (systemVersion && programVersion) {
+      if (programVersion !== systemVersion) {
+        this.system.createNotify({
+          title: 'Vtron',
+          content: '本地程序和文件版本不一致，请恢复出厂设置',
+        });
+      }
+    }
   }
 
   setConfig<T extends keyof SystemOptionsCertainly>(key: T, value: SystemOptionsCertainly[T]): Promise<void>;

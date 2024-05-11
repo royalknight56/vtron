@@ -45,4 +45,11 @@ export class FileSystemOperations {
   replaceFileSystem(fs: VtronFileInterface) {
     this.fs = fs;
   }
+  mountVolume(path: string, fs: VtronFileInterface) {
+    if (this.fs instanceof VtronFileSystem) {
+      this.fs.mountVolume(path, fs);
+    } else {
+      console.error('自定义文件系统不支持挂载卷');
+    }
+  }
 }

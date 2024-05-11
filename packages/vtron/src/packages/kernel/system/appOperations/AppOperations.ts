@@ -1,6 +1,7 @@
 import { System } from '@/packages/plug';
 import { WinAppOptions } from '@/packages/type/type';
 import { markRaw, nextTick } from 'vue';
+import { initBuiltinApp } from './initBuiltinApp';
 
 export class AppOperations {
   system: System;
@@ -66,6 +67,7 @@ export class AppOperations {
   }
 
   initAppFileFromOption() {
+    initBuiltinApp(this.system); // 初始化内建应用
     this.system._rootState.options.desktop?.forEach((item) => {
       this.addApp(item);
     });

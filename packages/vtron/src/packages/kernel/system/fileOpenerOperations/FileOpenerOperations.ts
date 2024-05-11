@@ -1,5 +1,6 @@
 import { extname } from '@/packages/kernel/file/Path';
 import { System } from '../System';
+import { initBuiltinFileOpener } from './initBuiltinFileOpener';
 
 export type FileOpener = {
   name?: string;
@@ -47,5 +48,8 @@ export class FileOpenerOperations {
         .get(extname(fileStat?.path || '') || 'link')
         ?.func.call(this, path, fileContent || '');
     }
+  }
+  init() {
+    initBuiltinFileOpener(this.system);
   }
 }

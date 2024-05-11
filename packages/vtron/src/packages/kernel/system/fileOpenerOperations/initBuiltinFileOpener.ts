@@ -1,11 +1,7 @@
-import vtronStoreLogoIcon from '@/assets/vtron-stroe-icon-nobg.png?url';
 import myComputerLogoIcon from '@packages/assets/computer.png?url';
 import imageicon from '@packages/assets/image.png';
-import settingicon from '@packages/assets/setting.png';
 import unknownIcon from '@packages/assets/unknown.png';
 
-import { WinAppOptions } from '@/packages/type/type';
-import AppStore from '@packages/application/AppStore.vue';
 import FileViewer from '@packages/application/FileViewer.vue';
 import MyComputerVue from '@packages/application/MyComputer/MyComputer.vue';
 import UrlBrowser from '@packages/application/UrlBrowser.vue';
@@ -14,8 +10,7 @@ import { BrowserWindow, i18n } from '@packages/ui';
 
 import { dealIcon } from '@/packages/util/Icon';
 import ImageViewerVue from '@packages/application/ImageViewer.vue';
-import SettingVue from '@packages/application/Setting.vue';
-import { basename, join } from '@packages/kernel';
+import { basename } from '@packages/kernel';
 import { Dialog } from '@packages/ui/dialog/Dialog';
 import BatteryVue from '@packages/ui/taskbar/barUnit/Battery.vue';
 import DateTimeVue from '@packages/ui/taskbar/barUnit/DateTime.vue';
@@ -25,72 +20,6 @@ import DateTimePopVue from '@packages/ui/taskbar/popover/DateTimePop.vue';
 import NetworkPopVue from '@packages/ui/taskbar/popover/NetworkPop.vue';
 import { Tray } from '@packages/ui/tray/Tary';
 
-export function initBuiltinApp(system: System) {
-  const setting = {
-    name: '设置',
-    icon: settingicon,
-    multiple: false,
-    window: {
-      content: SettingVue,
-      icon: settingicon,
-      width: 800,
-      height: 600,
-      title: i18n('setting'),
-      frame: false,
-      // resizable: false,
-      center: true,
-      backgroundColor: '#00000000',
-    },
-  };
-  system.addMagnet(setting, true);
-  system.addMenuList(setting, true);
-  system.addBuiltInApp(setting);
-
-  if (system._options.builtinFeature?.length === 0) return;
-  if (system._options.builtinFeature?.includes('MyComputer')) {
-    const myComputer = {
-      name: '此电脑',
-      icon: myComputerLogoIcon,
-      window: {
-        width: 800,
-        height: 600,
-        center: true,
-        title: i18n('computer'),
-        icon: myComputerLogoIcon,
-        content: MyComputerVue,
-        config: {
-          path: '/',
-        },
-      },
-    };
-    system.addApp(myComputer);
-    system.addMagnet(myComputer);
-    system.addMenuList(myComputer);
-  }
-
-  if (system._options.builtinFeature?.includes('AppStore')) {
-    const appStore: WinAppOptions = {
-      name: '应用商店',
-      icon: vtronStoreLogoIcon,
-      window: {
-        width: 900,
-        height: 630,
-        center: true,
-        title: i18n('appstore'),
-        icon: vtronStoreLogoIcon,
-        content: AppStore,
-        backgroundColor: '#ffffff00',
-        frame: false,
-        config: {
-          path: '/',
-        },
-      },
-    };
-    system.addApp(appStore);
-    system.addMagnet(appStore);
-    system.addMenuList(appStore);
-  }
-}
 export function initBuiltinFileOpener(system: System) {
   if (system._options.builtinFeature?.includes('ExeOpener')) {
     system.registerFileOpener('.exe', {
@@ -255,27 +184,5 @@ export function initBuiltinFileOpener(system: System) {
       image: BatteryVue,
     });
     batteryT.setContextMenu(BatteryPopVue, 200, 80);
-  }
-}
-
-export async function initBackground(system: System) {
-  const back = await system.fs.readFile(`${system._options.systemLocation}Vtron/background.txt`);
-  if (back) {
-    system._rootState.options.background = back;
-  }
-}
-
-export async function initCheckVersion(system: System) {
-  const programVersion = system.version;
-  const systemVersion = await system.fs.readFile(
-    join(system._options.systemLocation || '', 'Vtron/version.txt')
-  );
-  if (systemVersion && programVersion) {
-    if (programVersion !== systemVersion) {
-      system.createNotify({
-        title: 'Vtron',
-        content: '本地程序和文件版本不一致，请恢复出厂设置',
-      });
-    }
   }
 }

@@ -24,13 +24,20 @@ import { mountEvent, emitEvent } from '@packages/kernel';
 import { useSystem } from '@packages/kernel';
 import { MenuItem } from '@packages/ui/menu/MenuItem';
 
-const x = ref(0);
-const y = ref(0);
+const x = ref(-100);
+const y = ref(-100);
 const menuList = ref<MenuItem[]>([]);
 const rootState = useSystem().stateManager;
 watch(
   () => rootState.contextMenu.current.value,
   (contextMenu) => {
+    if (!contextMenu) {
+      x.value = -100;
+      y.value = -100;
+      menuList.value = [];
+      return;
+    }
+
     // get window inner width and height
     const { width: innerWidth, height: innerHeight } = rootState.rect.getScreenSize();
     // get contextmenu width

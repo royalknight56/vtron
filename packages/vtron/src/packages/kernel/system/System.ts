@@ -1,6 +1,5 @@
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
-import { initRootState, RootState } from '@/packages/kernel/state/Root';
 import { FileSystemOperations } from '@/packages/kernel/system/fileSystemOperations/FileSystemOperations';
 import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
 import { Dialog } from '@/packages/ui/dialog/Dialog';
@@ -10,6 +9,7 @@ import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { BrowserWindow, BrowserWindowOption } from '@packages/ui/window/BrowserWindow';
 import { markRaw } from 'vue';
 import { version } from '../../../../package.json';
+import { StateManager } from '../state/StateManager';
 import { AppOperations } from './appOperations/AppOperations';
 import { ConfigOperations } from './configOperations/ConfigOperations';
 import { EventOperations } from './eventOperations/EventOperations';
@@ -43,8 +43,6 @@ export class System {
 
   readonly _options: SystemOptions;
 
-  _rootState: RootState;
-
   private _ready: ((value: System) => void) | null = null;
   private _error: ((reason: unknown) => void) | null = null;
   version = version;
@@ -54,6 +52,9 @@ export class System {
   get fs() {
     return this.fileSystemOperations.fs;
   }
+  get rootState() {
+    return this.stateManager;
+  }
   _shell!: ShellInterface;
 
   private fileSystemOperations: FileSystemOperations;
@@ -62,6 +63,8 @@ export class System {
   private configOperations: ConfigOperations;
   private eventOperations: EventOperations;
   private fileOpenerOperations: FileOpenerOperations;
+
+  stateManager: StateManager;
 
   constructor(options?: SystemOptions) {
     logger('initOptions');
@@ -75,7 +78,7 @@ export class System {
     this.fileOpenerOperations = new FileOpenerOperations(this);
 
     logger('initRootState');
-    this._rootState = this.initRootState();
+    this.stateManager = new StateManager(this);
 
     logger('mountGlobalSystem');
     System.GLOBAL_SYSTEM = this; // 挂载全局系统
@@ -95,12 +98,7 @@ export class System {
     const tempOptions = Object.assign({}, defaultConfig, options);
     return tempOptions;
   }
-  /**
-   * @description: 获取系统配置
-   */
-  private initRootState(): RootState {
-    return initRootState(this._options);
-  }
+
   /**
    * @description: 初始化系统
    */
@@ -108,7 +106,7 @@ export class System {
     /**
      * 过程：激活屏幕，桥接事件。
      */
-    this._rootState.systemState = SystemStateEnum.opening;
+    this.stateManager.setSystemState(SystemStateEnum.opening);
 
     logger('initFileSystem');
     await this.fileSystemOperations.initFileSystem(); // 初始化文件系统
@@ -174,7 +172,7 @@ export class System {
   };
 
   addBuiltInApp(options: WinAppOptions) {
-    this._rootState.windowMap['Builtin'].set(options.name, options);
+    this.stateManager.windowMap.set('Builtin', options.name, options);
   }
 
   createShell(): ShellInterface {
@@ -260,7 +258,8 @@ export class System {
       ...setting,
       content: markRaw(setting.content),
     };
-    this._rootState.settings?.push(temp);
+    // this._rootState.settings?.push(temp);
+    this.stateManager.pushSettings(temp);
   }
 
   // 插件系统
@@ -321,11 +320,11 @@ export class System {
   errorHandler = 0;
   emitError(error: string) {
     this._error && this._error(error);
-    this._rootState.error = error;
+    this.stateManager.setError(error);
     this.errorHandler = Date.now();
     setTimeout(() => {
       if (Date.now() - this.errorHandler > 1000 * 3) {
-        this._rootState.error = '';
+        this.stateManager.setError('');
       }
     }, 1000 * 4);
   }

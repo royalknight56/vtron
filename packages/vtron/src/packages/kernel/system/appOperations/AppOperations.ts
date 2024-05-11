@@ -93,7 +93,11 @@ export class AppOperations {
     this.addWindowSysLink('Menulist', options, force);
   }
 
-  private addWindowSysLink(loc: string, options: WinAppOptions, force = false) {
+  private addWindowSysLink(
+    loc: 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin',
+    options: WinAppOptions,
+    force = false
+  ) {
     if (this.system.isFirstRun || force) {
       this.system.fs.writeFile(
         `${this.system._options.userLocation}${loc}/` + options.name + '.exe',
@@ -107,6 +111,6 @@ export class AppOperations {
     } else {
       options.window.content = markRaw(options.window.content);
     }
-    this.system._rootState.windowMap[loc].set(options.name, options);
+    this.system.stateManager.windowMap.set(loc, options.name, options);
   }
 }

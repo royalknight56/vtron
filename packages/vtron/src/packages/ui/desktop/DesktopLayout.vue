@@ -121,4 +121,3 @@ onErrorCaptured((err) => {
   }
 }
 </style>
-@/packages/kernel/system@/packages/kernel/event

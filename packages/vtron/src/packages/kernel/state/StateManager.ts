@@ -1,17 +1,16 @@
 import { Notify } from '@/packages/services/notification/Notification';
 import { Menu } from '@/packages/ui/menu/Menu';
 import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
-import { SystemStateEnum } from '@packages/type/enum';
 import { Tree } from '@packages/util/Tree';
 import { UnwrapNestedRefs, markRaw, reactive } from 'vue';
 import { System } from '../system';
 import { AppListState } from './subStates/AppListState';
 import { OptionsState } from './subStates/OptionsState';
+import { PowerState } from './subStates/PowerState';
 import { SettingState } from './subStates/SettingState';
 import { WindowMapState } from './subStates/WindowMapState';
 
 export type OriginStateType = {
-  systemState: SystemStateEnum;
   notify: Array<Notify>;
   message: {
     notify: Array<Notify>;
@@ -44,7 +43,6 @@ export type OriginStateType = {
 };
 
 const stateOrigin = {
-  systemState: SystemStateEnum.close as SystemStateEnum,
   notify: [] as Array<Notify>,
   message: {
     notify: [] as Array<Notify>,
@@ -82,6 +80,7 @@ export class StateManager {
   windowMap = new WindowMapState();
   appList = new AppListState();
   settings = new SettingState();
+  powerState = new PowerState();
   options: OptionsState;
 
   constructor(system: System) {
@@ -105,13 +104,6 @@ export class StateManager {
       }
     });
     this.options = new OptionsState(options);
-  }
-
-  getSystemState(): SystemStateEnum {
-    return this.state.systemState;
-  }
-  setSystemState(systemState: SystemStateEnum): void {
-    this.state.systemState = systemState;
   }
 
   setError(error: string): void {

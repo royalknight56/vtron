@@ -53,7 +53,7 @@ export class System {
     return this.fileSystemOperations.fs;
   }
   get _rootState() {
-    return this.stateManager;
+    return this.stateManager.state;
   }
   _shell!: ShellInterface;
 
@@ -106,7 +106,7 @@ export class System {
     /**
      * 过程：激活屏幕，桥接事件。
      */
-    this.stateManager.setSystemState(SystemStateEnum.opening);
+    this.stateManager.powerState.setPowerState(SystemStateEnum.opening);
 
     logger('initFileSystem');
     await this.fileSystemOperations.initFileSystem(); // 初始化文件系统

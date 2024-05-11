@@ -119,4 +119,3 @@ const props = defineProps({
   );
 }
 </style>
-@/packages/kernel/system@/packages/kernel/state/Root

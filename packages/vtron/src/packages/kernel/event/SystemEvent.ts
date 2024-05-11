@@ -1,4 +1,3 @@
-import { RootState } from '@packages/kernel';
 import { emitEvent, mountEvent } from './EventHook';
 
 import { useSystem } from '@/packages/kernel/system';
@@ -7,12 +6,12 @@ import { join } from '../file/Path';
 
 function initSizeEvent() {
   const rootState = useSystem()._rootState;
-  function refreshDesktopSize(rootState: RootState) {
+  function refreshDesktopSize() {
     rootState.info.screenWidth = window?.innerWidth || 0;
     rootState.info.screenHeight = window?.innerHeight || 0;
   }
   mountEvent('system.initSize', () => {
-    refreshDesktopSize(rootState);
+    refreshDesktopSize();
   });
   window?.addEventListener('resize', () => {
     emitEvent('system.resize');

@@ -12,15 +12,15 @@ export class PowerOperations {
    */
   isLogin() {
     if (!this.system._options.login) {
-      this.system._rootState.systemState = SystemStateEnum.open;
+      this.system.stateManager.powerState.setPowerState(SystemStateEnum.open);
       return;
     } else {
       if (this.system._options.login.init?.()) {
-        this.system._rootState.systemState = SystemStateEnum.open;
+        this.system.stateManager.powerState.setPowerState(SystemStateEnum.open);
         return;
       }
 
-      this.system._rootState.systemState = SystemStateEnum.lock;
+      this.system.stateManager.powerState.setPowerState(SystemStateEnum.lock);
       const tempCallBack = this.system._options.loginCallback;
       if (!tempCallBack) {
         throw new Error('没有设置登录回调函数');
@@ -28,7 +28,7 @@ export class PowerOperations {
       this.system._options.loginCallback = async (username: string, password: string) => {
         const res = await tempCallBack(username, password);
         if (res) {
-          this.system._rootState.systemState = SystemStateEnum.open;
+          this.system.stateManager.powerState.setPowerState(SystemStateEnum.open);
           return true;
         }
         return false;
@@ -37,10 +37,10 @@ export class PowerOperations {
   }
 
   shutdown() {
-    this.system._rootState.systemState = SystemStateEnum.close;
+    this.system.stateManager.powerState.setPowerState(SystemStateEnum.close);
   }
   reboot() {
-    this.system._rootState.systemState = SystemStateEnum.close;
+    this.system.stateManager.powerState.setPowerState(SystemStateEnum.close);
     window.location.reload();
   }
   recover() {
@@ -50,7 +50,7 @@ export class PowerOperations {
     localStorage.removeItem('vtron-password');
     localStorage.removeItem('vtronCommandHistory');
 
-    this.system._rootState.systemState = SystemStateEnum.close;
+    this.system.stateManager.powerState.setPowerState(SystemStateEnum.close);
     window.location.reload();
   }
 }

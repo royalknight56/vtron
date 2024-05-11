@@ -9,13 +9,9 @@ import { PowerState } from './subStates/PowerState';
 import { SettingState } from './subStates/SettingState';
 import { WindowMapState } from './subStates/WindowMapState';
 import { WindowTreeState } from './subStates/WindowTreeState';
+import { NotifyState } from './subStates/NotifyState';
 
 export type OriginStateType = {
-  notify: Array<Notify>;
-  message: {
-    notify: Array<Notify>;
-    system: Array<Notify>;
-  };
   info: {
     screenWidth: number;
     screenHeight: number;
@@ -39,11 +35,6 @@ export type OriginStateType = {
 };
 
 const stateOrigin = {
-  notify: [] as Array<Notify>,
-  message: {
-    notify: [] as Array<Notify>,
-    system: [] as Array<Notify>,
-  },
   info: {
     screenWidth: window?.innerWidth || 0,
     screenHeight: window?.innerHeight || 0,
@@ -74,6 +65,7 @@ export class StateManager {
   settings = new SettingState();
   powerState = new PowerState();
   windowTree = new WindowTreeState();
+  notify = new NotifyState();
 
   options: OptionsState;
 

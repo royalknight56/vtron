@@ -1,7 +1,7 @@
 <template>
   <div class="notify">
     <TransitionGroup name="list" tag="div">
-      <div class="notify-item" v-for="notify in notifyGroup" :key="notify.id" v-glowing>
+      <div class="notify-item" v-for="notify in notifyGroup.current" :key="notify.id" v-glowing>
         <div class="notify-item-title">
           <span> {{ notify.title }}</span>
         </div>
@@ -16,7 +16,7 @@
 import { vGlowing } from '@/packages/util/glowingBorder';
 import { useSystem } from '@packages/kernel';
 
-const notifyGroup = useSystem()._rootState.notify;
+const notifyGroup = useSystem().stateManager.notify;
 </script>
 <style lang="scss" scoped>
 .notify {

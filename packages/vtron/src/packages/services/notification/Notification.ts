@@ -2,6 +2,7 @@ import { useSystem } from '@/packages/kernel/system';
 export interface NotifyConstructorOptions {
   title: string;
   content: string;
+  type?: 'message' | 'system';
   timeout?: number;
 }
 export class Notify {
@@ -9,13 +10,13 @@ export class Notify {
   id: number;
   title: string;
   content: string;
+  type: 'message' | 'system' = 'message';
   constructor(option: NotifyConstructorOptions) {
     this.title = option.title;
     this.content = option.content;
     this.id = Notify.idcount++;
     const sys = useSystem();
-    sys._rootState.notify.push(this);
-    sys._rootState.message.notify.push(this);
+    sys.stateManager.notify.push(this);
     setTimeout(() => {
       this.close();
     }, option.timeout || 5000);
@@ -44,6 +45,6 @@ export class Notify {
   }
   close() {
     const sys = useSystem();
-    sys._rootState.notify.splice(sys._rootState.notify.indexOf(this), 1);
+    sys.stateManager.notify.splice(sys.stateManager.notify.indexOf(this), 1);
   }
 }

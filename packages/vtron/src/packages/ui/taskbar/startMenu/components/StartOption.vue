@@ -29,10 +29,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Dialog, i18n, BrowserWindow } from '@packages/ui';
+import { i18n, BrowserWindow } from '@packages/ui';
 import { useSystem, emitEvent } from '@packages/kernel';
 import { vGlowing } from '@/packages/util/glowingBorder';
-import { Menu } from '@/packages/services';
+import { Menu, Dialog } from '@/packages/services';
 
 const sys = useSystem();
 function handleClick(key: number, ev: MouseEvent) {

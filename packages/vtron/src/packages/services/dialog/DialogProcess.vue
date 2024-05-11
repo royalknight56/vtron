@@ -20,9 +20,10 @@
   </div>
 </template>
 <script setup lang="ts">
+import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
 import WinButton from '@packages/components/WinButton.vue';
 import { inject } from 'vue';
-import { BrowserWindow } from '../window/BrowserWindow';
+
 // import errorIcon from '@packages/assets/error-icon.png';
 // import infoIcon from '@packages/assets/info-icon.png';
 // import questionIcon from '@packages/assets/question-icon.png';

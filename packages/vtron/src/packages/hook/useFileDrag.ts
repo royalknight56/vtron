@@ -1,6 +1,7 @@
 import { System, VtronFileWithoutContent, emitEvent } from '@packages/kernel';
 import * as FsPath from '@packages/kernel/file/Path';
-import { Dialog } from '@packages/ui';
+import { Dialog } from '@/packages/services';
+
 let dragCallback = () => {
   //
 };

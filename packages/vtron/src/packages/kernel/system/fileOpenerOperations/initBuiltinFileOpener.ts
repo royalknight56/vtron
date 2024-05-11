@@ -11,7 +11,7 @@ import { BrowserWindow, i18n } from '@packages/ui';
 import { dealIcon } from '@/packages/util/Icon';
 import ImageViewerVue from '@packages/application/ImageViewer.vue';
 import { basename } from '@packages/kernel';
-import { Dialog } from '@packages/ui/dialog/Dialog';
+import { Dialog } from '@/packages/services';
 import BatteryVue from '@packages/ui/taskbar/barUnit/Battery.vue';
 import DateTimeVue from '@packages/ui/taskbar/barUnit/DateTime.vue';
 import NetWorkVue from '@packages/ui/taskbar/barUnit/NetWork.vue';

@@ -32,10 +32,9 @@ export * from '@/packages/kernel/shell/Shell';
 export type { ShellInterface } from '@/packages/kernel/shell/ShellType';
 export { System, useSystem } from '@/packages/kernel/system';
 export { Notify } from '@/packages/services/notification/Notification';
-export { Dialog } from '@/packages/ui/dialog/Dialog';
 export { i18n } from '@/packages/ui/i18n';
 
-export { Tray, Menu, MenuItem } from '@/packages/services';
+export { Dialog, Tray, Menu, MenuItem } from '@/packages/services';
 export { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
 export { vDragable } from '@/packages/ui/window/MakeDragable';
 export type { SystemOptions, WinApp } from '@packages/type/type';

@@ -1,10 +1,10 @@
 import { VtronFileWithoutContent } from '@/packages/kernel/file/FileSystem';
-import { SystemStateEnum } from '@/packages/type/enum';
 import { Notify } from '@/packages/services/notification/Notification';
+import { SystemStateEnum } from '@/packages/type/enum';
+import { Menu } from '@/packages/ui/menu/Menu';
 import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
 import { Tree } from '@/packages/util/Tree';
 import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
-import { Menu } from '@/packages/ui/menu/Menu';
 
 type OriginStateType = {
   systemState: SystemStateEnum;

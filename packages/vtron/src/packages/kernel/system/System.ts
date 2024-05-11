@@ -1,4 +1,3 @@
-import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { initRootState, RootState } from '@/packages/kernel/state/Root';
@@ -14,7 +13,7 @@ import { version } from '../../../../package.json';
 import { AppOperations } from './appOperations/AppOperations';
 import { ConfigOperations } from './configOperations/ConfigOperations';
 import { EventOperations } from './eventOperations/EventOperations';
-import { FileOpener, FileOpenerOperations } from './fileOpenerOperations/FileOpenerOperations';
+import { FileOpenerOperations } from './fileOpenerOperations/FileOpenerOperations';
 import { defaultConfig } from './initConfig';
 import { PowerOperations } from './powerOperations/PowerOperations';
 
@@ -51,12 +50,13 @@ export class System {
   version = version;
   isFirstRun = true;
   rootRef: HTMLElement | undefined = undefined;
+  å;
 
   get fs() {
     return this.fileSystemOperations.fs;
   }
   _shell!: ShellInterface;
-
+  å;
   private fileSystemOperations: FileSystemOperations;
   private appOperations: AppOperations;
   private powerOperations: PowerOperations;
@@ -136,12 +136,12 @@ export class System {
     this.emit('start');
   }
 
-  replaceFileSystem(fs: VtronFileInterface) {
+  replaceFileSystem: FileSystemOperations['replaceFileSystem'] = (fs) => {
     return this.fileSystemOperations.replaceFileSystem(fs);
-  }
-  mountVolume(path: string, fs: VtronFileInterface) {
+  };
+  mountVolume: FileSystemOperations['mountVolume'] = (path, fs) => {
     return this.fileSystemOperations.mountVolume(path, fs);
-  }
+  };
   private async initShell() {
     if (this._options.shell) {
       this._shell = this._options.shell;
@@ -161,18 +161,18 @@ export class System {
    * @description: 添加应用
    * force 表示强制，在每次启动时都会添加
    */
-  addApp(options: WinAppOptions, force = false) {
+  addApp: AppOperations['addApp'] = (options, force) => {
     return this.appOperations.addApp(options, force);
-  }
-  addMagnet(options: WinAppOptions, force = false) {
+  };
+  addMagnet: AppOperations['addMagnet'] = (options, force) => {
     return this.appOperations.addMagnet(options, force);
-  }
-  addMenuList(options: WinAppOptions, force = false) {
+  };
+  addMenuList: AppOperations['addMenuList'] = (options, force) => {
     return this.appOperations.addMenuList(options, force);
-  }
-  refershApp() {
+  };
+  refershApp: AppOperations['refershApp'] = () => {
     return this.appOperations.refershApp();
-  }
+  };
 
   addBuiltInApp(options: WinAppOptions) {
     this._rootState.windowMap['Builtin'].set(options.name, options);
@@ -210,50 +210,50 @@ export class System {
     }
   }
 
-  shutdown() {
+  shutdown: PowerOperations['shutdown'] = () => {
     return this.powerOperations.shutdown();
-  }
-  reboot() {
+  };
+  reboot: PowerOperations['reboot'] = () => {
     return this.powerOperations.reboot();
-  }
-  recover() {
+  };
+  recover: PowerOperations['recover'] = () => {
     return this.powerOperations.recover();
-  }
+  };
 
-  getEventer() {
+  getEventer: EventOperations['getEventer'] = () => {
     return this.eventOperations.getEventer();
-  }
-  emit(event: string, ...args: any[]) {
+  };
+  emit: EventOperations['emit'] = (event, ...args) => {
     return this.eventOperations.emit(event, ...args);
-  }
-  emitEvent(event: string, ...args: any[]) {
+  };
+  emitEvent: EventOperations['emitEvent'] = (event, ...args) => {
     return this.eventOperations.emitEvent(event, ...args);
-  }
-  on(event: string, callback: (...args: any[]) => void): void {
+  };
+  on: EventOperations['on'] = (event, callback) => {
     return this.eventOperations.on(event, callback);
-  }
-  mountEvent(event: string | string[], callback: (...args: any[]) => void) {
+  };
+  mountEvent: EventOperations['mountEvent'] = (event, callback) => {
     return this.eventOperations.mountEvent(event, callback);
-  }
+  };
 
-  offEvent(event?: string, callback?: (...args: any[]) => void): void {
+  offEvent: EventOperations['offEvent'] = (event, callback) => {
     return this.eventOperations.offEvent(event, callback);
-  }
+  };
 
   /** 注册文件打开器 */
-  registerFileOpener(type: string | string[], opener: FileOpener) {
+  registerFileOpener: FileOpenerOperations['registerFileOpener'] = (type, opener) => {
     return this.fileOpenerOperations.registerFileOpener(type, opener);
-  }
-  getOpener(type: string) {
+  };
+  getOpener: FileOpenerOperations['getOpener'] = (type) => {
     return this.fileOpenerOperations.getOpener(type);
-  }
-  getAllFileOpener() {
+  };
+  getAllFileOpener: FileOpenerOperations['getAllFileOpener'] = () => {
     return this.fileOpenerOperations.getAllFileOpener();
-  }
+  };
   /**打开vtron 文件系统的文件 */
-  openFile(path: string) {
+  openFile: FileOpenerOperations['openFile'] = (path) => {
     return this.fileOpenerOperations.openFile(path);
-  }
+  };
 
   /** 注册设置app的设置页面 */
   registerSettingPanel(setting: Setting) {

@@ -5,9 +5,9 @@
       <span>充电中</span>
     </div>
     <div class="ch-text">
-      {{ rootState.info.battery.chargeLevel * 100 }} %
+      {{ rootState.navigator.battery.chargeLevel * 100 }} %
       <div class="pro">
-        <WinProcess :model-value="rootState.info.battery.chargeLevel * 100"></WinProcess>
+        <WinProcess :model-value="rootState.navigator.battery.chargeLevel * 100"></WinProcess>
       </div>
     </div>
   </div>
@@ -16,7 +16,7 @@
 import { ref, watchEffect } from 'vue';
 import WinProcess from '@/packages/components/WinProcess.vue';
 import { useSystem } from '@packages/kernel';
-const rootState = useSystem()._rootState;
+const rootState = useSystem().stateManager;
 
 const charMap = {
   noC: {
@@ -47,11 +47,11 @@ const charMap = {
 const iconDisplay = ref(`\uE850`);
 
 watchEffect(() => {
-  if (rootState.info.battery.chargeLevel == 1) {
+  if (rootState.navigator.battery.chargeLevel == 1) {
     iconDisplay.value = charMap[`noC`][9];
   } else {
-    const level = Math.floor(rootState.info.battery.chargeLevel * 10);
-    iconDisplay.value = charMap[rootState.info.battery.isCharging ? `isC` : `noC`][level];
+    const level = Math.floor(rootState.navigator.battery.chargeLevel * 10);
+    iconDisplay.value = charMap[rootState.navigator.battery.isCharging ? `isC` : `noC`][level];
   }
 });
 </script>

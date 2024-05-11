@@ -34,13 +34,12 @@ const charMap = {
 const iconDisplay = ref(`\uE850`);
 
 watchEffect(() => {
-  const rootState = useSystem()._rootState;
-  if (rootState.info.battery.chargeLevel == 1) {
+  const rootState = useSystem().stateManager;
+  if (rootState.navigator.battery.chargeLevel == 1) {
     iconDisplay.value = charMap[`noC`][9];
   } else {
-    const level = Math.floor(rootState.info.battery.chargeLevel * 10);
-    iconDisplay.value = charMap[rootState.info.battery.isCharging ? `isC` : `noC`][level];
+    const level = Math.floor(rootState.navigator.battery.chargeLevel * 10);
+    iconDisplay.value = charMap[rootState.navigator.battery.isCharging ? `isC` : `noC`][level];
   }
 });
 </script>
-@/packages/kernel/system

@@ -33,7 +33,7 @@ function initSizeEvent() {
 }
 
 function initBatteryEvent() {
-  const rootState = useSystem()._rootState;
+  const rootState = useSystem().stateManager;
   const nav = navigator as any;
   if (!nav || !nav.connection) {
     return;
@@ -42,20 +42,17 @@ function initBatteryEvent() {
   nav
     .getBattery?.()
     .then((battery: any) => {
-      rootState.info.battery.isCharging = battery.charging;
-      rootState.info.battery.chargeLevel = battery.level;
+      rootState.navigator.setBattery(battery.charging, battery.level);
       battery.onchargingchange = () => {
-        rootState.info.battery.isCharging = battery.charging;
-        rootState.info.battery.chargeLevel = battery.level;
+        rootState.navigator.setBattery(battery.charging, battery.level);
       };
     })
     .catch(() => {
-      rootState.info.battery.isCharging = false;
-      rootState.info.battery.chargeLevel = 0;
+      rootState.navigator.setBattery(false, 0);
     });
 }
 function initNetworkEvent() {
-  const rootState = useSystem()._rootState;
+  const rootState = useSystem().stateManager;
 
   const nav = navigator as any;
   if (!nav || !nav.connection) {
@@ -63,9 +60,9 @@ function initNetworkEvent() {
   }
 
   const connection = nav.connection as any;
-  rootState.info.connection = connection;
+  rootState.navigator.setConnection(connection);
   connection.addEventListener('change', () => {
-    rootState.info.connection = connection;
+    rootState.navigator.setConnection(connection);
   });
 }
 function setAlertTask(time: number, callback: any) {

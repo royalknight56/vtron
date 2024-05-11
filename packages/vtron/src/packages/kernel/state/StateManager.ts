@@ -10,6 +10,7 @@ import { SettingState } from './subStates/SettingState';
 import { WindowMapState } from './subStates/WindowMapState';
 import { WindowTreeState } from './subStates/WindowTreeState';
 import { NotifyState } from './subStates/NotifyState';
+import { NavigatorState } from './subStates/NavigatorState';
 
 export type OriginStateType = {
   info: {
@@ -17,17 +18,7 @@ export type OriginStateType = {
     screenHeight: number;
     mouseX: number;
     mouseY: number;
-    battery: {
-      isCharging: boolean;
-      chargeLevel: number;
-    };
     brightness: number;
-    connection: {
-      effectiveType: string;
-      rtt: number;
-      downlink: number;
-      saveData: boolean;
-    };
   };
   clipboard: any;
   contextMenu: Menu | null;
@@ -40,17 +31,7 @@ const stateOrigin = {
     screenHeight: window?.innerHeight || 0,
     mouseX: 0,
     mouseY: 0,
-    battery: {
-      isCharging: false,
-      chargeLevel: 0,
-    },
     brightness: 50,
-    connection: {
-      effectiveType: '4g',
-      rtt: 0,
-      downlink: 0,
-      saveData: false,
-    },
   },
   clipboard: {} as any,
   contextMenu: null as Menu | null,
@@ -66,6 +47,7 @@ export class StateManager {
   powerState = new PowerState();
   windowTree = new WindowTreeState();
   notify = new NotifyState();
+  navigator = new NavigatorState();
 
   options: OptionsState;
 

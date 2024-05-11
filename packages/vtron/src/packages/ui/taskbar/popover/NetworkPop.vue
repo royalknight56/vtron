@@ -1,23 +1,22 @@
 <template>
   <div class="outer">
     <div class="icon">
-      <span v-if="sysInfo.connection.rtt > 0" class="segoicon SEGOEUIMDL">&#xE839;</span>
+      <span v-if="navigator.connection.rtt > 0" class="segoicon SEGOEUIMDL">&#xE839;</span>
       <span v-else class="segoicon SEGOEUIMDL">&#xEB55;</span>
     </div>
     <div class="info">
       <div class="speed">
-        <span>{{ sysInfo.connection.downlink }} Mbps</span>
+        <span>{{ navigator.connection.downlink }} Mbps</span>
       </div>
       <div class="type">
-        <span>{{ sysInfo.connection.effectiveType }}</span>
+        <span>{{ navigator.connection.effectiveType }}</span>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { useSystem } from '@packages/kernel';
-const rootState = useSystem()._rootState;
-const sysInfo = rootState.info;
+const navigator = useSystem().stateManager.navigator;
 </script>
 <style lang="scss" scoped>
 .outer {

@@ -14,18 +14,11 @@ import { NavigatorState } from './subStates/NavigatorState';
 import { RectState } from './subStates/RectState';
 import { ContextMenuState } from './subStates/ContextMenuState';
 import { ClipboardState } from './subStates/ClipboardState';
-
-export type OriginStateType = {
-  error: string;
-};
-
-const stateOrigin = {
-  error: '',
-};
+import { ErrorState } from './subStates/ErrorState';
 
 export class StateManager {
   private system: System;
-  state: UnwrapNestedRefs<OriginStateType>;
+
   windowMap = new WindowMapState();
   appList = new AppListState();
   settings = new SettingState();
@@ -36,12 +29,12 @@ export class StateManager {
   rect = new RectState();
   contextMenu = new ContextMenuState();
   clipboard = new ClipboardState();
+  error = new ErrorState();
 
   options: OptionsState;
 
   constructor(system: System) {
     this.system = system;
-    this.state = reactive<OriginStateType>(stateOrigin);
 
     const options = this.system._options;
     options.desktop?.forEach((item) => {
@@ -60,9 +53,5 @@ export class StateManager {
       }
     });
     this.options = new OptionsState(options);
-  }
-
-  setError(error: string): void {
-    this.state.error = error;
   }
 }

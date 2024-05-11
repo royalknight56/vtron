@@ -52,9 +52,7 @@ export class System {
   get fs() {
     return this.fileSystemOperations.fs;
   }
-  get _rootState() {
-    return this.stateManager.state;
-  }
+
   _shell!: ShellInterface;
 
   private fileSystemOperations: FileSystemOperations;
@@ -319,11 +317,11 @@ export class System {
   errorHandler = 0;
   emitError(error: string) {
     this._error && this._error(error);
-    this.stateManager.setError(error);
+    this.stateManager.error.setError(error);
     this.errorHandler = Date.now();
     setTimeout(() => {
       if (Date.now() - this.errorHandler > 1000 * 3) {
-        this.stateManager.setError('');
+        this.stateManager.error.setError('');
       }
     }, 1000 * 4);
   }

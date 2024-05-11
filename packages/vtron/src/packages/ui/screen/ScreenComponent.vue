@@ -14,13 +14,6 @@ const props = defineProps({
     default: null,
   },
 });
-
-// const screenref = ref();
-// const rootState = ref<RootState | undefined>(useSystem()?._rootState);
-// Bios.onOpen((system: System) => {
-//   rootState.value = system._rootState;
-//   system.rootRef = screenref.value;
-// });
 </script>
 <style lang="scss" scoped>
 @import '@packages/root.scss';

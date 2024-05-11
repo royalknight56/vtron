@@ -2,17 +2,19 @@
   <div
     class="error"
     :class="{
-      ani: system._rootState.error,
+      ani: currentError,
     }"
-    :key="system._rootState.error"
+    :key="currentError"
   >
-    {{ system._rootState.error }}
+    {{ currentError }}
   </div>
 </template>
 <script setup lang="ts">
 import { useSystem } from '@packages/kernel';
 
 const system = useSystem();
+
+const currentError = system.stateManager.error.current;
 </script>
 <style lang="scss" scoped>
 .error {

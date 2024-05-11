@@ -1,4 +1,3 @@
-import { VtronFileWithoutContent } from '@/packages/kernel/file/FileSystem';
 import { Notify } from '@/packages/services/notification/Notification';
 import { Menu } from '@/packages/ui/menu/Menu';
 import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
@@ -7,13 +6,11 @@ import { Setting, SystemOptions } from '@packages/type/type';
 import { Tree } from '@packages/util/Tree';
 import { UnwrapNestedRefs, markRaw, reactive } from 'vue';
 import { System } from '../system';
-import { WindowMap } from './subStates/WindowMap';
+import { AppListState } from './subStates/AppListState';
+import { WindowMapState } from './subStates/WindowMapState';
 
 export type OriginStateType = {
   systemState: SystemStateEnum;
-  apps: Array<VtronFileWithoutContent>;
-  magnet: Array<VtronFileWithoutContent>;
-  menulist: Array<VtronFileWithoutContent>;
   notify: Array<Notify>;
   message: {
     notify: Array<Notify>;
@@ -49,9 +46,6 @@ export type OriginStateType = {
 
 const stateOrigin = {
   systemState: SystemStateEnum.close as SystemStateEnum,
-  apps: [] as Array<VtronFileWithoutContent>,
-  magnet: [] as Array<VtronFileWithoutContent>,
-  menulist: [] as Array<VtronFileWithoutContent>,
   notify: [] as Array<Notify>,
   message: {
     notify: [] as Array<Notify>,
@@ -88,7 +82,8 @@ const stateOrigin = {
 export class StateManager {
   state: UnwrapNestedRefs<OriginStateType>;
   system: System;
-  windowMap = new WindowMap();
+  windowMap = new WindowMapState();
+  appList = new AppListState();
 
   constructor(system: System) {
     this.system = system;

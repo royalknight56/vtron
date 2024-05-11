@@ -1,6 +1,6 @@
 import { WinAppOptions } from '@/packages/type/type';
 
-export class WindowMap {
+export class WindowMapState {
   Desktop = new Map<string, WinAppOptions>();
   Magnet = new Map<string, WinAppOptions>();
   Menulist = new Map<string, WinAppOptions>();

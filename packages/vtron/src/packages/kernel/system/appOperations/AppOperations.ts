@@ -39,13 +39,13 @@ export class AppOperations {
 
             switch (element) {
               case 'apps':
-                system._rootState.apps.splice(0, system._rootState.apps.length, ...tempList);
+                system.stateManager.appList.refreshAppList('apps', tempList);
                 break;
               case 'magnet':
-                system._rootState.magnet.splice(0, system._rootState.magnet.length, ...tempList);
+                system.stateManager.appList.refreshAppList('magnet', tempList);
                 break;
               case 'menulist':
-                system._rootState.menulist.splice(0, system._rootState.menulist.length, ...tempList);
+                system.stateManager.appList.refreshAppList('menulist', tempList);
                 break;
               default:
                 break;

@@ -10,6 +10,8 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
 import { useSystem } from '@packages/kernel';
+const system = useSystem();
+
 const rootState = useSystem()._rootState;
 const backgroundType = ref('color');
 const background = ref('#3A98CE');
@@ -19,7 +21,7 @@ function imgload() {
   loaded.value = true;
 }
 onMounted(() => {
-  refershBack(rootState.options.background);
+  refershBack(system.stateManager.options.getOptions('background'));
 });
 watch(rootState.options, (nv) => {
   refershBack(nv.background);

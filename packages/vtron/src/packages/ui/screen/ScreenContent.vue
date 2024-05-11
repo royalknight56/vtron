@@ -1,5 +1,10 @@
 <template>
-  <div class="screen" @contextmenu.prevent ref="screenref" :style="rootState?.options?.rootStyle">
+  <div
+    class="screen"
+    @contextmenu.prevent
+    ref="screenref"
+    :style="system.stateManager.options.getOptions('rootStyle')"
+  >
     <template v-if="rootState.systemState == SystemStateEnum.close">
       <CloseDesktop></CloseDesktop>
     </template>
@@ -35,12 +40,11 @@ import LockDesktop from '@packages/ui/desktop/LockDesktop.vue';
 import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground.vue';
 
 import { SystemStateEnum } from '@packages/type/enum';
-import { useSystem } from '@packages/kernel';
+import { System, useSystem } from '@packages/kernel';
 import { onMounted, ref } from 'vue';
-import { RootState } from '@packages/kernel';
 const screenref = ref();
 defineProps<{
-  rootState: RootState;
+  system: System;
 }>();
 onMounted(() => {
   useSystem().rootRef = screenref.value;

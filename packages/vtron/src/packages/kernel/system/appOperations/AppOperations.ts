@@ -68,13 +68,13 @@ export class AppOperations {
 
   initAppFileFromOption() {
     initBuiltinApp(this.system); // 初始化内建应用
-    this.system._rootState.options.desktop?.forEach((item) => {
+    this.system.stateManager.options.getOptions('desktop')?.forEach((item) => {
       this.addApp(item);
     });
-    this.system._rootState.options.magnet?.forEach((item) => {
+    this.system.stateManager.options.getOptions('magnet')?.forEach((item) => {
       this.addMagnet(item);
     });
-    this.system._rootState.options.menulist?.forEach((item) => {
+    this.system.stateManager.options.getOptions('menulist')?.forEach((item) => {
       this.addMenuList(item);
     });
   }

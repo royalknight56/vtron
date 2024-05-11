@@ -74,7 +74,7 @@ function useContextMenu() {
               });
             },
           },
-          ...(system._rootState.options.contextMenus || []),
+          ...(system.stateManager.options.getOptions('contextMenus') || []),
         ],
         (val) => val.label
       )

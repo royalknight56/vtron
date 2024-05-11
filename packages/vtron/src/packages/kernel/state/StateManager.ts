@@ -2,11 +2,12 @@ import { Notify } from '@/packages/services/notification/Notification';
 import { Menu } from '@/packages/ui/menu/Menu';
 import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
 import { SystemStateEnum } from '@packages/type/enum';
-import { Setting, SystemOptions } from '@packages/type/type';
 import { Tree } from '@packages/util/Tree';
 import { UnwrapNestedRefs, markRaw, reactive } from 'vue';
 import { System } from '../system';
 import { AppListState } from './subStates/AppListState';
+import { OptionsState } from './subStates/OptionsState';
+import { SettingState } from './subStates/SettingState';
 import { WindowMapState } from './subStates/WindowMapState';
 
 export type OriginStateType = {
@@ -37,9 +38,7 @@ export type OriginStateType = {
       saveData: boolean;
     };
   };
-  options: SystemOptions;
   clipboard: any;
-  settings: Array<Setting>;
   contextMenu: Menu | null;
   error: string;
 };
@@ -72,9 +71,7 @@ const stateOrigin = {
       saveData: false,
     },
   },
-  options: {} as SystemOptions,
   clipboard: {} as any,
-  settings: [] as Setting[],
   contextMenu: null as Menu | null,
   error: '',
 };
@@ -84,13 +81,13 @@ export class StateManager {
   system: System;
   windowMap = new WindowMapState();
   appList = new AppListState();
+  settings = new SettingState();
+  options: OptionsState;
 
   constructor(system: System) {
     this.system = system;
     this.state = reactive<OriginStateType>(stateOrigin);
-  }
 
-  initRootState() {
     const options = this.system._options;
     options.desktop?.forEach((item) => {
       if (typeof item.window.content !== 'string') {
@@ -107,7 +104,7 @@ export class StateManager {
         item.window.content = markRaw(item.window.content);
       }
     });
-    this.state.options = options;
+    this.options = new OptionsState(options);
   }
 
   getSystemState(): SystemStateEnum {
@@ -115,10 +112,6 @@ export class StateManager {
   }
   setSystemState(systemState: SystemStateEnum): void {
     this.state.systemState = systemState;
-  }
-
-  pushSettings(setting: Setting): void {
-    this.state.settings.push(setting);
   }
 
   setError(error: string): void {

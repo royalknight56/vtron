@@ -52,7 +52,7 @@ export class System {
   get fs() {
     return this.fileSystemOperations.fs;
   }
-  get rootState() {
+  get _rootState() {
     return this.stateManager;
   }
   _shell!: ShellInterface;
@@ -258,8 +258,7 @@ export class System {
       ...setting,
       content: markRaw(setting.content),
     };
-    // this._rootState.settings?.push(temp);
-    this.stateManager.pushSettings(temp);
+    this.stateManager.settings.pushSettings(temp);
   }
 
   // 插件系统

@@ -83,7 +83,7 @@ async function initAlertEvent() {
   const chosenDay = new Date();
   const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
   const alredyNotes = await sys.fs.readFile(
-    join(sys._rootState.options.userLocation || '', '/Schedule', fileName)
+    join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName)
   );
   if (alredyNotes) {
     const alertList = JSON.parse(alredyNotes);

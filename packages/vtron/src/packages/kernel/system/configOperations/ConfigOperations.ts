@@ -1,6 +1,5 @@
 import { join, Notify } from '@/packages/plug';
 import { Saveablekey, SystemOptionsCertainly } from '@/packages/type/type';
-import { pick } from '@/packages/util/modash';
 import { System } from '../System';
 
 export class ConfigOperations {
@@ -18,7 +17,7 @@ export class ConfigOperations {
     );
     if (config) {
       try {
-        this.system._rootState.options = Object.assign(this.system._rootState.options, JSON.parse(config));
+        this.system.stateManager.options.assignOptions(JSON.parse(config));
       } catch {
         new Notify({
           title: 'Vtron',
@@ -35,7 +34,7 @@ export class ConfigOperations {
     // 初始化背景设置
     const back = await this.system.fs.readFile(`${this.system._options.systemLocation}Vtron/background.txt`);
     if (back) {
-      this.system._rootState.options.background = back;
+      this.system.stateManager.options.setOptions('background', back);
     }
   }
 
@@ -60,12 +59,12 @@ export class ConfigOperations {
     value: T extends keyof SystemOptionsCertainly ? SystemOptionsCertainly[T] : unknown
   ): Promise<void>;
   setConfig<T extends keyof SystemOptionsCertainly>(key: string, value: SystemOptionsCertainly[T]) {
-    this.system._rootState.options[key] = value;
+    this.system.stateManager.options.setOptions(key, value);
     if (Saveablekey.includes(key as any)) {
       return this.system.fs.writeFile(
         join(this.system._options.systemLocation || '', 'Vtron/config.json'),
 
-        JSON.stringify(pick(this.system._rootState.options, ...Saveablekey))
+        JSON.stringify(this.system.stateManager.options.pickOptions(Saveablekey))
       );
     } else {
       return Promise.resolve();
@@ -75,6 +74,6 @@ export class ConfigOperations {
   getConfig<T extends keyof SystemOptionsCertainly>(key: T): SystemOptionsCertainly[T];
   getConfig<T extends string>(key: T): unknown;
   getConfig(key: string) {
-    return this.system._rootState.options[key];
+    return this.system.stateManager.options.getOptions(key);
   }
 }

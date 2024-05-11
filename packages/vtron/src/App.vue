@@ -233,6 +233,12 @@ onMounted(() => {
 
     // sys.mountVolume('/D', new VtronFileSystem('/D', '2'));
     sys.mountVolume('/D', {
+      whenReady: async () => {
+        return memoryFs;
+      },
+      on(event, callback) {
+        console.log(event, callback);
+      },
       copyFile: async (src: string, dest: string) => {
         console.log(src, dest);
       },

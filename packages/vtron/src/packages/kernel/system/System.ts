@@ -1,7 +1,6 @@
-import { initEventer, initEventListener } from '@/packages/kernel/event';
+import { initEventListener } from '@/packages/kernel/event';
 import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 import { VtronFileSystem } from '@/packages/kernel/file/FileSystem';
-import { extname } from '@/packages/kernel/file/Path';
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { initRootState, RootState } from '@/packages/kernel/state/Root';
@@ -18,6 +17,7 @@ import { version } from '../../../../package.json';
 import { AppOperations } from './appOperations/AppOperations';
 import { ConfigOperations } from './configOperations/ConfigOperations';
 import { EventOperations } from './eventOperations/EventOperations';
+import { FileOpener, FileOpenerOperations } from './fileOpenerOperations/FileOpenerOperations';
 import { defaultConfig } from './initConfig';
 import { PowerOperations } from './powerOperations/PowerOperations';
 
@@ -28,12 +28,7 @@ const logger = function (...args: any[]) {
 };
 
 export type VtronPlugin = (system: System) => void;
-export type FileOpener = {
-  name?: string;
-  icon: string;
-  hiddenInChosen?: boolean;
-  func: (path: string, content: string) => void;
-};
+
 export class Bios {
   public static _onOpen: ((system: System) => void) | null = null;
   public static onOpen(func: (system: System) => void) {
@@ -56,7 +51,6 @@ export class System {
 
   private _ready: ((value: System) => void) | null = null;
   private _error: ((reason: unknown) => void) | null = null;
-  private _flieOpenerMap: Map<string, FileOpener> = new Map();
   version = version;
   isFirstRun = true;
   rootRef: HTMLElement | undefined = undefined;
@@ -68,6 +62,7 @@ export class System {
   private powerOperations: PowerOperations;
   private configOperations: ConfigOperations;
   private eventOperations: EventOperations;
+  private fileOpenerOperations: FileOpenerOperations;
 
   constructor(options?: SystemOptions) {
     logger('initOptions');
@@ -78,6 +73,7 @@ export class System {
     this.powerOperations = new PowerOperations(this);
     this.configOperations = new ConfigOperations(this);
     this.eventOperations = new EventOperations(this);
+    this.fileOpenerOperations = new FileOpenerOperations(this);
 
     logger('initRootState');
     this._rootState = this.initRootState();
@@ -137,16 +133,6 @@ export class System {
     this.emit('start');
   }
 
-  /**
-   * @description: 初始化事件系统
-   */
-  private initEvent() {
-    /**
-     * 过程：监听事件，处理事件
-     */
-    return initEventer();
-  }
-
   private async initFileSystem() {
     this.fs = await this.fileSystemOperations.updateFs(this._options);
     await this.fileSystemOperations.init(this.fs);
@@ -190,16 +176,16 @@ export class System {
    * force 表示强制，在每次启动时都会添加
    */
   addApp(options: WinAppOptions, force = false) {
-    this.appOperations.addApp(options, force);
+    return this.appOperations.addApp(options, force);
   }
   addMagnet(options: WinAppOptions, force = false) {
-    this.appOperations.addMagnet(options, force);
+    return this.appOperations.addMagnet(options, force);
   }
   addMenuList(options: WinAppOptions, force = false) {
-    this.appOperations.addMenuList(options, force);
+    return this.appOperations.addMenuList(options, force);
   }
   refershApp() {
-    this.appOperations.refershApp();
+    return this.appOperations.refershApp();
   }
 
   addBuiltInApp(options: WinAppOptions) {
@@ -239,50 +225,48 @@ export class System {
   }
 
   shutdown() {
-    this.powerOperations.shutdown();
+    return this.powerOperations.shutdown();
   }
   reboot() {
-    this.powerOperations.reboot();
+    return this.powerOperations.reboot();
   }
   recover() {
-    this.powerOperations.recover();
+    return this.powerOperations.recover();
   }
 
   getEventer() {
     return this.eventOperations.getEventer();
   }
   emit(event: string, ...args: any[]) {
-    this.eventOperations.emit(event, ...args);
+    return this.eventOperations.emit(event, ...args);
   }
   emitEvent(event: string, ...args: any[]) {
-    this.eventOperations.emitEvent(event, ...args);
+    return this.eventOperations.emitEvent(event, ...args);
   }
   on(event: string, callback: (...args: any[]) => void): void {
-    this.eventOperations.on(event, callback);
+    return this.eventOperations.on(event, callback);
   }
   mountEvent(event: string | string[], callback: (...args: any[]) => void) {
-    this.eventOperations.mountEvent(event, callback);
+    return this.eventOperations.mountEvent(event, callback);
   }
 
   offEvent(event?: string, callback?: (...args: any[]) => void): void {
-    this.eventOperations.offEvent(event, callback);
+    return this.eventOperations.offEvent(event, callback);
   }
 
   /** 注册文件打开器 */
   registerFileOpener(type: string | string[], opener: FileOpener) {
-    if (Array.isArray(type)) {
-      type.forEach((item) => {
-        this._flieOpenerMap.set(item, opener);
-      });
-      return;
-    }
-    this._flieOpenerMap.set(type, opener);
+    return this.fileOpenerOperations.registerFileOpener(type, opener);
   }
   getOpener(type: string) {
-    return this._flieOpenerMap.get(type);
+    return this.fileOpenerOperations.getOpener(type);
   }
   getAllFileOpener() {
-    return this._flieOpenerMap;
+    return this.fileOpenerOperations.getAllFileOpener();
+  }
+  /**打开vtron 文件系统的文件 */
+  openFile(path: string) {
+    return this.fileOpenerOperations.openFile(path);
   }
 
   /** 注册设置app的设置页面 */
@@ -293,22 +277,7 @@ export class System {
     };
     this._rootState.settings?.push(temp);
   }
-  /**打开vtron 文件系统的文件 */
-  async openFile(path: string) {
-    const fileStat = await this.fs.stat(path);
-    if (!fileStat) {
-      throw new Error('文件不存在');
-    }
-    if (fileStat?.isDirectory) {
-      this._flieOpenerMap.get('dir')?.func.call(this, path, '');
-      return;
-    } else {
-      const fileContent = await this.fs.readFile(path);
-      this._flieOpenerMap
-        .get(extname(fileStat?.path || '') || 'link')
-        ?.func.call(this, path, fileContent || '');
-    }
-  }
+
   // 插件系统
   use(func: VtronPlugin): void {
     return func(this);

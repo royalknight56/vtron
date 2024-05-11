@@ -50,13 +50,12 @@ export class System {
   version = version;
   isFirstRun = true;
   rootRef: HTMLElement | undefined = undefined;
-  å;
 
   get fs() {
     return this.fileSystemOperations.fs;
   }
   _shell!: ShellInterface;
-  å;
+
   private fileSystemOperations: FileSystemOperations;
   private appOperations: AppOperations;
   private powerOperations: PowerOperations;

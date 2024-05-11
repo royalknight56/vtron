@@ -18,7 +18,7 @@ import NetWorkVue from '@packages/ui/taskbar/barUnit/NetWork.vue';
 import BatteryPopVue from '@packages/ui/taskbar/popover/BatteryPop.vue';
 import DateTimePopVue from '@packages/ui/taskbar/popover/DateTimePop.vue';
 import NetworkPopVue from '@packages/ui/taskbar/popover/NetworkPop.vue';
-import { Tray } from '@packages/ui/tray/Tary';
+import { Tray } from '@/packages/services';
 
 export function initBuiltinFileOpener(system: System) {
   if (system._options.builtinFeature?.includes('ExeOpener')) {

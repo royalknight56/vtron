@@ -1,4 +1,4 @@
-import { Menu } from '@/packages/ui/menu/Menu';
+import { Menu } from '@/packages/services';
 import { ref } from 'vue';
 
 export class ContextMenuState {

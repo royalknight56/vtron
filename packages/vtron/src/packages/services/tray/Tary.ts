@@ -1,4 +1,4 @@
-import { Menu } from '@/packages/ui';
+import { Menu } from '@/packages/services';
 import { Ref, defineComponent, markRaw, ref } from 'vue';
 
 export interface TrayOptions {

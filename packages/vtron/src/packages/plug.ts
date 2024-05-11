@@ -34,9 +34,8 @@ export { System, useSystem } from '@/packages/kernel/system';
 export { Notify } from '@/packages/services/notification/Notification';
 export { Dialog } from '@/packages/ui/dialog/Dialog';
 export { i18n } from '@/packages/ui/i18n';
-export { Menu } from '@/packages/ui/menu/Menu';
-export { MenuItem } from '@/packages/ui/menu/MenuItem';
-export { Tray } from '@/packages/ui/tray/Tary';
+
+export { Tray, Menu, MenuItem } from '@/packages/services';
 export { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
 export { vDragable } from '@/packages/ui/window/MakeDragable';
 export type { SystemOptions, WinApp } from '@packages/type/type';

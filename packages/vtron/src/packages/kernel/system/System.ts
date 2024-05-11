@@ -3,7 +3,7 @@ import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { FileSystemOperations } from '@/packages/kernel/system/fileSystemOperations/FileSystemOperations';
 import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
 import { Dialog } from '@/packages/ui/dialog/Dialog';
-import { Tray, TrayOptions } from '@/packages/ui/tray/Tary';
+import { Tray, TrayOptions } from '@/packages/services';
 import { SystemStateEnum } from '@packages/type/enum';
 import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { BrowserWindow, BrowserWindowOption } from '@packages/ui/window/BrowserWindow';

@@ -100,7 +100,8 @@ import {
   emitEvent,
   mountEvent,
 } from '@packages/kernel';
-import { i18n, Menu } from '@packages/ui';
+import { i18n } from '@packages/ui';
+import { Menu } from '@/packages/services';
 import FileIcon from '@packages/application/FileIcon.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';

@@ -22,14 +22,14 @@
           class="mask"
         ></DesktopBackground>
       </Transition>
-      <Desktop v-if="rootState.systemState == SystemStateEnum.open"></Desktop>
+      <DesktopLayout v-if="rootState.systemState == SystemStateEnum.open"></DesktopLayout>
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
 import CloseDesktop from '@packages/ui/desktop/CloseDesktop.vue';
-import Desktop from '@packages/ui/desktop/Desktop.vue';
+import DesktopLayout from '@packages/ui/desktop/DesktopLayout.vue';
 import OpeningDesktop from '@packages/ui/desktop/OpeningDesktop.vue';
 import LockDesktop from '@packages/ui/desktop/LockDesktop.vue';
 import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground.vue';
@@ -56,4 +56,3 @@ onMounted(() => {
   overflow: hidden;
 }
 </style>
-@/packages/kernel/system@/packages/kernel/state/Root

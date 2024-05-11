@@ -31,7 +31,7 @@ import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground
 import { emitEvent } from '@packages/kernel';
 import WindowGroup from '@packages/ui/window/WindowGroup.vue';
 import ContextMenu from '@packages/ui/menu/ContextMenu.vue';
-import NotificationGroup from '@packages/ui/notification/NotifyGroup.vue';
+import NotificationGroup from '@packages/services/notification/NotifyGroup.vue';
 import MessageCenterPop from '@packages/ui/taskbar/popover/MessageCenterPop.vue';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
@@ -87,7 +87,7 @@ function backgroundUp(e: MouseEvent) {
 function handleRightClick(e: MouseEvent) {
   e.preventDefault();
   createDesktopContextMenu(e, `${system._options.userLocation}Desktop`, () => {
-    system.initAppList();
+    system.refershApp();
   });
 }
 

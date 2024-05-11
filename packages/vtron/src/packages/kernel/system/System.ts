@@ -1,7 +1,7 @@
-import { Eventer, initEventer, initEventListener } from '@/packages/kernel/event';
+import { initEventer, initEventListener } from '@/packages/kernel/event';
 import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 import { VtronFileSystem } from '@/packages/kernel/file/FileSystem';
-import { extname, join } from '@/packages/kernel/file/Path';
+import { extname } from '@/packages/kernel/file/Path';
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { initRootState, RootState } from '@/packages/kernel/state/Root';
@@ -10,22 +10,16 @@ import { Notify, NotifyConstructorOptions } from '@/packages/services/notificati
 import { systemStartup } from '@/packages/startup';
 import { Dialog } from '@/packages/ui/dialog/Dialog';
 import { Tray, TrayOptions } from '@/packages/ui/tray/Tary';
-import { pick } from '@/packages/util/modash';
 import { SystemStateEnum } from '@packages/type/enum';
-import {
-  Saveablekey,
-  Setting,
-  SystemOptions,
-  SystemOptionsCertainly,
-  WinAppOptions,
-} from '@packages/type/type';
+import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { BrowserWindow, BrowserWindowOption } from '@packages/ui/window/BrowserWindow';
 import { markRaw } from 'vue';
 import { version } from '../../../../package.json';
 import { AppOperations } from './appOperations/AppOperations';
+import { ConfigOperations } from './configOperations/ConfigOperations';
+import { EventOperations } from './eventOperations/EventOperations';
 import { defaultConfig } from './initConfig';
 import { PowerOperations } from './powerOperations/PowerOperations';
-import { ConfigOperations } from './configOperations/ConfigOperations';
 
 const logger = function (...args: any[]) {
   return;
@@ -59,7 +53,7 @@ export class System {
   readonly _options: SystemOptions;
 
   _rootState: RootState;
-  private _eventer: Eventer;
+
   private _ready: ((value: System) => void) | null = null;
   private _error: ((reason: unknown) => void) | null = null;
   private _flieOpenerMap: Map<string, FileOpener> = new Map();
@@ -73,6 +67,7 @@ export class System {
   private appOperations: AppOperations;
   private powerOperations: PowerOperations;
   private configOperations: ConfigOperations;
+  private eventOperations: EventOperations;
 
   constructor(options?: SystemOptions) {
     logger('initOptions');
@@ -82,14 +77,13 @@ export class System {
     this.appOperations = new AppOperations(this);
     this.powerOperations = new PowerOperations(this);
     this.configOperations = new ConfigOperations(this);
+    this.eventOperations = new EventOperations(this);
 
     logger('initRootState');
     this._rootState = this.initRootState();
     logger('mountGlobalSystem');
     System.GLOBAL_SYSTEM = this; // 挂载全局系统
     Bios._onOpen && Bios._onOpen(this);
-    logger('initEvent');
-    this._eventer = this.initEvent();
 
     logger('initSystem');
     this.initSystem();
@@ -184,22 +178,6 @@ export class System {
     }
   }
 
-  /**
-   * @description: 初始化保存的配置
-   */
-  private async initSavedConfig() {
-    const config = await this.fs.readFile(join(this._options.systemLocation || '', 'Vtron/config.json'));
-    if (config) {
-      try {
-        this._rootState.options = Object.assign(this._rootState.options, JSON.parse(config));
-      } catch {
-        new Notify({
-          title: 'Vtron',
-          content: '配置文件格式错误',
-        });
-      }
-    }
-  }
   setConfig: ConfigOperations['setConfig'] = (key: string, value: any) => {
     return this.configOperations.setConfig(key, value);
   };
@@ -219,6 +197,9 @@ export class System {
   }
   addMenuList(options: WinAppOptions, force = false) {
     this.appOperations.addMenuList(options, force);
+  }
+  refershApp() {
+    this.appOperations.refershApp();
   }
 
   addBuiltInApp(options: WinAppOptions) {
@@ -268,35 +249,23 @@ export class System {
   }
 
   getEventer() {
-    return this._eventer;
+    return this.eventOperations.getEventer();
   }
   emit(event: string, ...args: any[]) {
-    this.emitEvent(event, ...args);
+    this.eventOperations.emit(event, ...args);
   }
   emitEvent(event: string, ...args: any[]) {
-    const eventArray = event.split('.');
-    eventArray.forEach((item, index) => {
-      const tempEvent = eventArray.slice(0, index + 1).join('.');
-      this._eventer.emit(tempEvent, event, args);
-    });
-    this._eventer.emit('system', event, args);
+    this.eventOperations.emitEvent(event, ...args);
   }
   on(event: string, callback: (...args: any[]) => void): void {
-    this.mountEvent(event, callback);
+    this.eventOperations.on(event, callback);
   }
   mountEvent(event: string | string[], callback: (...args: any[]) => void) {
-    if (Array.isArray(event)) {
-      event.forEach((item) => {
-        this.mountEvent(item, callback);
-      });
-      return;
-    } else {
-      this._eventer.on(event, callback);
-    }
+    this.eventOperations.mountEvent(event, callback);
   }
 
   offEvent(event?: string, callback?: (...args: any[]) => void): void {
-    this._eventer.off(event, callback);
+    this.eventOperations.offEvent(event, callback);
   }
 
   /** 注册文件打开器 */

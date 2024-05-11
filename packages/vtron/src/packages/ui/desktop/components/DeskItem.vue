@@ -19,7 +19,7 @@ const props = defineProps({
 });
 onMounted(() => {
   mountEvent('file.props.edit', async () => {
-    useSystem().initAppList();
+    useSystem().refershApp();
   });
 });
 </script>

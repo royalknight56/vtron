@@ -6,7 +6,7 @@
 -->
 <template>
   <div class="outer">
-    <Screen></Screen>
+    <VtronScreen></VtronScreen>
   </div>
 </template>
 

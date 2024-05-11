@@ -1,7 +1,7 @@
 import { join, Notify } from '@/packages/plug';
-import { System } from '../System';
 import { Saveablekey, SystemOptionsCertainly } from '@/packages/type/type';
 import { pick } from '@/packages/util/modash';
+import { System } from '../System';
 
 export class ConfigOperations {
   system: System;

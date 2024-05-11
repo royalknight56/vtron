@@ -1,4 +1,3 @@
-import { initEventListener } from '@/packages/kernel/event';
 import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 import { VtronFileSystem } from '@/packages/kernel/file/FileSystem';
 import { Shell } from '@/packages/kernel/shell/Shell';
@@ -54,7 +53,10 @@ export class System {
   version = version;
   isFirstRun = true;
   rootRef: HTMLElement | undefined = undefined;
-  fs!: VtronFileInterface;
+
+  get fs() {
+    return this.fileSystemOperations.fs;
+  }
   _shell!: ShellInterface;
 
   private fileSystemOperations: FileSystemOperations;
@@ -110,7 +112,8 @@ export class System {
     this._rootState.systemState = SystemStateEnum.opening;
 
     logger('initFileSystem');
-    await this.initFileSystem(); // 初始化文件系统
+    // await this.initFileSystem(); // 初始化文件系统
+    await this.fileSystemOperations.initFileSystem(); // 初始化文件系统
     logger('initSavedConfig');
     await this.configOperations.initSavedConfig(); // 初始化保存的配置
     logger('initShell');
@@ -122,7 +125,8 @@ export class System {
     logger('isLogin');
     this.powerOperations.isLogin(); // 判断是否登录
     logger('initEventListener');
-    initEventListener(); // 初始化事件侦听
+    this.eventOperations.initEventer(); // 初始化事件
+
     this._ready && this._ready(this);
     logger('runPlugin');
     this.runPlugin(this); // 运行fs中插件
@@ -133,21 +137,10 @@ export class System {
     this.emit('start');
   }
 
-  private async initFileSystem() {
-    this.fs = await this.fileSystemOperations.updateFs(this._options);
-    await this.fileSystemOperations.init(this.fs);
-
-    this.fileSystemOperations.on('error', (err: string) => {
-      this.emitError(err);
-    });
-    this.fileSystemOperations.registerWatcher(new RegExp(`^${this._options.userLocation}`), () => {
-      this.appOperations.refershApp();
-    });
-  }
-
   replaceFileSystem(fs: VtronFileInterface) {
-    this.fs = fs;
-    this.appOperations.refershApp();
+    // this.fs = fs;
+    // this.appOperations.refershApp();
+    this.fileSystemOperations.replaceFileSystem(fs);
   }
   mountVolume(path: string, fs: VtronFileInterface) {
     if (this.fs instanceof VtronFileSystem) {

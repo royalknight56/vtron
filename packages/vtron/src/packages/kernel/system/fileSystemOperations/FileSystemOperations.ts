@@ -6,11 +6,11 @@ import { createInitFile } from './createInitFile';
 
 export class FileSystemOperations {
   options: SystemOptions;
-  fs: VtronFileInterface | null;
+  fs: VtronFileInterface;
 
   constructor(options?: SystemOptions) {
     this.options = options || {};
-    this.fs = null;
+    this.fs = new VtronFileSystem();
   }
 
   async updateFs(options?: SystemOptions) {
@@ -19,7 +19,6 @@ export class FileSystemOperations {
       this.fs = options.fs;
       return options.fs;
     } else {
-      this.fs = await new VtronFileSystem();
       return this.fs;
     }
   }
@@ -37,5 +36,13 @@ export class FileSystemOperations {
 
   registerWatcher(path: RegExp, callback: (path: string, content: string) => void) {
     this.fs?.registerWatcher(path, callback);
+  }
+
+  async initFileSystem() {
+    this.fs = await this.updateFs(this.options);
+    await this.init(this.fs);
+  }
+  replaceFileSystem(fs: VtronFileInterface) {
+    this.fs = fs;
   }
 }

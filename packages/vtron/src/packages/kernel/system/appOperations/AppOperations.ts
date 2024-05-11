@@ -6,6 +6,9 @@ export class AppOperations {
   system: System;
   constructor(system: System) {
     this.system = system;
+    this.system.fs.registerWatcher(new RegExp(`^${this.system._options.userLocation}`), () => {
+      this.refershApp();
+    });
   }
 
   private refershAppList() {

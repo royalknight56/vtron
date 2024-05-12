@@ -15,7 +15,7 @@ vtron, a Win10 UI framework based on Vue3
 
 <div align="center">
 
-<a href="http://v3w10.vtron.site" target="_blank">Document</a>|<a href="http://v3w10.vtron.site" target="_blank">Official website
+<a href="https://vtron.site/doc" target="_blank">Document</a>|<a href="https://vtron.site/doc" target="_blank">Official website
 </a>|<a href="http://vtron.site" target="_blank">Demo</a>
 
 </div>

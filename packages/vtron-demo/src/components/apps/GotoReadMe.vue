@@ -74,13 +74,13 @@ import { BrowserWindow } from 'vtron';
 import { ref, inject } from 'vue';
 
 let browserWindow = <BrowserWindow>inject('browserWindow');
-window.open('https://v3w10.vtron.site');
+window.open('https://vtron.site/doc');
 setTimeout(() => {
-  window.open('https://v3w10.vtron.site');
+  window.open('https://vtron.site/doc');
 });
 
-let urlinput = ref('https://v3w10.vtron.site');
-let urlsrc = ref('https://v3w10.vtron.site');
+let urlinput = ref('https://vtron.site/doc');
+let urlsrc = ref('https://vtron.site/doc');
 function urlkey(e: KeyboardEvent) {
   if (e.code == 'Enter') {
     changeUrl();

@@ -34,3 +34,4 @@ dist-ssr
 *.sln
 *.sw?
 packages/vtron-e2e/cypress/videos/
+packages/vtron-md/docs/.vitepress/cache/deps/vue.js

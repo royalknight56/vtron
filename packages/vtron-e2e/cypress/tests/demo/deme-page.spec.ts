@@ -1,7 +1,7 @@
 describe('home page', () => {
   it('visit home page', () => {
     // 访问首页
-    cy.visit('https://win.vtron.site/');
+    cy.visit('https://vtron.site/win');
     // 断言标题
     cy.title().should('eq', 'Vtron');
     cy.get('.notify').should('be.visible');

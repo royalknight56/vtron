@@ -186,7 +186,7 @@ let system = new System({
 
 vtron: 核心项目，包含核心逻辑，vtronjs包。
 
-vtron-demo: demo项目，也是线上win.vtron.site的项目。
+vtron-demo: demo项目，也是线上vtron.site/win的项目。
 
 vtron-e2e: e2e测试监控项目。
 

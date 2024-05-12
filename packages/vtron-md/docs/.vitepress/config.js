@@ -1,6 +1,6 @@
 module.exports = {
   title: 'Vtron',
-  base: '/',
+  base: '/doc/',
   description: 'Just playing around',
   head: [
     [

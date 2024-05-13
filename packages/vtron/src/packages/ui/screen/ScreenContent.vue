@@ -34,12 +34,13 @@ import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground
 import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
 import { System, useSystem } from '@packages/kernel';
 import { onMounted, ref } from 'vue';
+import { useUISystem } from '../hook/useSystem';
 const screenref = ref();
 const props = defineProps<{
   system: System;
 }>();
 onMounted(() => {
-  useSystem().rootRef = screenref.value;
+  useUISystem().rootRef = screenref.value;
 });
 const powerState = ref(props.system.stateManager.powerState.current);
 </script>

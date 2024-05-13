@@ -33,7 +33,7 @@ export { System, useSystem } from '@/packages/kernel/system';
 export { BrowserWindow, Dialog, Menu, MenuItem, Tray } from '@/packages/services';
 export { Notify } from '@/packages/services/notification/Notification';
 export { i18n } from '@/packages/ui/i18n';
-export { vDragable } from '@/packages/ui/window/MakeDragable';
+export { vDragable } from '@/packages/ui/windowGroup/MakeDragable';
 export * from '@/packages/util/Path';
 export type { SystemOptions, WinApp } from '@packages/type/type';
 export { dealIcon } from '@packages/util/Icon';

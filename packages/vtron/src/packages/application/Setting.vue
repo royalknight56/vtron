@@ -67,7 +67,7 @@ import e771 from '@/assets/icon/e771.png'; //个性化
 import e775 from '@/assets/icon/e775.png'; //语言
 import e77b from '@/assets/icon/e77b.png'; //账户
 
-import { vDragable } from '@packages/ui/window/MakeDragable';
+import { vDragable } from '@/packages/ui/windowGroup/MakeDragable';
 
 import { i18n } from '@packages/ui';
 import { BrowserWindow } from '@/packages/services';

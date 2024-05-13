@@ -4,9 +4,9 @@
   </template>
 </template>
 <script lang="ts" setup>
-import { Bios, System, useSystem } from '@packages/kernel';
-import { ref } from 'vue';
+import { System } from '@packages/kernel';
 import ScreenContent from './ScreenContent.vue';
+import { provide } from 'vue';
 
 const props = defineProps({
   system: {
@@ -14,6 +14,7 @@ const props = defineProps({
     default: null,
   },
 });
+provide('system', props.system);
 </script>
 <style lang="scss" scoped>
 @import '@packages/root.scss';

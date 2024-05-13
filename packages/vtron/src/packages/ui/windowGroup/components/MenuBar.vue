@@ -10,11 +10,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { BrowserWindow, WindowStateEnum } from '../BrowserWindow';
+import { BrowserWindow } from '@/packages/services';
 import { UnwrapNestedRefs } from 'vue';
 import { emitEvent } from '@packages/kernel';
 import FileIcon from '@packages/application/FileIcon.vue';
 import WinUpButtonGroup from '@/packages/components/WinUpButtonGroup.vue';
+import { WindowStateEnum } from '@/packages/services/window/BrowserWindow';
 const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
 }>();

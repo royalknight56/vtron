@@ -1,8 +1,8 @@
 import { BrowserWindow, Dialog, Menu } from '@/packages/services';
+import * as fspath from '@/packages/util/Path';
 import FileProps from '@packages/application/FileProps.vue';
 import OpenWiteDialogVue from '@packages/application/OpenWiteDialog.vue';
 import { VtronFileWithoutContent, useSystem } from '@packages/kernel';
-import * as fspath from '@packages/kernel/file/Path';
 import { i18n } from '@packages/ui';
 import { UnwrapNestedRefs } from 'vue';
 import { uniqBy } from '../util/modash';

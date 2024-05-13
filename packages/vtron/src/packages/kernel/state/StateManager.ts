@@ -1,17 +1,17 @@
 import { markRaw } from 'vue';
 import { System } from '../system';
 import { AppListState } from './subStates/AppListState';
+import { ClipboardState } from './subStates/ClipboardState';
+import { ContextMenuState } from './subStates/ContextMenuState';
+import { ErrorState } from './subStates/ErrorState';
+import { NavigatorState } from './subStates/NavigatorState';
+import { NotifyState } from './subStates/NotifyState';
 import { OptionsState } from './subStates/OptionsState';
 import { PowerState } from './subStates/PowerState';
+import { RectState } from './subStates/RectState';
 import { SettingState } from './subStates/SettingState';
 import { WindowMapState } from './subStates/WindowMapState';
 import { WindowTreeState } from './subStates/WindowTreeState';
-import { NotifyState } from './subStates/NotifyState';
-import { NavigatorState } from './subStates/NavigatorState';
-import { RectState } from './subStates/RectState';
-import { ContextMenuState } from './subStates/ContextMenuState';
-import { ClipboardState } from './subStates/ClipboardState';
-import { ErrorState } from './subStates/ErrorState';
 
 export class StateManager {
   private system: System;

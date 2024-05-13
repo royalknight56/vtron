@@ -1,5 +1,5 @@
-import * as vPath from '@/packages/kernel/file/Path';
 import { System } from '@/packages/kernel/system';
+import * as fspath from '@/packages/util/Path';
 import { ShellInterface } from './ShellType';
 import { commandMap } from './shellCommand/commandMap';
 
@@ -41,7 +41,7 @@ class Shell implements ShellInterface {
     if (command) {
       if (input.split(' > ').length > 1) {
         let outPath = input.split(' > ')[1].trim();
-        outPath = vPath.join(this.router, outPath);
+        outPath = fspath.join(this.router, outPath);
         const res = await this.system.fs.stat(outPath);
         if (res) {
           if (res.isDirectory) {

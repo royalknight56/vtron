@@ -1,13 +1,13 @@
-import * as vPath from '@/packages/kernel/file/Path';
+import * as fspath from '@/packages/util/Path';
 import * as ivue from 'vue';
 import type { Shell } from '../Shell';
 async function node(input: string, output: (text: string) => void, shell: Shell) {
   const path = input.split(' ')[1];
   if (path) {
-    const res = await shell.system.fs.stat(vPath.join(shell.router, path));
+    const res = await shell.system.fs.stat(fspath.join(shell.router, path));
     if (res) {
       if (res.isFile) {
-        const file = await shell.system.fs.readFile(vPath.join(shell.router, path));
+        const file = await shell.system.fs.readFile(fspath.join(shell.router, path));
         if (file) {
           new Function('system', 'vue', file + '\nmain(system,vue)')(shell.system, ivue);
         }

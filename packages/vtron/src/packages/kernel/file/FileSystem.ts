@@ -1,4 +1,4 @@
-import * as fspath from '@/packages/kernel/file/Path';
+import * as fspath from '@/packages/util/Path';
 import { VtronFileInterface } from './FIleInterface';
 
 type DateLike = Date | string | number;

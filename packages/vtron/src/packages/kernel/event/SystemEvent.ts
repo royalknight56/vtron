@@ -2,7 +2,7 @@ import { emitEvent, mountEvent } from './EventHook';
 
 import { useSystem } from '@/packages/kernel/system';
 import { throttle } from '@/packages/util/debounce';
-import { join } from '../file/Path';
+import { join } from '../../util/Path';
 
 function initSizeEvent() {
   const rootState = useSystem().stateManager;

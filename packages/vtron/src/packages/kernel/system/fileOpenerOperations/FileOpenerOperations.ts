@@ -1,4 +1,4 @@
-import { extname } from '@/packages/kernel/file/Path';
+import * as fspath from '@/packages/util/Path';
 import { System } from '../System';
 import { initBuiltinFileOpener } from './initBuiltinFileOpener';
 
@@ -45,7 +45,7 @@ export class FileOpenerOperations {
     } else {
       const fileContent = await this.system.fs.readFile(path);
       this.flieOpenerMap
-        .get(extname(fileStat?.path || '') || 'link')
+        .get(fspath.extname(fileStat?.path || '') || 'link')
         ?.func.call(this, path, fileContent || '');
     }
   }

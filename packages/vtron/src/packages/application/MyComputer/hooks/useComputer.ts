@@ -1,5 +1,5 @@
+import * as fspath from '@/packages/util/Path';
 import { VtronFileWithoutContent } from '@packages/kernel';
-import * as fspath from '@packages/kernel/file/Path';
 
 export type RouterPath = string;
 export const useComputer = (adpater: {

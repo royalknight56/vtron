@@ -27,7 +27,6 @@ const plug = {
 export default plug;
 export type { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 export * from '@/packages/kernel/file/FileSystem';
-export * from '@/packages/kernel/file/Path';
 export * from '@/packages/kernel/shell/Shell';
 export type { ShellInterface } from '@/packages/kernel/shell/ShellType';
 export { System, useSystem } from '@/packages/kernel/system';
@@ -35,5 +34,6 @@ export { BrowserWindow, Dialog, Menu, MenuItem, Tray } from '@/packages/services
 export { Notify } from '@/packages/services/notification/Notification';
 export { i18n } from '@/packages/ui/i18n';
 export { vDragable } from '@/packages/ui/window/MakeDragable';
+export * from '@/packages/util/Path';
 export type { SystemOptions, WinApp } from '@packages/type/type';
 export { dealIcon } from '@packages/util/Icon';

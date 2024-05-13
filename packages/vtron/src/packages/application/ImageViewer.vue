@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue';
 import WinLoading from '@packages/components/WinLoading.vue';
-import { BrowserWindow } from '@packages/ui';
+import { BrowserWindow } from '@/packages/services';
 import { VtronFileSystem, System } from '@packages/kernel';
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');

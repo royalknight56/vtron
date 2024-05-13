@@ -20,7 +20,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
+import { BrowserWindow } from '@/packages/services';
 import WinButton from '@packages/components/WinButton.vue';
 import { inject } from 'vue';
 

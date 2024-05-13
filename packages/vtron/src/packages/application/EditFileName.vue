@@ -7,8 +7,8 @@
 <script setup lang="ts">
 import WinButton from '@packages/components/WinButton.vue';
 import { inject, ref } from 'vue';
-import { i18n, BrowserWindow } from '@packages/ui';
-import { Notify, Dialog } from '@/packages/services';
+import { i18n } from '@packages/ui';
+import { Notify, Dialog, BrowserWindow } from '@/packages/services';
 
 import { VtronFileWithoutContent, basename, join, useSystem, emitEvent } from '@packages/kernel';
 

@@ -17,11 +17,10 @@
 </template>
 <script setup lang="ts">
 import { inject, ref } from 'vue';
-import { i18n, BrowserWindow } from '@packages/ui';
+import { i18n } from '@packages/ui';
 import { Notify } from '@/packages/services/notification/Notification';
 import { useSystem } from '@packages/kernel';
-import { Menu } from '@/packages/services';
-
+import { Menu, BrowserWindow } from '@/packages/services';
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 const input = ref('');
 const format = ref('base64');

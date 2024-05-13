@@ -15,7 +15,7 @@
 </template>
 <script lang="ts" setup>
 import { UnwrapNestedRefs } from 'vue';
-import { BrowserWindow, WindowStateEnum } from '@packages/ui';
+import { BrowserWindow, WindowStateEnum } from '@/packages/services';
 import FileIcon from '@packages/application/FileIcon.vue';
 import { createTaskbarIconContextMenu } from '@/packages/hook/useContextMenu';
 

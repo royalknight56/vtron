@@ -1,9 +1,8 @@
+import { BrowserWindow } from '@/packages/services';
 import { ref, toRaw } from 'vue';
 import { useSystem } from '../../kernel/system';
-
 import DialogProcessVue from './DialogProcess.vue';
 import DialogVue from './DialogTemp.vue';
-import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
 class Dialog {
   constructor() {
     // static class

@@ -12,7 +12,7 @@
 </template>
 <script setup lang="ts">
 import { UnwrapNestedRefs } from 'vue';
-import { BrowserWindow } from '@packages/ui';
+import { BrowserWindow } from '@/packages/services';
 defineProps<{
   window: UnwrapNestedRefs<BrowserWindow>;
 }>();

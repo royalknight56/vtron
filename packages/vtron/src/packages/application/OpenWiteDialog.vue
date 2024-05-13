@@ -21,7 +21,8 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref, onMounted } from 'vue';
-import { i18n, BrowserWindow } from '@packages/ui';
+import { i18n } from '@packages/ui';
+import { BrowserWindow } from '@/packages/services';
 import { useSystem } from '@packages/kernel';
 
 const window: BrowserWindow | undefined = inject('browserWindow');

@@ -102,9 +102,8 @@ import { onUnmounted, provide, ref } from 'vue';
 import { onMounted, computed, UnwrapNestedRefs } from 'vue';
 import { WindowStateEnum } from './BrowserWindow';
 import WindowInner from './components/WindowInner.vue';
-
 import { ScaleElement } from './dom/ScaleElement';
-import { BrowserWindow } from '@packages/ui';
+import { BrowserWindow } from '@/packages/services';
 import MenuBar from './components/MenuBar.vue';
 import { emitEvent } from '@packages/kernel';
 import { useSystem } from '@packages/kernel';

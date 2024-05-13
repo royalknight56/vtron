@@ -80,13 +80,13 @@ import FileList from '@packages/application/components/FileList.vue';
 import FileTree from '@packages/application/components/FileTree.vue';
 import UpPopover from './components/UpPopover.vue';
 import { VtronFileWithoutContent, dirname, useSystem, emitEvent, mountEvent } from '@packages/kernel';
-import { BrowserWindow, i18n } from '@packages/ui';
+import { i18n } from '@packages/ui';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { Notify } from '@/packages/services/notification/Notification';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { useComputer } from './hooks/useComputer';
 import { Rect, useRectChosen } from '@/packages/hook/useRectChosen';
-
+import { BrowserWindow } from '@/packages/services';
 import NavBar from './components/NavBar.vue';
 import QuickLink from './components/QuickLink.vue';
 

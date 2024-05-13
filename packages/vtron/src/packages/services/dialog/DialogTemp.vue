@@ -24,7 +24,7 @@ import errorIcon from '@packages/assets/error-icon.png';
 import infoIcon from '@packages/assets/info-icon.png';
 import questionIcon from '@packages/assets/question-icon.png';
 import warningIcon from '@packages/assets/warning-icon.png';
-import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
+import { BrowserWindow } from '@/packages/services';
 
 const iconMap: {
   [key: string]: string;

@@ -1,11 +1,10 @@
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { FileSystemOperations } from '@/packages/kernel/system/fileSystemOperations/FileSystemOperations';
+import { BrowserWindow, BrowserWindowOption, Dialog, Tray, TrayOptions } from '@/packages/services';
 import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
-import { Tray, TrayOptions, Dialog } from '@/packages/services';
 import { SystemStateEnum } from '@packages/type/enum';
 import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
-import { BrowserWindow, BrowserWindowOption } from '@packages/ui/window/BrowserWindow';
 import { markRaw } from 'vue';
 import { version } from '../../../../package.json';
 import { StateManager } from '../state/StateManager';

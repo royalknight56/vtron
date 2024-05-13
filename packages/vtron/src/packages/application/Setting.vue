@@ -69,7 +69,8 @@ import e77b from '@/assets/icon/e77b.png'; //账户
 
 import { vDragable } from '@packages/ui/window/MakeDragable';
 
-import { i18n, BrowserWindow } from '@packages/ui';
+import { i18n } from '@packages/ui';
+import { BrowserWindow } from '@/packages/services';
 import { useSystem } from '@packages/kernel';
 
 import { vGlowing } from '@/packages/util/glowingBorder';

@@ -2,23 +2,21 @@ import myComputerLogoIcon from '@packages/assets/computer.png?url';
 import imageicon from '@packages/assets/image.png';
 import unknownIcon from '@packages/assets/unknown.png';
 
+import { BrowserWindow, Dialog, Tray } from '@/packages/services';
+import { dealIcon } from '@/packages/util/Icon';
 import FileViewer from '@packages/application/FileViewer.vue';
+import ImageViewerVue from '@packages/application/ImageViewer.vue';
 import MyComputerVue from '@packages/application/MyComputer/MyComputer.vue';
 import UrlBrowser from '@packages/application/UrlBrowser.vue';
 import type { System } from '@packages/kernel';
-import { BrowserWindow, i18n } from '@packages/ui';
-
-import { dealIcon } from '@/packages/util/Icon';
-import ImageViewerVue from '@packages/application/ImageViewer.vue';
 import { basename } from '@packages/kernel';
-import { Dialog } from '@/packages/services';
+import { i18n } from '@packages/ui';
 import BatteryVue from '@packages/ui/taskbar/barUnit/Battery.vue';
 import DateTimeVue from '@packages/ui/taskbar/barUnit/DateTime.vue';
 import NetWorkVue from '@packages/ui/taskbar/barUnit/NetWork.vue';
 import BatteryPopVue from '@packages/ui/taskbar/popover/BatteryPop.vue';
 import DateTimePopVue from '@packages/ui/taskbar/popover/DateTimePop.vue';
 import NetworkPopVue from '@packages/ui/taskbar/popover/NetworkPop.vue';
-import { Tray } from '@/packages/services';
 
 export function initBuiltinFileOpener(system: System) {
   if (system._options.builtinFeature?.includes('ExeOpener')) {

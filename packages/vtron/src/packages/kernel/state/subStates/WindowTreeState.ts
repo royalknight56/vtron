@@ -1,4 +1,4 @@
-import { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
+import { BrowserWindow } from '@/packages/services';
 import { Tree } from '@packages/util/Tree';
 import { reactive } from 'vue';
 export class WindowTreeState {

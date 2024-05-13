@@ -5,7 +5,7 @@
   <WindowNode v-for="node in window.children" :key="node.id" :window="node" />
 </template>
 <script lang="ts" setup>
-import { BrowserWindow } from '@packages/ui';
+import { BrowserWindow } from '@/packages/services';
 import { UnwrapNestedRefs } from 'vue';
 import WindowNode from './WindowNode.vue';
 import WindowTemplate from './WindowTemplate.vue';

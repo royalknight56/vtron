@@ -1,9 +1,9 @@
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
+import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
 import { FileSystemOperations } from '@/packages/kernel/system/fileSystemOperations/FileSystemOperations';
 import { BrowserWindow, BrowserWindowOption, Dialog, Tray, TrayOptions } from '@/packages/services';
 import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
-import { SystemStateEnum } from '@packages/type/enum';
 import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { markRaw } from 'vue';
 import { version } from '../../../../package.json';
@@ -102,7 +102,7 @@ export class System {
     /**
      * 过程：激活屏幕，桥接事件。
      */
-    this.stateManager.powerState.setPowerState(SystemStateEnum.opening);
+    this.stateManager.powerState.setPowerState(PowerStateEnum.opening);
 
     logger('initFileSystem');
     await this.fileSystemOperations.initFileSystem(); // 初始化文件系统

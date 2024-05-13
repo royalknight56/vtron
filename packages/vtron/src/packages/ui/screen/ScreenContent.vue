@@ -5,22 +5,22 @@
     ref="screenref"
     :style="system.stateManager.options.getOptions('rootStyle')"
   >
-    <template v-if="powerState === SystemStateEnum.close">
+    <template v-if="powerState === PowerStateEnum.close">
       <CloseDesktop></CloseDesktop>
     </template>
-    <template v-else-if="powerState == SystemStateEnum.opening">
+    <template v-else-if="powerState == PowerStateEnum.opening">
       <OpeningDesktop></OpeningDesktop>
     </template>
-    <template v-else-if="powerState == SystemStateEnum.open || powerState == SystemStateEnum.lock">
+    <template v-else-if="powerState == PowerStateEnum.open || powerState == PowerStateEnum.lock">
       <Transition name="moveup">
-        <div class="login" v-if="powerState == SystemStateEnum.lock">
+        <div class="login" v-if="powerState == PowerStateEnum.lock">
           <LockDesktop> </LockDesktop>
         </div>
       </Transition>
       <Transition name="fadeout">
-        <DesktopBackground v-if="powerState == SystemStateEnum.lock" class="mask"></DesktopBackground>
+        <DesktopBackground v-if="powerState == PowerStateEnum.lock" class="mask"></DesktopBackground>
       </Transition>
-      <DesktopLayout v-if="powerState == SystemStateEnum.open"></DesktopLayout>
+      <DesktopLayout v-if="powerState == PowerStateEnum.open"></DesktopLayout>
     </template>
   </div>
 </template>
@@ -31,8 +31,7 @@ import DesktopLayout from '@packages/ui/desktop/DesktopLayout.vue';
 import OpeningDesktop from '@packages/ui/desktop/OpeningDesktop.vue';
 import LockDesktop from '@packages/ui/desktop/LockDesktop.vue';
 import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground.vue';
-
-import { SystemStateEnum } from '@packages/type/enum';
+import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
 import { System, useSystem } from '@packages/kernel';
 import { onMounted, ref } from 'vue';
 const screenref = ref();

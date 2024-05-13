@@ -1,10 +1,16 @@
-import { SystemStateEnum } from '@/packages/type/enum';
 import { ref } from 'vue';
 
+export const enum PowerStateEnum {
+  close = 0,
+  opening = 1,
+  open = 2,
+  lock = 3,
+}
+
 export class PowerState {
-  current = ref<SystemStateEnum>(SystemStateEnum.close);
+  current = ref<PowerStateEnum>(PowerStateEnum.close);
   constructor() {}
-  setPowerState(state: SystemStateEnum) {
+  setPowerState(state: PowerStateEnum) {
     this.current.value = state;
   }
   getPowerState() {

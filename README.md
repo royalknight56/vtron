@@ -190,8 +190,6 @@ vtron-demo: demo项目，也是线上vtron.site/win的项目。
 
 vtron-e2e: e2e测试监控项目。
 
-vtron-home: 主页介绍，指线上vtron.site。
-
 vtron-md: 文档项目，指线上v3w10.vtron.site。
 
 vtron-plus: plus插件，包含了部分占用体积的附加功能。

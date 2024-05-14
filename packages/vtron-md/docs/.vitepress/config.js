@@ -1,7 +1,7 @@
 module.exports = {
   title: 'Vtron',
   base: '/doc/',
-  description: 'Just playing around',
+  description: 'Vtron 是一个基于 Vue3 的开发工具，它可以帮助你快速开发window风格的web应用程序。',
   head: [
     [
       'script',
@@ -17,6 +17,20 @@ module.exports = {
       {
         name: 'google-adsense-account',
         content: 'ca-pub-7516773950965588',
+      },
+    ],
+    [
+      'meta',
+      {
+        name: 'description',
+        content: 'Vtron 是一个基于 Vue3 的开发工具，它可以帮助你快速开发window风格的web应用程序。',
+      },
+    ],
+    [
+      'meta',
+      {
+        name: 'keywords',
+        content: 'vtron,vue3,electron,web应用程序,开发工具',
       },
     ],
   ],

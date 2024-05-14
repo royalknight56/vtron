@@ -15,7 +15,7 @@ vtron, 基于Vue3的 Win10 UI 框架
 
 <div align="center">
 
-<a href="http://v3w10.vtron.site" target="_blank">文档</a>|<a href="http://v3w10.vtron.site" target="_blank">官网</a>|<a href="http://vtron.site" target="_blank">样例</a>
+<a href="https://vtron.site/doc" target="_blank">文档</a>|<a href="https://vtron.site/doc" target="_blank">官网</a>|<a href="http://vtron.site" target="_blank">样例</a>
 
 </div>
 
@@ -186,11 +186,9 @@ let system = new System({
 
 vtron: 核心项目，包含核心逻辑，vtronjs包。
 
-vtron-demo: demo项目，也是线上win.vtron.site的项目。
+vtron-demo: demo项目，也是线上vtron.site/win的项目。
 
 vtron-e2e: e2e测试监控项目。
-
-vtron-home: 主页介绍，指线上vtron.site。
 
 vtron-md: 文档项目，指线上v3w10.vtron.site。
 

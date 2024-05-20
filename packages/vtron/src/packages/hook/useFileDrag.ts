@@ -1,6 +1,6 @@
 import { Dialog } from '@/packages/services';
 import * as fspath from '@/packages/util/Path';
-import { System, VtronFileWithoutContent, emitEvent } from '@packages/kernel';
+import { System, VtronFileWithoutContent } from '@packages/kernel';
 
 let dragCallback = () => {
   //
@@ -32,7 +32,7 @@ export function useFileDrag(system: System) {
             type: 'error',
           });
         });
-        emitEvent('file.props.edit');
+        system.emitEvent('file.props.edit');
       });
     }
   }
@@ -100,11 +100,11 @@ export function useFileDrag(system: System) {
       const oFileList = ev?.dataTransfer?.files;
       if (system.outerFileDropCallback) {
         system.outerFileDropCallback?.(path, oFileList, () => {
-          emitEvent('file.props.edit');
+          system.emitEvent('file.props.edit');
         });
       } else {
         outerFileDrop(path, oFileList, () => {
-          emitEvent('file.props.edit');
+          system.emitEvent('file.props.edit');
         });
       }
     }

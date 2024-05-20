@@ -79,7 +79,7 @@ import foldericon from '@packages/assets/folder.png';
 import FileList from '@packages/application/components/FileList.vue';
 import FileTree from '@packages/application/components/FileTree.vue';
 import UpPopover from './components/UpPopover.vue';
-import { VtronFileWithoutContent, dirname, useSystem, emitEvent, mountEvent } from '@packages/kernel';
+import { VtronFileWithoutContent, dirname, useSystem, mountEvent } from '@packages/kernel';
 import { i18n } from '@packages/ui';
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { Notify } from '@/packages/services/notification/Notification';
@@ -197,7 +197,7 @@ onMounted(() => {
 });
 
 function handleOuterClick() {
-  emitEvent('mycomputer.click');
+  system.emitEvent('mycomputer.click');
 }
 
 function onListRefresh() {

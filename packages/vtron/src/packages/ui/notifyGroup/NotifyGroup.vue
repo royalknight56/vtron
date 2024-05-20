@@ -14,9 +14,10 @@
 </template>
 <script setup lang="ts">
 import { vGlowing } from '@/packages/util/glowingBorder';
-import { useSystem } from '@packages/kernel';
-
-const notifyGroup = useSystem().stateManager.notify;
+import { System } from '@packages/kernel';
+import { inject } from 'vue';
+const sys = inject<System>('system')!;
+const notifyGroup = sys.stateManager.notify;
 </script>
 <style lang="scss" scoped>
 .notify {

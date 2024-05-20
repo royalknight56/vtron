@@ -30,7 +30,7 @@ import { i18n } from '@/packages/plug';
 const sys = inject<System>('system')!;
 const rootState = sys.stateManager;
 const notifyGroup = rootState.notify;
-// const systemGroup = rootState.message.system;
+
 const isPopShow = ref(false);
 mountEvent('messagecenter.show', () => {
   isPopShow.value = !isPopShow.value;

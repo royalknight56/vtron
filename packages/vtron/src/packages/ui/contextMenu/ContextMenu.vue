@@ -19,14 +19,15 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { mountEvent, emitEvent, useSystem } from '@packages/kernel';
-import { MenuItem } from '@packages/services';
+import { inject, ref, watch } from 'vue';
+import { mountEvent, System } from '@packages/kernel';
+import type { MenuItem } from '@packages/services';
 
 const x = ref(-100);
 const y = ref(-100);
 const menuList = ref<MenuItem[]>([]);
-const rootState = useSystem().stateManager;
+const sys = inject<System>('system')!;
+const rootState = sys.stateManager;
 watch(
   () => rootState.contextMenu.current.value,
   (contextMenu) => {
@@ -44,7 +45,7 @@ watch(
     // get contextmenu height
     const contextmenuHeight = 24 * (contextMenu?.items.length || 0);
     // get mouse position
-    const outer = useSystem()?.rootRef;
+    const outer = sys?.rootRef;
     const mouseX = (contextMenu?._mouse?.x || 0) - (outer?.offsetLeft || 0);
     const mouseY = (contextMenu?._mouse?.y || 0) - (outer?.offsetTop || 0);
 
@@ -59,13 +60,13 @@ watch(
 );
 
 mountEvent('contextMenu.hidden', () => {
-  useSystem().stateManager.contextMenu.setContextMenu(null);
+  sys.stateManager.contextMenu.setContextMenu(null);
 });
 
 function handleClick(item: MenuItem) {
   if (item?.click) {
     item?.click?.();
-    emitEvent('contextMenu.hidden');
+    sys.emitEvent('contextMenu.hidden');
   }
 }
 </script>

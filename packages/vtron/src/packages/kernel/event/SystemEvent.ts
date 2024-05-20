@@ -1,11 +1,12 @@
-import { emitEvent, mountEvent } from './EventHook';
+import { mountEvent } from './EventHook';
 
 import { useSystem } from '@/packages/kernel/system';
 import { throttle } from '@/packages/util/debounce';
 import { join } from '../../util/Path';
 
 function initSizeEvent() {
-  const rootState = useSystem().stateManager;
+  const sys = useSystem();
+  const rootState = sys.stateManager;
   function refreshDesktopSize() {
     rootState.rect.setScreenSize(window?.innerWidth || 0, window?.innerHeight || 0);
   }
@@ -13,19 +14,19 @@ function initSizeEvent() {
     refreshDesktopSize();
   });
   window?.addEventListener('resize', () => {
-    emitEvent('system.resize');
+    sys.emitEvent('system.resize');
   });
 
   mountEvent('system.mousemove', (_, events) => {
     const event = events[0];
     rootState.rect.setMousePosition(event?.clientX || 0, event?.clientY || 0);
-    useSystem().rootRef?.style.setProperty('--mouseX', `${event?.clientX || 0}px`);
-    useSystem().rootRef?.style.setProperty('--mouseY', `${event?.clientY || 0}px`);
+    sys.rootRef?.style.setProperty('--mouseX', `${event?.clientX || 0}px`);
+    sys.rootRef?.style.setProperty('--mouseY', `${event?.clientY || 0}px`);
   });
   window?.addEventListener(
     'mousemove',
     throttle((e) => {
-      emitEvent('system.mousemove', e);
+      sys.emitEvent('system.mousemove', e);
     }, 100)
   );
 }

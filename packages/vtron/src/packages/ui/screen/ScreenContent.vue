@@ -32,15 +32,15 @@ import OpeningDesktop from '@packages/ui/desktop/OpeningDesktop.vue';
 import LockDesktop from '@packages/ui/desktop/LockDesktop.vue';
 import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground.vue';
 import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
-import { System, useSystem } from '@packages/kernel';
-import { onMounted, ref } from 'vue';
-import { useUISystem } from '../hook/useSystem';
+import { System } from '@packages/kernel';
+import { inject, onMounted, ref } from 'vue';
 const screenref = ref();
 const props = defineProps<{
   system: System;
 }>();
+const sys = inject<System>('system')!;
 onMounted(() => {
-  useUISystem().rootRef = screenref.value;
+  sys.rootRef = screenref.value;
 });
 const powerState = ref(props.system.stateManager.powerState.current);
 </script>

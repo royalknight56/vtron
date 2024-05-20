@@ -15,8 +15,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useSystem } from '@packages/kernel';
-const navigator = useSystem().stateManager.navigator;
+import { System } from '@packages/kernel';
+import { inject } from 'vue';
+const sys = inject<System>('system')!;
+const navigator = sys.stateManager.navigator;
 </script>
 <style lang="scss" scoped>
 .outer {

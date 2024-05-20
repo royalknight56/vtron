@@ -30,11 +30,12 @@
 </template>
 <script lang="ts" setup>
 import { i18n } from '@packages/ui';
-import { useSystem, emitEvent } from '@packages/kernel';
+import { emitEvent, System } from '@packages/kernel';
 import { vGlowing } from '@/packages/util/glowingBorder';
 import { Menu, Dialog, BrowserWindow } from '@/packages/services';
+import { inject } from 'vue';
 
-const sys = useSystem();
+const sys = inject<System>('system')!;
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
     case 0:

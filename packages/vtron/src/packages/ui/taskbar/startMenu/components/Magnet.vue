@@ -18,13 +18,15 @@
 </template>
 <script lang="ts" setup>
 import { useAppOpen } from '@packages/ui/hook/useAppOpen';
-import { emitEvent } from '@packages/kernel';
+import { emitEvent, System } from '@packages/kernel';
 import { basename } from '@packages/kernel';
 import FileIcon from '@packages/application/FileIcon.vue';
 import { VtronFileWithoutContent } from '@packages/kernel';
 import { vGlowing } from '@/packages/util/glowingBorder';
+import { inject } from 'vue';
 
-const { openapp, appList } = useAppOpen('magnet');
+const sys = inject<System>('system')!;
+const { openapp, appList } = useAppOpen('magnet', sys);
 function handle(item: VtronFileWithoutContent) {
   emitEvent('magnet.item.click', item);
   openapp(item);

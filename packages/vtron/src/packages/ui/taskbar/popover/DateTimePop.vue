@@ -55,14 +55,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref } from 'vue';
-import { useSystem } from '@packages/kernel';
+import { inject, onMounted, onUnmounted, reactive, ref } from 'vue';
+import { System } from '@packages/kernel';
 import { BrowserWindow, WinButtonVue, join } from '@/packages/plug';
 import { initAlertEvent } from '@packages/kernel/event/SystemEvent';
 import DateNote from '@packages/application/DateNote.vue';
 import { vGlowing } from '@/packages/util/glowingBorder';
 
-const sys = useSystem();
+const sys = inject<System>('system')!;
 const timeDisplay = ref(`00:00:00`);
 const dateDisplay = ref(`0000/00/00`);
 const weeksPrefix = ['日', '一', '二', '三', '四', '五', '六'];

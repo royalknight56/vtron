@@ -10,9 +10,11 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { inject } from 'vue';
 import AppIcon from './AppIcon.vue';
-import { useSystem } from '@packages/kernel';
-const windowTree = useSystem().stateManager.windowTree;
+import { System } from '@packages/kernel';
+const sys = inject<System>('system')!;
+const windowTree = sys.stateManager.windowTree;
 const treeRoot = windowTree.windowOrder;
 </script>
 <style lang="scss" scoped>

@@ -13,10 +13,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { inject, ref, watchEffect } from 'vue';
 import WinProcess from '@/packages/components/WinProcess.vue';
-import { useSystem } from '@packages/kernel';
-const rootState = useSystem().stateManager;
+import { System } from '@packages/kernel';
+const sys = inject<System>('system')!;
+const rootState = sys.stateManager;
 
 const charMap = {
   noC: {

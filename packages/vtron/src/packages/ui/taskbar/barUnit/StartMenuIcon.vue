@@ -1,6 +1,6 @@
 <template>
   <div class="startmenuicon" @click.stop="emitClick">
-    <img class="startmenuicon-img" :src="system?._options.logo || winimg" />
+    <img class="startmenuicon-img" :src="sys?._options.logo || winimg" />
   </div>
   <Transition name="startmenu">
     <StartMenu v-if="isStartmenuShow" class="startmenu"></StartMenu>
@@ -8,12 +8,11 @@
 </template>
 <script lang="ts" setup>
 import winimg from '@/assets/win.png';
-import { emitEvent, mountEvent } from '@packages/kernel';
-import { ref } from 'vue';
+import { emitEvent, mountEvent, System } from '@packages/kernel';
+import { inject, ref } from 'vue';
 import StartMenu from '@packages/ui/taskbar/startMenu/StartMenu.vue';
-import { useSystem } from '@packages/kernel';
 
-const system = useSystem();
+const sys = inject<System>('system')!;
 const isStartmenuShow = ref(false);
 mountEvent('startmenu.changeVisible', function () {
   isStartmenuShow.value = !isStartmenuShow.value;

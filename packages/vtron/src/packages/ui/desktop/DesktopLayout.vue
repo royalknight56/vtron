@@ -3,7 +3,7 @@
     class="desktop"
     @dragenter.prevent
     @dragover.prevent
-    @drop="dragFileToDrop($event, `${system._options.userLocation}Desktop`)"
+    @drop="dragFileToDrop($event, `${sys._options.userLocation}Desktop`)"
   >
     <div class="userarea" @contextmenu.stop="handleRightClick" @mousedown="userareaDown">
       <div @mousedown="backgroundDown">
@@ -25,7 +25,7 @@
 import DeskItem from '@packages/ui/desktop/components/DeskItem.vue';
 import Taskbar from '@packages/ui/taskbar/Taskbar.vue';
 import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground.vue';
-import { emitEvent } from '@packages/kernel';
+import { emitEvent, System } from '@packages/kernel';
 import WindowGroup from '@/packages/ui/windowGroup/WindowGroup.vue';
 import ContextMenu from '@/packages/services/menu/ContextMenu.vue';
 import NotificationGroup from '@packages/services/notification/NotifyGroup.vue';
@@ -33,13 +33,14 @@ import MessageCenterPop from '@packages/ui/taskbar/popover/MessageCenterPop.vue'
 import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { Rect, useRectChosen } from '@packages/hook/useRectChosen';
-import { useSystem } from '@packages/kernel';
-import { onErrorCaptured } from 'vue';
+
+import { inject, onErrorCaptured } from 'vue';
 
 const { createDesktopContextMenu } = useContextMenu();
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
-const system = useSystem();
-const { dragFileToDrop } = useFileDrag(system);
+const sys = inject<System>('system')!;
+
+const { dragFileToDrop } = useFileDrag(sys);
 
 let chosenCallback: (rect: Rect) => void = () => {
   //
@@ -83,13 +84,13 @@ function backgroundUp(e: MouseEvent) {
 
 function handleRightClick(e: MouseEvent) {
   e.preventDefault();
-  createDesktopContextMenu(e, `${system._options.userLocation}Desktop`, () => {
-    system.refershApp();
+  createDesktopContextMenu(e, `${sys._options.userLocation}Desktop`, () => {
+    sys.refershApp();
   });
 }
 
 onErrorCaptured((err) => {
-  system.emitError(err.message.toString());
+  sys.emitError(err.message.toString());
 });
 </script>
 <style lang="scss" scoped>

@@ -10,11 +10,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useSystem } from '@packages/kernel';
+import { System } from '@packages/kernel';
+import { inject } from 'vue';
 
-const system = useSystem();
+const sys = inject<System>('system')!;
 
-const currentError = system.stateManager.error.current;
+const currentError = sys.stateManager.error.current;
 </script>
 <style lang="scss" scoped>
 .error {

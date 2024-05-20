@@ -98,17 +98,16 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onUnmounted, provide, ref } from 'vue';
+import { inject, onUnmounted, provide, ref } from 'vue';
 import { onMounted, computed, UnwrapNestedRefs } from 'vue';
 
 import WindowInner from './components/WindowInner.vue';
 import { ScaleElement } from './dom/ScaleElement';
 import { BrowserWindow, WindowStateEnum } from '@/packages/services';
 import MenuBar from './components/MenuBar.vue';
-import { emitEvent } from '@packages/kernel';
-import { useSystem } from '@packages/kernel';
+import { emitEvent, System } from '@packages/kernel';
 import { vDragable } from './MakeDragable';
-const sys = useSystem();
+const sys = inject<System>('system');
 const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
 }>();

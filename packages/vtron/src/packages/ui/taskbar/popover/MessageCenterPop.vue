@@ -23,11 +23,12 @@
   </Transition>
 </template>
 <script setup lang="ts">
-import { useSystem } from '@packages/kernel';
-import { ref } from 'vue';
+import { System } from '@packages/kernel';
+import { inject, ref } from 'vue';
 import { mountEvent } from '@packages/kernel';
 import { i18n } from '@/packages/plug';
-const rootState = useSystem().stateManager;
+const sys = inject<System>('system')!;
+const rootState = sys.stateManager;
 const notifyGroup = rootState.notify;
 // const systemGroup = rootState.message.system;
 const isPopShow = ref(false);

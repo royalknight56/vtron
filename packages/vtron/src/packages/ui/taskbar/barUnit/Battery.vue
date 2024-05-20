@@ -2,9 +2,10 @@
   <span class="segoicon SEGOEUIMDL charging">{{ iconDisplay }}</span>
 </template>
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
-import { useSystem } from '@packages/kernel';
+import { inject, ref, watchEffect } from 'vue';
+import { System } from '@packages/kernel';
 
+const sys = inject<System>('system')!;
 const charMap = {
   noC: {
     0: `\uE850`,
@@ -34,7 +35,7 @@ const charMap = {
 const iconDisplay = ref(`\uE850`);
 
 watchEffect(() => {
-  const rootState = useSystem().stateManager;
+  const rootState = sys.stateManager;
   if (rootState.navigator.battery.chargeLevel == 1) {
     iconDisplay.value = charMap[`noC`][9];
   } else {

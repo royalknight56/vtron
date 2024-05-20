@@ -1,4 +1,4 @@
-import { useSystem } from '@/packages/kernel/system';
+import { System } from '@/packages/kernel/system';
 export interface NotifyConstructorOptions {
   title: string;
   content: string;
@@ -11,12 +11,13 @@ export class Notify {
   title: string;
   content: string;
   type: 'message' | 'system' = 'message';
+  public static system: System;
   constructor(option: NotifyConstructorOptions) {
     this.title = option.title;
     this.content = option.content;
     this.id = Notify.idcount++;
-    const sys = useSystem();
-    sys.stateManager.notify.push(this);
+
+    Notify.system.stateManager.notify.push(this);
     setTimeout(() => {
       this.close();
     }, option.timeout || 5000);
@@ -44,7 +45,6 @@ export class Notify {
     // }
   }
   close() {
-    const sys = useSystem();
-    sys.stateManager.notify.splice(sys.stateManager.notify.indexOf(this), 1);
+    Notify.system.stateManager.notify.splice(Notify.system.stateManager.notify.indexOf(this), 1);
   }
 }

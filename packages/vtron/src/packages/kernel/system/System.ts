@@ -2,7 +2,7 @@ import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
 import { FileSystemOperations } from '@/packages/kernel/system/fileSystemOperations/FileSystemOperations';
-import { BrowserWindow, BrowserWindowOption, Dialog, Tray, TrayOptions } from '@/packages/services';
+import { BrowserWindow, BrowserWindowOption, Dialog, Menu, Tray, TrayOptions } from '@/packages/services';
 import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
 import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { markRaw } from 'vue';
@@ -78,6 +78,11 @@ export class System {
 
     logger('mountGlobalSystem');
     System.GLOBAL_SYSTEM = this; // 挂载全局系统
+    BrowserWindow.system = this;
+    Notify.system = this;
+    Tray.system = this;
+    Dialog.system = this;
+    Menu.system = this;
     Bios._onOpen && Bios._onOpen(this);
 
     logger('initSystem');

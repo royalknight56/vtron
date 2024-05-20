@@ -1,6 +1,7 @@
-import { useSystem } from '../../kernel/system';
+import { System } from '../../kernel/system';
 import { MenuItem, MenuItemConstructorOptions } from './MenuItem';
 export class Menu {
+  public static system: System;
   public static buildFromTemplate(template: Array<MenuItemConstructorOptions | MenuItem>) {
     const menu = new Menu();
     template.map((item) => {
@@ -16,10 +17,10 @@ export class Menu {
   items: MenuItem[] = [];
   popup: (e: MouseEvent) => void = (e) => {
     this._mouse = e;
-    useSystem().stateManager.contextMenu.setContextMenu(this);
+    Menu.system.stateManager.contextMenu.setContextMenu(this);
   };
   closePopup: () => void = () => {
-    useSystem().stateManager.contextMenu.setContextMenu(null);
+    Menu.system.stateManager.contextMenu.setContextMenu(null);
   };
   append: (item: MenuItem) => void = (item: MenuItem) => {
     this.items.push(item);

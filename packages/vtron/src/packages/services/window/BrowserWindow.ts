@@ -1,4 +1,4 @@
-import { Eventer, useSystem } from '@/packages/kernel';
+import { Eventer, System } from '@/packages/kernel';
 import { Tree } from '@packages/util/Tree';
 import { defineComponent, markRaw, reactive } from 'vue';
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
@@ -39,6 +39,7 @@ export type BrowserWindowOption = Partial<Omit<BrowserWindowConstructorOptions, 
   content: BrowserWindowContent;
 };
 class BrowserWindow {
+  public static system: System;
   public static defaultOption: Omit<BrowserWindowConstructorOptions, 'content'> = {
     title: '新窗口',
     width: 800,
@@ -81,7 +82,7 @@ class BrowserWindow {
       this.content = this._option.content;
     }
 
-    const windowTree = useSystem().stateManager.windowTree;
+    const windowTree = BrowserWindow.system.stateManager.windowTree;
     this.id = windowTree.winnum;
     windowTree.winnum++;
 
@@ -97,7 +98,7 @@ class BrowserWindow {
   private _setZindex() {
     this.windowInfo.zindex =
       20 +
-      useSystem().stateManager.windowTree.findIndex(this, (val: Tree<BrowserWindow>) => {
+      BrowserWindow.system.stateManager.windowTree.findIndex(this, (val: Tree<BrowserWindow>) => {
         return val.value.isVisible();
       });
   }
@@ -108,7 +109,7 @@ class BrowserWindow {
     this.windowInfo.state = state;
   }
   private _getWinInner() {
-    const rootState = useSystem().stateManager;
+    const rootState = BrowserWindow.system.stateManager;
 
     return rootState.rect.getScreenSize();
   }
@@ -156,7 +157,7 @@ class BrowserWindow {
   }
   moveTop() {
     // 窗口置顶
-    const rootState = useSystem().stateManager;
+    const rootState = BrowserWindow.system.stateManager;
     const tree = rootState.windowTree;
     const treeNode = tree.findNode(this);
     if (treeNode) {
@@ -164,7 +165,7 @@ class BrowserWindow {
     }
     tree.addChild(this);
 
-    useSystem().stateManager.windowTree.traverseBFS((val) => {
+    BrowserWindow.system.stateManager.windowTree.traverseBFS((val) => {
       if (val.value.id !== undefined) {
         val.value._setZindex();
         val.value.windowInfo.istop = false;
@@ -179,7 +180,7 @@ class BrowserWindow {
   }
   show() {
     if (!this.windowInfo.isCreated) {
-      const rootState = useSystem().stateManager;
+      const rootState = BrowserWindow.system.stateManager;
       rootState.windowTree.addChild(this);
       rootState.windowTree.windowOrder.push(this);
       this.windowInfo.isCreated = true;
@@ -208,7 +209,7 @@ class BrowserWindow {
     // 关闭窗口
     this.emit('close', 'close');
     this.emit('state', 'close');
-    const rootState = useSystem().stateManager;
+    const rootState = BrowserWindow.system.stateManager;
     if (this.windowInfo.isCreated) {
       this.windowInfo.isCreated = false;
       rootState.windowTree.removeNode(this);

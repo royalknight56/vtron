@@ -1,3 +1,4 @@
+import { System } from '@/packages/kernel';
 import { Menu } from '@/packages/services';
 import { Ref, defineComponent, markRaw, ref } from 'vue';
 
@@ -12,6 +13,7 @@ export class Tray {
   _contextMenuWidth = 100;
   _contextMenuHeight = 100;
   public static trayList: Ref<Tray[]> = ref<Tray[]>([]);
+  public static system: System;
   constructor(options: TrayOptions) {
     if (typeof options.image === 'string') {
       this.image = options.image;

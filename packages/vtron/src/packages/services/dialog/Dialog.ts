@@ -1,9 +1,10 @@
 import { BrowserWindow } from '@/packages/services';
 import { ref, toRaw } from 'vue';
-import { useSystem } from '../../kernel/system';
+import { System } from '../../kernel/system';
 import DialogProcessVue from './DialogProcess.vue';
 import DialogVue from './DialogTemp.vue';
 class Dialog {
+  public static system: System;
   constructor() {
     // static class
   }
@@ -98,13 +99,13 @@ class Dialog {
     });
     dialogwin.show();
 
-    useSystem().stateManager.windowTree.windowOrder.forEach((win) => {
+    Dialog.system.stateManager.windowTree.windowOrder.forEach((win) => {
       if (!(toRaw(win) === dialogwin)) {
         win.setDisable(true);
       }
     });
     dialogwin.on('close', () => {
-      useSystem().stateManager.windowTree.windowOrder.forEach((win) => {
+      Dialog.system.stateManager.windowTree.windowOrder.forEach((win) => {
         if (!(toRaw(win) === dialogwin)) {
           win.setDisable(false);
         }

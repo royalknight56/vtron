@@ -116,7 +116,6 @@ const browserWindow = props.browserWindow;
 const windowInfo = browserWindow.windowInfo;
 // 传递windowid
 provide('browserWindow', browserWindow);
-provide('system', sys);
 
 function predown() {
   browserWindow.moveTop();

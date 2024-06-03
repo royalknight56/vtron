@@ -30,13 +30,11 @@ import WindowGroup from '@/packages/ui/windowGroup/WindowGroup.vue';
 import ContextMenu from '@/packages/ui/contextMenu/ContextMenu.vue';
 import NotificationGroup from '@/packages/ui/notifyGroup/NotifyGroup.vue';
 import MessageCenterPop from '@packages/ui/taskbar/popover/MessageCenterPop.vue';
-import { useContextMenu } from '@packages/hook/useContextMenu';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { Rect, useRectChosen } from '@packages/hook/useRectChosen';
-
 import { inject, onErrorCaptured } from 'vue';
+import { createDesktopContextMenu } from '@/packages/ui/utils/createContextMenu';
 
-const { createDesktopContextMenu } = useContextMenu();
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 const sys = inject<System>('system')!;
 
@@ -84,7 +82,7 @@ function backgroundUp(e: MouseEvent) {
 
 function handleRightClick(e: MouseEvent) {
   e.preventDefault();
-  createDesktopContextMenu(e, `${sys._options.userLocation}Desktop`, () => {
+  createDesktopContextMenu(sys, e, `${sys._options.userLocation}Desktop`, () => {
     sys.refershApp();
   });
 }

@@ -1,4 +1,4 @@
-import { Menu } from '@/packages/services';
+import { BrowserWindow, Menu } from '@/packages/services';
 import { UnwrapNestedRefs } from 'vue';
 import { i18n } from '../i18n';
 

@@ -6,7 +6,6 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 // Main中引入vtron，并且引入样式文件
-import vtron from 'vtron';
 import 'vtron/distlib/style.css';
 import 'xterm/css/xterm.css';
 
@@ -19,7 +18,7 @@ import 'mavon-editor/dist/css/index.css';
 // import 'primevue/resources/themes/lara-light-green/theme.css';
 // use引入的插件，第二个选项是配置项
 const app = createApp(App);
-app.use(vtron).use(mavonEditor).mount('#app');
+app.use(mavonEditor).mount('#app');
 
 Sentry.init({
   app,

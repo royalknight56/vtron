@@ -5,7 +5,7 @@
 -->
 <template>
   <div class="outer">
-    <VtronScreen :system="system"></VtronScreen>
+    <Screen :system="system"></Screen>
     <!-- 一定需要引入Win10组件，组件已经在use时注册了 -->
   </div>
   <a style="display: none" href="https://beian.miit.gov.cn/">豫ICP备19041315号</a>
@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import { desktopConfig, magnetConfig } from './DesktopSet';
 
-import { System, BrowserWindow, Notify } from 'vtron';
+import { System, BrowserWindow, Notify, Screen } from 'vtron';
 import { vtronPlus } from 'vtron-plus';
 import MarkDown from './components/apps/MarkDown.vue';
 import 'vtron-plus/distlib/style.css';

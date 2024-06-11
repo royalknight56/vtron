@@ -6,7 +6,7 @@
 -->
 <template>
   <div class="outer">
-    <VtronScreen :system="sys"></VtronScreen>
+    <Screen :system="sys"></Screen>
   </div>
 </template>
 
@@ -18,7 +18,7 @@ import VtronTest from './apps/VtronTest.vue';
 import VtronPerfTest from './apps/VtronPerfTest.vue';
 
 import { onMounted } from 'vue';
-import { System, VtronFile } from './packages/plug';
+import { System, VtronFile, Screen } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 import { Tray, Menu } from '@/packages/services';
 

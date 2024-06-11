@@ -6,14 +6,12 @@
 <script lang="ts" setup>
 import { System } from '@packages/kernel';
 import ScreenContent from './ScreenContent.vue';
-import { provide } from 'vue';
+import { onMounted, provide } from 'vue';
 
-const props = defineProps({
-  system: {
-    type: System,
-    default: null,
-  },
-});
+const props = defineProps<{
+  system: System;
+}>();
+
 provide('system', props.system);
 </script>
 <style lang="scss" scoped>

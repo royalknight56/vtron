@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { System } from 'vtron';
 import { vtronPlus } from './packages/plug';
+import { Screen } from 'vtron';
 
 const system = new System({
   rootStyle: {},
@@ -12,7 +13,7 @@ system.whenReady().then(() => {
 
 <template>
   <div class="outer">
-    <Screen></Screen>
+    <Screen :system="system"></Screen>
   </div>
 </template>
 

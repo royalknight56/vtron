@@ -1,4 +1,3 @@
-import { ScreenComponentVue } from '@packages/ui';
 import WinButtonVue from './components/WinButton.vue';
 import WinCheckBox from './components/WinCheckBox.vue';
 import WinInput from './components/WinInput.vue';
@@ -8,23 +7,6 @@ import WinProcess from './components/WinProcess.vue';
 import WinSelect from './components/WinSelect.vue';
 import WinUpButtonGroupVue from './components/WinUpButtonGroup.vue';
 
-export {
-  WinButtonVue,
-  WinCheckBox,
-  WinInput,
-  WinLoadingVue,
-  WinLogoVue,
-  WinProcess,
-  WinSelect,
-  WinUpButtonGroupVue,
-};
-
-const plug = {
-  install: function (app: any): any {
-    app.component('VtronScreen', ScreenComponentVue);
-  },
-};
-export default plug;
 export type { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 export * from '@/packages/kernel/file/FileSystem';
 export * from '@/packages/kernel/shell/Shell';
@@ -36,4 +18,15 @@ export { i18n } from '@/packages/ui/i18n';
 export { vDragable } from '@/packages/ui/windowGroup/MakeDragable';
 export * from '@/packages/util/Path';
 export type { SystemOptions, WinApp } from '@packages/type/type';
+export { ScreenComponentVue as Screen } from '@packages/ui';
 export { dealIcon } from '@packages/util/Icon';
+export {
+  WinButtonVue,
+  WinCheckBox,
+  WinInput,
+  WinLoadingVue,
+  WinLogoVue,
+  WinProcess,
+  WinSelect,
+  WinUpButtonGroupVue,
+};

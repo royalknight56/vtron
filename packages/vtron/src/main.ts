@@ -6,7 +6,6 @@
  */
 import { createApp } from 'vue';
 import App from './App.vue';
-import Win10 from './packages/plug';
 
-const app = createApp(App).use(Win10);
+const app = createApp(App);
 app.mount('#app-hash');

@@ -22,7 +22,7 @@
   },
   "scripts": {
     "dev": "vite --host",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit && vite build --config vitelib.config.ts",
     "preview": "vite preview",
     "serve": "vite preview",
     "bl": "vue-tsc --noEmit && vite build --config vitelib.config.ts",

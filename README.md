@@ -215,12 +215,15 @@ pnpm vtron dev
 对于plus项目，运行：
 
 ```bash
+pnpm vtron build
 pnpm plus dev
 ```
 
 对于demo项目，运行：
 
 ```bash
+pnpm vtron build
+pnpm plus build
 pnpm demo dev
 ```
 

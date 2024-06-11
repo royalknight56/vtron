@@ -23,7 +23,7 @@
   "scripts": {
     "test": "vitest",
     "dev": "vite --host",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit && vite build --config vitelib.config.ts",
     "serve": "vite preview",
     "bl": "vue-tsc --noEmit && vite build --config vitelib.config.ts",
     "tsc": "vue-tsc",

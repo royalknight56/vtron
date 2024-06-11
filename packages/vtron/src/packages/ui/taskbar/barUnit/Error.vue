@@ -2,17 +2,20 @@
   <div
     class="error"
     :class="{
-      ani: system._rootState.error,
+      ani: currentError,
     }"
-    :key="system._rootState.error"
+    :key="currentError"
   >
-    {{ system._rootState.error }}
+    {{ currentError }}
   </div>
 </template>
 <script setup lang="ts">
-import { useSystem } from '@packages/kernel';
+import { System } from '@packages/kernel';
+import { inject } from 'vue';
 
-const system = useSystem();
+const sys = inject<System>('system')!;
+
+const currentError = sys.stateManager.error.current;
 </script>
 <style lang="scss" scoped>
 .error {

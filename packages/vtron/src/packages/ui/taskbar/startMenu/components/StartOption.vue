@@ -29,11 +29,13 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Dialog, Menu, i18n, BrowserWindow } from '@packages/ui';
-import { useSystem, emitEvent } from '@packages/kernel';
+import { i18n } from '@packages/ui';
+import { emitEvent, System } from '@packages/kernel';
 import { vGlowing } from '@/packages/util/glowingBorder';
+import { Menu, Dialog, BrowserWindow } from '@/packages/services';
+import { inject } from 'vue';
 
-const sys = useSystem();
+const sys = inject<System>('system')!;
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
     case 0:
@@ -65,7 +67,7 @@ function handleClick(key: number, ev: MouseEvent) {
       emitEvent('startMenu.set.click', {
         mouse: ev,
       });
-      const winopt = sys._rootState.windowMap['Builtin'].get('设置');
+      const winopt = sys.stateManager.windowMap.get('Builtin', '设置');
 
       if (winopt) {
         if (winopt._hasShow) {

@@ -67,9 +67,10 @@ import e771 from '@/assets/icon/e771.png'; //个性化
 import e775 from '@/assets/icon/e775.png'; //语言
 import e77b from '@/assets/icon/e77b.png'; //账户
 
-import { vDragable } from '@packages/ui/window/MakeDragable';
+import { vDragable } from '@/packages/ui/windowGroup/MakeDragable';
 
-import { i18n, BrowserWindow } from '@packages/ui';
+import { i18n } from '@packages/ui';
+import { BrowserWindow } from '@/packages/services';
 import { useSystem } from '@packages/kernel';
 
 import { vGlowing } from '@/packages/util/glowingBorder';
@@ -92,14 +93,14 @@ function openSet(key: string) {
   currentRouter.value = key;
 }
 const setList = ref([
-  {
-    key: 'system',
-    title: i18n('system'),
-    // desc: '显示，声音，通知，电源',
-    desc: i18n('brightness'),
-    icon: e7f8,
-    content: markRaw(SetSystem),
-  },
+  // {
+  //   key: 'system',
+  //   title: i18n('system'),
+  //   // desc: '显示，声音，通知，电源',
+  //   desc: i18n('brightness'),
+  //   icon: e7f8,
+  //   content: markRaw(SetSystem),
+  // },
   // {
   //     title: '网络和Internet',
   //     desc: 'WLAN，飞行模式，VPN',
@@ -143,7 +144,7 @@ const setList = ref([
   //   icon: e895,
   //   content: markRaw(SetUpdate),
   // },
-  ...(sys._rootState.settings ? sys._rootState.settings : []),
+  ...sys.stateManager.settings.getSettings(),
 ]);
 </script>
 

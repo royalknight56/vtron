@@ -39,8 +39,9 @@
 import WinButton from '@packages/components/WinButton.vue';
 import { ref } from 'vue';
 import { useSystem } from '@packages/kernel';
-import { Dialog, i18n } from '@packages/ui';
+import { i18n } from '@packages/ui';
 import { WinInput } from '@/packages/plug';
+import { Dialog } from '@/packages/services';
 
 const system = useSystem();
 

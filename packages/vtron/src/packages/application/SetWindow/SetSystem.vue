@@ -17,18 +17,6 @@
         <div class="setting-item">
           <h1 class="setting-title">{{ i18n('screen') }}</h1>
         </div>
-        <div class="setting-item">
-          <label> {{ i18n('brightness') }} </label>
-          <div class="ctrl">
-            <WinProcess v-model="rootstate.info.brightness"></WinProcess>
-          </div>
-          {{ rootstate.info.brightness.toFixed(0) }}
-        </div>
-
-        <!-- <div class="setting-item">
-          <label></label>
-          <WinButton @click="submit">{{ i18n('confirm') }} </WinButton>
-        </div> -->
       </div>
     </div>
   </div>
@@ -40,7 +28,7 @@ import { ref } from 'vue';
 import { i18n } from '@packages/ui';
 import { useSystem } from '@packages/kernel';
 
-const rootstate = useSystem()._rootState;
+const rootstate = useSystem().stateManager;
 
 const items = [i18n('screen')];
 

@@ -4,10 +4,10 @@
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useSystem } from '@packages/kernel';
+import { inject, ref } from 'vue';
+import { System } from '@packages/kernel';
 
-const sys = useSystem();
+const sys = inject<System>('system')!;
 const loginCallback = sys._options.loginCallback;
 
 const lockClassName = ref('screen-show');

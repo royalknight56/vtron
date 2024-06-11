@@ -21,23 +21,19 @@ export {
 
 const plug = {
   install: function (app: any): any {
-    app.component('Screen', ScreenComponentVue);
+    app.component('VtronScreen', ScreenComponentVue);
   },
 };
 export default plug;
 export type { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 export * from '@/packages/kernel/file/FileSystem';
-export * from '@/packages/kernel/file/Path';
 export * from '@/packages/kernel/shell/Shell';
 export type { ShellInterface } from '@/packages/kernel/shell/ShellType';
-export { System, useSystem } from '@/packages/system/index';
-export { Dialog } from '@/packages/ui/dialog/Dialog';
+export { System, useSystem } from '@/packages/kernel/system';
+export { BrowserWindow, Dialog, Menu, MenuItem, Tray } from '@/packages/services';
+export { Notify } from '@/packages/services/notification/Notification';
 export { i18n } from '@/packages/ui/i18n';
-export { Menu } from '@/packages/ui/menu/Menu';
-export { MenuItem } from '@/packages/ui/menu/MenuItem';
-export { Notify } from '@/packages/ui/notification/Notification';
-export { Tray } from '@/packages/ui/tray/Tary';
-export { BrowserWindow } from '@/packages/ui/window/BrowserWindow';
-export { vDragable } from '@/packages/ui/window/MakeDragable';
+export { vDragable } from '@/packages/ui/windowGroup/MakeDragable';
+export * from '@/packages/util/Path';
 export type { SystemOptions, WinApp } from '@packages/type/type';
 export { dealIcon } from '@packages/util/Icon';

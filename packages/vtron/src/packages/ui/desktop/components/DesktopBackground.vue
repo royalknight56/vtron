@@ -8,9 +8,11 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue';
-import { useSystem } from '@packages/kernel';
-const rootState = useSystem()._rootState;
+import { inject, onMounted, ref, watch } from 'vue';
+import { System } from '@packages/kernel';
+
+const sys = inject<System>('system')!;
+
 const backgroundType = ref('color');
 const background = ref('#3A98CE');
 const loaded = ref(false);
@@ -19,9 +21,9 @@ function imgload() {
   loaded.value = true;
 }
 onMounted(() => {
-  refershBack(rootState.options.background);
+  refershBack(sys.stateManager.options.getOptions('background'));
 });
-watch(rootState.options, (nv) => {
+watch(sys.stateManager.options.options, (nv) => {
   refershBack(nv.background);
 });
 function refershBack(val: string | undefined) {

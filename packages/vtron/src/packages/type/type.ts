@@ -1,7 +1,6 @@
+import { BrowserWindowOption, MenuItem, MenuItemConstructorOptions } from '@/packages/services';
 import { VtronFileInterface } from '@packages/kernel/file/FIleInterface';
 import { ShellInterface } from '@packages/kernel/shell/ShellType';
-import { MenuItem, MenuItemConstructorOptions } from '@packages/ui/menu/MenuItem';
-import { BrowserWindowOption } from '../ui/window/BrowserWindow';
 export type BuiltinFeature =
   | 'MyComputer'
   | 'AppStore'
@@ -50,6 +49,7 @@ export interface SystemOptionsCertainly {
   systemLocation?: string;
   initFile?: InitFileItem;
   shell?: ShellInterface;
+  brightness?: number;
   login?: {
     username: string;
     password: string;

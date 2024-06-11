@@ -51,7 +51,7 @@ import WinSelect from '@packages/components/WinSelect.vue';
 
 import { ref } from 'vue';
 import { useSystem } from '@packages/kernel';
-import { Dialog } from '@packages/ui';
+import { Dialog } from '@/packages/services';
 import { i18n } from '@packages/ui';
 
 const system = useSystem();
@@ -68,6 +68,7 @@ const selectItem = (index: number) => {
 
 async function submit() {
   await system.setConfig('lang', modelvalue.value);
+
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('language'),

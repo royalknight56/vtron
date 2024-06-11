@@ -79,15 +79,16 @@ import foldericon from '@packages/assets/folder.png';
 import FileList from '@packages/application/components/FileList.vue';
 import FileTree from '@packages/application/components/FileTree.vue';
 import UpPopover from './components/UpPopover.vue';
-import { VtronFileWithoutContent, dirname, useSystem, emitEvent, mountEvent } from '@packages/kernel';
-import { BrowserWindow, Notify, i18n } from '@packages/ui';
-import { useContextMenu } from '@packages/hook/useContextMenu';
+import { VtronFileWithoutContent, dirname, useSystem, mountEvent } from '@packages/kernel';
+import { i18n } from '@packages/ui';
+import { Notify } from '@/packages/services/notification/Notification';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { useComputer } from './hooks/useComputer';
 import { Rect, useRectChosen } from '@/packages/hook/useRectChosen';
-
+import { BrowserWindow } from '@/packages/services';
 import NavBar from './components/NavBar.vue';
 import QuickLink from './components/QuickLink.vue';
+import { createDesktopContextMenu } from '@/packages/ui/utils/createContextMenu';
 
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 
@@ -101,7 +102,6 @@ const currentList = ref<Array<VtronFileWithoutContent>>([]);
 
 const system = useSystem();
 const { dragFileToDrop } = useFileDrag(system);
-const { createDesktopContextMenu } = useContextMenu();
 const setRouter = function (path: string) {
   router_url.value = path;
   if (router_url_history_index.value <= router_url_history.value.length - 1) {
@@ -196,7 +196,7 @@ onMounted(() => {
 });
 
 function handleOuterClick() {
-  emitEvent('mycomputer.click');
+  system.emitEvent('mycomputer.click');
 }
 
 function onListRefresh() {
@@ -273,7 +273,7 @@ function onBackClick() {
 
 function showOuterMenu(e: MouseEvent) {
   e.preventDefault();
-  createDesktopContextMenu(e, router_url.value, () => {
+  createDesktopContextMenu(system, e, router_url.value, () => {
     refersh();
   });
 }
@@ -310,11 +310,13 @@ async function handleNavSearch(path: string) {
   /* border-bottom: 1px solid black; */
   --button-item-height: 30px;
 }
+
 .main {
   display: flex;
   height: 100%;
   position: relative;
   top: 4px;
+
   .left-tree {
     position: relative;
     overflow-x: hidden;
@@ -324,6 +326,7 @@ async function handleNavSearch(path: string) {
     background-color: rgba(255, 255, 255, 0.1);
     border-right: 1px solid rgba(134, 134, 134, 0.267);
   }
+
   .left-handle {
     position: absolute;
     right: 0;
@@ -333,6 +336,7 @@ async function handleNavSearch(path: string) {
     background: rgba(0, 0, 0, 0);
     cursor: ew-resize;
   }
+
   .desk-outer {
     flex: 1;
     height: 100%;
@@ -357,10 +361,12 @@ async function handleNavSearch(path: string) {
   color: white;
   border: 1px solid rgba(0, 0, 0, 0);
 }
+
 .chosen {
   border: 1px dashed #3bdbff3d;
   background-color: #b9e3fd90;
 }
+
 .desk-item:hover {
   border: 1px solid rgba(149, 149, 149, 0.233);
   background-color: #b9e3fd5a;

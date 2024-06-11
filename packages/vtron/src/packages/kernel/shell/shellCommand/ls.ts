@@ -1,4 +1,4 @@
-import { basename } from '@/packages/kernel/file/Path';
+import * as fspath from '@/packages/util/Path';
 import type { Shell } from '../Shell';
 async function ls(input: string, output: (text: string) => void, shell: Shell) {
   const path = input.split(' ')[1];
@@ -9,9 +9,9 @@ async function ls(input: string, output: (text: string) => void, shell: Shell) {
         const children = await shell.system.fs.readdir(path);
         children?.forEach((item) => {
           if (item.isDirectory) {
-            output(`\x1b[34m${basename(item.path)}\x1b[0m\r\n`);
+            output(`\x1b[34m${fspath.basename(item.path)}\x1b[0m\r\n`);
           } else {
-            output(`\x1b[32m${basename(item.path)}\x1b[0m\r\n`);
+            output(`\x1b[32m${fspath.basename(item.path)}\x1b[0m\r\n`);
           }
         });
       } else {
@@ -24,9 +24,9 @@ async function ls(input: string, output: (text: string) => void, shell: Shell) {
     const res = await shell.system.fs.readdir(shell.router);
     res?.forEach((item) => {
       if (item.isDirectory) {
-        output(`\x1b[34m${basename(item.path)}\x1b[0m\r\n`);
+        output(`\x1b[34m${fspath.basename(item.path)}\x1b[0m\r\n`);
       } else {
-        output(`\x1b[32m${basename(item.path)}\x1b[0m\r\n`);
+        output(`\x1b[32m${fspath.basename(item.path)}\x1b[0m\r\n`);
       }
     });
   }

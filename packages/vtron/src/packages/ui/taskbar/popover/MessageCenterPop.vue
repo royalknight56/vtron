@@ -6,10 +6,10 @@
           <span @click="allClear" class="allclear">×</span>
         </div>
         <div class="message-group scroll-bar">
-          <div v-if="notifyGroup.length === 0" class="no-message">
+          <div v-if="notifyGroup.current.length === 0" class="no-message">
             {{ i18n('no.message') }}
           </div>
-          <div class="message-item" v-for="notify in notifyGroup" :key="notify.id">
+          <div class="message-item" v-for="notify in notifyGroup.current" :key="notify.id">
             <div class="message-item-title">
               <span>{{ notify.title }}</span>
             </div>
@@ -23,13 +23,14 @@
   </Transition>
 </template>
 <script setup lang="ts">
-import { useSystem } from '@packages/kernel';
-import { ref } from 'vue';
+import { System } from '@packages/kernel';
+import { inject, ref } from 'vue';
 import { mountEvent } from '@packages/kernel';
 import { i18n } from '@/packages/plug';
-const rootState = useSystem()._rootState;
-const notifyGroup = rootState.message.notify;
-// const systemGroup = rootState.message.system;
+const sys = inject<System>('system')!;
+const rootState = sys.stateManager;
+const notifyGroup = rootState.notify;
+
 const isPopShow = ref(false);
 mountEvent('messagecenter.show', () => {
   isPopShow.value = !isPopShow.value;
@@ -38,7 +39,7 @@ mountEvent('messagecenter.hidden', () => {
   isPopShow.value = false;
 });
 function allClear() {
-  rootState.message.notify.splice(0, notifyGroup.length);
+  rootState.notify.clear();
 }
 </script>
 <style lang="scss" scoped>

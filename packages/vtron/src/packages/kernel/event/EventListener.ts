@@ -1,6 +1,6 @@
 import { mountEvent, redirectEvent } from './EventHook';
 
-import { useSystem } from '@/packages/system';
+import { useSystem } from '@/packages/kernel/system';
 import { initAlertEvent, initBatteryEvent, initNetworkEvent, initSizeEvent } from './SystemEvent';
 function initEventListener() {
   initBatteryEvent();

@@ -1,6 +1,7 @@
-import { System, VtronFileWithoutContent, emitEvent } from '@packages/kernel';
-import * as FsPath from '@packages/kernel/file/Path';
-import { Dialog } from '@packages/ui';
+import { Dialog } from '@/packages/services';
+import * as fspath from '@/packages/util/Path';
+import { System, VtronFileWithoutContent } from '@packages/kernel';
+
 let dragCallback = () => {
   //
 };
@@ -25,13 +26,13 @@ export function useFileDrag(system: System) {
     const toFile = await system?.fs.stat(toPath);
     if (toFile?.isDirectory) {
       await frompathArr.map(async (frompath) => {
-        await system?.fs.rename(frompath, FsPath.join(toPath, FsPath.basename(frompath))).catch((e) => {
+        await system?.fs.rename(frompath, fspath.join(toPath, fspath.basename(frompath))).catch((e) => {
           Dialog.showMessageBox({
             message: e,
             type: 'error',
           });
         });
-        emitEvent('file.props.edit');
+        system.emitEvent('file.props.edit');
       });
     }
   }
@@ -42,9 +43,9 @@ export function useFileDrag(system: System) {
     process?: (path: string) => void
   ) {
     return await system?.fs
-      .writeFile(FsPath.join(path, name || 'unkown'), content?.replace(/data:.*?;base64,/, '') || '')
+      .writeFile(fspath.join(path, name || 'unkown'), content?.replace(/data:.*?;base64,/, '') || '')
       .then(() => {
-        process?.(FsPath.join(path, name || 'unkown'));
+        process?.(fspath.join(path, name || 'unkown'));
       });
   }
   // 外部文件拖到文件夹放下时
@@ -99,11 +100,11 @@ export function useFileDrag(system: System) {
       const oFileList = ev?.dataTransfer?.files;
       if (system.outerFileDropCallback) {
         system.outerFileDropCallback?.(path, oFileList, () => {
-          emitEvent('file.props.edit');
+          system.emitEvent('file.props.edit');
         });
       } else {
         outerFileDrop(path, oFileList, () => {
-          emitEvent('file.props.edit');
+          system.emitEvent('file.props.edit');
         });
       }
     }

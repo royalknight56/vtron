@@ -14,12 +14,6 @@
 import { Notify, vDragable } from '@packages/plug';
 
 async function test() {
-  // const res = await Dialog.showMessageBox({
-  //   type: 'info',
-  //   title: 'title',
-  //   message: '无法将文件移动到“C:',
-  // });
-
   new Notify({
     title: 'title',
     content: '111',

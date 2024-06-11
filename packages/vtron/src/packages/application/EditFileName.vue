@@ -7,8 +7,10 @@
 <script setup lang="ts">
 import WinButton from '@packages/components/WinButton.vue';
 import { inject, ref } from 'vue';
-import { Dialog, Notify, i18n, BrowserWindow } from '@packages/ui';
-import { VtronFileWithoutContent, basename, join, useSystem, emitEvent } from '@packages/kernel';
+import { i18n } from '@packages/ui';
+import { Notify, Dialog, BrowserWindow } from '@/packages/services';
+
+import { VtronFileWithoutContent, basename, join, useSystem } from '@packages/kernel';
 
 const browserWindow: BrowserWindow = inject('browserWindow')!;
 const name = ref(basename((browserWindow.config.content as VtronFileWithoutContent).path));
@@ -25,7 +27,7 @@ function confirm() {
   useSystem()
     ?.fs.rename(browserWindow.config.content.path, newPath)
     .then(() => {
-      emitEvent('file.props.edit');
+      useSystem().emitEvent('file.props.edit');
       browserWindow.emit('file.props.edit', newPath);
       browserWindow.close();
     })

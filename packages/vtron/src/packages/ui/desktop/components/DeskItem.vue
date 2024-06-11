@@ -4,13 +4,15 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { mountEvent } from '@packages/kernel';
-import { useSystem } from '@/packages/plug';
+import { mountEvent, System } from '@packages/kernel';
+
 import FileList from '@packages/application/components/FileList.vue';
 import { useAppOpen } from '@packages/ui/hook/useAppOpen';
-import { onMounted } from 'vue';
+import { inject, onMounted } from 'vue';
 
-const { openapp, appList } = useAppOpen('apps');
+const sys = inject<System>('system')!;
+
+const { openapp, appList } = useAppOpen('apps', sys);
 const props = defineProps({
   onChosen: {
     type: Function,
@@ -19,7 +21,7 @@ const props = defineProps({
 });
 onMounted(() => {
   mountEvent('file.props.edit', async () => {
-    useSystem().initAppList();
+    sys.refershApp();
   });
 });
 </script>

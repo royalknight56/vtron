@@ -1,43 +1,48 @@
 <template>
-  <div class="screen" @contextmenu.prevent ref="screenref" :style="rootState?.options?.rootStyle">
-    <template v-if="rootState.state == SystemStateEnum.close">
+  <div
+    class="screen"
+    @contextmenu.prevent
+    ref="screenref"
+    :style="system.stateManager.options.getOptions('rootStyle')"
+  >
+    <template v-if="powerState === PowerStateEnum.close">
       <CloseDesktop></CloseDesktop>
     </template>
-    <template v-else-if="rootState.state == SystemStateEnum.opening">
+    <template v-else-if="powerState == PowerStateEnum.opening">
       <OpeningDesktop></OpeningDesktop>
     </template>
-    <template v-else-if="rootState.state == SystemStateEnum.open || rootState.state == SystemStateEnum.lock">
+    <template v-else-if="powerState == PowerStateEnum.open || powerState == PowerStateEnum.lock">
       <Transition name="moveup">
-        <div class="login" v-if="rootState.state == SystemStateEnum.lock">
+        <div class="login" v-if="powerState == PowerStateEnum.lock">
           <LockDesktop> </LockDesktop>
         </div>
       </Transition>
       <Transition name="fadeout">
-        <DesktopBackground v-if="rootState.state == SystemStateEnum.lock" class="mask"></DesktopBackground>
+        <DesktopBackground v-if="powerState == PowerStateEnum.lock" class="mask"></DesktopBackground>
       </Transition>
-      <Desktop v-if="rootState.state == SystemStateEnum.open"></Desktop>
+      <DesktopLayout v-if="powerState == PowerStateEnum.open"></DesktopLayout>
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
 import CloseDesktop from '@packages/ui/desktop/CloseDesktop.vue';
-import Desktop from '@packages/ui/desktop/Desktop.vue';
+import DesktopLayout from '@packages/ui/desktop/DesktopLayout.vue';
 import OpeningDesktop from '@packages/ui/desktop/OpeningDesktop.vue';
 import LockDesktop from '@packages/ui/desktop/LockDesktop.vue';
 import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground.vue';
-
-import { SystemStateEnum } from '@packages/type/enum';
-import { useSystem } from '@packages/kernel';
-import { onMounted, ref } from 'vue';
-import { RootState } from '@packages/kernel';
+import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
+import { System } from '@packages/kernel';
+import { inject, onMounted, ref } from 'vue';
 const screenref = ref();
-defineProps<{
-  rootState: RootState;
+const props = defineProps<{
+  system: System;
 }>();
+const sys = inject<System>('system')!;
 onMounted(() => {
-  useSystem().rootRef = screenref.value;
+  sys.rootRef = screenref.value;
 });
+const powerState = ref(props.system.stateManager.powerState.current);
 </script>
 <style lang="scss" scoped>
 @import '@packages/root.scss';
@@ -49,4 +54,3 @@ onMounted(() => {
   overflow: hidden;
 }
 </style>
-@/packages/kernel/system@/packages/kernel/state/Root

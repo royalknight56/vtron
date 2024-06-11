@@ -67,12 +67,15 @@ import { inject, ref } from 'vue';
 import EditFileName from './EditFileName.vue';
 import FileIcon from '@packages/application/FileIcon.vue';
 import { dealSize } from '@/packages/util/file';
-import { i18n, BrowserWindow } from '@packages/ui';
-import { VtronFileWithoutContent, basename, extname, useSystem } from '@packages/kernel';
+import { i18n } from '@packages/ui';
+import { BrowserWindow } from '@/packages/services';
+import { System, VtronFileWithoutContent, basename, extname } from '@packages/kernel';
+
+const sys = inject<System>('system')!;
 
 const window: BrowserWindow | undefined = inject('browserWindow');
 const file = ref<VtronFileWithoutContent | null>();
-file.value = await useSystem()?.fs.stat(window?.config.content);
+file.value = await sys?.fs.stat(window?.config.content);
 function confirm() {
   window?.close();
 }
@@ -90,7 +93,7 @@ function editFileName() {
     resizable: false,
   });
   win.on('file.props.edit', async (source: string, data: string) => {
-    file.value = await useSystem()?.fs.stat(data);
+    file.value = await sys?.fs.stat(data);
   });
 
   win.show();

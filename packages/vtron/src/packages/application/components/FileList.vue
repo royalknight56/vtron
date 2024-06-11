@@ -91,23 +91,17 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref, markRaw } from 'vue';
-import {
-  VtronFileWithoutContent,
-  basename,
-  dirname,
-  join,
-  useSystem,
-  emitEvent,
-  mountEvent,
-} from '@packages/kernel';
-import { i18n, Menu } from '@packages/ui';
+import { VtronFileWithoutContent, basename, dirname, join, useSystem, mountEvent } from '@packages/kernel';
+import { i18n } from '@packages/ui';
+import { Menu } from '@/packages/services';
 import FileIcon from '@packages/application/FileIcon.vue';
-import { useContextMenu } from '@packages/hook/useContextMenu';
+
+import { openPropsWindow, copyFile, createLink, openWith } from '@/packages/application/utils/fileOpt';
 import { useFileDrag } from '@packages/hook/useFileDrag';
 import { Rect } from '@/packages/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
 import { dealSize } from '@/packages/util/file';
-const { openPropsWindow, copyFile, createLink, openWith } = useContextMenu();
+
 const sys = useSystem();
 const { startDrag, folderDrop } = useFileDrag(sys);
 const props = defineProps({
@@ -143,7 +137,7 @@ const props = defineProps({
 function handleOnOpen(item: VtronFileWithoutContent) {
   chosenIndexs.value = [];
   props.onOpen(item);
-  emitEvent('desktop.app.open');
+  sys.emitEvent('desktop.app.open');
 }
 function hadnleDrop(mouse: DragEvent, path: string) {
   hoverIndex.value = -1;

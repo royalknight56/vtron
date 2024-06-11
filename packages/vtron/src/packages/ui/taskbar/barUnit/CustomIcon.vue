@@ -25,8 +25,7 @@
 <script setup lang="ts">
 import VtronImage from '@packages/application/components/VtronImage.vue';
 import { emitEvent, mountEvent } from '@packages/kernel';
-import { Menu } from '@packages/ui';
-import { Tray } from '@packages/ui';
+import { Tray, Menu } from '@/packages/services';
 
 const traylst = Tray.trayList;
 

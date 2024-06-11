@@ -1,20 +1,20 @@
 <template>
-  <template v-if="rootState">
-    <ScreenContent :root-state="rootState"> </ScreenContent>
+  <template v-if="system">
+    <ScreenContent :system="system"> </ScreenContent>
   </template>
 </template>
 <script lang="ts" setup>
-import { Bios, System, useSystem } from '@packages/kernel';
-import { ref } from 'vue';
-import { RootState } from '@packages/kernel';
+import { System } from '@packages/kernel';
 import ScreenContent from './ScreenContent.vue';
+import { provide } from 'vue';
 
-const screenref = ref();
-const rootState = ref<RootState | undefined>(useSystem()?._rootState);
-Bios.onOpen((system: System) => {
-  rootState.value = system._rootState;
-  system.rootRef = screenref.value;
+const props = defineProps({
+  system: {
+    type: System,
+    default: null,
+  },
 });
+provide('system', props.system);
 </script>
 <style lang="scss" scoped>
 @import '@packages/root.scss';
@@ -113,4 +113,3 @@ Bios.onOpen((system: System) => {
   );
 }
 </style>
-@/packages/kernel/system@/packages/kernel/state/Root

@@ -1,4 +1,4 @@
-import { useSystem } from '../../system';
+import { useSystem } from '../system';
 import { Eventer } from './Eventer';
 
 function initEventer() {

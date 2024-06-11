@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BrowserWindow, WindowStateEnum } from '@packages/ui';
+import { BrowserWindow, WindowStateEnum } from '@/packages/services';
 import { UnwrapNestedRefs } from 'vue';
 
 const props = defineProps<{

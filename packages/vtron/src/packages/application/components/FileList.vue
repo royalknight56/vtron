@@ -59,20 +59,20 @@
     <span v-if="editIndex !== index" class="file-item_title">
       {{ dealI18nName(basename(item.path)) }}
     </span>
-    <textarea
+    <input
       autofocus
       draggable="false"
       @dragover.stop
       @dragstart.stop
       @dragenter.stop
-      @mousedown.stop
+      @mousedown.prevent
       @dblclick.stop
       @click.stop
       @blur="onEditNameEnd"
       v-if="editIndex === index"
       class="file-item_title file-item_editing"
       v-model="editName"
-    ></textarea>
+    />
     <template v-if="mode === 'detail'">
       <div class="file-item_type">
         <span>{{ item.isDirectory ? '-' : dealSize(item.size) }}</span>
@@ -90,8 +90,16 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, markRaw } from 'vue';
-import { VtronFileWithoutContent, basename, dirname, join, useSystem, mountEvent } from '@packages/kernel';
+import { onMounted, ref, markRaw, inject } from 'vue';
+import {
+  VtronFileWithoutContent,
+  basename,
+  dirname,
+  join,
+  useSystem,
+  mountEvent,
+  System,
+} from '@packages/kernel';
 import { i18n } from '@packages/ui';
 import { Menu } from '@/packages/services';
 import FileIcon from '@packages/application/FileIcon.vue';
@@ -102,7 +110,7 @@ import { Rect } from '@/packages/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
 import { dealSize } from '@/packages/util/file';
 
-const sys = useSystem();
+const sys = inject<System>('system')!;
 const { startDrag, folderDrop } = useFileDrag(sys);
 const props = defineProps({
   onChosen: {
@@ -345,16 +353,28 @@ function dealI18nName(name: string) {
   }
 
   .file-item_editing {
-    display: inline-block !important;
     outline: none;
     pointer-events: all;
-    padding: 0;
-    margin: 0;
-    min-width: 0;
-    height: min-content !important;
-    width: min-content !important;
     resize: none;
     border-radius: 0;
+    width: 100%;
+    font-size: 12px;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #00000055;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      'Open Sans',
+      'Helvetica Neue',
+      sans-serif;
   }
 }
 

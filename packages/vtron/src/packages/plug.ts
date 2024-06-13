@@ -18,8 +18,8 @@ export { i18n } from '@/packages/ui/i18n';
 export { vDragable } from '@/packages/ui/windowGroup/MakeDragable';
 export * from '@/packages/util/Path';
 export type { SystemOptions, WinApp } from '@packages/type/type';
-export { ScreenComponentVue as Screen } from '@packages/ui';
 export { dealIcon } from '@packages/util/Icon';
+export { VtronComputer } from './computer';
 export {
   WinButtonVue,
   WinCheckBox,

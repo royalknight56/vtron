@@ -11,22 +11,24 @@ async function pasteFile(system: System, path: string) {
   if (clipLen) {
     const clipFiles = rootState.clipboard.getClipboard();
 
-    if (!clipFiles.forEach) {
+    if (!clipFiles.map) {
       return;
     }
-    await clipFiles.forEach(async (clipFile: string) => {
-      let tempName = fspath.filename(clipFile);
-      const ext = fspath.extname(clipFile);
+    await await Promise.all(
+      clipFiles.map(async (clipFile: string) => {
+        let tempName = fspath.filename(clipFile);
+        const ext = fspath.extname(clipFile);
 
-      if (await system.fs.exists(fspath.join(path, tempName) + ext)) {
-        let i = 1;
-        while (await system.fs.exists(fspath.join(path, `${tempName}(${i})`) + ext)) {
-          i++;
+        if (await system.fs.exists(fspath.join(path, tempName) + ext)) {
+          let i = 1;
+          while (await system.fs.exists(fspath.join(path, `${tempName}(${i})`) + ext)) {
+            i++;
+          }
+          tempName = `${tempName}(${i})`;
         }
-        tempName = `${tempName}(${i})`;
-      }
-      return system.fs.copyFile(clipFile, fspath.join(path, tempName) + ext);
-    });
+        return system.fs.copyFile(clipFile, fspath.join(path, tempName) + ext);
+      })
+    );
   } else {
     system.emitError('no file in clipboard');
   }

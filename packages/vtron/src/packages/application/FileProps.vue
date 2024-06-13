@@ -16,10 +16,6 @@
           <span class="file-name">
             {{ basename(file?.path || '') }}
           </span>
-
-          <WinButton class="some-button" @click="editFileName">
-            {{ i18n('rename') }}
-          </WinButton>
         </div>
       </div>
       <div class="split-line"></div>
@@ -64,7 +60,6 @@
 <script setup lang="ts">
 import WinButton from '@packages/components/WinButton.vue';
 import { inject, ref } from 'vue';
-import EditFileName from './EditFileName.vue';
 import FileIcon from '@packages/application/FileIcon.vue';
 import { dealSize } from '@/packages/util/file';
 import { i18n } from '@packages/ui';
@@ -78,25 +73,6 @@ const file = ref<VtronFileWithoutContent | null>();
 file.value = await sys?.fs.stat(window?.config.content);
 function confirm() {
   window?.close();
-}
-
-function editFileName() {
-  const win = new BrowserWindow({
-    title: i18n('rename'),
-    content: EditFileName,
-    config: {
-      content: file,
-    },
-    width: 300,
-    height: 200,
-    center: true,
-    resizable: false,
-  });
-  win.on('file.props.edit', async (source: string, data: string) => {
-    file.value = await sys?.fs.stat(data);
-  });
-
-  win.show();
 }
 </script>
 <style lang="scss" scoped>

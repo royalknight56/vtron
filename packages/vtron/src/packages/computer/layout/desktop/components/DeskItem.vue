@@ -7,7 +7,7 @@
 import { mountEvent, System } from '@packages/kernel';
 
 import FileList from '@packages/application/components/FileList.vue';
-import { useAppOpen } from '@packages/ui/hook/useAppOpen';
+import { useAppOpen } from '@/packages/computer/hook/useAppOpen';
 import { inject, onMounted } from 'vue';
 
 const sys = inject<System>('system')!;

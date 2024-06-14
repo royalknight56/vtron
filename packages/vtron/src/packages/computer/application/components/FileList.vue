@@ -105,8 +105,8 @@ import { Menu } from '@/packages/services';
 import FileIcon from '@packages/application/FileIcon.vue';
 
 import { openPropsWindow, copyFile, createLink, openWith } from '@/packages/application/utils/fileOpt';
-import { useFileDrag } from '@packages/hook/useFileDrag';
-import { Rect } from '@/packages/hook/useRectChosen';
+import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
+import { Rect } from '@/packages/computer/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
 import { dealSize } from '@/packages/util/file';
 

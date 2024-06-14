@@ -1,5 +1,5 @@
+import { DragElement } from '@/packages/computer/layout/windowGroup/dom/DragElement';
 import { BrowserWindow, WindowStateEnum } from '@/packages/services';
-import { DragElement } from '@/packages/ui/windowGroup/dom/DragElement';
 import { Directive } from 'vue';
 
 const vDragable: Directive = {

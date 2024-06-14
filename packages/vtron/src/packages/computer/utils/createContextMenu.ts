@@ -2,7 +2,7 @@ import { System } from '@/packages/kernel';
 import { Menu } from '@/packages/services';
 import * as fspath from '@/packages/util/Path';
 import { uniqBy } from '@/packages/util/modash';
-import { i18n } from '../i18n';
+import { i18n } from '../../computer/i18n';
 
 async function pasteFile(system: System, path: string) {
   if (!system) return;

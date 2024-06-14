@@ -26,11 +26,11 @@
 </template>
 
 <script lang="ts" setup>
-import CloseDesktop from '@packages/ui/desktop/CloseDesktop.vue';
-import DesktopLayout from '@packages/ui/desktop/DesktopLayout.vue';
-import OpeningDesktop from '@packages/ui/desktop/OpeningDesktop.vue';
-import LockDesktop from '@packages/ui/desktop/LockDesktop.vue';
-import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground.vue';
+import CloseDesktop from '@packages/computer/layout/desktop/CloseDesktop.vue';
+import DesktopLayout from '@packages/computer/layout/desktop/DesktopLayout.vue';
+import OpeningDesktop from '@packages/computer/layout/desktop/OpeningDesktop.vue';
+import LockDesktop from '@packages/computer/layout/desktop/LockDesktop.vue';
+import DesktopBackground from '@packages/computer/layout/desktop/components/DesktopBackground.vue';
 import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
 import { System } from '@packages/kernel';
 import { inject, onMounted, ref } from 'vue';

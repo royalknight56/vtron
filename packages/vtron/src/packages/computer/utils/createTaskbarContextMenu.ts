@@ -1,6 +1,6 @@
 import { BrowserWindow, Menu } from '@/packages/services';
 import { UnwrapNestedRefs } from 'vue';
-import { i18n } from '../i18n';
+import { i18n } from '../../computer/i18n';
 
 export function createTaskbarIconContextMenu(e: MouseEvent, windowNode: UnwrapNestedRefs<BrowserWindow>) {
   Menu.buildFromTemplate([

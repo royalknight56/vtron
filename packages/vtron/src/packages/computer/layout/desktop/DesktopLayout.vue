@@ -22,16 +22,16 @@
   </div>
 </template>
 <script lang="ts" setup>
-import DeskItem from '@packages/ui/desktop/components/DeskItem.vue';
+import DeskItem from './components/DeskItem.vue';
 import Taskbar from '@packages/ui/taskbar/Taskbar.vue';
 import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground.vue';
 import { emitEvent, System } from '@packages/kernel';
 import WindowGroup from '@/packages/ui/windowGroup/WindowGroup.vue';
-import ContextMenu from '@/packages/ui/contextMenu/ContextMenu.vue';
+import ContextMenu from '@/packages/computer/layout/contextMenu/ContextMenu.vue';
 import NotificationGroup from '@/packages/ui/notifyGroup/NotifyGroup.vue';
 import MessageCenterPop from '@packages/ui/taskbar/popover/MessageCenterPop.vue';
-import { useFileDrag } from '@packages/hook/useFileDrag';
-import { Rect, useRectChosen } from '@packages/hook/useRectChosen';
+import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
+import { Rect, useRectChosen } from '@/packages/computer/hook/useRectChosen';
 import { inject, onErrorCaptured } from 'vue';
 import { createDesktopContextMenu } from '@/packages/ui/utils/createContextMenu';
 

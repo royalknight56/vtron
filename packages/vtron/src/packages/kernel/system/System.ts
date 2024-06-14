@@ -60,10 +60,15 @@ export class System {
     this.configOperations = new ConfigOperations(this);
     this.eventOperations = new EventOperations(this);
     this.fileOpenerOperations = new FileOpenerOperations(this);
-
-    logger('initRootState');
     this.stateManager = new StateManager(this);
 
+    if (this._options.unMount) {
+      return;
+    }
+    this.mount();
+  }
+
+  mount() {
     logger('mountGlobalSystem');
     System.GLOBAL_SYSTEM = this; // 挂载全局系统
     BrowserWindow.system = this;

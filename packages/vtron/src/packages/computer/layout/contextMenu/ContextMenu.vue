@@ -32,8 +32,8 @@ watch(
   () => rootState.contextMenu.current.value,
   (contextMenu) => {
     if (!contextMenu) {
-      x.value = -100;
-      y.value = -100;
+      x.value = -1000;
+      y.value = -1000;
       menuList.value = [];
       return;
     }
@@ -46,9 +46,9 @@ watch(
     const contextmenuHeight = 24 * (contextMenu?.items.length || 0);
     // get mouse position
     const outer = sys?.rootRef;
-    const mouseX = (contextMenu?._mouse?.x || 0) - (outer?.offsetLeft || 0);
-    const mouseY = (contextMenu?._mouse?.y || 0) - (outer?.offsetTop || 0);
-
+    const outerRect = outer?.getBoundingClientRect();
+    const mouseX = (contextMenu?._mouse?.clientX ?? 0) - (outerRect?.x ?? 0);
+    const mouseY = (contextMenu?._mouse?.clientY ?? 0) - (outerRect?.y ?? 0);
     // get contextmenu position
     const contextmenuX = mouseX + contextmenuWidth > innerWidth ? mouseX - contextmenuWidth : mouseX;
     const contextmenuY = mouseY + contextmenuHeight > innerHeight ? mouseY - contextmenuHeight : mouseY;

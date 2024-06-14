@@ -7,60 +7,43 @@
 <template>
   <div class="outer">
     <VtronComputer :system="sys"></VtronComputer>
+    <VtronComputer :system="sys2"></VtronComputer>
   </div>
 </template>
 
 <script setup lang="ts">
-// import brow from './assets/浏览器.png';
 import testicon from './assets/终端.png';
 import TestButton from './apps/TestButton.vue';
 import VtronTest from './apps/VtronTest.vue';
 import VtronPerfTest from './apps/VtronPerfTest.vue';
-
-import { onMounted } from 'vue';
 import { System, VtronFile, VtronComputer } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 import { Tray, Menu } from '@/packages/services';
 
-// class TestShell {
-//   prefix = 'vtron@vtron:~$ ';
-//   router = '/';
-//   user = 'root';
-//   messageCallBack: (msg: string) => void;
-//   constructor() {
-//     this.messageCallBack = (msg: string) => {
-//       console.log(msg);
-//     };
-//   }
-//   on = (event: string, callback: (msg: string) => void) => {
-//     if (event === 'message') {
-//       this.messageCallBack = callback;
-//     }
-//   };
-//   emit(event: string, router: string, user: string) {
-//     if (event === 'start') {
-//       this.router = router;
-//       this.user = user;
-//       this.messageCallBack('hello world');
-//     }
-//   }
-//   async exec(input: string) {
-//     console.log(input);
-//     this.messageCallBack('hello world\r\n');
-//   }
-// }
-// async function save() {
-//   const state = await sys?.serializeState();
-//   localStorage.setItem('vtron-state', JSON.stringify(state));
-// }
-// async function restore() {
-//   const state = localStorage.getItem('vtron-state');
-//   if (state) {
-//     await sys?.deserializeState(JSON.parse(state));
-//   }
-// }
-// const memoryFs: Record<string, VtronFile> = {};
-// onMounted(() => {
+const sys2 = new System({
+  // lang: 'en-US',
+  // lang: "zh-CN",
+  unMount: true,
+  logo: vtronLogoIcon,
+  // background: 'https://picsum.photos/1920/1080',
+
+  // shell: new TestShell(),
+  desktop: [
+    {
+      name: '测试Url',
+      icon: testicon,
+      multiple: false,
+      window: {
+        content: 'https://shimo.im/desktop',
+        title: '测试按钮',
+        icon: testicon,
+        center: true,
+        // backgroundColor: "rgba(0,0,0,1)",
+      },
+    },
+  ],
+});
+
 const sys = new System({
   // lang: 'en-US',
   // lang: "zh-CN",
@@ -337,7 +320,6 @@ sys.whenReady().then((readySys) => {
     });
   }
 });
-// });
 </script>
 <style scoped>
 .outer {

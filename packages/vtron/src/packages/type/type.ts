@@ -36,7 +36,13 @@ export const Saveablekey: ('lang' | 'logo' | 'background' | 'rootStyle')[] = [
 export type SystemOptionsSaveable = Pick<SystemOptionsCertainly, (typeof Saveablekey)[number]>;
 
 export interface SystemOptionsCertainly {
+  /**
+   * @description: 语言
+   */
   lang?: string;
+  /**
+   * @description: logo
+   */
   logo?: string;
   background?: string;
   rootStyle?: any;
@@ -58,6 +64,10 @@ export interface SystemOptionsCertainly {
   contextMenus?: Array<MenuItemConstructorOptions | MenuItem>;
   noPassword?: boolean;
   loginCallback?: (username: string, password: string) => Promise<boolean>;
+  /**
+   * 不立即挂载系统，默认为false
+   */
+  unMount?: boolean;
 }
 export type SystemOptions = SystemOptionsCertainly & {
   [key: string]: SafeAny;

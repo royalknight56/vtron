@@ -79,7 +79,7 @@ import foldericon from '@packages/assets/folder.png';
 import FileList from '@/packages/computer/application/components/FileList.vue';
 import FileTree from '@/packages/computer/application/components/FileTree.vue';
 import UpPopover from './components/UpPopover.vue';
-import { VtronFileWithoutContent, dirname, useSystem, mountEvent } from '@packages/kernel';
+import { VtronFileWithoutContent, dirname, useSystem } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
 import { Notify } from '@/packages/services/notification/Notification';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
@@ -181,10 +181,10 @@ onMounted(() => {
     router_url.value = '/';
   }
   onComputerMount();
-  mountEvent('file.props.edit', async () => {
+  system.mountEvent('file.props.edit', async () => {
     refersh();
   });
-  mountEvent('computerpop.hidden', () => {
+  system.mountEvent('computerpop.hidden', () => {
     isPopoverView.value = false;
   });
   system.fs.readdir('/').then((file) => {

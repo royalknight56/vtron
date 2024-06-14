@@ -8,20 +8,20 @@
 </template>
 <script lang="ts" setup>
 import winimg from '@/assets/win.png';
-import { emitEvent, mountEvent, System } from '@packages/kernel';
+import { System } from '@packages/kernel';
 import { inject, ref } from 'vue';
 import StartMenu from '@/packages/computer/layout/taskbar/startMenu/StartMenu.vue';
 
 const sys = inject<System>('system')!;
 const isStartmenuShow = ref(false);
-mountEvent('startmenu.changeVisible', function () {
+sys.mountEvent('startmenu.changeVisible', function () {
   isStartmenuShow.value = !isStartmenuShow.value;
 });
-mountEvent('startmenu.hidden', function () {
+sys.mountEvent('startmenu.hidden', function () {
   isStartmenuShow.value = false;
 });
 function emitClick(e: MouseEvent) {
-  emitEvent('taskbar.startmenu.leftClick', e);
+  sys.emitEvent('taskbar.startmenu.leftClick', e);
 }
 </script>
 <style lang="scss" scoped>

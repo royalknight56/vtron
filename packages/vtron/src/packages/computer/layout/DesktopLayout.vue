@@ -25,7 +25,7 @@
 import DeskItem from './desktop/components/DeskItem.vue';
 import Taskbar from './taskbar/Taskbar.vue';
 import DesktopBackground from './desktop/components/DesktopBackground.vue';
-import { emitEvent, System } from '@packages/kernel';
+import { System } from '@packages/kernel';
 import WindowGroup from './windowGroup/WindowGroup.vue';
 import ContextMenu from './contextMenu/ContextMenu.vue';
 import NotificationGroup from './notifyGroup/NotifyGroup.vue';
@@ -48,7 +48,7 @@ function onChosen(callback: (rect: Rect) => void) {
   chosenCallback = callback;
 }
 function userareaDown(e: MouseEvent) {
-  emitEvent('desktop.background.leftClick', e);
+  sys.emitEvent('desktop.background.leftClick', e);
   chosenCallback({
     left: e.clientX,
     top: e.clientY,
@@ -62,7 +62,7 @@ function backgroundDown(e: MouseEvent) {
   addEventListener('mouseup', backgroundUp);
 }
 function backgroundMove(e: MouseEvent) {
-  emitEvent('desktop.background.leftMove', e);
+  sys.emitEvent('desktop.background.leftMove', e);
   chosing(e);
   const rectValue = getRect();
   if (rectValue) {
@@ -70,12 +70,12 @@ function backgroundMove(e: MouseEvent) {
   }
 }
 function backgroundUp(e: MouseEvent) {
-  emitEvent('desktop.background.leftUp', e);
+  sys.emitEvent('desktop.background.leftUp', e);
   choseEnd();
   const rectValue = getRect();
   if (rectValue) {
     chosenCallback(rectValue);
-    emitEvent('desktop.background.rectChosen', rectValue);
+    sys.emitEvent('desktop.background.rectChosen', rectValue);
   }
   removeEventListener('mousemove', backgroundMove);
   removeEventListener('mouseup', backgroundUp);

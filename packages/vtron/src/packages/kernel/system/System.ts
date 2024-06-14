@@ -23,16 +23,6 @@ const logger = function (...args: any[]) {
 
 export type VtronPlugin = (system: System) => void;
 
-export class Bios {
-  public static _onOpen: ((system: System) => void) | null = null;
-  public static onOpen(func: (system: System) => void) {
-    this._onOpen = func;
-  }
-  constructor() {
-    //
-  }
-}
-
 /**
  * @description: System 类，在初始化的过程中需要提供挂载点，以及一些配置
  */
@@ -50,8 +40,6 @@ export class System {
   get fs() {
     return this.fileSystemOperations.fs;
   }
-
-  _shell!: ShellInterface;
 
   private fileSystemOperations: FileSystemOperations;
   private appOperations: AppOperations;
@@ -83,7 +71,6 @@ export class System {
     Tray.system = this;
     Dialog.system = this;
     Menu.system = this;
-    Bios._onOpen && Bios._onOpen(this);
 
     logger('initSystem');
     this.initSystem();
@@ -113,18 +100,14 @@ export class System {
     await this.fileSystemOperations.initFileSystem(); // 初始化文件系统
     logger('initSavedConfig');
     await this.configOperations.initSavedConfig(); // 初始化保存的配置
-    logger('initShell');
-    await this.initShell(); // 初始化shell
-    logger('refershApp');
-    this.appOperations.refershApp(); // 刷新app文件夹，展示应用
     logger('isLogin');
-    this.powerOperations.isLogin(); // 判断是否登录
-    logger('initEventListener');
-    this.eventOperations.initEventer(); // 初始化事件
+    this.powerOperations.init(); // 判断是否登录
+
+    this.fs?.on('error', (err: string) => {
+      this.emitError(err);
+    });
 
     this._ready && this._ready(this);
-    logger('runPlugin');
-    this.runPlugin(this); // 运行fs中插件
 
     logger('start');
     this.emit('start');
@@ -136,13 +119,6 @@ export class System {
   mountVolume: FileSystemOperations['mountVolume'] = (path, fs) => {
     return this.fileSystemOperations.mountVolume(path, fs);
   };
-  private async initShell() {
-    if (this._options.shell) {
-      this._shell = this._options.shell;
-    } else {
-      this._shell = new Shell(this, '/', 'root');
-    }
-  }
 
   setConfig: ConfigOperations['setConfig'] = (key: string, value: any) => {
     return this.configOperations.setConfig(key, value);
@@ -263,22 +239,6 @@ export class System {
     return func(this);
   }
 
-  async runPlugin(system: System) {
-    const pluginsFile = await this.fs.readdir(`${this._options.systemLocation}plugs`);
-    if (pluginsFile) {
-      await Promise.all(
-        pluginsFile.map(async (file) => {
-          const fileContent = await this.fs.readFile(file.path);
-          if (file.isFile) {
-            const content = fileContent;
-            if (content) {
-              new Shell(system, '/', 'root').exec('node ' + file.path);
-            }
-          }
-        })
-      );
-    }
-  }
   // 状态序列化和反序列化
   async serializeState(): Promise<string> {
     const serializeFile = await this.fs.serializeFileSystem();

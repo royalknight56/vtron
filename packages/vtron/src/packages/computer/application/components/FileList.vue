@@ -91,15 +91,7 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref, markRaw, inject } from 'vue';
-import {
-  VtronFileWithoutContent,
-  basename,
-  dirname,
-  join,
-  useSystem,
-  mountEvent,
-  System,
-} from '@packages/kernel';
+import { VtronFileWithoutContent, basename, dirname, join, System } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
 import { Menu } from '@/packages/services';
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
@@ -187,7 +179,7 @@ function onEditNameEnd() {
   }
   editIndex.value = -1;
 }
-mountEvent('edit.end', () => {
+sys.mountEvent('edit.end', () => {
   onEditNameEnd();
 });
 

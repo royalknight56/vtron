@@ -17,7 +17,7 @@
 </template>
 <script lang="ts" setup>
 import { useAppOpen } from '@/packages/computer/hook/useAppOpen';
-import { emitEvent, System } from '@packages/kernel';
+import { System } from '@packages/kernel';
 import { basename } from '@packages/kernel';
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
 import { VtronFileWithoutContent } from '@packages/kernel';
@@ -26,7 +26,7 @@ import { inject } from 'vue';
 const sys = inject<System>('system')!;
 const { openapp, appList } = useAppOpen('menulist', sys);
 function handle(item: VtronFileWithoutContent) {
-  emitEvent('menulist.item.click', item);
+  sys.emitEvent('menulist.item.click', item);
   openapp(item);
 }
 </script>

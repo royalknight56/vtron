@@ -8,9 +8,9 @@ export class PowerOperations {
   }
 
   /**
-   * @description: 判断是否登录
+   * @description: 初始化 判断是否登录
    */
-  isLogin() {
+  init() {
     if (!this.system._options.login) {
       this.system.stateManager.powerState.setPowerState(PowerStateEnum.open);
       return;

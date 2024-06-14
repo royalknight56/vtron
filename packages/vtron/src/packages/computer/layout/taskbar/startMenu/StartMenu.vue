@@ -12,12 +12,14 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { emitEvent } from '@packages/kernel';
+import { System } from '@packages/kernel';
 import Magnet from './components/Magnet.vue';
 import MenuList from './components/MenuList.vue';
 import StartOption from './components/StartOption.vue';
+import { inject } from 'vue';
+const sys = inject<System>('system')!;
 function handleClick(e: MouseEvent) {
-  emitEvent('startMenu.click', e);
+  sys.emitEvent('startMenu.click', e);
 }
 </script>
 <style lang="scss" scoped>

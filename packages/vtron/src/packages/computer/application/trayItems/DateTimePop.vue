@@ -58,9 +58,10 @@
 import { inject, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { System } from '@packages/kernel';
 import { BrowserWindow, WinButtonVue, join } from '@/packages/plug';
-import { initAlertEvent } from '@packages/kernel/event/SystemEvent';
+
 import DateNote from '@/packages/computer/application/DateNote.vue';
 import { vGlowing } from '@/packages/util/glowingBorder';
+import { initAlertEvent } from '../../mount/initEventListener';
 
 const sys = inject<System>('system')!;
 const timeDisplay = ref(`00:00:00`);
@@ -454,4 +455,3 @@ function clickDetail(item: { text: string; time: number }) {
   transform: translateY(30px);
 }
 </style>
-@/packages/kernel/system@/packages/kernel/event/SystemEvent

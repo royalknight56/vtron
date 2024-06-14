@@ -1,4 +1,4 @@
-import { Eventer, initEventListener } from '@/packages/kernel/event';
+import { Eventer } from '@/packages/kernel/event';
 import { System } from '@/packages/plug';
 
 export class EventOperations {
@@ -9,13 +9,6 @@ export class EventOperations {
   constructor(system: System) {
     this.system = system;
     this.eventer = new Eventer();
-  }
-
-  initEventer() {
-    initEventListener(); // 初始化事件侦听
-    this.system.fs?.on('error', (err: string) => {
-      this.system.emitError(err);
-    });
   }
 
   getEventer() {

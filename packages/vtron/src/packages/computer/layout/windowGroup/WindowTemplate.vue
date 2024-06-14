@@ -105,9 +105,9 @@ import WindowInner from './components/WindowInner.vue';
 import { ScaleElement } from './dom/ScaleElement';
 import { BrowserWindow, WindowStateEnum } from '@/packages/services';
 import MenuBar from './components/MenuBar.vue';
-import { emitEvent, System } from '@packages/kernel';
+import { System } from '@packages/kernel';
 import { vDragable } from './MakeDragable';
-const sys = inject<System>('system');
+const sys = inject<System>('system')!;
 const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
 }>();
@@ -119,7 +119,7 @@ provide('browserWindow', browserWindow);
 
 function predown() {
   browserWindow.moveTop();
-  emitEvent('window.content.click', browserWindow);
+  sys.emitEvent('window.content.click', browserWindow);
 }
 
 const customerStyle = ref<NonNullable<unknown>>({});

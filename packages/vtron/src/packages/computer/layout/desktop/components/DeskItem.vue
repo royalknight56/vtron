@@ -4,7 +4,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { mountEvent, System } from '@packages/kernel';
+import { System } from '@packages/kernel';
 
 import FileList from '@/packages/computer/application/components/FileList.vue';
 import { useAppOpen } from '@/packages/computer/hook/useAppOpen';
@@ -20,7 +20,7 @@ const props = defineProps({
   },
 });
 onMounted(() => {
-  mountEvent('file.props.edit', async () => {
+  sys.mountEvent('file.props.edit', async () => {
     sys.refershApp();
   });
 });

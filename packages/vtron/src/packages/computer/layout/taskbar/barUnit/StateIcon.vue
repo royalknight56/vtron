@@ -11,7 +11,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { emitEvent, System } from '@packages/kernel';
+import { System } from '@packages/kernel';
 
 import MessageIcon from './MessageIcon.vue';
 import Error from './Error.vue';
@@ -22,7 +22,7 @@ import { inject } from 'vue';
 const sys = inject<System>('system')!;
 
 function handleNotifyClick() {
-  emitEvent('messagecenter.show');
+  sys.emitEvent('messagecenter.show');
 }
 function showDesk() {
   sys.stateManager.windowTree.windowOrder.forEach((win) => {

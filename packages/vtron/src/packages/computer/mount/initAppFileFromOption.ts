@@ -86,4 +86,5 @@ export function initAppFileFromOption(system: System) {
   system.stateManager.options.getOptions('menulist')?.forEach((item) => {
     system.addMenuList(item);
   });
+  system.refershApp();
 }

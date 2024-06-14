@@ -24,10 +24,13 @@
 </template>
 <script setup lang="ts">
 import VtronImage from '@/packages/computer/application/components/VtronImage.vue';
-import { emitEvent, mountEvent } from '@/packages/kernel';
+import { System } from '@/packages/kernel';
 import { Tray, Menu } from '@/packages/services';
+import { inject } from 'vue';
 
 const traylst = Tray.trayList;
+
+const sys = inject<System>('system')!;
 
 function handleClick(item: Tray, ev: MouseEvent) {
   if (item._contextMenu instanceof Menu) {
@@ -40,9 +43,9 @@ function handleClick(item: Tray, ev: MouseEvent) {
       tray._contextMenuShow = false;
     }
   });
-  emitEvent('tray.show', item);
+  sys.emitEvent('tray.show', item);
 }
-mountEvent('tray.hidden', () => {
+sys.mountEvent('tray.hidden', () => {
   Tray.trayList.value.forEach((item) => {
     item._contextMenuShow = false;
   });

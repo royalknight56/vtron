@@ -30,7 +30,7 @@
 </template>
 <script lang="ts" setup>
 import { i18n } from '@/packages/computer/i18n';
-import { emitEvent, System } from '@packages/kernel';
+import { System } from '@packages/kernel';
 import { vGlowing } from '@/packages/util/glowingBorder';
 import { Menu, Dialog, BrowserWindow } from '@/packages/services';
 import { inject } from 'vue';
@@ -43,7 +43,7 @@ function handleClick(key: number, ev: MouseEvent) {
         {
           label: i18n('startMenu.shutdown'),
           click: () => {
-            emitEvent('system.shutdown');
+            sys.emitEvent('system.shutdown');
           },
         },
         {
@@ -55,7 +55,7 @@ function handleClick(key: number, ev: MouseEvent) {
               buttons: [i18n('startMenu.recover'), i18n('cancel')],
             }).then((res) => {
               if (res.response === 0) {
-                emitEvent('system.recover');
+                sys.emitEvent('system.recover');
               }
             });
           },
@@ -64,7 +64,7 @@ function handleClick(key: number, ev: MouseEvent) {
 
       break;
     case 1: {
-      emitEvent('startMenu.set.click', {
+      sys.emitEvent('startMenu.set.click', {
         mouse: ev,
       });
       const winopt = sys.stateManager.windowMap.get('Builtin', '设置');

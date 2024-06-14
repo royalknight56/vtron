@@ -98,7 +98,6 @@ onMounted(() => {
       const totalOffsetLength = inputText.length + shell.prefix.length; // 总偏移量
       const currentOffsetLength = term.buffer.active.cursorX; // 当前x偏移量
       (shell as any).emit('key', key, key);
-      sys._shell;
 
       switch (keyCode) {
         case TERMINAL_INPUT_KEY.BACK:

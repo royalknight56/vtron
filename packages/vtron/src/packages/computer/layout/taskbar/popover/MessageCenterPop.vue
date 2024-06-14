@@ -25,17 +25,16 @@
 <script setup lang="ts">
 import { System } from '@packages/kernel';
 import { inject, ref } from 'vue';
-import { mountEvent } from '@packages/kernel';
 import { i18n } from '@/packages/plug';
 const sys = inject<System>('system')!;
 const rootState = sys.stateManager;
 const notifyGroup = rootState.notify;
 
 const isPopShow = ref(false);
-mountEvent('messagecenter.show', () => {
+sys.mountEvent('messagecenter.show', () => {
   isPopShow.value = !isPopShow.value;
 });
-mountEvent('messagecenter.hidden', () => {
+sys.mountEvent('messagecenter.hidden', () => {
   isPopShow.value = false;
 });
 function allClear() {

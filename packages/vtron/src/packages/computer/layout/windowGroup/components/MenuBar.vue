@@ -11,11 +11,12 @@
 </template>
 <script lang="ts" setup>
 import { BrowserWindow } from '@/packages/services';
-import { UnwrapNestedRefs } from 'vue';
-import { emitEvent } from '@packages/kernel';
+import { inject, UnwrapNestedRefs } from 'vue';
+import { System } from '@packages/kernel';
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
 import WinUpButtonGroup from '@/packages/components/WinUpButtonGroup.vue';
 import { WindowStateEnum } from '@/packages/services/window/BrowserWindow';
+const sys = inject<System>('system')!;
 const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
 }>();
@@ -40,7 +41,7 @@ function handleEvent(event: string) {
 }
 function handleRightClick(e: MouseEvent) {
   e.preventDefault();
-  emitEvent('window.menubar.rightclick', {
+  sys.emitEvent('window.menubar.rightclick', {
     mouse: e,
     window: props.browserWindow,
   });

@@ -20,7 +20,7 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref, watch } from 'vue';
-import { mountEvent, System } from '@packages/kernel';
+import { System } from '@packages/kernel';
 import type { MenuItem } from '@packages/services';
 
 const x = ref(-100);
@@ -59,7 +59,7 @@ watch(
   }
 );
 
-mountEvent('contextMenu.hidden', () => {
+sys.mountEvent('contextMenu.hidden', () => {
   sys.stateManager.contextMenu.setContextMenu(null);
 });
 

@@ -1,23 +1,21 @@
-import { mountEvent } from './EventHook';
-
-import { useSystem } from '@/packages/kernel/system';
+import { System, useSystem } from '@/packages/kernel';
 import { throttle } from '@/packages/util/debounce';
 import { join } from '../../util/Path';
 
-function initSizeEvent() {
+function initSizeEvent(system: System) {
   const sys = useSystem();
   const rootState = sys.stateManager;
   function refreshDesktopSize() {
     rootState.rect.setScreenSize(window?.innerWidth || 0, window?.innerHeight || 0);
   }
-  mountEvent('system.initSize', () => {
+  system.mountEvent('system.initSize', () => {
     refreshDesktopSize();
   });
   window?.addEventListener('resize', () => {
     sys.emitEvent('system.resize');
   });
 
-  mountEvent('system.mousemove', (_, events) => {
+  system.mountEvent('system.mousemove', (_, events) => {
     const event = events[0];
     rootState.rect.setMousePosition(event?.clientX || 0, event?.clientY || 0);
     sys.rootRef?.style.setProperty('--mouseX', `${event?.clientX || 0}px`);
@@ -72,7 +70,7 @@ function setAlertTask(time: number, callback: any) {
     callback();
   }, dateIntegralPoint.getTime() - date.getTime()); //用户登录后的下一个整点执行。
 }
-async function initAlertEvent() {
+export async function initAlertEvent() {
   const sys = useSystem();
 
   const chosenDay = new Date();
@@ -95,4 +93,60 @@ async function initAlertEvent() {
     });
   }
 }
-export { initAlertEvent, initBatteryEvent, initNetworkEvent, initSizeEvent };
+
+const eventTranslateMap: {
+  [key: string]: string[];
+} = {
+  'taskbar.startmenu.leftClick': ['startmenu.changeVisible', 'contextMenu.hidden'],
+  'desktop.background.leftClick': ['uipop.hidden'],
+  'desktop.background.rightClick': ['contextMenu.show', 'startmenu.hidden'],
+  'desktop.app.open': ['uipop.hidden'],
+  'system.resize': ['system.initSize'],
+  'system.open': ['system.initSize'],
+  'window.menubar.rightclick': ['contextMenu.show'],
+  'window.content.click': ['uipop.hidden'],
+  'startMenu.close.click': ['contextMenu.show'],
+  'startMenu.click': ['contextMenu.hidden'],
+  'magnet.item.click': ['uipop.hidden'],
+  'menulist.item.click': ['uipop.hidden'],
+  'startMenu.set.click': ['uipop.hidden'],
+  'mycomputer.click': ['uipop.hidden'],
+  'uipop.hidden': [
+    'contextMenu.hidden',
+    'startmenu.hidden',
+    'messagecenter.hidden',
+    'edit.end',
+    'computerpop.hidden',
+    'tray.hidden',
+  ],
+  'tray.show': ['messagecenter.hidden'],
+  'messagecenter.show': ['tray.hidden'],
+};
+
+function redirectEvent(system: System, source: string, target: string) {
+  system.mountEvent(source, (source: string, data: any) => {
+    system.emitEvent(target, data);
+  });
+}
+
+function eventTransitCenter(system: System) {
+  for (const key in eventTranslateMap) {
+    const targetArr = eventTranslateMap[key];
+    for (const target of targetArr) {
+      redirectEvent(system, key, target);
+    }
+  }
+}
+export function initEventListener(system: System) {
+  initBatteryEvent();
+  initSizeEvent(system);
+  initNetworkEvent();
+  initAlertEvent();
+  system.mountEvent('system.shutdown', () => {
+    useSystem()?.shutdown();
+  });
+  system.mountEvent('system.recover', () => {
+    useSystem()?.recover();
+  });
+  eventTransitCenter(system);
+}

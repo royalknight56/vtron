@@ -46,11 +46,14 @@ class DragObj implements DragObjInter {
 class DragElement extends DragObj {
   ifDraging: boolean;
   canDrag: boolean;
-  el: any;
-  constructor(element: any, x: number, y: number) {
+  el: HTMLElement | null;
+  outerElement: HTMLElement;
+  constructor(element: any, outerElement: HTMLElement, x: number, y: number) {
     super(x, y);
+    this.el = null;
     this.ifDraging = false;
     this.canDrag = true;
+    this.outerElement = outerElement;
     this.mountDomEvent(element);
   }
   private sorption(posX: number, posY: number) {
@@ -82,13 +85,15 @@ class DragElement extends DragObj {
       this.notify(posX, posY);
     }
   };
-  mountDomEvent(element: any) {
+  mountDomEvent(element: HTMLElement) {
     this.el = element;
     this.ifDraging = false;
+
     element.addEventListener('mousedown', (ev: any) => {
       if (this.canDrag) {
-        const rect = this.el.getBoundingClientRect();
-        this.startMove(ev.pageX, ev.pageY, rect.left, rect.top);
+        const rect = this.el!.getBoundingClientRect();
+        const parentRect = this.outerElement.getBoundingClientRect();
+        this.startMove(ev.pageX, ev.pageY, rect.left - parentRect.left, rect.top - parentRect.top);
         this.ifDraging = true;
       }
     });
@@ -96,8 +101,15 @@ class DragElement extends DragObj {
       'touchstart',
       (ev: TouchEvent) => {
         if (this.canDrag) {
-          const rect = this.el.getBoundingClientRect();
-          this.startMove(ev.touches[0].pageX, ev.touches[0].pageY, rect.left, rect.top);
+          const rect = this.el!.getBoundingClientRect();
+          const parentRect = this.outerElement.getBoundingClientRect();
+          this.startMove(
+            ev.touches[0].pageX,
+            ev.touches[0].pageY,
+            rect.left - parentRect.left,
+            rect.top - parentRect.top
+          );
+
           this.ifDraging = true;
         }
       },

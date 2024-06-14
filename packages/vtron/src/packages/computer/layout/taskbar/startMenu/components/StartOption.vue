@@ -31,7 +31,7 @@
 <script lang="ts" setup>
 import { i18n } from '@/packages/computer/i18n';
 import { System } from '@packages/kernel';
-import { vGlowing } from '@/packages/util/glowingBorder';
+import { vGlowing } from '@/packages/computer/utils/glowingBorder';
 import { Menu, Dialog, BrowserWindow } from '@/packages/services';
 import { inject } from 'vue';
 

@@ -13,7 +13,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { vGlowing } from '@/packages/util/glowingBorder';
+import { vGlowing } from '@/packages/computer/utils/glowingBorder';
 import { System } from '@packages/kernel';
 import { inject } from 'vue';
 const sys = inject<System>('system')!;

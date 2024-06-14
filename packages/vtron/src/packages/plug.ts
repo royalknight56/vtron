@@ -18,7 +18,6 @@ export { BrowserWindow, Dialog, Menu, MenuItem, Tray } from '@/packages/services
 export { Notify } from '@/packages/services/notification/Notification';
 export * from '@/packages/util/Path';
 export type { SystemOptions, WinApp } from '@packages/type/type';
-export { dealIcon } from '@packages/util/Icon';
 export { VtronComputer } from './computer';
 export {
   WinButtonVue,

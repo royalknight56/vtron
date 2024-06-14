@@ -60,7 +60,7 @@ import { System } from '@packages/kernel';
 import { BrowserWindow, WinButtonVue, join } from '@/packages/plug';
 
 import DateNote from '@/packages/computer/application/DateNote.vue';
-import { vGlowing } from '@/packages/util/glowingBorder';
+import { vGlowing } from '@/packages/computer/utils/glowingBorder';
 import { initAlertEvent } from '../../mount/initEventListener';
 
 const sys = inject<System>('system')!;

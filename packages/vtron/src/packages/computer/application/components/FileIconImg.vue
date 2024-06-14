@@ -4,7 +4,7 @@
 </template>
 <script setup lang="ts">
 import { useSystem, VtronFileWithoutContent } from '@packages/kernel';
-import { dealIcon } from '@/packages/util/Icon';
+import { dealIcon } from '@/packages/computer/utils/dealIcon';
 import unknownicon from '@packages/assets/unknown.png';
 import { ref } from 'vue';
 const props = defineProps<{

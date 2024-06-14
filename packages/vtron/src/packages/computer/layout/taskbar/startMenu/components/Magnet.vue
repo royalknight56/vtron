@@ -23,7 +23,7 @@ import { System } from '@packages/kernel';
 import { basename } from '@packages/kernel';
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
 import { VtronFileWithoutContent } from '@packages/kernel';
-import { vGlowing } from '@/packages/util/glowingBorder';
+import { vGlowing } from '@/packages/computer/utils/glowingBorder';
 import { inject } from 'vue';
 
 const sys = inject<System>('system')!;

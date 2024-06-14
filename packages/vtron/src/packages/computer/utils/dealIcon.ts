@@ -5,10 +5,10 @@ import unknownicon from '@packages/assets/unknown.png';
 import videoicon from '@packages/assets/video.png';
 import volumeLocalIcon from '@packages/assets/volume-local.png';
 import volumeNetIcon from '@packages/assets/volume-net.png';
-import { VtronFileSystem, VtronFileWithoutContent } from '../kernel/file/FileSystem';
+import { VtronFileSystem, VtronFileWithoutContent } from '../../kernel/file/FileSystem';
 
-import { System, extname } from '../plug';
-export function dealExeIcon(content: string | null | undefined) {
+import { System, extname } from '../../plug';
+function dealExeIcon(content: string | null | undefined) {
   if (!content) return unknownicon;
   const exeContent = content.split('::');
   const iconImg = exeContent.slice(3).join('::');

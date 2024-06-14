@@ -73,7 +73,7 @@ import { i18n } from '@/packages/computer/i18n';
 import { BrowserWindow } from '@/packages/services';
 import { useSystem } from '@packages/kernel';
 
-import { vGlowing } from '@/packages/util/glowingBorder';
+import { vGlowing } from '@/packages/computer/utils/glowingBorder';
 
 const browserWindow = inject<BrowserWindow>('browserWindow')!;
 const sys = useSystem();

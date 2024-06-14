@@ -12,8 +12,8 @@ import DateTimeVue from '@/packages/computer/application/trayItems/DateTime.vue'
 import DateTimePopVue from '@/packages/computer/application/trayItems/DateTimePop.vue';
 import NetWorkVue from '@/packages/computer/application/trayItems/NetWork.vue';
 import NetworkPopVue from '@/packages/computer/application/trayItems/NetworkPop.vue';
+import { dealIcon } from '@/packages/computer/utils/dealIcon';
 import { BrowserWindow, Dialog, Tray } from '@/packages/services';
-import { dealIcon } from '@/packages/util/Icon';
 import { i18n } from '@packages/computer';
 import type { System } from '@packages/kernel';
 import { basename } from '@packages/kernel';

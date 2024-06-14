@@ -57,7 +57,7 @@
 <script setup lang="ts">
 import { inject, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { System } from '@packages/kernel';
-import { BrowserWindow, WinButtonVue, join } from '@/packages/plug';
+import { WinButtonVue, join } from '@/packages/plug';
 
 import DateNote from '@/packages/computer/application/DateNote.vue';
 import { vGlowing } from '@/packages/computer/utils/glowingBorder';

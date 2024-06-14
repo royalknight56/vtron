@@ -135,7 +135,6 @@ const handleReady = () => {
 
 onMounted(() => {
   window.addEventListener('message', handleMessage);
-  // return makeDragable(handleRef.value!, browserWindow);
 });
 
 function closeWin() {

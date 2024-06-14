@@ -61,14 +61,17 @@ async function submit() {
   //   await system.setConfig('lang', modelvalue.value);
   localStorage.setItem('vtron-username', account.value);
   localStorage.setItem('vtron-password', password.value);
-  Dialog.system = system;
-  Dialog.showMessageBox({
-    message: i18n('save.success'),
-    title: i18n('account'),
-    type: 'info',
-  }).then(() => {
-    system?.reboot();
-  });
+
+  system
+    .createDialog()
+    .showMessageBox({
+      message: i18n('save.success'),
+      title: i18n('account'),
+      type: 'info',
+    })
+    .then(() => {
+      system?.reboot();
+    });
 }
 </script>
 <style scoped>

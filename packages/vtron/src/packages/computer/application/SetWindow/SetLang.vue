@@ -68,14 +68,17 @@ const selectItem = (index: number) => {
 
 async function submit() {
   await system.setConfig('lang', modelvalue.value);
-  Dialog.system = system;
-  Dialog.showMessageBox({
-    message: i18n('save.success'),
-    title: i18n('language'),
-    type: 'info',
-  }).then(() => {
-    system?.reboot();
-  });
+
+  system
+    .createDialog()
+    .showMessageBox({
+      message: i18n('save.success'),
+      title: i18n('language'),
+      type: 'info',
+    })
+    .then(() => {
+      system?.reboot();
+    });
 }
 </script>
 <style scoped>

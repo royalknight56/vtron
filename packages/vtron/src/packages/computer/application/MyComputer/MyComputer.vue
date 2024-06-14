@@ -81,7 +81,6 @@ import FileTree from '@/packages/computer/application/components/FileTree.vue';
 import UpPopover from './components/UpPopover.vue';
 import { VtronFileWithoutContent, dirname, useSystem } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
-import { Notify } from '@/packages/services/notification/Notification';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { useComputer } from './hooks/useComputer';
 import { Rect, useRectChosen } from '@/packages/computer/hook/useRectChosen';
@@ -137,8 +136,7 @@ const { refersh, createFolder, backFolder, openFolder, onComputerMount } = useCo
     return file.isDirectory;
   },
   notify(title, content) {
-    Notify.system = system;
-    new Notify({
+    system.createNotify({
       title,
       content,
     });

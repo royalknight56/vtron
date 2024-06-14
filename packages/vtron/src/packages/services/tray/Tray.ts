@@ -12,7 +12,6 @@ export class Tray {
   _contextMenuShow = false;
   _contextMenuWidth = 100;
   _contextMenuHeight = 100;
-  // public static trayList: Ref<Tray[]> = ref<Tray[]>([]);
   public static system: System;
   constructor(options: TrayOptions) {
     const rootState = Tray.system.stateManager;
@@ -23,8 +22,6 @@ export class Tray {
     }
     rootState.trayState.push(this);
     this._id = rootState.trayState.current.length.toString();
-    // Tray.trayList.value.push(this);
-    // this._id = Tray.trayList.value.length.toString();
   }
   setContextMenu(content: ReturnType<typeof defineComponent> | Menu, width = 100, height = 100) {
     this._contextMenu = markRaw(content);
@@ -37,8 +34,6 @@ export class Tray {
     } else {
       this.image = markRaw(image);
     }
-    // Tray.system.stateManager.trayState.current = Tray.system.stateManager.trayState.current.slice();
-    // Tray.trayList.value = Tray.trayList.value.slice();
   }
   destroy() {
     const rootState = Tray.system.stateManager;

@@ -145,8 +145,8 @@ async function submit() {
     return;
   }
   await system.setConfig('background', imgurl || '#fff');
-  Dialog.system = system;
-  Dialog.showMessageBox({
+
+  system.createDialog().showMessageBox({
     message: i18n('save.success'),
     title: i18n('wallpaper'),
     type: 'info',
@@ -165,8 +165,8 @@ async function submitStyle() {
     '--theme-main-color': taskBarColor.value,
   };
   await system.setConfig('rootStyle', rootStyle);
-  Dialog.system = system;
-  Dialog.showMessageBox({
+
+  system.createDialog().showMessageBox({
     message: i18n('save.success'),
     title: i18n('style'),
     type: 'info',

@@ -119,4 +119,6 @@ export const zhCN = {
 
   'how.do.you.want.to.open.this.file': '你要如何打开这个文件？',
   'change.encoding': '更改编码',
+  'exe.document': '可执行文件',
+  'exe.error': '无法打开快捷方式，目标不存在',
 };

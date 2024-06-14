@@ -117,4 +117,6 @@ export const enUS: AllText = {
 
   'how.do.you.want.to.open.this.file': 'How Do You Want To Open This File?',
   'change.encoding': 'Change Encoding',
+  'exe.document': 'Executable Document',
+  'exe.error': 'Cannot Open Shortcut, Target Does Not Exist',
 };

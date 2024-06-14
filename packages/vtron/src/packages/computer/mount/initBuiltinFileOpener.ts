@@ -21,11 +21,19 @@ import { basename } from '@packages/kernel';
 export function initBuiltinFileOpener(system: System) {
   if (system._options.builtinFeature?.includes('ExeOpener')) {
     system.registerFileOpener('.exe', {
-      name: '可执行程序',
+      name: i18n('exe.document'),
       icon: unknownIcon,
       hiddenInChosen: true,
       func: (path: string, content: string) => {
         const exeContent = content.split('::');
+        if (!exeContent[1] || !exeContent[2]) {
+          Dialog.showMessageBox({
+            title: i18n('error'),
+            message: i18n('exe.error'),
+            type: 'error',
+          });
+          return;
+        }
         // exeContent[1]= loc
         // exeContent[2]= name
         // exeContent[3]= icon

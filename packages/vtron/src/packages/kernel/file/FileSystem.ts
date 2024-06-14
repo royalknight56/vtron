@@ -117,7 +117,7 @@ class VtronFileSystem implements VtronFileInterface {
   onerror: (e: any) => void = (e) => {
     console.error('Failed to open database', e);
   };
-  constructor(rootPath = '/', id = '') {
+  constructor(rootPath = '/', id = 0) {
     const request = window.indexedDB.open('FileSystemDB' + id, 1);
     request.onerror = () => {
       console.error('Failed to open database');

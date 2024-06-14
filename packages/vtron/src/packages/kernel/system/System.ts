@@ -28,6 +28,8 @@ export type VtronPlugin = (system: System) => void;
  */
 export class System {
   public static GLOBAL_SYSTEM: System;
+  public static GLOBAL_SYSTEM_ID: number = 0;
+  id: number = System.GLOBAL_SYSTEM_ID++;
 
   readonly _options: SystemOptions;
 
@@ -54,7 +56,7 @@ export class System {
     logger('initOptions');
     this._options = this.initOptions(options);
 
-    this.fileSystemOperations = new FileSystemOperations(this._options);
+    this.fileSystemOperations = new FileSystemOperations(this);
     this.appOperations = new AppOperations(this);
     this.powerOperations = new PowerOperations(this);
     this.configOperations = new ConfigOperations(this);
@@ -82,6 +84,9 @@ export class System {
 
     logger('firstRun');
     this.firstRun();
+  }
+  activeCurrentSystem() {
+    System.GLOBAL_SYSTEM = this;
   }
 
   /**
@@ -174,12 +179,12 @@ export class System {
     });
   }
   firstRun() {
-    if (localStorage.getItem('vtronFirstRun')) {
+    if (localStorage.getItem('vtronFirstRun' + this.id)) {
       this.isFirstRun = false;
       return false;
     } else {
       this.isFirstRun = true;
-      localStorage.setItem('vtronFirstRun', 'true');
+      localStorage.setItem('vtronFirstRun' + this.id, 'true');
       this.emit('firstRun');
       return true;
     }

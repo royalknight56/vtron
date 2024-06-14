@@ -1,6 +1,7 @@
 import { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 import { VtronFileMode, VtronFileSystem } from '@/packages/kernel/file/FileSystem';
 import { SystemOptions } from '@/packages/type/type';
+import { System } from '../System';
 import { InitSystemFile, InitUserFile } from './SystemFileConfig';
 import { createInitFile } from './createInitFile';
 
@@ -8,9 +9,9 @@ export class FileSystemOperations {
   options: SystemOptions;
   fs: VtronFileInterface;
 
-  constructor(options?: SystemOptions) {
-    this.options = options || {};
-    this.fs = new VtronFileSystem();
+  constructor(system?: System) {
+    this.options = system?._options || {};
+    this.fs = new VtronFileSystem('/', system?.id);
   }
 
   async updateFs(options?: SystemOptions) {

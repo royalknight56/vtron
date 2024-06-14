@@ -29,8 +29,8 @@ function initSizeEvent(system: System) {
   );
 }
 
-function initBatteryEvent() {
-  const rootState = useSystem().stateManager;
+function initBatteryEvent(system: System) {
+  const rootState = system.stateManager;
   const nav = navigator as any;
   if (!nav || !nav.connection) {
     return;
@@ -48,8 +48,8 @@ function initBatteryEvent() {
       rootState.navigator.setBattery(false, 0);
     });
 }
-function initNetworkEvent() {
-  const rootState = useSystem().stateManager;
+function initNetworkEvent(system: System) {
+  const rootState = system.stateManager;
 
   const nav = navigator as any;
   if (!nav || !nav.connection) {
@@ -138,9 +138,9 @@ function eventTransitCenter(system: System) {
   }
 }
 export function initEventListener(system: System) {
-  initBatteryEvent();
+  initBatteryEvent(system);
   initSizeEvent(system);
-  initNetworkEvent();
+  initNetworkEvent(system);
   initAlertEvent();
   system.mountEvent('system.shutdown', () => {
     useSystem()?.shutdown();

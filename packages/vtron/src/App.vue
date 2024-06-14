@@ -6,8 +6,8 @@
 -->
 <template>
   <div class="outer">
-    <VtronComputer :system="sys"></VtronComputer>
-    <VtronComputer :system="sys2"></VtronComputer>
+    <VtronComputer :system="sys" @click="changeActive(sys)"></VtronComputer>
+    <VtronComputer :system="sys2" @click="changeActive(sys2)"></VtronComputer>
   </div>
 </template>
 
@@ -20,10 +20,13 @@ import { System, VtronFile, VtronComputer } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 import { Tray, Menu } from '@/packages/services';
 
+function changeActive(system: System) {
+  system.activeCurrentSystem();
+}
 const sys2 = new System({
   // lang: 'en-US',
   // lang: "zh-CN",
-  unMount: true,
+  // unMount: true,
   logo: vtronLogoIcon,
   // background: 'https://picsum.photos/1920/1080',
 

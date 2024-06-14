@@ -1,5 +1,5 @@
-import { Eventer } from '@/packages/kernel/event';
 import { System } from '@/packages/plug';
+import { Eventer } from '@/packages/util/Eventer';
 
 export class EventOperations {
   system: System;

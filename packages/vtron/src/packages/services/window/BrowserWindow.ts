@@ -1,4 +1,5 @@
-import { Eventer, System } from '@/packages/kernel';
+import { System } from '@/packages/kernel';
+import { Eventer } from '@/packages/util/Eventer';
 import { Tree } from '@packages/util/Tree';
 import { defineComponent, markRaw, reactive } from 'vue';
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";

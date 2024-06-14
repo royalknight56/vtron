@@ -104,7 +104,7 @@ import {
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { Rect } from '@/packages/computer/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
-import { dealSize } from '@/packages/util/file';
+import { dealSize } from '@/packages/util/fileUtils';
 
 const sys = inject<System>('system')!;
 const { startDrag, folderDrop } = useFileDrag(sys);

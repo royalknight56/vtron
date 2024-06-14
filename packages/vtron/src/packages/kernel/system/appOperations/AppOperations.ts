@@ -1,8 +1,6 @@
 import { System } from '@/packages/plug';
 import { WinAppOptions } from '@/packages/type/type';
 import { markRaw, nextTick } from 'vue';
-import { initBuiltinApp } from './initBuiltinApp';
-
 export class AppOperations {
   system: System;
   constructor(system: System) {
@@ -63,19 +61,6 @@ export class AppOperations {
         this.isReadyUpdateAppList = false;
         this.refershAppList();
       }
-    });
-  }
-
-  initAppFileFromOption() {
-    initBuiltinApp(this.system); // 初始化内建应用
-    this.system.stateManager.options.getOptions('desktop')?.forEach((item) => {
-      this.addApp(item);
-    });
-    this.system.stateManager.options.getOptions('magnet')?.forEach((item) => {
-      this.addMagnet(item);
-    });
-    this.system.stateManager.options.getOptions('menulist')?.forEach((item) => {
-      this.addMenuList(item);
     });
   }
 

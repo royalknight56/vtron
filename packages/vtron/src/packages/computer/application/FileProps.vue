@@ -60,9 +60,9 @@
 <script setup lang="ts">
 import WinButton from '@packages/components/WinButton.vue';
 import { inject, ref } from 'vue';
-import FileIcon from '@packages/application/FileIcon.vue';
+import FileIcon from '@/packages/computer/application/FileIcon.vue';
 import { dealSize } from '@/packages/util/file';
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 import { BrowserWindow } from '@/packages/services';
 import { System, VtronFileWithoutContent, basename, extname } from '@packages/kernel';
 

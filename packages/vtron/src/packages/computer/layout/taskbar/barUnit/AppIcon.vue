@@ -16,8 +16,8 @@
 <script lang="ts" setup>
 import { UnwrapNestedRefs } from 'vue';
 import { BrowserWindow, WindowStateEnum } from '@/packages/services';
-import FileIcon from '@packages/application/FileIcon.vue';
-import { createTaskbarIconContextMenu } from '@/packages/ui/utils/createTaskbarContextMenu';
+import FileIcon from '@/packages/computer/application/FileIcon.vue';
+import { createTaskbarIconContextMenu } from '@/packages/computer/utils/createTaskbarContextMenu';
 
 const props = defineProps<{
   windowNode: UnwrapNestedRefs<BrowserWindow>;

@@ -58,7 +58,7 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 import packagejson from '/package.json?raw';
 const items = [
   // i18n('backup'), // '备份',

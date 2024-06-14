@@ -20,7 +20,7 @@
 import { useAppOpen } from '@/packages/computer/hook/useAppOpen';
 import { emitEvent, System } from '@packages/kernel';
 import { basename } from '@packages/kernel';
-import FileIcon from '@packages/application/FileIcon.vue';
+import FileIcon from '@/packages/computer/application/FileIcon.vue';
 import { VtronFileWithoutContent } from '@packages/kernel';
 import { vGlowing } from '@/packages/util/glowingBorder';
 import { inject } from 'vue';

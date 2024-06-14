@@ -17,7 +17,7 @@
 import { inject, onMounted, ref } from 'vue';
 import { useSystem } from '@/packages/kernel/system';
 import { BrowserWindow, Dialog, basename, vDragable } from '@packages/plug';
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 
 const sys = useSystem();
 const storeRef = ref<HTMLIFrameElement | null>(null);

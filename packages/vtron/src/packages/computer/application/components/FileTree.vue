@@ -41,7 +41,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import FileIcon from '@packages/application/FileIcon.vue';
+import FileIcon from '@/packages/computer/application/FileIcon.vue';
 import { VtronFileWithoutContent, basename, useSystem } from '@packages/kernel';
 import { onMounted, ref } from 'vue';
 

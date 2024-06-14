@@ -21,7 +21,7 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref, onMounted } from 'vue';
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 import { BrowserWindow } from '@/packages/services';
 import { useSystem } from '@packages/kernel';
 

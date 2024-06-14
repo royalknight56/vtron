@@ -115,12 +115,8 @@ export class System {
     await this.configOperations.initSavedConfig(); // 初始化保存的配置
     logger('initShell');
     await this.initShell(); // 初始化shell
-    logger('initAppFileFromOption');
-    this.appOperations.initAppFileFromOption(); // 初始化配置应用到app文件夹中
     logger('refershApp');
     this.appOperations.refershApp(); // 刷新app文件夹，展示应用
-    logger('initFileOpener');
-    this.fileOpenerOperations.init(); // 初始化打开方式
     logger('isLogin');
     this.powerOperations.isLogin(); // 判断是否登录
     logger('initEventListener');

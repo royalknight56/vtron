@@ -23,7 +23,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 import { defineEmits, ref } from 'vue';
 const props = defineProps({
   modelValue: {

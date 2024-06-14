@@ -76,11 +76,11 @@
 <script lang="ts" setup>
 import { ref, onMounted, inject } from 'vue';
 import foldericon from '@packages/assets/folder.png';
-import FileList from '@packages/application/components/FileList.vue';
-import FileTree from '@packages/application/components/FileTree.vue';
+import FileList from '@/packages/computer/application/components/FileList.vue';
+import FileTree from '@/packages/computer/application/components/FileTree.vue';
 import UpPopover from './components/UpPopover.vue';
 import { VtronFileWithoutContent, dirname, useSystem, mountEvent } from '@packages/kernel';
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 import { Notify } from '@/packages/services/notification/Notification';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { useComputer } from './hooks/useComputer';
@@ -88,7 +88,7 @@ import { Rect, useRectChosen } from '@/packages/computer/hook/useRectChosen';
 import { BrowserWindow } from '@/packages/services';
 import NavBar from './components/NavBar.vue';
 import QuickLink from './components/QuickLink.vue';
-import { createDesktopContextMenu } from '@/packages/ui/utils/createContextMenu';
+import { createDesktopContextMenu } from '@/packages/computer/utils/createContextMenu';
 
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 

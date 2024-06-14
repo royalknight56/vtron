@@ -1,9 +1,9 @@
+import FileProps from '@/packages/computer/application/FileProps.vue';
+import OpenWiteDialogVue from '@/packages/computer/application/OpenWiteDialog.vue';
+import { i18n } from '@/packages/computer/i18n';
 import { BrowserWindow, Dialog } from '@/packages/services';
 import * as fspath from '@/packages/util/Path';
-import FileProps from '@packages/application/FileProps.vue';
-import OpenWiteDialogVue from '@packages/application/OpenWiteDialog.vue';
 import { VtronFileWithoutContent, useSystem } from '@packages/kernel';
-import { i18n } from '@packages/ui';
 
 async function createNewFile(path: string) {
   const system = useSystem();

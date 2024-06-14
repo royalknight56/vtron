@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import { inject, ref } from 'vue';
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 import { Notify } from '@/packages/services/notification/Notification';
 import { useSystem } from '@packages/kernel';
 import { Menu, BrowserWindow } from '@/packages/services';

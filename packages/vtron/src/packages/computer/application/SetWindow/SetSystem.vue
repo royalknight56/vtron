@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import WinProcess from '@packages/components/WinProcess.vue';
 import { ref } from 'vue';
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 import { useSystem } from '@packages/kernel';
 
 const rootstate = useSystem().stateManager;

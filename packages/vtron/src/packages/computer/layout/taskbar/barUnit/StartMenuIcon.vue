@@ -10,7 +10,7 @@
 import winimg from '@/assets/win.png';
 import { emitEvent, mountEvent, System } from '@packages/kernel';
 import { inject, ref } from 'vue';
-import StartMenu from '@packages/ui/taskbar/startMenu/StartMenu.vue';
+import StartMenu from '@/packages/computer/layout/taskbar/startMenu/StartMenu.vue';
 
 const sys = inject<System>('system')!;
 const isStartmenuShow = ref(false);

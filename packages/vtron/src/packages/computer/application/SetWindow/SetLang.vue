@@ -52,7 +52,7 @@ import WinSelect from '@packages/components/WinSelect.vue';
 import { ref } from 'vue';
 import { useSystem } from '@packages/kernel';
 import { Dialog } from '@/packages/services';
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 
 const system = useSystem();
 

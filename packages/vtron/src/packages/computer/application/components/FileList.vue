@@ -100,11 +100,15 @@ import {
   mountEvent,
   System,
 } from '@packages/kernel';
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 import { Menu } from '@/packages/services';
-import FileIcon from '@packages/application/FileIcon.vue';
-
-import { openPropsWindow, copyFile, createLink, openWith } from '@/packages/application/utils/fileOpt';
+import FileIcon from '@/packages/computer/application/FileIcon.vue';
+import {
+  openPropsWindow,
+  copyFile,
+  createLink,
+  openWith,
+} from '@/packages/computer/application/utils/fileOpt';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { Rect } from '@/packages/computer/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';

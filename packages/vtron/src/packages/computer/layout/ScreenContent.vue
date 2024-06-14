@@ -27,13 +27,14 @@
 
 <script lang="ts" setup>
 import CloseDesktop from '@packages/computer/layout/desktop/CloseDesktop.vue';
-import DesktopLayout from '@packages/computer/layout/desktop/DesktopLayout.vue';
+import DesktopLayout from '@packages/computer/layout/DesktopLayout.vue';
 import OpeningDesktop from '@packages/computer/layout/desktop/OpeningDesktop.vue';
 import LockDesktop from '@packages/computer/layout/desktop/LockDesktop.vue';
 import DesktopBackground from '@packages/computer/layout/desktop/components/DesktopBackground.vue';
 import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
 import { System } from '@packages/kernel';
 import { inject, onMounted, ref } from 'vue';
+
 const screenref = ref();
 const props = defineProps<{
   system: System;

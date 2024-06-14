@@ -1,6 +1,5 @@
 import * as fspath from '@/packages/util/Path';
 import { System } from '../System';
-import { initBuiltinFileOpener } from './initBuiltinFileOpener';
 
 export type FileOpener = {
   name?: string;
@@ -48,8 +47,5 @@ export class FileOpenerOperations {
         .get(fspath.extname(fileStat?.path || '') || 'link')
         ?.func.call(this, path, fileContent || '');
     }
-  }
-  init() {
-    initBuiltinFileOpener(this.system);
   }
 }

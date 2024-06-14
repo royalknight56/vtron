@@ -119,7 +119,7 @@ import ColorPicker from './components/ColorPicker.vue';
 import { ref } from 'vue';
 import { useSystem } from '@packages/kernel';
 import { Dialog } from '@/packages/services';
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 
 const system = useSystem();
 const items = [i18n('background'), i18n('style')];

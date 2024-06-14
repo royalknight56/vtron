@@ -54,10 +54,10 @@
 </template>
 <script lang="ts" setup>
 import { inject, ref, markRaw } from 'vue';
-import SetCustom from '@packages/application/SetWindow/SetCustom.vue';
-import SetSystem from '@packages/application/SetWindow/SetSystem.vue';
-import SetLang from '@packages/application/SetWindow/SetLang.vue';
-import SetAccount from '@packages/application/SetWindow/SetAccount.vue';
+import SetCustom from '@/packages/computer/application/SetWindow/SetCustom.vue';
+import SetSystem from '@/packages/computer/application/SetWindow/SetSystem.vue';
+import SetLang from '@/packages/computer/application/SetWindow/SetLang.vue';
+import SetAccount from '@/packages/computer/application/SetWindow/SetAccount.vue';
 
 import WinUpButtonGroup from '@/packages/components/WinUpButtonGroup.vue';
 import e7f8 from '@/assets/icon/e7f8.png'; //系统设置
@@ -67,9 +67,9 @@ import e771 from '@/assets/icon/e771.png'; //个性化
 import e775 from '@/assets/icon/e775.png'; //语言
 import e77b from '@/assets/icon/e77b.png'; //账户
 
-import { vDragable } from '@/packages/ui/windowGroup/MakeDragable';
+import { vDragable } from '@/packages/computer/layout/windowGroup/MakeDragable';
 
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 import { BrowserWindow } from '@/packages/services';
 import { useSystem } from '@packages/kernel';
 

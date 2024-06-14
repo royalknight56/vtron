@@ -6,7 +6,7 @@
 <script lang="ts" setup>
 import { mountEvent, System } from '@packages/kernel';
 
-import FileList from '@packages/application/components/FileList.vue';
+import FileList from '@/packages/computer/application/components/FileList.vue';
 import { useAppOpen } from '@/packages/computer/hook/useAppOpen';
 import { inject, onMounted } from 'vue';
 

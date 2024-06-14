@@ -1,14 +1,12 @@
 import vtronStoreLogoIcon from '@/assets/vtron-stroe-icon-nobg.png?url';
+import AppStore from '@/packages/computer/application/AppStore.vue';
+import MyComputerVue from '@/packages/computer/application/MyComputer/MyComputer.vue';
+import SettingVue from '@/packages/computer/application/Setting.vue';
+import { System } from '@/packages/kernel';
+import { WinAppOptions } from '@/packages/type/type';
 import myComputerLogoIcon from '@packages/assets/computer.png?url';
 import settingicon from '@packages/assets/setting.png';
-
-import { WinAppOptions } from '@/packages/type/type';
-import AppStore from '@packages/application/AppStore.vue';
-import MyComputerVue from '@packages/application/MyComputer/MyComputer.vue';
-import type { System } from '@packages/kernel';
-import { i18n } from '@packages/ui';
-
-import SettingVue from '@packages/application/Setting.vue';
+import { i18n } from '../i18n';
 
 export function initBuiltinApp(system: System) {
   const setting = {
@@ -75,4 +73,17 @@ export function initBuiltinApp(system: System) {
     system.addMagnet(appStore);
     system.addMenuList(appStore);
   }
+}
+
+export function initAppFileFromOption(system: System) {
+  initBuiltinApp(system); // 初始化内建应用
+  system.stateManager.options.getOptions('desktop')?.forEach((item) => {
+    system.addApp(item);
+  });
+  system.stateManager.options.getOptions('magnet')?.forEach((item) => {
+    system.addMagnet(item);
+  });
+  system.stateManager.options.getOptions('menulist')?.forEach((item) => {
+    system.addMenuList(item);
+  });
 }

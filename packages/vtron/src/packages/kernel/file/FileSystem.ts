@@ -114,8 +114,8 @@ class VtronFileSystem implements VtronFileInterface {
 
   private volumeMap: Map<string, VtronFileInterface> = new Map();
 
-  onerror: (e: any) => void = () => {
-    console.error('Failed to open database');
+  onerror: (e: any) => void = (e) => {
+    console.error('Failed to open database', e);
   };
   constructor(rootPath = '/', id = '') {
     const request = window.indexedDB.open('FileSystemDB' + id, 1);

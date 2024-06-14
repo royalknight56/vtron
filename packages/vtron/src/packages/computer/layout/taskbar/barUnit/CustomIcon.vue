@@ -23,8 +23,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import VtronImage from '@packages/application/components/VtronImage.vue';
-import { emitEvent, mountEvent } from '@packages/kernel';
+import VtronImage from '@/packages/computer/application/components/VtronImage.vue';
+import { emitEvent, mountEvent } from '@/packages/kernel';
 import { Tray, Menu } from '@/packages/services';
 
 const traylst = Tray.trayList;

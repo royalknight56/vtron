@@ -59,7 +59,7 @@ import { inject, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { System } from '@packages/kernel';
 import { BrowserWindow, WinButtonVue, join } from '@/packages/plug';
 import { initAlertEvent } from '@packages/kernel/event/SystemEvent';
-import DateNote from '@packages/application/DateNote.vue';
+import DateNote from '@/packages/computer/application/DateNote.vue';
 import { vGlowing } from '@/packages/util/glowingBorder';
 
 const sys = inject<System>('system')!;

@@ -22,18 +22,19 @@
   </div>
 </template>
 <script lang="ts" setup>
-import DeskItem from './components/DeskItem.vue';
-import Taskbar from '@packages/ui/taskbar/Taskbar.vue';
-import DesktopBackground from '@packages/ui/desktop/components/DesktopBackground.vue';
+import DeskItem from './desktop/components/DeskItem.vue';
+import Taskbar from './taskbar/Taskbar.vue';
+import DesktopBackground from './desktop/components/DesktopBackground.vue';
 import { emitEvent, System } from '@packages/kernel';
-import WindowGroup from '@/packages/ui/windowGroup/WindowGroup.vue';
-import ContextMenu from '@/packages/computer/layout/contextMenu/ContextMenu.vue';
-import NotificationGroup from '@/packages/ui/notifyGroup/NotifyGroup.vue';
-import MessageCenterPop from '@packages/ui/taskbar/popover/MessageCenterPop.vue';
+import WindowGroup from './windowGroup/WindowGroup.vue';
+import ContextMenu from './contextMenu/ContextMenu.vue';
+import NotificationGroup from './notifyGroup/NotifyGroup.vue';
+import MessageCenterPop from './taskbar/popover/MessageCenterPop.vue';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { Rect, useRectChosen } from '@/packages/computer/hook/useRectChosen';
-import { inject, onErrorCaptured } from 'vue';
-import { createDesktopContextMenu } from '@/packages/ui/utils/createContextMenu';
+import { inject, onErrorCaptured, onMounted } from 'vue';
+import { createDesktopContextMenu } from '@/packages/computer/utils/createContextMenu';
+import { initComputer } from '../mount';
 
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 const sys = inject<System>('system')!;
@@ -89,6 +90,9 @@ function handleRightClick(e: MouseEvent) {
 
 onErrorCaptured((err) => {
   sys.emitError(err.message.toString());
+});
+onMounted(() => {
+  initComputer(sys);
 });
 </script>
 <style lang="scss" scoped>

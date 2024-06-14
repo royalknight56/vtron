@@ -2,21 +2,21 @@ import myComputerLogoIcon from '@packages/assets/computer.png?url';
 import imageicon from '@packages/assets/image.png';
 import unknownIcon from '@packages/assets/unknown.png';
 
+import FileViewer from '@/packages/computer/application/FileViewer.vue';
+import ImageViewerVue from '@/packages/computer/application/ImageViewer.vue';
+import MyComputerVue from '@/packages/computer/application/MyComputer/MyComputer.vue';
+import UrlBrowser from '@/packages/computer/application/UrlBrowser.vue';
+import BatteryVue from '@/packages/computer/application/trayItems/Battery.vue';
+import BatteryPopVue from '@/packages/computer/application/trayItems/BatteryPop.vue';
+import DateTimeVue from '@/packages/computer/application/trayItems/DateTime.vue';
+import DateTimePopVue from '@/packages/computer/application/trayItems/DateTimePop.vue';
+import NetWorkVue from '@/packages/computer/application/trayItems/NetWork.vue';
+import NetworkPopVue from '@/packages/computer/application/trayItems/NetworkPop.vue';
 import { BrowserWindow, Dialog, Tray } from '@/packages/services';
 import { dealIcon } from '@/packages/util/Icon';
-import FileViewer from '@packages/application/FileViewer.vue';
-import ImageViewerVue from '@packages/application/ImageViewer.vue';
-import MyComputerVue from '@packages/application/MyComputer/MyComputer.vue';
-import UrlBrowser from '@packages/application/UrlBrowser.vue';
+import { i18n } from '@packages/computer';
 import type { System } from '@packages/kernel';
 import { basename } from '@packages/kernel';
-import { i18n } from '@packages/ui';
-import BatteryVue from '@packages/ui/taskbar/barUnit/Battery.vue';
-import DateTimeVue from '@packages/ui/taskbar/barUnit/DateTime.vue';
-import NetWorkVue from '@packages/ui/taskbar/barUnit/NetWork.vue';
-import BatteryPopVue from '@packages/ui/taskbar/popover/BatteryPop.vue';
-import DateTimePopVue from '@packages/ui/taskbar/popover/DateTimePop.vue';
-import NetworkPopVue from '@packages/ui/taskbar/popover/NetworkPop.vue';
 
 export function initBuiltinFileOpener(system: System) {
   if (system._options.builtinFeature?.includes('ExeOpener')) {

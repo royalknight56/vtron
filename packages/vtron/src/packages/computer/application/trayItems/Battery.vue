@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <span class="segoicon SEGOEUIMDL charging">{{ iconDisplay }}</span>
 </template>

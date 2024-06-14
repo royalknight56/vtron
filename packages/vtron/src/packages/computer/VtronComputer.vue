@@ -5,7 +5,7 @@
 </template>
 <script lang="ts" setup>
 import { System } from '@packages/kernel';
-import ScreenContent from './ScreenContent.vue';
+import ScreenContent from './layout/ScreenContent.vue';
 import { onMounted, provide } from 'vue';
 
 const props = defineProps<{

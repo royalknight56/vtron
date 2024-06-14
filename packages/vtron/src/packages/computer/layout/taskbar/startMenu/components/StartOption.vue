@@ -29,7 +29,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { i18n } from '@packages/ui';
+import { i18n } from '@/packages/computer/i18n';
 import { emitEvent, System } from '@packages/kernel';
 import { vGlowing } from '@/packages/util/glowingBorder';
 import { Menu, Dialog, BrowserWindow } from '@/packages/services';

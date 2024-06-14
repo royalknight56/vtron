@@ -1,12 +1,11 @@
 import FileProps from '@/packages/computer/application/FileProps.vue';
 import OpenWiteDialogVue from '@/packages/computer/application/OpenWiteDialog.vue';
 import { i18n } from '@/packages/computer/i18n';
-import { BrowserWindow, Dialog } from '@/packages/services';
+import { System, VtronFileWithoutContent } from '@/packages/kernel';
+import { Dialog } from '@/packages/services';
 import * as fspath from '@/packages/util/Path';
-import { VtronFileWithoutContent, useSystem } from '@packages/kernel';
 
-async function createNewFile(path: string) {
-  const system = useSystem();
+async function createNewFile(system: System, path: string) {
   if (!system) return;
   let newFilePath = fspath.join(path, i18n('new.file') + '.txt');
   if (await system.fs.exists(newFilePath)) {
@@ -18,8 +17,7 @@ async function createNewFile(path: string) {
   }
   return await system.fs.writeFile(newFilePath, '');
 }
-async function createNewDir(path: string) {
-  const system = useSystem();
+async function createNewDir(system: System, path: string) {
   if (!system) return;
   let newFilePath = fspath.join(path, i18n('new.folder'));
   if (await system.fs.exists(newFilePath)) {
@@ -32,20 +30,21 @@ async function createNewDir(path: string) {
   return await system.fs.mkdir(newFilePath);
 }
 
-function openPropsWindow(path: string) {
-  new BrowserWindow({
-    title: i18n('props'),
-    content: FileProps,
-    config: {
-      content: path,
-    },
-    width: 350,
-    height: 400,
-    resizable: false,
-  }).show();
+function openPropsWindow(system: System, path: string) {
+  system
+    .createWindow({
+      title: i18n('props'),
+      content: FileProps,
+      config: {
+        content: path,
+      },
+      width: 350,
+      height: 400,
+      resizable: false,
+    })
+    .show();
 }
-function deleteFile(file: VtronFileWithoutContent) {
-  const system = useSystem();
+function deleteFile(system: System, file: VtronFileWithoutContent) {
   if (!system) return;
   if (file.isDirectory) {
     return system?.fs.rmdir(file.path);
@@ -53,8 +52,8 @@ function deleteFile(file: VtronFileWithoutContent) {
     return system?.fs.unlink(file.path);
   }
 }
-async function openWith(file: VtronFileWithoutContent) {
-  const tempWin = new BrowserWindow({
+async function openWith(system: System, file: VtronFileWithoutContent) {
+  const tempWin = system.createWindow({
     title: i18n('open.with'),
     content: OpenWiteDialogVue,
     config: {
@@ -72,14 +71,12 @@ async function openWith(file: VtronFileWithoutContent) {
   tempWin.show();
 }
 
-async function copyFile(files: VtronFileWithoutContent[]) {
-  const system = useSystem();
+async function copyFile(system: System, files: VtronFileWithoutContent[]) {
   const rootState = system.stateManager;
   if (!system) return;
   rootState.clipboard.setClipboard(files.map((file) => file.path));
 }
-async function pasteFile(path: string) {
-  const system = useSystem();
+async function pasteFile(system: System, path: string) {
   if (!system) return;
   const rootState = system.stateManager;
   const clipLen = Object.keys(rootState.clipboard).length;
@@ -107,8 +104,7 @@ async function pasteFile(path: string) {
   }
 }
 // 创建快捷方式
-async function createLink(path: string) {
-  const system = useSystem();
+async function createLink(system: System, path: string) {
   if (!system) return;
   if (fspath.extname(path) === '.ln') {
     Dialog.showMessageBox({

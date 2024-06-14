@@ -93,14 +93,8 @@
 import { onMounted, ref, markRaw, inject } from 'vue';
 import { VtronFileWithoutContent, basename, dirname, join, System } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
-import { Menu } from '@/packages/services';
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
-import {
-  openPropsWindow,
-  copyFile,
-  createLink,
-  openWith,
-} from '@/packages/computer/application/utils/fileOpt';
+import { openPropsWindow, copyFile, createLink, openWith } from './fileOpt';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { Rect } from '@/packages/computer/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
@@ -251,7 +245,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
         label: i18n('props'),
         click: () => {
           chosenIndexs.value.forEach((index) => {
-            openPropsWindow(props.fileList[index].path);
+            openPropsWindow(sys, props.fileList[index].path);
             chosenIndexs.value = [];
           });
         },
@@ -260,13 +254,16 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
         label: i18n('open.with'),
         click: () => {
           chosenIndexs.value = [];
-          openWith(item);
+          openWith(sys, item);
         },
       },
       {
         label: i18n('copy'),
         click: () => {
-          copyFile(chosenIndexs.value.map((index) => props.fileList[index]));
+          copyFile(
+            sys,
+            chosenIndexs.value.map((index) => props.fileList[index])
+          );
           chosenIndexs.value = [];
         },
       },
@@ -282,7 +279,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
       {
         label: i18n('create.shortcut'),
         click: () => {
-          createLink(item.path)?.then(() => {
+          createLink(sys, item.path)?.then(() => {
             chosenIndexs.value = [];
             props.onRefresh();
           });

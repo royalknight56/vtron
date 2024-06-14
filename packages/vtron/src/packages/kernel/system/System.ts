@@ -2,7 +2,16 @@ import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
 import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
 import { FileSystemOperations } from '@/packages/kernel/system/fileSystemOperations/FileSystemOperations';
-import { BrowserWindow, BrowserWindowOption, Dialog, Menu, Tray, TrayOptions } from '@/packages/services';
+import {
+  BrowserWindow,
+  BrowserWindowOption,
+  Dialog,
+  Menu,
+  MenuItem,
+  MenuItemConstructorOptions,
+  Tray,
+  TrayOptions,
+} from '@/packages/services';
 import { Notify, NotifyConstructorOptions } from '@/packages/services/notification/Notification';
 import { Setting, SystemOptions, WinAppOptions } from '@packages/type/type';
 import { markRaw } from 'vue';
@@ -267,20 +276,30 @@ export class System {
   }
   /** 方便的通过system创建window */
   createWindow(options: BrowserWindowOption) {
+    BrowserWindow.system = this;
     const win = new BrowserWindow(options);
     return win;
   }
   /** 方便的通过system创建notify */
   createNotify(options: NotifyConstructorOptions) {
+    Notify.system = this;
     return new Notify(options);
   }
   /** 方便的通过system创建Dialog */
   createDialog() {
+    Dialog.system = this;
     return Dialog;
   }
   /** 方便的通过system创建Tray */
   createTray(options: TrayOptions) {
+    Tray.system = this;
     return new Tray(options);
+  }
+
+  /** 方便的通过system创建Menu */
+  buildFromTemplate(options: Array<MenuItemConstructorOptions | MenuItem>) {
+    Menu.system = this;
+    return Menu.buildFromTemplate(options);
   }
 
   errorHandler = 0;

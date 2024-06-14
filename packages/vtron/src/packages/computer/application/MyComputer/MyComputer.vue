@@ -137,6 +137,7 @@ const { refersh, createFolder, backFolder, openFolder, onComputerMount } = useCo
     return file.isDirectory;
   },
   notify(title, content) {
+    Notify.system = system;
     new Notify({
       title,
       content,

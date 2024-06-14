@@ -49,12 +49,12 @@
 import WinButton from '@packages/components/WinButton.vue';
 import WinSelect from '@packages/components/WinSelect.vue';
 
-import { ref } from 'vue';
-import { useSystem } from '@packages/kernel';
+import { inject, ref } from 'vue';
+import { System } from '@packages/kernel';
 import { Dialog } from '@/packages/services';
 import { i18n } from '@/packages/computer/i18n';
 
-const system = useSystem();
+const system = inject<System>('system')!;
 
 const items = [i18n('language')];
 
@@ -68,7 +68,7 @@ const selectItem = (index: number) => {
 
 async function submit() {
   await system.setConfig('lang', modelvalue.value);
-
+  Dialog.system = system;
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('language'),

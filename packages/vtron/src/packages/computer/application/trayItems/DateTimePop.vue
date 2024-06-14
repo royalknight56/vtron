@@ -243,7 +243,7 @@ async function readDateNotes() {
     alertList.value = [];
   }
 }
-const win = new BrowserWindow({
+const win = sys.createWindow({
   title: '日程详情',
   content: DateNote,
   width: 300,

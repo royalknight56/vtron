@@ -63,6 +63,7 @@ async function createNewDir(system: System, path: string) {
 function createDesktopContextMenu(system: System, e: MouseEvent, path?: string, callback?: () => void) {
   const createPath = path || `${system._options.userLocation}Desktop`;
   if (!system) return;
+  Menu.system = system;
   const menu = Menu.buildFromTemplate(
     uniqBy(
       [

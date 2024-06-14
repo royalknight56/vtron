@@ -3,8 +3,7 @@ import { throttle } from '@/packages/util/debounce';
 import { join } from '../../util/Path';
 
 function initSizeEvent(system: System) {
-  const sys = useSystem();
-  const rootState = sys.stateManager;
+  const rootState = system.stateManager;
   function refreshDesktopSize() {
     rootState.rect.setScreenSize(window?.innerWidth || 0, window?.innerHeight || 0);
   }
@@ -12,19 +11,19 @@ function initSizeEvent(system: System) {
     refreshDesktopSize();
   });
   window?.addEventListener('resize', () => {
-    sys.emitEvent('system.resize');
+    system.emitEvent('system.resize');
   });
 
   system.mountEvent('system.mousemove', (_, events) => {
     const event = events[0];
     rootState.rect.setMousePosition(event?.clientX || 0, event?.clientY || 0);
-    sys.rootRef?.style.setProperty('--mouseX', `${event?.clientX || 0}px`);
-    sys.rootRef?.style.setProperty('--mouseY', `${event?.clientY || 0}px`);
+    system.rootRef?.style.setProperty('--mouseX', `${event?.clientX || 0}px`);
+    system.rootRef?.style.setProperty('--mouseY', `${event?.clientY || 0}px`);
   });
   window?.addEventListener(
     'mousemove',
     throttle((e) => {
-      sys.emitEvent('system.mousemove', e);
+      system.emitEvent('system.mousemove', e);
     }, 100)
   );
 }
@@ -143,10 +142,10 @@ export function initEventListener(system: System) {
   initNetworkEvent(system);
   initAlertEvent();
   system.mountEvent('system.shutdown', () => {
-    useSystem()?.shutdown();
+    system?.shutdown();
   });
   system.mountEvent('system.recover', () => {
-    useSystem()?.recover();
+    system?.recover();
   });
   eventTransitCenter(system);
 }

@@ -1,4 +1,3 @@
-import { BrowserWindow } from '@/packages/services';
 import { ref, toRaw } from 'vue';
 import { System } from '../../kernel/system';
 import DialogProcessVue from './DialogProcess.vue';
@@ -26,7 +25,7 @@ class Dialog {
 
     const process = ref(0);
 
-    const dialogwin = new BrowserWindow({
+    const dialogwin = this.system.createWindow({
       width: 300,
       height: 150,
       content: DialogProcessVue,
@@ -82,7 +81,7 @@ class Dialog {
       promres = resolve;
     });
 
-    const dialogwin = new BrowserWindow({
+    const dialogwin = this.system.createWindow({
       width: 300,
       height: 150,
       content: DialogVue,

@@ -116,12 +116,12 @@ import WinSelect from '@packages/components/WinSelect.vue';
 import WinInput from '@packages/components/WinInput.vue';
 import ColorPicker from './components/ColorPicker.vue';
 
-import { ref } from 'vue';
-import { useSystem } from '@packages/kernel';
+import { inject, ref } from 'vue';
+import { System } from '@packages/kernel';
 import { Dialog } from '@/packages/services';
 import { i18n } from '@/packages/computer/i18n';
 
-const system = useSystem();
+const system = inject<System>('system')!;
 const items = [i18n('background'), i18n('style')];
 
 const activeIndex = ref(0);
@@ -145,6 +145,7 @@ async function submit() {
     return;
   }
   await system.setConfig('background', imgurl || '#fff');
+  Dialog.system = system;
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('wallpaper'),
@@ -164,7 +165,7 @@ async function submitStyle() {
     '--theme-main-color': taskBarColor.value,
   };
   await system.setConfig('rootStyle', rootStyle);
-
+  Dialog.system = system;
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('style'),

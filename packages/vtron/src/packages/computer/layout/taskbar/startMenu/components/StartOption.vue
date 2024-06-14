@@ -32,35 +32,40 @@
 import { i18n } from '@/packages/computer/i18n';
 import { System } from '@packages/kernel';
 import { vGlowing } from '@/packages/computer/utils/glowingBorder';
-import { Menu, Dialog, BrowserWindow } from '@/packages/services';
+import { Menu, Dialog } from '@/packages/services';
 import { inject } from 'vue';
 
 const sys = inject<System>('system')!;
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
     case 0:
-      Menu.buildFromTemplate([
-        {
-          label: i18n('startMenu.shutdown'),
-          click: () => {
-            sys.emitEvent('system.shutdown');
+      sys
+        .buildFromTemplate([
+          {
+            label: i18n('startMenu.shutdown'),
+            click: () => {
+              sys.emitEvent('system.shutdown');
+            },
           },
-        },
-        {
-          label: i18n('startMenu.recover'),
-          click: () => {
-            Dialog.showMessageBox({
-              title: i18n('startMenu.recover'),
-              message: i18n('is.recover'),
-              buttons: [i18n('startMenu.recover'), i18n('cancel')],
-            }).then((res) => {
-              if (res.response === 0) {
-                sys.emitEvent('system.recover');
-              }
-            });
+          {
+            label: i18n('startMenu.recover'),
+            click: () => {
+              sys
+                .createDialog()
+                .showMessageBox({
+                  title: i18n('startMenu.recover'),
+                  message: i18n('is.recover'),
+                  buttons: [i18n('startMenu.recover'), i18n('cancel')],
+                })
+                .then((res) => {
+                  if (res.response === 0) {
+                    sys.emitEvent('system.recover');
+                  }
+                });
+            },
           },
-        },
-      ]).popup(ev);
+        ])
+        .popup(ev);
 
       break;
     case 1: {
@@ -74,7 +79,7 @@ function handleClick(key: number, ev: MouseEvent) {
           return;
         } else {
           winopt._hasShow = true;
-          const win = new BrowserWindow(winopt.window);
+          const win = sys.createWindow(winopt.window);
           win.show();
           win.on('close', () => {
             winopt._hasShow = false;

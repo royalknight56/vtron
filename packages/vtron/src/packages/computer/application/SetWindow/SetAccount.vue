@@ -37,13 +37,13 @@
 
 <script lang="ts" setup>
 import WinButton from '@packages/components/WinButton.vue';
-import { ref } from 'vue';
-import { useSystem } from '@packages/kernel';
+import { inject, ref } from 'vue';
+import { System } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
 import { WinInput } from '@/packages/plug';
 import { Dialog } from '@/packages/services';
 
-const system = useSystem();
+const system = inject<System>('system')!;
 
 const items = [i18n('account.info')];
 
@@ -61,6 +61,7 @@ async function submit() {
   //   await system.setConfig('lang', modelvalue.value);
   localStorage.setItem('vtron-username', account.value);
   localStorage.setItem('vtron-password', password.value);
+  Dialog.system = system;
   Dialog.showMessageBox({
     message: i18n('save.success'),
     title: i18n('account'),

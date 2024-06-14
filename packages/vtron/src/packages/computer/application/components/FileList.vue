@@ -237,6 +237,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
   if (chosenIndexs.value.length <= 1) {
     chosenIndexs.value = [props.fileList.findIndex((app) => app.path === item.path)];
   }
+  Menu.system = sys;
   Menu.buildFromTemplate([
     {
       label: i18n('open'),

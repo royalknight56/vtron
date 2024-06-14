@@ -10,6 +10,7 @@ import { OptionsState } from './subStates/OptionsState';
 import { PowerState } from './subStates/PowerState';
 import { RectState } from './subStates/RectState';
 import { SettingState } from './subStates/SettingState';
+import { TrayState } from './subStates/TrayState';
 import { WindowMapState } from './subStates/WindowMapState';
 import { WindowTreeState } from './subStates/WindowTreeState';
 
@@ -21,6 +22,7 @@ export class StateManager {
   settings = new SettingState();
   powerState = new PowerState();
   windowTree = new WindowTreeState();
+  trayState = new TrayState();
   notify = new NotifyState();
   navigator = new NavigatorState();
   rect = new RectState();

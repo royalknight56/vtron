@@ -21,7 +21,7 @@
 
 ## 创建系统托盘图标
 
-见 api/Tary
+见 api/Tray
 
 ## 自定义Shell操作
 

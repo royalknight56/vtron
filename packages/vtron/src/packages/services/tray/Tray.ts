@@ -1,6 +1,6 @@
 import { System } from '@/packages/kernel';
 import { Menu } from '@/packages/services';
-import { Ref, defineComponent, markRaw, ref } from 'vue';
+import { defineComponent, markRaw } from 'vue';
 
 export interface TrayOptions {
   image: string | ReturnType<typeof defineComponent>;
@@ -12,16 +12,19 @@ export class Tray {
   _contextMenuShow = false;
   _contextMenuWidth = 100;
   _contextMenuHeight = 100;
-  public static trayList: Ref<Tray[]> = ref<Tray[]>([]);
+  // public static trayList: Ref<Tray[]> = ref<Tray[]>([]);
   public static system: System;
   constructor(options: TrayOptions) {
+    const rootState = Tray.system.stateManager;
     if (typeof options.image === 'string') {
       this.image = options.image;
     } else {
       this.image = markRaw(options.image);
     }
-    Tray.trayList.value.push(this);
-    this._id = Tray.trayList.value.length.toString();
+    rootState.trayState.push(this);
+    this._id = rootState.trayState.current.length.toString();
+    // Tray.trayList.value.push(this);
+    // this._id = Tray.trayList.value.length.toString();
   }
   setContextMenu(content: ReturnType<typeof defineComponent> | Menu, width = 100, height = 100) {
     this._contextMenu = markRaw(content);
@@ -34,12 +37,14 @@ export class Tray {
     } else {
       this.image = markRaw(image);
     }
-    Tray.trayList.value = Tray.trayList.value.slice();
+    // Tray.system.stateManager.trayState.current = Tray.system.stateManager.trayState.current.slice();
+    // Tray.trayList.value = Tray.trayList.value.slice();
   }
   destroy() {
-    const index = Tray.trayList.value.findIndex((item) => item._id === this._id);
+    const rootState = Tray.system.stateManager;
+    const index = rootState.trayState.current.findIndex((item) => item._id === this._id);
     if (index !== -1) {
-      Tray.trayList.value.splice(index, 1);
+      rootState.trayState.current.splice(index, 1);
     }
   }
 }

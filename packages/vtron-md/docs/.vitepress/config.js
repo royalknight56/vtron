@@ -90,8 +90,8 @@ module.exports = {
           link: '/api/Dialog.md',
         },
         {
-          text: 'Tary',
-          link: '/api/Tary.md',
+          text: 'Tray',
+          link: '/api/Tray.md',
         },
         {
           text: 'Shell',

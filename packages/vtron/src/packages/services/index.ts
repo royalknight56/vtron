@@ -8,5 +8,5 @@ export * from './dialog/Dialog';
 export * from './menu/Menu';
 export * from './menu/MenuItem';
 export * from './notification/Notification';
-export * from './tray/Tary';
+export * from './tray/Tray';
 export * from './window/BrowserWindow';

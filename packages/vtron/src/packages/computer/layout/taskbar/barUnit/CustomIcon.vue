@@ -28,17 +28,16 @@ import { System } from '@/packages/kernel';
 import { Tray, Menu } from '@/packages/services';
 import { inject } from 'vue';
 
-const traylst = Tray.trayList;
-
 const sys = inject<System>('system')!;
 
+const traylst = sys.stateManager.trayState.current;
 function handleClick(item: Tray, ev: MouseEvent) {
   if (item._contextMenu instanceof Menu) {
     item._contextMenu.popup(ev);
   } else {
     item._contextMenuShow = !item._contextMenuShow;
   }
-  Tray.trayList.value.forEach((tray) => {
+  traylst.forEach((tray) => {
     if (tray._id !== item._id) {
       tray._contextMenuShow = false;
     }
@@ -46,7 +45,7 @@ function handleClick(item: Tray, ev: MouseEvent) {
   sys.emitEvent('tray.show', item);
 }
 sys.mountEvent('tray.hidden', () => {
-  Tray.trayList.value.forEach((item) => {
+  traylst.forEach((item) => {
     item._contextMenuShow = false;
   });
 });

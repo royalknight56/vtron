@@ -1,18 +1,18 @@
-# Tary
+# Tray
 
-Tary 指代 系统托盘图标
+Tray 指代 系统托盘图标
 
 usage:
 
 ```ts
-import { Tary } from 'vtron';
+import { Tray } from 'vtron';
 import { BatteryVue } from './path/to/BatteryVue.vue';
 import { BatteryPopVue } from './path/to/BatteryPopVue.vue';
 
-const batteryTary = new Tray({
+const batteryTray = new Tray({
   image: BatteryVue,
 });
-batteryTary.setContextMenu(BatteryPopVue, 200, 80);
+batteryTray.setContextMenu(BatteryPopVue, 200, 80);
 ```
 
 ### image
@@ -24,7 +24,7 @@ image 可以是一个图片路径，也可以是一个 Vue 组件
 设置右键菜单
 
 ```ts
-tary.setContextMenu(BatteryPopVue, 200, 80);
+tray.setContextMenu(BatteryPopVue, 200, 80);
 ```
 
 - BatteryPopVue: 右键菜单的 Vue 组件
@@ -40,5 +40,5 @@ setContextMenu 也可以传入 Menu 创建出的右键菜单
 销毁
 
 ```ts
-tary.destroy();
+tray.destroy();
 ```

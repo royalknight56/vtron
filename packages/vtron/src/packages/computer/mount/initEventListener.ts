@@ -1,4 +1,4 @@
-import { System, useSystem } from '@/packages/kernel';
+import { System } from '@/packages/kernel';
 import { throttle } from '@/packages/util/debounce';
 import { join } from '../../util/Path';
 
@@ -69,8 +69,8 @@ function setAlertTask(time: number, callback: any) {
     callback();
   }, dateIntegralPoint.getTime() - date.getTime()); //用户登录后的下一个整点执行。
 }
-export async function initAlertEvent() {
-  const sys = useSystem();
+export async function initAlertEvent(system: System) {
+  const sys = system;
 
   const chosenDay = new Date();
   const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
@@ -140,7 +140,7 @@ export function initEventListener(system: System) {
   initBatteryEvent(system);
   initSizeEvent(system);
   initNetworkEvent(system);
-  initAlertEvent();
+  initAlertEvent(system);
   system.mountEvent('system.shutdown', () => {
     system?.shutdown();
   });

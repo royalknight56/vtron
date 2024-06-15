@@ -183,7 +183,7 @@ async function addAlert() {
       JSON.stringify(notes)
     );
   }
-  initAlertEvent();
+  initAlertEvent(sys);
   alertText.value = '';
   alertHour.value = 0;
   alertMin.value = 0;

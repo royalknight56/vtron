@@ -15,11 +15,12 @@
 
 <script lang="ts" setup>
 import { inject, onMounted, ref } from 'vue';
-import { useSystem } from '@/packages/kernel/system';
+import { System } from '@/packages/kernel/system';
 import { BrowserWindow, Dialog, basename, vDragable } from '@packages/plug';
 import { i18n } from '@/packages/computer/i18n';
 
-const sys = useSystem();
+const system = inject<System>('system')!;
+
 const storeRef = ref<HTMLIFrameElement | null>(null);
 const frameKey = ref(0);
 const closing = ref(false);
@@ -47,7 +48,6 @@ const handleMessage = (event: MessageEvent) => {
 };
 
 const handleInstall = (data: any) => {
-  const system = useSystem();
   if (!system) {
     return;
   }
@@ -82,7 +82,6 @@ const handleInstall = (data: any) => {
 };
 
 const handleUninstall = (data: any) => {
-  const system = useSystem();
   if (!system) {
     return;
   }
@@ -111,11 +110,10 @@ const handleUninstall = (data: any) => {
 };
 
 const handleReady = () => {
-  const system = useSystem();
   if (!system) {
     return;
   }
-  const readdirPromise = system.fs.readdir(`${sys._options.systemLocation}plugs`).then((res) => {
+  const readdirPromise = system.fs.readdir(`${system._options.systemLocation}plugs`).then((res) => {
     return res.map((item) => {
       return {
         name: basename(item.path),

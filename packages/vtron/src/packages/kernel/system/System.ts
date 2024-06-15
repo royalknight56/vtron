@@ -314,6 +314,3 @@ export class System {
     }, 1000 * 4);
   }
 }
-export function useSystem() {
-  return System.GLOBAL_SYSTEM!;
-}

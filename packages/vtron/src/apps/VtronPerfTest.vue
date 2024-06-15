@@ -11,13 +11,13 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { BrowserWindow, useSystem, Notify } from '@packages/plug';
+import { BrowserWindow, Notify, System } from '@packages/plug';
 import { onUnmounted, inject } from 'vue';
 import TestButton from './TestButton.vue';
 
 const browserWindow = inject<BrowserWindow>('browserWindow');
 if (!browserWindow) throw new Error('browserWindow is null');
-const sys = useSystem();
+const sys = inject<System>('system');
 function nextStep(fun: () => void, time?: number) {
   return new Promise((resolve) => {
     const res = fun();

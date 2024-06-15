@@ -42,10 +42,9 @@
 </template>
 <script lang="ts" setup>
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
-import { VtronFileWithoutContent, basename, useSystem } from '@packages/kernel';
-import { onMounted, ref } from 'vue';
-
-const sys = useSystem();
+import { System, VtronFileWithoutContent, basename } from '@packages/kernel';
+import { inject, onMounted, ref } from 'vue';
+const sys = inject<System>('system')!;
 type FileWithOpen = VtronFileWithoutContent & {
   isOpen?: boolean;
   subFileList?: FileWithOpen[];

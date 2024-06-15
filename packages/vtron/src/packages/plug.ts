@@ -13,7 +13,7 @@ export type { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 export * from '@/packages/kernel/file/FileSystem';
 export * from '@/packages/kernel/shell/Shell';
 export type { ShellInterface } from '@/packages/kernel/shell/ShellType';
-export { System, useSystem } from '@/packages/kernel/system';
+export { System } from '@/packages/kernel/system';
 export { BrowserWindow, Dialog, Menu, MenuItem, Tray } from '@/packages/services';
 export { Notify } from '@/packages/services/notification/Notification';
 export * from '@/packages/util/Path';

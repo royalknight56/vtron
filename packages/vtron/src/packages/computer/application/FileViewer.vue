@@ -19,7 +19,7 @@
 import { inject, ref } from 'vue';
 import { i18n } from '@/packages/computer/i18n';
 import { Notify } from '@/packages/services/notification/Notification';
-import { useSystem } from '@packages/kernel';
+import { System } from '@packages/kernel';
 import { Menu, BrowserWindow } from '@/packages/services';
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 const input = ref('');
@@ -41,7 +41,8 @@ function changeFormat() {
   }
 }
 
-const system = useSystem();
+const system = inject<System>('system')!;
+
 function handleButton(e: MouseEvent) {
   Menu.buildFromTemplate([
     {

@@ -4,13 +4,13 @@
   <img class="image" v-else-if="type === 'local' && iconimg" draggable="false" :src="iconimg" />
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import unknownicon from '@packages/assets/unknown.png';
-import { useSystem } from '@packages/kernel';
+import { System } from '@packages/kernel';
 const props = defineProps<{
   path?: string;
 }>();
-const sys = useSystem();
+const sys = inject<System>('system')!;
 const iconimg = ref(props.path);
 const type = getImgType(props.path);
 

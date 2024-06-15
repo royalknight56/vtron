@@ -23,10 +23,11 @@
 import { inject, ref, onMounted } from 'vue';
 import { i18n } from '@/packages/computer/i18n';
 import { BrowserWindow } from '@/packages/services';
-import { useSystem } from '@packages/kernel';
+import { System } from '@packages/kernel';
 
 const window: BrowserWindow | undefined = inject('browserWindow');
-const sys = useSystem();
+
+const sys = inject<System>('system')!;
 
 type TempOpener = {
   name: string;

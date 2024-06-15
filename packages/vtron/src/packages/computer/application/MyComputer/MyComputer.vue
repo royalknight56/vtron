@@ -79,7 +79,7 @@ import foldericon from '@packages/assets/folder.png';
 import FileList from '@/packages/computer/application/components/FileList.vue';
 import FileTree from '@/packages/computer/application/components/FileTree.vue';
 import UpPopover from './components/UpPopover.vue';
-import { VtronFileWithoutContent, dirname, useSystem } from '@packages/kernel';
+import { System, VtronFileWithoutContent, dirname } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { useComputer } from './hooks/useComputer';
@@ -99,7 +99,7 @@ const router_url_history = ref<Array<string>>([]);
 const router_url_history_index = ref(0);
 const currentList = ref<Array<VtronFileWithoutContent>>([]);
 
-const system = useSystem();
+const system = inject<System>('system')!;
 const { dragFileToDrop } = useFileDrag(system);
 const setRouter = function (path: string) {
   router_url.value = path;

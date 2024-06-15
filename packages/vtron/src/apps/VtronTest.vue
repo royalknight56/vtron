@@ -11,11 +11,11 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { BrowserWindow, useSystem, Notify } from '@packages/plug';
+import { BrowserWindow, Notify, System } from '@packages/plug';
 import { onUnmounted, inject } from 'vue';
 
 const browserWindow: BrowserWindow = inject('browserWindow') as BrowserWindow;
-const sys = useSystem();
+const sys = inject<System>('system');
 
 browserWindow.on('move', (...arg: any) => {
   console.log('move', arg);

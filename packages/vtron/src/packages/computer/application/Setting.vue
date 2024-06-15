@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div
     class="window-outer"
@@ -71,12 +72,13 @@ import { vDragable } from '@/packages/computer/layout/windowGroup/MakeDragable';
 
 import { i18n } from '@/packages/computer/i18n';
 import { BrowserWindow } from '@/packages/services';
-import { useSystem } from '@packages/kernel';
+import { System } from '@packages/kernel';
 
 import { vGlowing } from '@/packages/computer/utils/glowingBorder';
 
 const browserWindow = inject<BrowserWindow>('browserWindow')!;
-const sys = useSystem();
+const sys = inject<System>('system')!;
+
 const currentRouter = ref(browserWindow.config?.router || 'main');
 
 const focusState = ref(false);

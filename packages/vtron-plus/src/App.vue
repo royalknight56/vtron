@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { System } from 'vtron';
 import { vtronPlus } from './packages/plug';
-import { Screen } from 'vtron';
+import { VtronComputer } from 'vtron';
 
 const system = new System({
   rootStyle: {},
 });
 system.whenReady().then(() => {
   system.use(vtronPlus);
+  console.log(system);
 });
 </script>
 
 <template>
   <div class="outer">
-    <Screen :system="system"></Screen>
+    <VtronComputer :system="system"></VtronComputer>
   </div>
 </template>
 

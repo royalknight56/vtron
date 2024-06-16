@@ -78,12 +78,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { VtronFileWithoutContent, join, useSystem, basename } from 'vtron';
+import { inject, onMounted, ref } from 'vue';
+import { VtronFileWithoutContent, join, basename, System } from 'vtron';
 import AudioPlayer from '@liripeng/vue-audio-player';
 import FileUploader from '../components/FileUploader.vue';
 
-const sys = useSystem();
+const sys = inject<System>('system')!;
 const musicList = ref<VtronFileWithoutContent[]>([]);
 onMounted(async () => {
   refershFileLst();

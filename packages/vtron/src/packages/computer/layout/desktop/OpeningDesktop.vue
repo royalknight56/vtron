@@ -7,11 +7,13 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { System } from '@/packages/kernel';
 import WinLoading from '@packages/components/WinLoading.vue';
 import WinLogo from '@packages/components/WinLogo.vue';
-import { onMounted, ref } from 'vue';
+import { inject, onMounted, ref } from 'vue';
 
 const isEmergencyRepair = ref(false);
+const sys = inject<System>('system')!;
 onMounted(() => {
   setTimeout(() => {
     isEmergencyRepair.value = true;
@@ -20,7 +22,7 @@ onMounted(() => {
 
 function emergencyRepair() {
   localStorage.clear();
-  window.indexedDB.deleteDatabase('FileSystemDB');
+  window.indexedDB.deleteDatabase('FileSystemDB' + sys.id);
   window.location.reload();
 }
 </script>

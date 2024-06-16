@@ -113,12 +113,13 @@ class VtronFileSystem implements VtronFileInterface {
   private _watchMap: Map<RegExp, (path: string, content: string) => void> = new Map();
 
   private volumeMap: Map<string, VtronFileInterface> = new Map();
-
+  id = 0;
   onerror: (e: any) => void = (e) => {
     console.error('Failed to open database', e);
   };
   constructor(rootPath = '/', id = 0) {
-    const request = window.indexedDB.open('FileSystemDB' + id, 1);
+    this.id = id;
+    const request = window.indexedDB.open('FileSystemDB' + this.id, 1);
     request.onerror = () => {
       console.error('Failed to open database');
     };
@@ -196,7 +197,7 @@ class VtronFileSystem implements VtronFileInterface {
     });
   }
   async removeFileSystem() {
-    window.indexedDB.deleteDatabase('FileSystemDB');
+    window.indexedDB.deleteDatabase('FileSystemDB' + this.id);
     return Promise.resolve();
   }
 

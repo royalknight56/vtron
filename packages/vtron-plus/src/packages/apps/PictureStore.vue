@@ -73,11 +73,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { VtronFileWithoutContent, join, useSystem } from 'vtron';
+import { inject, onMounted, ref } from 'vue';
+import { System, VtronFileWithoutContent, join } from 'vtron';
 import FileUploader from '../components/FileUploader.vue';
 
-const sys = useSystem();
+const sys = inject<System>('system')!;
 const musicList = ref<VtronFileWithoutContent[]>([]);
 onMounted(async () => {
   refershFileLst();

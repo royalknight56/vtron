@@ -69,8 +69,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
-import { Dialog, WinButtonVue, useSystem, WinInput, join } from 'vtron';
+import { inject, ref } from 'vue';
+import { Dialog, WinButtonVue, WinInput, join, System } from 'vtron';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import FileUploader from '../components/FileUploader.vue';
@@ -85,7 +85,7 @@ const selectItem = (index: number) => {
   activeIndex.value = index;
 };
 
-const sys = useSystem();
+const sys = inject<System>('system')!;
 async function exportBackup() {
   const { setProgress } = Dialog.showProcessDialog({
     message: `正在打包`,

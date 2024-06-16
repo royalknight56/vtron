@@ -4,8 +4,9 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useSystem } from 'vtron';
-const sys = useSystem();
+import { System } from 'vtron';
+import { inject } from 'vue';
+const sys = inject<System>('system')!;
 const props = defineProps<{
   src: string;
   alt: string;

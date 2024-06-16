@@ -2,9 +2,9 @@
   <iframe allow="fullscreen" ref="storeRef" src="https://vtron.site/ppt"></iframe>
 </template>
 <script lang="ts" setup>
-import { BrowserWindow, Notify, useSystem } from 'vtron';
+import { BrowserWindow, Notify, System } from 'vtron';
 import { ref, inject } from 'vue';
-const sys = useSystem();
+const sys = inject<System>('system')!;
 const win = inject<BrowserWindow>('browserWindow');
 const storeRef = ref<HTMLIFrameElement | null>(null);
 let hasInit = false;

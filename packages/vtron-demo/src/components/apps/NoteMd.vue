@@ -69,11 +69,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Notify, VtronFileWithoutContent, join, useSystem } from 'vtron';
+import { Notify, System, VtronFileWithoutContent, join } from 'vtron';
 import { onMounted, ref } from 'vue';
 import FileTree from './comp/FileTree.vue';
+import { inject } from 'vue';
 const value = ref('# hello, markdown!');
-const sys = useSystem();
+const sys = inject<System>('system')!;
 const chosenTreePath = ref(join(sys._options.userLocation || '', 'Note'));
 const chosenIsDirectory = ref(true);
 function onTreeOpen(path?: string, isDirectory?: boolean) {

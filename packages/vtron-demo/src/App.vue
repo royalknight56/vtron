@@ -5,7 +5,7 @@
 -->
 <template>
   <div class="outer">
-    <Screen :system="system"></Screen>
+    <VtronComputer :system="system"></VtronComputer>
     <!-- 一定需要引入Win10组件，组件已经在use时注册了 -->
   </div>
   <a style="display: none" href="https://beian.miit.gov.cn/">豫ICP备19041315号</a>
@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import { desktopConfig, magnetConfig } from './DesktopSet';
 
-import { System, BrowserWindow, Notify, Screen } from 'vtron';
+import { System, BrowserWindow, Notify, VtronComputer } from 'vtron';
 import { vtronPlus } from 'vtron-plus';
 import MarkDown from './components/apps/MarkDown.vue';
 import 'vtron-plus/distlib/style.css';
@@ -56,7 +56,8 @@ system.whenReady().then((readySystem) => {
   //   system.recover();
   // }
 
-  readySystem.use(vtronPlus);
+  readySystem.use(vtronPlus as any);
+
   readySystem.fs.writeFile(
     '/C/Users/Desktop/使用教程.md',
     `# hello, 欢迎使用Vtron WebOS!

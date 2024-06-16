@@ -47,10 +47,11 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useSystem, basename, join, VtronFileWithoutContent } from 'vtron';
+import { basename, join, VtronFileWithoutContent, System } from 'vtron';
+import { inject } from 'vue';
 import { onMounted, ref } from 'vue';
 
-const sys = useSystem();
+const sys = inject<System>('system')!;
 type FileWithOpen = VtronFileWithoutContent & {
   isOpen?: boolean;
   subFileList?: FileWithOpen[];

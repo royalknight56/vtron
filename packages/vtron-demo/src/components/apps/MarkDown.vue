@@ -2,11 +2,11 @@
   <mavon-editor class="editor" v-model="value" @save="save" />
 </template>
 <script setup lang="ts">
-import { BrowserWindow, Notify, useSystem } from 'vtron';
+import { BrowserWindow, Notify, System } from 'vtron';
 import { inject, onMounted, ref } from 'vue';
 
 const value = ref('# hello, markdown!');
-const sys = useSystem();
+const sys = inject<System>('system')!;
 const win = inject<BrowserWindow>('browserWindow');
 onMounted(() => {
   if (win?.config.path) {

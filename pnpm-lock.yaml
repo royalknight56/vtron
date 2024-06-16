@@ -157,11 +157,11 @@ importers:
         specifier: ^3.43.0
         version: 3.43.0(vue@3.2.47)
       vtron:
-        specifier: 0.7.0
-        version: 0.7.0(typescript@5.2.2)
+        specifier: 0.7.1
+        version: 0.7.1(typescript@5.2.2)
       vtron-plus:
-        specifier: ^0.5.9
-        version: 0.5.9(typescript@5.2.2)(vite@4.5.0(@types/node@18.18.8)(sass@1.58.3))
+        specifier: ^0.6.0
+        version: 0.6.0(typescript@5.2.2)(vite@4.5.0(@types/node@18.18.8)(sass@1.58.3))
       vue:
         specifier: ^3.2.45
         version: 3.2.47
@@ -5076,14 +5076,8 @@ packages:
   vscode-textmate@8.0.0:
     resolution: {integrity: sha512-AFbieoL7a5LMqcnOF04ji+rpXadgOXnZsxQr//r83kLPr7biP7am3g9zbaZIaBGwBRWeSvoMD4mgPdX3e4NWBg==}
 
-  vtron-plus@0.5.9:
-    resolution: {integrity: sha512-JuDrfQ4XakTN8qfNOZB7I+yiiUhnFDbUgGhhl4NljAUvtavnX5KpV8Qz3O1SIJpU/B+R4hOgXrDuJIk23yZ3aA==}
-
-  vtron@0.6.4:
-    resolution: {integrity: sha512-DpU2G5pUSGDMp4ZsivDJwvrzJwemKh8yu42TP6jHxQl58FEkqerzSPj+2idbU0SNNQAyGyxAU8Me+pvw+ioMPw==}
-
-  vtron@0.7.0:
-    resolution: {integrity: sha512-xLKzFfKCUSUHLI3fjSTjrDU3mxalGgmEBLGiKFEz+cHgfHVr59ZGQQxnvLdwf9ACY5ycxRCezQ27OiRhl040fg==}
+  vtron-plus@0.6.0:
+    resolution: {integrity: sha512-8YaYVQsoS4RuTAqujBXcGVSC+ke03iCmPTNKX0vK2pF1dUO73KjPnlGJIZhB6ADLNglt5UOgvd2urFgVaZj8Jw==}
 
   vtron@0.7.1:
     resolution: {integrity: sha512-SvoMJ9oBnADU8sl/OqslXnus9gnliAL2vi7PEKIN3Xbp1Mk5DmST3pZUYwosFJxqifla0Nmu1U9j2nclHnJRYw==}
@@ -5134,9 +5128,6 @@ packages:
     hasBin: true
     peerDependencies:
       typescript: '*'
-
-  vue3-sfc-loader@0.8.4:
-    resolution: {integrity: sha512-eziaIrk/N9f9OCpyFEkR6vMsZUHcF5mQslXjffwcb5Iq6EuU74QrlpBeJqA04MvAGT7f5O8la2v9k3NtQnJb3Q==}
 
   vue@2.7.15:
     resolution: {integrity: sha512-a29fsXd2G0KMRqIFTpRgpSbWaNBK3lpCTOLuGLEDnlHWdjB8fwl6zyYZ8xCrqkJdatwZb4mGHiEfJjnw0Q6AwQ==}
@@ -10144,7 +10135,7 @@ snapshots:
 
   vscode-textmate@8.0.0: {}
 
-  vtron-plus@0.5.9(typescript@5.2.2)(vite@4.5.0(@types/node@18.18.8)(sass@1.58.3)):
+  vtron-plus@0.6.0(typescript@5.2.2)(vite@4.5.0(@types/node@18.18.8)(sass@1.58.3)):
     dependencies:
       '@liripeng/vue-audio-player': 1.5.2
       '@types/node': 18.18.8
@@ -10156,7 +10147,7 @@ snapshots:
       pyodide: 0.24.1
       sass: 1.58.3
       vite-plugin-dts: 2.3.0(@types/node@18.18.8)(vite@4.5.0(@types/node@18.18.8)(sass@1.58.3))
-      vtron: 0.6.4(typescript@5.2.2)
+      vtron: 0.7.1(typescript@5.2.2)
       vue: 3.4.21(typescript@5.2.2)
       vue-demi: 0.13.11(vue@3.4.21(typescript@5.2.2))
       xterm: 5.3.0
@@ -10169,23 +10160,6 @@ snapshots:
       - typescript
       - utf-8-validate
       - vite
-
-  vtron@0.6.4(typescript@5.2.2):
-    dependencies:
-      vue: 3.4.21(typescript@5.2.2)
-      vue-accessible-color-picker: 5.0.1(vue@3.4.21(typescript@5.2.2))
-      vue3-sfc-loader: 0.8.4
-      xterm: 5.3.0
-      xterm-addon-fit: 0.7.0(xterm@5.3.0)
-    transitivePeerDependencies:
-      - typescript
-
-  vtron@0.7.0(typescript@5.2.2):
-    dependencies:
-      vue: 3.4.21(typescript@5.2.2)
-      vue-accessible-color-picker: 5.0.1(vue@3.4.21(typescript@5.2.2))
-    transitivePeerDependencies:
-      - typescript
 
   vtron@0.7.1(typescript@5.2.2):
     dependencies:
@@ -10249,8 +10223,6 @@ snapshots:
       '@vue/language-core': 1.8.22(typescript@5.2.2)
       semver: 7.5.4
       typescript: 5.2.2
-
-  vue3-sfc-loader@0.8.4: {}
 
   vue@2.7.15:
     dependencies:

@@ -26,9 +26,11 @@ system.whenReady().then(() => {
 });
 ```
 
-## Screen 是什么
+## VtronComputer 是什么
 
-Screen 是用来显示系统状态的，现在已经改为整个 vue 实例只有一个 system 类型，所以，在这个 vue 实例中的 system 的状态，都会展示在 screen 组件中。
+VtronComputer 是用来显示系统状态的，
+
+System是管理整个系统的逻辑部分，显示的UI部分是VtronComputer来处理的，所以，将System的实例传给VtronComputer组件，显示逻辑才能生效
 
 ## 为什么创建了 BrowserWindow，但是没有显示出来
 

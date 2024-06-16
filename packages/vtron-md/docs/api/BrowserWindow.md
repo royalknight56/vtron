@@ -15,7 +15,7 @@ let browserWindow = inject<BrowserWindow>('browserWindow');
 
 ## 在窗口内容中获取 System
 
-通过 inject 注入 browserWindow 实例
+通过 inject 注入 system 实例
 
 ```ts
 import { System } from 'vtron';

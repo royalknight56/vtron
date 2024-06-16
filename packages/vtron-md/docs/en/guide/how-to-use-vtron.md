@@ -48,7 +48,7 @@ import 'vtron/distlib/style.css';
 createApp(App).use(vtron).mount('#app');
 ```
 
-3. import Screen component
+3. import VtronComputer component
 
 First, we need to create a system object, which manages all the status information of the system.
 

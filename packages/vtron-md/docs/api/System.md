@@ -1,17 +1,5 @@
 # System
 
-## useSystem
-
-整个 vue 应用只能有一个 system，所以这个方法用来获取当前的 system
-
-there is only one system in vue app, so this method is used to get current system
-
-usage:
-
-```typescript
-import { useSystem } from 'vtron';
-const system = useSystem();
-```
 
 ## constructor
 
@@ -471,6 +459,8 @@ system.recover();
 
 方便的通过system创建window
 
+通过此方式创建的window，会指定创建到当前system中，这在一个网页中有多个system实例时，会很有用
+
 ```typescript
 createWindow(options: BrowserWindowOption): BrowserWindow
 ```
@@ -481,6 +471,8 @@ createWindow(options: BrowserWindowOption): BrowserWindow
 
 方便的通过system创建notify
 
+通过此方式创建的notify，会指定创建到当前system中，这在一个网页中有多个system实例时，会很有用
+
 ```typescript
 createNotify(options: NotifyOption): Notify
 ```
@@ -489,6 +481,20 @@ createNotify(options: NotifyOption): Notify
 
 方便的通过system创建dialog
 
+通过此方式创建的dialog，会指定创建到当前system中，这在一个网页中有多个system实例时，会很有用
+
 ```typescript
 createDialog(): Dialog
+```
+
+## createTray
+
+通过system创建Tray 
+
+Tray是一个小图标，可以放在系统的托盘中
+
+通过此方式创建的Tray，会指定创建到当前system中，这在一个网页中有多个system实例时，会很有用
+
+```typescript
+createTray(options: TrayOption): Tray
 ```

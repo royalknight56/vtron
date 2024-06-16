@@ -52,30 +52,26 @@ qq群：712921211
 
 ## 开发流程
 
-### 使用Github模版
+### 使用 Github 模版
 
 1. 创建项目
    https://github.com/royalknight56/vtron-template
 
 从这个模版仓库创建新的项目。
 
-2. clone项目
+2. clone 项目
 
 git clone 已经创建好的项目
 
-3. 修改apps目录下的文件，或者新建app
+3. 修改 apps 目录下的文件，或者新建 app
 
-### 使用npm，从创建好的vue项目开始
+### 使用 npm，从创建好的 vue 项目开始
 
-1. 安装vtron
+1. 安装 vtron
 
 > npm install vtron
 
-2. 在vue中use插件
-
-```js
-import vtron from 'vtron';
-```
+2. 在 vue 中 引入样式文件
 
 引入样式文件"vtron/distlib/style.css"
 
@@ -83,43 +79,55 @@ import vtron from 'vtron';
 import 'vtron/distlib/style.css';
 ```
 
-usage
+main.ts 结果
 
 ```js
 import { createApp } from 'vue';
 import App from './App.vue';
-import vtron from 'vtron';
 import 'vtron/distlib/style.css';
 
-createApp(App).use(vtron).mount('#app');
+createApp(App).mount('#app');
 ```
 
-3. 在页面中引入Screen组件
+  注意⚠️：0.7版本不需要再use Vtron插件
 
-首先，我们需要创建一个system对象，这个对象管理着系统的所有状态信息。
+
+3. 在页面中引入`VtronComputer`组件和创建`System`实例
+
+我们需要创建一个 `System` 实例，这个实例管理着系统的所有状态信息。
+
+并且需要在vue组件模版中写入`VtronComputer`组件
+
+将new出来的`System`实例传入到`VtronComputer`组件的`system`参数中
 
 ```vue
 // App.vue
-<Screen></Screen>
+<template>
+  <div class="outer">
+    <VtronComputer :system="system"></VtronComputer>
+  </div>
+</template>
 <script setup>
-import { System } from 'vtron';
+import { System，VtronComputer} from 'vtron';
 let system = new System();
 </script>
 ```
 
-此步骤之后，run dev已经可以看到win10启动了
+此步骤之后，run dev 已经可以看到 win10 启动了
 
-4. 控制屏幕🖥大小
+4. 控制屏幕 🖥 大小
 
-在组件外围包裹一个outer
+在组件外围包裹一个 outer
 
 ```vue
-<div class="outer">
-    <Screen></Screen>
+<template>
+  <div class="outer">
+    <VtronComputer :system="system"></VtronComputer>
   </div>
+</template>
 ```
 
-定义outer样式
+定义 outer 样式
 
 ```html
 <style scoped>
@@ -132,9 +140,14 @@ let system = new System();
 
 这样就是占据全部页面显示
 
-4. 在apps文件夹下新建vue文件，主要在此文件夹中编写窗口内容（非必须）
+4. 在 apps 文件夹下新建 vue 文件，主要在此文件夹中编写窗口内容
+
+也可以在其他文件夹下，
+
+这次，我们创建一个`Hello.vue`文件，
 
 ```vue
+// Hello.vue
 <template>
   <div class="app">
     <h1>HelloWorld</h1>
@@ -142,30 +155,34 @@ let system = new System();
 </template>
 ```
 
-5. 在system中注册app
+5. 在 system 中注册 app
 
-在system的构造函数传入配置项，
+在 system 的构造函数传入配置项，
 
-其中 desktop是桌面的配置项，可以配置多个app
+其中 desktop 是桌面的配置项，可以配置多个 app
 
-如果新加了app，而桌面没有显示，请点击 开始->电源->恢复
+配置之后，软件的图标，快捷方式会显示在桌面上
 
-进行系统的刷新
+> 注意!
+
+> 需要点击开始菜单中的电源按钮，再点击恢复，才能看到 app
+
+注册之后，需要点击开始菜单中的电源按钮，再点击恢复，才能看到 app
+
+这样是为了使得系统重回第一次启动的状态，这样 vtron 才会在桌面重新添加图标
 
 ```vue
-<Screen></Screen>
 <script setup>
-import { System, BrowserWindow } from 'vtron';
-import { App } from './apps/App.vue';
+import { System } from 'vtron';
+import HelloVue from './apps/Hello.vue';
 import someicon from './assets/someicon.png';
-import HelloWorld from './apps/HelloWorld.vue';
 let system = new System({
   desktop: [
     {
-      name: 'HelloWorld',
+      name: 'HelloVue',
       icon: someicon,
       window: {
-        content: HelloWorld,
+        content: HelloVue,
         icon: someicon,
       },
     },
@@ -173,6 +190,178 @@ let system = new System({
 });
 </script>
 ```
+
+### 窗口中的操作
+
+下面是包含了部分api操作的示例
+
+```vue
+<template>
+  <div class="outer">
+    {{ sys?.version }}
+  </div>
+</template>
+<script lang="ts" setup>
+import { Notify, BrowserWindow, System } from 'vtron';
+import { inject, onMounted, ref, onUnmounted } from 'vue';
+// 通过inject获取到窗口所在的系统的信息
+const system = inject<System>('system')!;
+/**
+ * 有两种在窗口中使用system的方法，一种是通过inject注入，一种是直接引入system的实例
+ * const system = new System();
+ * export {
+ *  system
+ * }
+ * 
+ * 这样就可以在窗口中直接使用system的实例
+ * import { system } from './system';
+ * 
+ */
+
+// 通过inject导入本窗口的信息
+const browserWindow: BrowserWindow = inject('browserWindow') as BrowserWindow;
+
+// 获取本地保存的md文件
+system.fs.readFile('/C/User/Note/test.md').then((res) => {
+  console.log(res);
+});
+
+// 监听窗口的部分事件
+browserWindow.on('move', (...arg: any) => {
+  console.log('move', arg);
+});
+browserWindow.on('resize', (...arg: any) => {
+  console.log('resize', arg);
+});
+browserWindow.on('state', (...arg: any) => {
+  console.log('state', arg);
+});
+
+function nextStep(fun: () => void, time?: number) {
+  return new Promise((resolve) => {
+    const res = fun();
+    setTimeout(() => {
+      resolve(res);
+    }, time || 50);
+  });
+}
+await nextStep(() => {
+  // 获取窗口的位置大小
+  const [x, y] = browserWindow.getPosition();
+  const [width, height] = browserWindow.getSize();
+  // 调用系统提示,创建之后，会在屏幕右下角显示消息通知
+  new Notify({
+    title: 'title',
+    content: `${x},${y},${width},${height}`,
+    timeout: 5000,
+  });
+}, 100);
+await nextStep(() => {
+  // 设置窗口的位置大小
+  browserWindow.setPosition(100, 100);
+  browserWindow.setSize(500, 500);
+}, 100);
+
+await nextStep(() => {
+  // 将窗口居中
+  browserWindow.center();
+}, 100);
+
+await nextStep(() => {
+  const title = browserWindow.getTitle();
+  // 设置窗口的标题
+  browserWindow.setTitle('新标题');
+}, 100);
+await nextStep(() => {
+  // 窗口最大化
+  browserWindow.maximize();
+}, 200);
+await nextStep(() => {
+  // 恢复窗口状态
+  browserWindow.restore();
+}, 100);
+await nextStep(() => {
+  // 窗口最小化
+  browserWindow.minimize();
+}, 200);
+await nextStep(() => {
+  // 恢复窗口状态
+  browserWindow.restore();
+}, 100);
+
+await nextStep(() => {
+  // 设置窗口全屏
+  browserWindow.setFullScreen(true);
+}, 100);
+await nextStep(() => {
+  browserWindow.setFullScreen(false);
+}, 100);
+
+</script>
+```
+
+### 创建一个窗口
+
+在一个应用中，可以使用`BrowserWindow`类创建一个窗口
+
+```vue
+<template>
+  <div class="outer">
+    <button @click="createWindow">创建窗口</button>
+  </div>
+</template>
+<script lang="ts" setup>
+import { BrowserWindow } from 'vtron';
+import { ref } from 'vue';
+const createWindow = () => {
+  const win = new BrowserWindow();
+  win.show();
+};
+</script>
+```
+通过实例化`BrowserWindow`类，可以创建一个窗口，然后通过`show`方法显示出来
+
+还有另一种方法，通过system的`createWindow`方法创建窗口
+
+```vue
+<template>
+  <div class="outer">
+    <button @click="createWindow">创建窗口</button>
+  </div>
+</template>
+<script lang="ts" setup>
+import { system } from './system';
+import { ref } from 'vue';
+const createWindow = () => {
+  const win = system.createWindow({
+    content: ///....,
+    title: 'Hello',
+  });
+  win.show();
+};
+</script>
+```
+
+这两种方法有细微的区别，`system.createWindow`创建的窗口，是在当前系统中创建的窗口，
+
+而`BrowserWindow`创建的窗口是没有指定`system`的，之所以会在当前`system`显示出来窗口，是因为`BrowserWindow`类默认是当前的`system`。
+
+可以通过`BrowserWindow.system` 查看到当前`BrowserWindow`的默认`system`，一般是最后创建的`system`实例。
+
+当我们创建多个`system`的时候，就必须使用`system.createWindow`来创建窗口了。
+
+
+## 常见问题
+
+为什么在 system 中添加了 app，桌面还是没有显示出 app
+
+桌面的图标都是在用户的文件系统中保存的
+
+Vtron 只有在系统第一次启动的时候，才会在文件系统中添加 app 图标
+
+所以，这时需要点击开始菜单->电源->恢复
+
+恢复之后，系统会回到第一次启动的状态，这时，会执行一些特殊的过程，比如在桌面添加 app 图标
 
 ## 调试和贡献流程
 

@@ -29,9 +29,9 @@ jobs:
           version: 8.7.0
           cache: 'pnpm'
       - run: pnpm install
-      - run: npx pnpm run vtron bl
-      - run: npx pnpm run plus bl
-      - run: npx pnpm run demo-build
+      - run: pnpm run vtron bl
+      - run: pnpm run plus bl
+      - run: pnpm run demo-build
       - name: Deploy to Staging server
         uses: easingthemes/ssh-deploy@main
         env:

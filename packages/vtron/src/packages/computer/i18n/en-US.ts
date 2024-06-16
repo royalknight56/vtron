@@ -4,6 +4,7 @@ export const enUS: AllText = {
   'startMenu.power': 'Power',
   setting: 'Setting',
   'startMenu.shutdown': 'Shutdown',
+  'startMenu.restart': 'Restart',
   'startMenu.recover': 'Recover',
   'windows.setting': 'Windows Setting',
   system: 'System',

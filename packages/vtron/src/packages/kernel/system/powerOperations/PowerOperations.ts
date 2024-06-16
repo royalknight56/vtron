@@ -37,9 +37,11 @@ export class PowerOperations {
   }
 
   shutdown() {
+    this.system.emitEvent('system.shutdown');
     this.system.stateManager.powerState.setPowerState(PowerStateEnum.close);
   }
-  reboot() {
+  restart() {
+    this.system.emitEvent('system.restart');
     this.system.stateManager.powerState.setPowerState(PowerStateEnum.close);
     window.location.reload();
   }

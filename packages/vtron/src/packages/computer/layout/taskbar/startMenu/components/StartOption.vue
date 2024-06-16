@@ -44,7 +44,13 @@ function handleClick(key: number, ev: MouseEvent) {
           {
             label: i18n('startMenu.shutdown'),
             click: () => {
-              sys.emitEvent('system.shutdown');
+              sys.shutdown();
+            },
+          },
+          {
+            label: i18n('startMenu.restart'),
+            click: () => {
+              sys.restart();
             },
           },
           {

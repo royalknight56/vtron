@@ -4,6 +4,7 @@ export const zhCN = {
   'startMenu.power': '电源',
   setting: '设置',
   'startMenu.shutdown': '关机',
+  'startMenu.restart': '重启',
   'startMenu.recover': '恢复',
   'windows.setting': 'Windows 设置',
   system: '系统',

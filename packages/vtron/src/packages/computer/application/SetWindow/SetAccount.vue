@@ -70,7 +70,7 @@ async function submit() {
       type: 'info',
     })
     .then(() => {
-      system?.reboot();
+      system?.restart();
     });
 }
 </script>

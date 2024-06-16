@@ -202,8 +202,8 @@ export class System {
   shutdown: PowerOperations['shutdown'] = () => {
     return this.powerOperations.shutdown();
   };
-  reboot: PowerOperations['reboot'] = () => {
-    return this.powerOperations.reboot();
+  restart: PowerOperations['restart'] = () => {
+    return this.powerOperations.restart();
   };
   recover: PowerOperations['recover'] = () => {
     return this.powerOperations.recover();

@@ -1,6 +1,6 @@
 {
   "name": "vtron",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "files": [
     "distlib",
     "distlib/*.css"
@@ -8,10 +8,10 @@
   "main": "distlib/vtron.mjs",
   "module": "distlib/vtron.mjs",
   "style": "distlib/style.css",
-  "types": "distlib/src/packages/plug.d.ts",
+  "types": "distlib/packages/plug.d.ts",
   "exports": {
     ".": {
-      "types": "./distlib/src/packages/plug.d.ts",
+      "types": "./distlib/packages/plug.d.ts",
       "import": "./distlib/vtron.mjs",
       "require": "./distlib/vtron.umd.js"
     },

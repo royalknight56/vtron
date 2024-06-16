@@ -6,16 +6,19 @@
 import { System, VtronFileWithoutContent } from '@packages/kernel';
 import { dealIcon } from '@/packages/computer/utils/dealIcon';
 import unknownicon from '@packages/assets/unknown.png';
-import { inject, ref } from 'vue';
+import { inject, onMounted, ref } from 'vue';
 const props = defineProps<{
   file?: VtronFileWithoutContent | null;
   icon?: string;
 }>();
 
 const sys = inject<System>('system')!;
-const iconimg = ref(await dealIcon(props.file, sys));
+const iconimg = ref('');
 const iconR = ref(props.icon);
 
+onMounted(async ()=>{
+  iconimg.value = await dealIcon(props.file, sys);
+})
 function replaceIcon() {
   iconR.value = unknownicon;
   iconimg.value = unknownicon;

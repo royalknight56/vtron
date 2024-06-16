@@ -22,7 +22,7 @@ export async function dealIcon(
   file: VtronFileWithoutContent | null | undefined,
   system: System,
   stopCircle = false
-) {
+): Promise<string> {
   if (!file) return unknownicon;
   if (file.isDirectory && file.parentPath === '/') {
     // 是挂载在根目录的卷

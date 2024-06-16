@@ -24,10 +24,6 @@ export default defineConfig({
         find: '@packages',
         replacement: path.resolve(__dirname, 'src/packages/'),
       },
-      {
-        find: '@feature',
-        replacement: path.resolve(__dirname, 'src/packages/feature/'),
-      },
     ],
     dedupe: ['vue'],
   },

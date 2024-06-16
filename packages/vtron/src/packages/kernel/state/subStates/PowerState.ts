@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-export const enum PowerStateEnum {
+export enum PowerStateEnum {
   close = 0,
   opening = 1,
   open = 2,

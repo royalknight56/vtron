@@ -4,7 +4,7 @@ import { Tree } from '@packages/util/Tree';
 import { defineComponent, markRaw, reactive } from 'vue';
 // import { BrowserWindowConstructorOptions } from "@packages/type/browserWindow";
 // implements BrowserWindowModel
-export const enum WindowStateEnum {
+export enum WindowStateEnum {
   normal = 'normal',
   minimize = 'minimize',
   maximize = 'maximize',

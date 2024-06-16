@@ -59,7 +59,7 @@
 </template>
 <script setup lang="ts">
 import WinButton from '@packages/components/WinButton.vue';
-import { inject, ref } from 'vue';
+import { inject, onMounted, ref } from 'vue';
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
 import { dealSize } from '@/packages/util/fileUtils';
 import { i18n } from '@/packages/computer/i18n';
@@ -70,7 +70,9 @@ const sys = inject<System>('system')!;
 
 const window: BrowserWindow | undefined = inject('browserWindow');
 const file = ref<VtronFileWithoutContent | null>();
-file.value = await sys?.fs.stat(window?.config.content);
+onMounted(async ()=>{
+  file.value = await sys?.fs.stat(window?.config.content);
+})
 function confirm() {
   window?.close();
 }

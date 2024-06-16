@@ -246,15 +246,15 @@ const system = new System();
 system.shutdown();
 ```
 
-## reboot
+## restart
 
 ```typescript
-reboot();
+restart();
 ```
 
 恢复系统，恢复的过程是：清除本地的localStorage，清楚本地的文件系统。
 
-reboot system, the process is: clear localStorage, clear file system.
+restart system, the process is: clear localStorage, clear file system.
 
 Usage:
 
@@ -262,5 +262,5 @@ Usage:
 import { System } from 'vtron';
 const system = new System();
 
-system.reboot();
+system.restart();
 ```

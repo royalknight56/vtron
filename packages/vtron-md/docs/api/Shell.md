@@ -15,8 +15,8 @@ constructor(system:System,router: string = '/C',user: string = 'root')
 usage
 
 ```typescript
-import { useSystem, Shell } from 'vtron';
-const system = useSystem();
+import { Shell } from 'vtron';
+import { system } from "./system";
 const shell = new Shell(system, '/C', 'root');
 ```
 

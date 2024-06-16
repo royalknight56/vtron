@@ -27,8 +27,7 @@ when this event is triggered, contextMenu will be shown
 usage:
 
 ```typescript
-import { useSystem } from 'vtron';
-const system = useSystem();
+import { system } from "./system";
 ev: MouseEvent;
 system?.emitEvent('contextMenu.show', {
   mouse: ev,

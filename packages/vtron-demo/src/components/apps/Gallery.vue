@@ -10,7 +10,7 @@ const imgsArr = ref<any[]>([]);
 onMounted(async () => {
   const imgs = await sys.fs.readdir(join(sys._options.userLocation || '', 'pictures'));
   console.log(imgs);
-  if (imgs?.length) {
+  if (imgs?.length) {s
     state.value = 'ready';
     imgsArr.value = imgs.map((item) => {
       return {

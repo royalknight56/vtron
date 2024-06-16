@@ -212,8 +212,7 @@ see api/fs for more
 ### Usage
 
 ```typescript
-import { useSystem } from 'vtron';
-const system = useSystem();
+import { system } from "./system";
 system.fs.readFile('path/to/file').then((data) => {});
 ```
 
@@ -226,8 +225,7 @@ system.fs.readFile('path/to/file').then((data) => {});
 ### Usage
 
 ```typescript
-import { useSystem } from 'vtron';
-const system = useSystem();
+import { system } from "./system";
 system.shell('cd C');
 ```
 
@@ -246,8 +244,7 @@ emit an event in system
 there are some built-in events in system, you can emit event to trigger, for example, open context menu, see api/event for more
 
 ```typescript
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.emitEvent(event: string, ...args: any[])
 ```
 
@@ -266,8 +263,7 @@ listen an event in system
 there are some built-in events in system, you can listen event to trigger, for example, open context menu, see api/event for more
 
 ```typescript
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.mountEvent(event: string, callback: (...args: any[]) => void)
 ```
 
@@ -284,8 +280,8 @@ see api/fs for more
 打开器的第一个参数是文件的扩展类型
 
 ```typescript
-import { useSystem，BrowserWindow } from "vtron";
-const system = useSystem();
+import { BrowserWindow } from "vtron";
+import { system } from "./system";
 system.registerFileOpener(".txt",{
     icon:mycomicon,
     func:(path,content)=>{
@@ -317,8 +313,7 @@ open a file, will call the opener with this type
 see api/fs for more
 
 ```typescript
-import { useSystem } from 'vtron';
-const system = useSystem();
+import { system } from "./system";
 system.openFile('path/to/file');
 ```
 
@@ -337,8 +332,7 @@ vtron provide plugin system, you can add some features to system by plugin, of c
 see vtron-plus for more
 
 ```typescript
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.use(plugin: (system: System, rootState: RootState) => void)
 ```
 

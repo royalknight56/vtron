@@ -1,17 +1,5 @@
 # System
 
-## useSystem
-
-整个vue应用只能有一个system，所以这个方法用来获取当前的system
-
-there is only one system in vue app, so this method is used to get current system
-
-usage:
-
-```typescript
-import { useSystem } from 'vtron';
-const system = useSystem();
-```
 
 ## constructor
 
@@ -71,8 +59,7 @@ see api/fs for more
 ### Usage
 
 ```typescript
-import { useSystem } from 'vtron';
-const system = useSystem();
+import { system } from "./system";
 system.fs.readFile('path/to/file').then((data) => {});
 ```
 
@@ -87,8 +74,7 @@ emit an event in system
 there are some built-in events in system, you can emit event to trigger, for example, open context menu, see api/event for more
 
 ```typescript
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.emitEvent(event: string, ...args: any[])
 ```
 
@@ -103,8 +89,7 @@ listen an event in system
 there are some built-in events in system, you can listen event to trigger, for example, open context menu, see api/event for more
 
 ```typescript
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.mountEvent(event: string, callback: (...args: any[]) => void)
 ```
 
@@ -119,8 +104,8 @@ register a file opener, when system open a file with this type, this opener will
 see api/fs for more
 
 ```typescript
-import { useSystem，BrowserWindow } from "vtron";
-const system = useSystem();
+import { BrowserWindow } from "vtron";
+import { system } from "./system";
 system.registerFileOpener("text/plain",(path,content)=>{
     let pdfwindow = new BrowserWindow({
         width: 400,
@@ -149,8 +134,7 @@ open a file, will call the opener with this type
 see api/fs for more
 
 ```typescript
-import { useSystem } from 'vtron';
-const system = useSystem();
+import { system } from "./system";
 system.openFile('path/to/file');
 ```
 
@@ -169,8 +153,7 @@ vtron provide plugin system, you can add some features to system by plugin, of c
 see vtron-plus for more
 
 ```typescript
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.use(plugin: (system: System, rootState: RootState) => void)
 ```
 

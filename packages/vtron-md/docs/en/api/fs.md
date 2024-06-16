@@ -9,8 +9,7 @@ read the content of a file
 ```typescript
 readFile(path: string): Promise<string | null>;
 
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.fs.readFile("path/to/file").then((data)=>{
     //...
 })
@@ -30,8 +29,7 @@ write content to a file, if the file is not exist, it will be created
         type: string;
     }): Promise<void>;
 
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.fs.writeFile("path/to/file",{
     content:"hello world",
     name:"hello.txt",
@@ -49,8 +47,7 @@ append content to the end of a file
 ```typescript
 appendFile(path: string, content: string): Promise<void>;
 
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.fs.appendFile("path/to/file","hello world")
 ```
 
@@ -63,8 +60,7 @@ create a folder
 ```typescript
 mkdir(path: string): Promise<void>;
 
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.fs.mkdir("path/to/folder")
 ```
 
@@ -87,8 +83,7 @@ class VtronFile {
 
 readdir(path: string): Promise<VtronFile[]>;
 
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.fs.readdir("path/to/folder").then((files)=>{
     //...
     files.forEach((file)=>{
@@ -107,8 +102,7 @@ check if a file or folder is exist
 
 exists(path: string): Promise<boolean>;
 
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.fs.exists("path/to/file").then((exist)=>{
     //...
 })
@@ -123,8 +117,7 @@ get the info of a file or folder
 ```typescript
 stat(path: string): Promise<VtronFile | null>;
 
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.fs.stat("path/to/file").then((file)=>{
     //...
 })
@@ -139,8 +132,7 @@ delete a file
 ```typescript
 unlink(path: string): Promise<void>;
 
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.fs.unlink("path/to/file")
 ```
 
@@ -153,8 +145,7 @@ delete a folder, this operation will delete all files and folders in this folder
 ```typescript
 rmdir(path: string): Promise<void>;
 
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.fs.rmdir("path/to/folder")
 ```
 
@@ -167,7 +158,6 @@ rename a file or folder
 ```typescript
 rename(path: string, newPath: string): Promise<void>;
 
-import { useSystem } from "vtron";
-const system = useSystem();
+import { system } from "./system";
 system.fs.rename("path/to/file","path/to/new/file")
 ```

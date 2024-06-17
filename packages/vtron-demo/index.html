@@ -6,48 +6,45 @@
 -->
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/win.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vtron</title>
-    <meta name="google-adsense-account" content="ca-pub-7516773950965588" />
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7516773950965588"
-      crossorigin="anonymous"
-    ></script>
-    <meta
-      data-vue-meta="true"
-      data-n-head="true"
-      data-hid="og:image"
-      property="og:image"
-      content="https://vtron.site/win.png"
-    />
-    <meta
-      data-vue-meta="true"
-      name="keywords"
-      content="Vtron,在线编辑,编辑,文件,系统,保存,windows,微软,网页版,在线,客户端,后端,前端,无后端"
-    />
-    <meta
-      data-vue-meta="true"
-      name="description"
-      content="Vtron,网页版win10，可以进行一些文件的编辑，修改，保存，都在浏览器上完成，完全不需要客户端和后端"
-    />
-      <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GNTSC2NNGD"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-GNTSC2NNGD');
-</script>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="/win.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vtron</title>
+  <meta name="google-adsense-account" content="ca-pub-7516773950965588" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7516773950965588"
+    crossorigin="anonymous"></script>
+  <meta data-vue-meta="true" data-n-head="true" data-hid="og:image" property="og:image"
+    content="https://vtron.site/win.png" />
+  <meta data-vue-meta="true" name="keywords" content="Vtron,在线编辑,编辑,文件,系统,保存,windows,微软,网页版,在线,客户端,后端,前端,无后端" />
+  <meta data-vue-meta="true" name="description" content="Vtron,网页版win10，可以进行一些文件的编辑，修改，保存，都在浏览器上完成，完全不需要客户端和后端" />
+  <script src='https://cdn-go.cn/aegis/aegis-sdk/latest/aegis.min.js'></script>
+  <script>
+    const aegis = new Aegis({
+      id: 'aZxR3tDXy3bg1xlDgE', // 上报 id
+      uin: 'win', // 用户唯一 ID（可选）
+      reportApiSpeed: true, // 接口测速
+      reportAssetSpeed: true, // 静态资源测速
+      spa: true, // spa 应用页面跳转的时候开启 pv 计算
+      hostUrl: 'https://rumt-sg.com',
+    });
+  </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNTSC2NNGD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-GNTSC2NNGD');
+  </script>
+</head>
 
 
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>

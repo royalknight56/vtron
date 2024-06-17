@@ -22,16 +22,6 @@ import NoteMd from './components/apps/NoteMd.vue';
 // import Gallery from './components/apps/Gallery.vue';
 const magnetConfig = [
   {
-    title: '压扁小鸟',
-    icon: bird1icon,
-    width: 800,
-    height: 600,
-    center: true,
-    content: 'https://static.vtron.site/yabird/',
-    backgroundColor: '#71c5cf',
-    resizable: true,
-  },
-  {
     title: 'kiomet',
     icon: kiometicon,
     width: 800,

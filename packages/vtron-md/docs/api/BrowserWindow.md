@@ -86,6 +86,29 @@ Type: any
 
 窗口的配置对象。这个对象会被传递给窗口渲染进程，可以在窗口内部使用。
 
+使用方法：
+  
+```ts
+const win = new BrowserWindow({
+  title: 'test',
+  content: ContentVue,
+  config: {
+    name: 'test',
+    age: 18,
+  },
+});
+```
+
+在窗口内部使用：
+
+```ts
+// ContentVue.vue
+import { BrowserWindow } from 'vtron';
+const browserWindow = inject<BrowserWindow>('browserWindow')!;
+console.log(browserWindow.config.name);
+console.log(browserWindow.config.age);
+```
+
 ### icon
 
 Type: string
@@ -200,13 +223,12 @@ win.show();
 
 ## close
 
-type:
+关闭窗口
+
 
 ```ts
 close():void
 ```
-
-Close the window.
 
 usage:
 
@@ -217,13 +239,13 @@ win.close();
 
 ## destroy
 
+目前和 close 方法一样，关闭窗口
+
 type:
 
 ```ts
 destroy():void
 ```
-
-Destroy the window.
 
 usage:
 
@@ -242,7 +264,7 @@ on(event: string, callback: Function)
 
 目前可以监听以下事件
 
-show: 窗口打开时触发
+show: 窗口打开时触发 // 只能在外部监听
 
 close: 窗口关闭时触发
 
@@ -252,13 +274,13 @@ move: 窗口移动时
 
 state: 窗口状态改变时
 
-    minimize: 窗口最小化时
+minimize: 窗口最小化时
 
-    maximize: 窗口最大化时
+maximize: 窗口最大化时
 
-    unmaximize: 窗口取消最大化时
+unmaximize: 窗口取消最大化时
 
-    close: 窗口关闭时
+close: 窗口关闭时
 
 ## emit
 
@@ -266,6 +288,16 @@ state: 窗口状态改变时
 
 ```ts
 emit(event: string, ...args: any[])
+```
+
+## moveTop
+
+把窗口置顶
+
+会触发`moveTop`事件
+
+```ts
+moveTop():void
 ```
 
 ## isDisable
@@ -459,13 +491,13 @@ win.center();
 
 ## restore
 
+把窗口从最小化状态恢复到之前的状态
+
 type:
 
 ```ts
 restore():void
 ```
-
-把窗口从最小化状态恢复到之前的状态
 
 usage:
 
@@ -476,13 +508,13 @@ win.restore();
 
 ## getSize
 
+返回窗口的大小
+
 type:
 
 ```ts
 getSize():[number,number]
 ```
-
-返回窗口的大小
 
 usage:
 
@@ -493,13 +525,13 @@ console.log(win.getSize());
 
 ## getTitle
 
+返回窗口的标题
+
 type:
 
 ```ts
 getTitle():string
 ```
-
-返回窗口的标题
 
 usage:
 
@@ -510,13 +542,16 @@ console.log(win.getTitle());
 
 ## getPosition
 
+返回窗口的位置
+
+x: 横坐标
+y: 纵坐标
+
 type:
 
 ```ts
-getPosition():[number,number]
+getPosition():[x,y]
 ```
-
-返回窗口的位置
 
 usage:
 
@@ -527,13 +562,13 @@ console.log(win.getPosition());
 
 ## maximize
 
+最大化窗口
+
 type:
 
 ```ts
 maximize():void
 ```
-
-最大化窗口
 
 usage:
 
@@ -541,6 +576,24 @@ usage:
 const win = new BrowserWindow();
 win.maximize();
 ```
+
+## unmaximize
+
+取消最大化窗口
+
+type:
+
+```ts
+unmaximize():void
+```
+
+usage:
+
+```ts
+const win = new BrowserWindow();
+win.unmaximize();
+```
+
 
 ## minimize
 
@@ -559,15 +612,31 @@ const win = new BrowserWindow();
 win.minimize();
 ```
 
+## setFullScreen
+设置窗口全屏
+
+type:
+
+```ts
+setFullScreen(fullscreen:boolean):void
+```
+
+usage:
+
+```ts
+const win = new BrowserWindow();
+win.setFullScreen(true); // true 设置为全屏，false 取消全屏，状态设置为normal
+```
+
+
 ## setSize
+设置窗口的大小
 
 type:
 
 ```ts
 setSize(width:number,height:number):void
 ```
-
-设置窗口的大小
 
 usage:
 
@@ -577,14 +646,13 @@ win.setSize(100, 100);
 ```
 
 ## setTitle
+设置窗口的标题
 
 type:
 
 ```ts
 setTitle(title:string):void
 ```
-
-设置窗口的标题
 
 usage:
 

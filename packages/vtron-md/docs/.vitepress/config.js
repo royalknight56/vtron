@@ -38,12 +38,7 @@ module.exports = {
     root: {
       label: 'Chinese',
       lang: 'zh-CN',
-    },
-    en: {
-      label: 'English',
-      lang: 'en-US',
-      link: '/en/', // default /en/ -- shows on navbar translations menu, can be external
-    },
+    }
   },
   // 配置默认主题
   themeConfig: {
@@ -82,8 +77,8 @@ module.exports = {
           link: '/api/path.md',
         },
         {
-          text: 'event',
-          link: '/api/event.md',
+          text: 'Menu',
+          link: '/api/Menu.md',
         },
         {
           text: 'Dialog',

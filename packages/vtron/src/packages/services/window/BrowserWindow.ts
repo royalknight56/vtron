@@ -276,12 +276,18 @@ class BrowserWindow {
     // 判断窗口是否可见
     return this.windowInfo.isCreated;
   }
+  /**
+   * 判断窗口是否已经销毁
+   * @returns boolean
+   */
   isDestroyed() {
-    // 判断窗口是否已经销毁
     return !this.windowInfo.isCreated;
   }
+  /**
+   * 判断窗口是否最大化
+   * @returns boolean
+   */
   isMaximized() {
-    // 判断窗口是否最大化
     return this.windowInfo.state === WindowStateEnum.maximize;
   }
   isMaximizable() {
@@ -324,8 +330,11 @@ class BrowserWindow {
   getPosition() {
     return [this.windowInfo.x, this.windowInfo.y];
   }
+  /**
+   * 设置窗口全屏
+   * @param flag  true: 全屏 false: 退出全屏
+   */
   setFullScreen(flag: boolean) {
-    // 设置窗口全屏
     if (flag) {
       this._setState(WindowStateEnum.fullscreen);
     } else {

@@ -241,40 +241,11 @@ NoteMd是和vtron契合的笔记软件
   });
 
   setTimeout(() => {
-    if (process.env.NODE_ENV === 'development') return;
-    fetch('https://api.vtron.site/api/visit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user: localStorage.getItem('user'),
-        type: 'enter',
-        content: `${document.referrer}`,
-      }),
+    new Notify({
+      title: `已经更新至 ${readySystem.version}`,
+      content: `欢迎加入qq群 712921211`,
+      timeout: 10000,
     });
-
-    fetch('https://api.vtron.site/api/notify', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: 1,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.code === 200) {
-          res.data.forEach((item: any) => {
-            new Notify({
-              title: item.title,
-              content: item.content,
-              timeout: 10000,
-            });
-          });
-        }
-      });
   }, 100);
 });
 function addListToDesktop(list: any[]) {

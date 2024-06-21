@@ -43,9 +43,7 @@ js执行：保存的js文件可以执行。
 qq群：712921211
 
 ![GitHub issues](https://img.shields.io/github/issues/royalknight56/vtron)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/royalknight56/vtron)
 ![GitHub](https://img.shields.io/github/license/royalknight56/vtron)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/royalknight56/vtron)
 ![GitHub last commit](https://img.shields.io/github/last-commit/royalknight56/vtron)
 ![GitHub Repo stars](https://img.shields.io/github/stars/royalknight56/vtron?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/royalknight56/vtron?style=social)

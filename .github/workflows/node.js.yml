@@ -26,7 +26,7 @@ jobs:
 
       - uses: pnpm/action-setup@v2
         with:
-          version: 8.7.0
+          version: 9.1.4
           cache: 'pnpm'
       - run: pnpm install
       - run: pnpm run vtron bl

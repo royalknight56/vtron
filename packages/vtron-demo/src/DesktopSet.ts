@@ -7,7 +7,6 @@ import vscode from './assets/vscode.png';
 import winv3icon from './assets/winv3.png';
 
 import beaticon from './assets/beat.ico';
-import bird1icon from './assets/bird1.png';
 import kiometicon from './assets/kiomet.webp';
 import signalicon from './assets/signal.png';
 // import galleryicon from './assets/gallery.png';
@@ -15,7 +14,6 @@ import signalicon from './assets/signal.png';
 import GitStars from './components/apps/GitStars.vue';
 import GotoReadMe from './components/apps/GotoReadMe.vue';
 
-import CommentVue from './components/apps/Comment.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
 import FriendLink from './components/apps/FriendLink.vue';
 import NoteMd from './components/apps/NoteMd.vue';
@@ -60,11 +58,10 @@ const magnetConfig = [
   {
     title: '意见反馈',
     icon: beaticon,
-    width: 400,
-    height: 400,
+    width: 800,
+    height: 600,
     center: true,
-    content: CommentVue,
-    resizable: false,
+    content: 'https://w0akxkb81ek.feishu.cn/share/base/form/shrcnxXNS3dN7XpIfPdXNknjxNf',
   },
 ];
 const desktopConfig = [

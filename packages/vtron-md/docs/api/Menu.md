@@ -17,7 +17,7 @@ const menu = Menu.buildFromTemplate([
 
 addEventListener('contextmenu', (e) => {
   e.preventDefault();
-  menu.popup();
+  menu.popup(e);
 });
 ```
 

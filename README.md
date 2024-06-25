@@ -371,13 +371,13 @@ Vtron 只有在系统第一次启动的时候，才会在文件系统中添加 a
 
 包含多个子项目，存在于packages下，每个文件夹是一个子项目。
 
-vtron: 核心项目，包含核心逻辑，vtronjs包。
+vtron: 核心项目，包含核心逻辑，vtron核心包。
 
 vtron-demo: demo项目，也是线上vtron.site/win的项目。
 
 vtron-e2e: e2e测试监控项目。
 
-vtron-md: 文档项目，指线上v3w10.vtron.site。
+vtron-md: 文档项目，指线上[vtron.site/doc/](https://vtron.site/doc/)
 
 vtron-plus: plus插件，包含了部分占用体积的附加功能。
 

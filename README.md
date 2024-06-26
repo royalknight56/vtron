@@ -5,7 +5,7 @@
  * @FilePath: /myindex/README.md
 -->
 
-<p align="center"><a href="https://vtron.site" target="_blank" rel="noopener noreferrer"><img width="200" src="./rdmassert/vtron-logo-nobg.png" alt="vtron logo"></a></p>
+<p align="center"><a href="https://vtron.site" target="_blank" rel="noopener noreferrer"><img width="200" src="./assert/vtron-logo-nobg.png" alt="vtron logo"></a></p>
 
 <div align="center">
 
@@ -453,7 +453,7 @@ pnpm e2e dev
 ## 欢迎加入技术交流群
 
 <div>
-<img src="./rdmassert/qqgroup.jpg" alt="QQ" width="300" style="display: inline-block"/>
+<img src="./assert/qqgroup.jpg" alt="QQ" width="300" style="display: inline-block"/>
 </div>
 
 ## Thanks

@@ -24,7 +24,9 @@ const userPassword = ref(sys._options.login?.password || '');
 async function onLogin() {
   if (loginCallback) {
     alertMsg.value = '等待确认';
+    
     const res = await loginCallback(userName.value, userPassword.value);
+    console.log(userName.value, userPassword.value,res);
     if (res) {
       loginSuccess();
     } else {

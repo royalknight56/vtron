@@ -17,8 +17,8 @@ const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 const sys = inject<System>('system')!;
 const content = ref('');
 
-onMounted(() => {
-  const fileContent = browserWindow?.config.content;
+onMounted(async () => {
+  const fileContent = (await sys.fs.readFile(browserWindow?.config?.path)) || '';
 
   if (sys.fs instanceof VtronFileSystem) {
     sys.fs.checkVolumePath(fileContent);

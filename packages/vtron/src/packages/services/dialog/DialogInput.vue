@@ -1,12 +1,9 @@
 <template>
   <div class="dialog">
     <div class="dialog-content">
-      <div class="dialog-icon">
-        <img class="dialog-icon_img" :src="iconMap[win?.config.option.type]" alt="" />
-      </div>
-      <div class="dialog-tip">
-        {{ win?.config.option.message }}
-      </div>
+      <div class="dialog-label">{{ win?.config.option.message }}:</div>
+
+      <WinInput :placeholder="win?.config.option?.placeholder" v-model="inputVal"></WinInput>
     </div>
     <div class="dialog-button">
       <WinButton
@@ -20,29 +17,18 @@
 </template>
 <script setup lang="ts">
 import WinButton from '@packages/components/WinButton.vue';
-import { inject } from 'vue';
-
-import errorIcon from '@packages/assets/error-icon.png';
-import infoIcon from '@packages/assets/info-icon.png';
-import questionIcon from '@packages/assets/question-icon.png';
-import warningIcon from '@packages/assets/warning-icon.png';
+import WinInput from '@packages/components/WinInput.vue';
+import { inject, ref } from 'vue';
 import { BrowserWindow } from '@/packages/services';
 
-const iconMap: {
-  [key: string]: string;
-} = {
-  error: errorIcon,
-  info: infoIcon,
-  question: questionIcon,
-  warning: warningIcon,
-};
+const inputVal = ref('');
 
 const win: BrowserWindow | undefined = inject<BrowserWindow>('browserWindow');
 
 function handleClick(index: number) {
   if (win) {
     win.config.res({
-      response: index,
+      response: inputVal.value,
     });
     win.close();
   }
@@ -58,28 +44,19 @@ function handleClick(index: number) {
   align-items: center;
 
   .dialog-content {
-    width: 80%;
+    width: 100%;
     height: 80px;
     font-size: var(--ui-font-size);
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
 
-    .dialog-icon {
-      width: 60px;
+    .dialog-label {
+      width: 80px;
       height: 60px;
-      flex-grow: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-
-      .dialog-icon_img {
-        width: 34px;
-        height: 34px;
-      }
-    }
-    .dialog-tip {
-      margin: 0 20px;
     }
   }
 

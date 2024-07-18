@@ -50,7 +50,7 @@ function handleChange(e: any) {
   height: var(--ui-button-height);
   border-width: 1px;
   box-sizing: border-box;
-  padding: 0;
+  padding: 0 2px;
   // &:hover {
   //     border-width: 1px;
   //     border-color: var(--color-blue);

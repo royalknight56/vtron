@@ -20,3 +20,6 @@ export function uniqBy<T>(arr: T[], fn: (item: T) => any): T[] {
     return true;
   });
 }
+export function isNil(val: any): val is null | undefined {
+  return val === null || val === undefined;
+}

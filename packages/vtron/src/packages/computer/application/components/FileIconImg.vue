@@ -16,9 +16,9 @@ const sys = inject<System>('system')!;
 const iconimg = ref('');
 const iconR = ref(props.icon);
 
-onMounted(async ()=>{
+onMounted(async () => {
   iconimg.value = await dealIcon(props.file, sys);
-})
+});
 function replaceIcon() {
   iconR.value = unknownicon;
   iconimg.value = unknownicon;

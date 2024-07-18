@@ -47,7 +47,8 @@ function vtronPlus(system: System) {
 
   system.registerFileOpener(['.doc', '.docx'], {
     icon: docxIcon,
-    func: (path, content) => {
+    func: async (path) => {
+      const content = (await system.fs.readFile(path)) || '';
       new BrowserWindow({
         title: path,
         icon: docxIcon,
@@ -66,7 +67,8 @@ function vtronPlus(system: System) {
 
   system.registerFileOpener(['.xls', '.xlsx'], {
     icon: xlsxIcon,
-    func: (path, content) => {
+    func: async (path) => {
+      const content = (await system.fs.readFile(path)) || '';
       new BrowserWindow({
         title: path,
         icon: xlsxIcon,
@@ -85,7 +87,8 @@ function vtronPlus(system: System) {
 
   system.registerFileOpener('.pdf', {
     icon: pdfIcon,
-    func: (path, content) => {
+    func: async (path) => {
+      const content = (await system.fs.readFile(path)) || '';
       const pdfwindow = new BrowserWindow({
         width: 800,
         height: 600,
@@ -105,7 +108,8 @@ function vtronPlus(system: System) {
   system.registerFileOpener('.py', {
     name: 'Python',
     icon: pythonIcon,
-    func: (path, content) => {
+    func: async (path) => {
+      const content = (await system.fs.readFile(path)) || '';
       new BrowserWindow({
         title: path,
         icon: pythonIcon,
@@ -147,7 +151,8 @@ function vtronPlus(system: System) {
 
   system.registerFileOpener('.ink', {
     icon: mycomicon,
-    func: (path, content) => {
+    func: async (path) => {
+      const content = (await system.fs.readFile(path)) || '';
       const imgwindow = new BrowserWindow({
         width: 800,
         height: 600,
@@ -166,7 +171,8 @@ function vtronPlus(system: System) {
 
   system.registerFileOpener('.mp3', {
     icon: audioIcon,
-    func: (path, content) => {
+    func: async (path) => {
+      const content = (await system.fs.readFile(path)) || '';
       new BrowserWindow({
         title: path,
         icon: audioIcon,
@@ -184,7 +190,8 @@ function vtronPlus(system: System) {
   });
   system.registerFileOpener('.mp4', {
     icon: videoIcon,
-    func: (path, content) => {
+    func: async (path) => {
+      const content = (await system.fs.readFile(path)) || '';
       new BrowserWindow({
         title: path,
         icon: videoIcon,
@@ -203,7 +210,8 @@ function vtronPlus(system: System) {
 
   system.registerFileOpener(['.ppt', '.pptx'], {
     icon: pptxIcon,
-    func: (path, content) => {
+    func: async (path) => {
+      const content = (await system.fs.readFile(path)) || '';
       new BrowserWindow({
         title: path,
         icon: ppticon,

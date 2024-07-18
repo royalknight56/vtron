@@ -10,7 +10,7 @@ async function pasteFile(system: System, path: string) {
   if (clipLen) {
     const clipFiles = rootState.clipboard.getClipboard();
 
-    if (!clipFiles.map) {
+    if (!clipFiles?.map) {
       return;
     }
     await await Promise.all(
@@ -35,6 +35,12 @@ async function pasteFile(system: System, path: string) {
 
 async function createNewFile(system: System, path: string) {
   if (!system) return;
+  if (path === '/') {
+    return system.createDialog().showMessageBox({
+      message: i18n('cannot.create.file.here'),
+      type: 'error',
+    });
+  }
   let newFilePath = fspath.join(path, i18n('new.file') + '.txt');
   if (await system.fs.exists(newFilePath)) {
     let i = 1;

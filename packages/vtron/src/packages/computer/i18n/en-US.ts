@@ -120,4 +120,11 @@ export const enUS: AllText = {
   'change.encoding': 'Change Encoding',
   'exe.document': 'Executable Document',
   'exe.error': 'Cannot Open Shortcut, Target Does Not Exist',
+  'create.account': 'Create Account',
+  'account.name': 'Account Name',
+  'no.account': 'No Account',
+  'create.account.for.unlock': 'Create Account For Unlock',
+  'delete.account.tip':
+    'After deleting the account, the lock screen function cannot be used, do you want to continue?',
+  'cannot.create.file.here': 'Cannot Create File Here',
 };

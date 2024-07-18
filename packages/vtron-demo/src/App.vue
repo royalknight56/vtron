@@ -223,7 +223,8 @@ NoteMd是和vtron契合的笔记软件
   ]);
   readySystem.registerFileOpener('.md', {
     icon: onetocicon,
-    func: (path, content) => {
+    func: async (path) => {
+      const content = (await readySystem.fs.readFile(path)) || '';
       new BrowserWindow({
         title: path,
         icon: markdownicon,

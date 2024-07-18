@@ -7,6 +7,6 @@
   "eslint.experimental.useFlatConfig": false,
   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "[vue]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

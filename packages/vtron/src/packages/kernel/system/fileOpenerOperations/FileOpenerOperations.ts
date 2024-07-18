@@ -5,7 +5,7 @@ export type FileOpener = {
   name?: string;
   icon: string;
   hiddenInChosen?: boolean;
-  func: (path: string, content: string) => void;
+  func: (path: string) => void;
 };
 
 export class FileOpenerOperations {
@@ -26,7 +26,7 @@ export class FileOpenerOperations {
     this.flieOpenerMap.set(type, opener);
   }
   getOpener(type: string) {
-    return this.flieOpenerMap.get(type);
+    return this.flieOpenerMap.get(type.toLocaleLowerCase());
   }
   getAllFileOpener() {
     return this.flieOpenerMap;
@@ -39,13 +39,11 @@ export class FileOpenerOperations {
       throw new Error('文件不存在');
     }
     if (fileStat?.isDirectory) {
-      this.flieOpenerMap.get('dir')?.func.call(this, path, '');
+      this.flieOpenerMap.get('dir')?.func.call(this, path);
       return;
     } else {
-      const fileContent = await this.system.fs.readFile(path);
-      this.flieOpenerMap
-        .get(fspath.extname(fileStat?.path || '') || 'link')
-        ?.func.call(this, path, fileContent || '');
+      const opener = this.getOpener(fspath.extname(fileStat?.path || '') || 'link');
+      opener?.func.call(this, path);
     }
   }
 }

@@ -1,4 +1,5 @@
 import { SystemOptions } from '@/packages/type/type';
+import { isNil } from '@/packages/util/modash';
 
 export const defaultConfig: SystemOptions = {
   background: '#3A98CE',
@@ -25,9 +26,15 @@ export const defaultConfig: SystemOptions = {
     },
   },
   async loginCallback(username, password) {
-    return (
-      username === localStorage.getItem('vtron-username') &&
-      password === localStorage.getItem('vtron-password')
-    );
+    let mark = true;
+    const name = localStorage.getItem('vtron-username');
+    const pass = localStorage.getItem('vtron-password');
+    if (isNil(name)) {
+      return mark;
+    }
+    if (isNil(pass)) {
+      return name === username;
+    }
+    return username === name && password === pass;
   },
 };

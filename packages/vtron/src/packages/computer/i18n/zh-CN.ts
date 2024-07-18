@@ -122,4 +122,10 @@ export const zhCN = {
   'change.encoding': '更改编码',
   'exe.document': '可执行文件',
   'exe.error': '无法打开快捷方式，目标不存在',
+  'create.account': '创建账户',
+  'account.name': '账户名',
+  'no.account': '暂无账户',
+  'create.account.for.unlock': '创建账户用于解锁',
+  'delete.account.tip': '删除账户后，无法使用锁屏功能，是否继续？',
+  'cannot.create.file.here': '无法在此处创建文件',
 };

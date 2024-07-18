@@ -23,8 +23,17 @@ export function initBuiltinFileOpener(system: System) {
       name: i18n('exe.document'),
       icon: unknownIcon,
       hiddenInChosen: true,
-      func: (path: string, content: string) => {
-        const exeContent = content.split('::');
+      func: async (path: string) => {
+        const fileContent = await system.fs.readFile(path);
+        if (!fileContent) {
+          system.createDialog().showMessageBox({
+            title: i18n('error'),
+            message: i18n('exe.error'),
+            type: 'error',
+          });
+          return;
+        }
+        const exeContent = fileContent.split('::');
         if (!exeContent[1] || !exeContent[2]) {
           system.createDialog().showMessageBox({
             title: i18n('error'),
@@ -66,7 +75,8 @@ export function initBuiltinFileOpener(system: System) {
       name: '快捷方式',
       icon: unknownIcon,
       hiddenInChosen: true,
-      func: async (path, content) => {
+      func: async (path) => {
+        const content = (await system.fs.readFile(path)) || '';
         if (await system.fs.exists(content)) {
           try {
             system.openFile(content);
@@ -92,7 +102,8 @@ export function initBuiltinFileOpener(system: System) {
     system.registerFileOpener(['.txt', '.js', '.json', ''], {
       name: '文本文件',
       icon: unknownIcon,
-      func: (path, content) => {
+      func: async (path) => {
+        const content = (await system.fs.readFile(path)) || '';
         const tempwindow = system.createWindow({
           width: 400,
           height: 400,
@@ -113,7 +124,8 @@ export function initBuiltinFileOpener(system: System) {
     name: '文件夹',
     icon: unknownIcon,
     hiddenInChosen: true,
-    func: (path, content) => {
+    func: async (path) => {
+      const content = (await system.fs.readFile(path)) || '';
       const tempwindow = system.createWindow({
         width: 800,
         height: 600,
@@ -134,7 +146,8 @@ export function initBuiltinFileOpener(system: System) {
     system.registerFileOpener('.url', {
       name: '网址',
       icon: unknownIcon,
-      func: async (path, content) => {
+      func: async (path) => {
+        const content = (await system.fs.readFile(path)) || '';
         const imgwindow = system.createWindow({
           width: 900,
           height: 600,
@@ -156,7 +169,7 @@ export function initBuiltinFileOpener(system: System) {
     system.registerFileOpener(['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'], {
       name: '图片',
       icon: imageicon,
-      func: (path: string, content: any) => {
+      func: async (path: string) => {
         const imgwindow = system.createWindow({
           width: 400,
           height: 400,
@@ -165,7 +178,6 @@ export function initBuiltinFileOpener(system: System) {
           title: '图片预览',
           content: ImageViewerVue,
           config: {
-            content: content,
             path: path,
           },
         });

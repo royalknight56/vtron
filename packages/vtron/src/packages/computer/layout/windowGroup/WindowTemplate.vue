@@ -22,7 +22,7 @@
     ref="$win_outer"
     v-dragable
   >
-    <div class="wintmp_uper" @contextmenu.prevent>
+    <div class="wintmp_uper" @contextmenu.stop="handleRightClick">
       <MenuBar :browser-window="browserWindow"></MenuBar>
     </div>
     <div
@@ -107,6 +107,7 @@ import { BrowserWindow, WindowStateEnum } from '@/packages/services';
 import MenuBar from './components/MenuBar.vue';
 import { System } from '@packages/kernel';
 import { vDragable } from './MakeDragable';
+import { i18n } from '../../i18n';
 const sys = inject<System>('system')!;
 const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;

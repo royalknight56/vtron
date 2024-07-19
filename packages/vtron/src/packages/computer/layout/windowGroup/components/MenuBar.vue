@@ -16,6 +16,7 @@ import { System } from '@packages/kernel';
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
 import WinUpButtonGroup from '@/packages/components/WinUpButtonGroup.vue';
 import { WindowStateEnum } from '@/packages/services/window/BrowserWindow';
+import { i18n } from '@/packages/computer/i18n';
 const sys = inject<System>('system')!;
 const props = defineProps<{
   browserWindow: UnwrapNestedRefs<BrowserWindow>;
@@ -39,12 +40,39 @@ function handleEvent(event: string) {
       break;
   }
 }
-function handleRightClick(e: MouseEvent) {
-  e.preventDefault();
+
+/**
+ * 顶栏右键点击
+ * @param mouse
+ */
+function handleRightClick(mouse: MouseEvent) {
+  mouse.preventDefault();
   sys.emitEvent('window.menubar.rightclick', {
-    mouse: e,
+    mouse: mouse,
     window: props.browserWindow,
   });
+  sys
+    .buildFromTemplate([
+      {
+        label: i18n('maximize'),
+        click: () => {
+          props.browserWindow.maximize();
+        },
+      },
+      {
+        label: i18n('minimize'),
+        click: () => {
+          props.browserWindow.minimize();
+        },
+      },
+      {
+        label: i18n('close'),
+        click: () => {
+          props.browserWindow.close();
+        },
+      },
+    ])
+    .popup(mouse);
 }
 </script>
 <style lang="scss" scoped>

@@ -149,8 +149,9 @@ function closeWin() {
   flex-direction: column;
   height: 100%;
   border-radius: 6px;
-  overflow: hidden;
   background-color: rgb(243, 243, 243);
+  overflow: hidden;
+  position: relative;
 }
 
 .store-handle {

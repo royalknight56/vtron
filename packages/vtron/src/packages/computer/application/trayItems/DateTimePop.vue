@@ -20,6 +20,7 @@
               istoday: today.weekIndex === weekIndex && today.dayIndex === dayIndex,
               chosen: chosen.weekIndex === weekIndex && chosen.dayIndex === dayIndex,
               invday: perday === '',
+              haveNote: noteMap[weekIndex]?.[dayIndex],
             }"
             v-glowing
             v-for="(perday, dayIndex) in perweek"
@@ -33,12 +34,19 @@
     </div>
     <div class="date-bottom">
       <div class="add-sch">
-        <input type="text" placeholder="添加日程或提醒" v-model="alertText" /><br />
-        <!-- 时 -->
-        <input type="number" :max="24" :min="0" v-model="alertHour" @blur="checkAlert()" /> 时
-        <!-- 分 -->
-        <input type="number" :max="60" :min="0" v-model="alertMin" @blur="checkAlert()" /> 分
-        <WinButtonVue @click="addAlert">确定</WinButtonVue>
+        <div class="add-date">
+          在{{ today.year }}年{{ today.month }}月{{ month[chosen.weekIndex]?.[chosen.dayIndex] }}日添加日程
+        </div>
+        <WinInput type="text" placeholder="输入日程或提醒内容" v-model="alertText" />
+        <div class="add-time">
+          在
+          <!-- 时 -->
+          <input type="number" :max="24" :min="0" v-model="alertHour" @blur="checkAlert()" /> 时
+          <!-- 分 -->
+          <input type="number" :max="60" :min="0" v-model="alertMin" @blur="checkAlert()" /> 分 提醒
+
+          <WinButtonVue v-if="alertText !== ''" @click="addAlert">确认添加</WinButtonVue>
+        </div>
       </div>
       <div class="exist-sch">
         <div class="no-sch" v-if="alertList.length <= 0">今日无日程</div>
@@ -57,7 +65,7 @@
 <script setup lang="ts">
 import { inject, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { System } from '@packages/kernel';
-import { WinButtonVue, join } from '@/packages/plug';
+import { WinButtonVue, join, WinInput } from '@/packages/plug';
 
 import DateNote from '@/packages/computer/application/DateNote.vue';
 import { vGlowing } from '@/packages/computer/utils/glowingBorder';
@@ -70,6 +78,7 @@ const weeksPrefix = ['日', '一', '二', '三', '四', '五', '六'];
 const month = ref<Array<Array<string>>>([]);
 const date = new Date();
 const mFirstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+const noteMap = reactive<{ [key: number]: { [key: number]: boolean } }>({});
 
 const today = {
   weekIndex: Math.floor((mFirstDay.getDay() + date.getDate() - 1) / 7),
@@ -117,6 +126,20 @@ onMounted(() => {
   }
   for (let i = 0; i < lastDay; i++) {
     month.value[Math.floor((firstDay + i) / 7)][(firstDay + i) % 7] = `${i + 1}`;
+    readDateNotesAtDay(
+      new Date(
+        today.year,
+        today.month - 1,
+        parseInt(month.value[Math.floor((firstDay + i) / 7)][(firstDay + i) % 7])
+      )
+    ).then((notes) => {
+      if (notes.length > 0) {
+        noteMap[Math.floor((firstDay + i) / 7)] = {
+          ...noteMap[Math.floor((firstDay + i) / 7)],
+          [(firstDay + i) % 7]: true,
+        };
+      }
+    });
   }
   readDateNotes();
 });
@@ -148,6 +171,9 @@ function checkAlert() {
 // 添加日程
 async function addAlert() {
   if (alertText.value === '') {
+    return;
+  }
+  if (alertHour.value > 24 || alertHour.value < 0 || alertMin.value > 60 || alertMin.value < 0) {
     return;
   }
   const chosenDay = new Date(
@@ -187,6 +213,9 @@ async function addAlert() {
   alertText.value = '';
   alertHour.value = 0;
   alertMin.value = 0;
+  if (noteMap[chosen.weekIndex]?.[chosen.dayIndex]) {
+    noteMap[chosen.weekIndex][chosen.dayIndex] = true;
+  }
   readDateNotes();
 }
 
@@ -194,7 +223,7 @@ async function deleteAlert(index: number) {
   const chosenDay = new Date(
     today.year,
     today.month - 1,
-    parseInt(month.value[chosen.weekIndex][chosen.dayIndex]),
+    parseInt(month.value[chosen.weekIndex]?.[chosen.dayIndex]),
     alertHour.value,
     alertMin.value
   );
@@ -209,6 +238,7 @@ async function deleteAlert(index: number) {
       await sys.fs.unlink(
         join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName)
       );
+      noteMap[chosen.weekIndex][chosen.dayIndex] = false;
     } else {
       await sys.fs.writeFile(
         join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName),
@@ -225,22 +255,31 @@ const alertList = ref<
     time: number;
   }>
 >([]);
+
 async function readDateNotes() {
-  const chosenDay = new Date(
-    today.year,
-    today.month - 1,
-    parseInt(month.value[chosen.weekIndex][chosen.dayIndex]),
-    alertHour.value,
-    alertMin.value
+  const list = await readDateNotesAtDay(
+    new Date(
+      today.year,
+      today.month - 1,
+      parseInt(month.value[chosen.weekIndex]?.[chosen.dayIndex]),
+      alertHour.value,
+      alertMin.value
+    )
   );
+  alertList.value = list;
+}
+async function readDateNotesAtDay(chosenDay: Date) {
   const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
   const alredyNotes = await sys.fs.readFile(
     join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName)
   );
-  if (alredyNotes) {
-    alertList.value = JSON.parse(alredyNotes);
-  } else {
-    alertList.value = [];
+  if (!alredyNotes) {
+    return [];
+  }
+  try {
+    return JSON.parse(alredyNotes);
+  } catch (error) {
+    return [];
   }
 }
 const win = sys.createWindow({
@@ -254,7 +293,7 @@ function clickDetail(item: { text: string; time: number }) {
   const chosenDay = new Date(
     today.year,
     today.month - 1,
-    parseInt(month.value[chosen.weekIndex][chosen.dayIndex])
+    parseInt(month.value[chosen.weekIndex]?.[chosen.dayIndex])
   );
   win.config = {
     text: item.text,
@@ -368,6 +407,9 @@ function clickDetail(item: { text: string; time: number }) {
         .chosen:hover {
           border: 3px solid var(--color-dark-hover);
         }
+        .haveNote {
+          background-color: rgba(106, 194, 253, 0.167);
+        }
       }
     }
   }
@@ -379,6 +421,24 @@ function clickDetail(item: { text: string; time: number }) {
     // padding: 0 10px;
     .add-sch {
       padding-left: 10px;
+      .add-date {
+        font-size: 12px;
+        font-weight: 400;
+        margin-bottom: 10px;
+      }
+      .add-time {
+        font-size: 12px;
+        font-weight: 400;
+        margin-bottom: 10px;
+        input {
+          width: 30px;
+          height: 20px;
+          font-size: 12px;
+          font-weight: 400;
+          text-align: center;
+          margin: 5px 5px;
+        }
+      }
     }
     .exist-sch {
       height: 130px;

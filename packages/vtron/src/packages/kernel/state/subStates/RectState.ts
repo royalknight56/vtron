@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 
 export class RectState {
+  
   screenWidth = ref(window.innerWidth);
   screenHeight = ref(window.innerHeight);
   mouseX = ref(0);

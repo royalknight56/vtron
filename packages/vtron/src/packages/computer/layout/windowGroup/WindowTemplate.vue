@@ -208,6 +208,7 @@ onUnmounted(() => {
   flex-direction: column;
   box-shadow: var(--window-box-shadow);
   border-radius: var(--window-border-radius);
+  overflow: hidden;
   .wintmp_main {
     position: relative;
     width: 100%;

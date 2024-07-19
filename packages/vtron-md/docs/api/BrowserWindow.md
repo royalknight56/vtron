@@ -45,6 +45,7 @@ constructor(option:{
     alwaysOnTop: boolean
     skipTaskbar: boolean
     backgroundColor: string
+    textColor: string
 })
 ```
 
@@ -193,6 +194,13 @@ Type: boolean
 Type: string
 
 窗口的背景颜色。
+
+
+### textColor
+
+Type: string
+
+窗口的文字颜色。
 
 ## id
 
@@ -746,4 +754,39 @@ usage:
 ```ts
 const win = new BrowserWindow();
 win.setMinimizable(true);
+```
+
+
+## setBackgroundColor
+
+type:
+
+```ts
+setBackgroundColor(color:string):void
+```
+
+设置窗口的背景颜色
+
+usage:
+
+```ts
+const win = new BrowserWindow();
+win.setBackgroundColor('#901');
+```
+
+## setTextColor
+
+type:
+
+```ts
+setTextColor(color:string):void
+```
+
+设置窗口的文字颜色
+
+usage:
+
+```ts
+const win = new BrowserWindow();
+win.setTextColor('#901');
 ```

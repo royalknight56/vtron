@@ -58,7 +58,7 @@ function handleRightClick(e: MouseEvent) {
   height: var(--menu-bar-height);
   line-height: var(--menu-bar-height);
   font-weight: 100;
-  color: rgb(51, 51, 51);
+
   overflow: hidden;
   display: flex;
   justify-content: space-between;
@@ -73,7 +73,6 @@ function handleRightClick(e: MouseEvent) {
 
     .menubar-title {
       padding: 0 10px;
-      color: black;
       font-family: 'Segoe UI', Tahoma, sans-serif;
       font-weight: 400;
       font-size: 12px;

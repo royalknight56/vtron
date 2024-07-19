@@ -29,6 +29,7 @@ export interface BrowserWindowConstructorOptions {
   alwaysOnTop: boolean;
   skipTaskbar: boolean;
   backgroundColor: string;
+  textColor: string;
 }
 export interface WindowInfo extends BrowserWindowConstructorOptions {
   state: WindowStateEnum;
@@ -58,6 +59,7 @@ class BrowserWindow {
     alwaysOnTop: false,
     skipTaskbar: false,
     backgroundColor: '#fff',
+    textColor: '#000',
   };
   public static defaultInfo: Omit<WindowInfo, keyof BrowserWindowConstructorOptions> = {
     state: WindowStateEnum.normal,
@@ -361,6 +363,14 @@ class BrowserWindow {
   setDisable(flag: boolean) {
     this.windowInfo.disable = flag;
     this.emit('disable', flag);
+  }
+  setBackgroundColor(color: string) {
+    this.windowInfo.backgroundColor = color;
+    this.emit('backgroundColor', color);
+  }
+  setTextColor(color: string) {
+    this.windowInfo.textColor = color;
+    this.emit('textColor', color);
   }
 }
 export { BrowserWindow };

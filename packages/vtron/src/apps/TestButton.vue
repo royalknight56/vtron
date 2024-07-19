@@ -11,9 +11,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Notify, vDragable } from '@packages/plug';
-
+import { BrowserWindow, Notify, vDragable } from '@packages/plug';
+import { inject } from 'vue';
+const win = inject<BrowserWindow>('browserWindow');
 async function test() {
+  win?.setBackgroundColor('#401');
+  win?.setTextColor('#fff');
   new Notify({
     title: 'title',
     content: '111',

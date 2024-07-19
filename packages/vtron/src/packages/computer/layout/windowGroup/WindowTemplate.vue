@@ -153,6 +153,7 @@ onMounted(() => {
       return windowInfo.zindex;
     }),
     backgroundColor: computed(() => windowInfo.backgroundColor),
+    borderRadius: windowInfo.radius ? windowInfo.radius + 'px' : 'var(--window-border-radius)',
   };
 });
 

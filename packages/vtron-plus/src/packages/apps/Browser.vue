@@ -70,8 +70,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-const urlinput = ref('https://cn.bing.com/');
-const urlsrc = ref('https://cn.bing.com/');
+const urlinput = ref('https://nav.yhz610.com/');
+const urlsrc = ref('https://nav.yhz610.com/');
 function urlkey(e: KeyboardEvent) {
   if (e.code == 'Enter') {
     changeUrl();

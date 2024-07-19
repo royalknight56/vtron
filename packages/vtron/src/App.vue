@@ -61,6 +61,7 @@ const sys = new System({
         title: '测试按钮',
         icon: testicon,
         center: true,
+        radius: 20,
         // backgroundColor: "rgba(0,0,0,1)",
       },
     },

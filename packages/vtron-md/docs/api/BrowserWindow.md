@@ -36,6 +36,7 @@ constructor(option:{
     height: number
     x: number
     y: number
+    radius: number
     center: boolean
     resizable: boolean
     minimizable: boolean
@@ -138,6 +139,12 @@ Type: number
 Type: number
 
 窗口的纵坐标，以像素为单位。
+
+### radius
+
+Type: number
+
+窗口的圆角半径，以像素为单位。
 
 ### center
 

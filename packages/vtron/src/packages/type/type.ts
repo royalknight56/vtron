@@ -72,10 +72,6 @@ export interface SystemOptionsCertainly {
 export type SystemOptions = SystemOptionsCertainly & {
   [key: string]: SafeAny;
 };
-export interface WinApp {
-  icon: string;
-  path: string;
-}
 export interface WinAppOptions {
   name: string;
   icon?: string;

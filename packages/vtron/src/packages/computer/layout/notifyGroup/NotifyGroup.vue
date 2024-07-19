@@ -8,16 +8,31 @@
         <div class="notify-item-body">
           <span>{{ notify.content }}</span>
         </div>
+        <div class="notify-close" @click="closeNotify(notify)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              stroke="#000"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </div>
       </div>
     </TransitionGroup>
   </div>
 </template>
 <script setup lang="ts">
 import { vGlowing } from '@/packages/computer/utils/glowingBorder';
+import { Notify } from '@/packages/services';
 import { System } from '@packages/kernel';
 import { inject } from 'vue';
 const sys = inject<System>('system')!;
 const notifyGroup = sys.stateManager.notify;
+function closeNotify(notify: Notify) {
+  notify.close();
+}
 </script>
 <style lang="scss" scoped>
 .notify {
@@ -50,6 +65,15 @@ const notifyGroup = sys.stateManager.notify;
       font-size: 14px;
       color: black;
     }
+    .notify-close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      padding: 5px;
+    }
   }
   .notify-item:hover {
     // transform: scale(1.05);
@@ -75,4 +99,3 @@ const notifyGroup = sys.stateManager.notify;
   }
 }
 </style>
-../../kernel/system

@@ -7,7 +7,7 @@
 <template>
   <div class="outer">
     <VtronComputer :system="sys"></VtronComputer>
-    <VtronComputer :system="sys2"></VtronComputer>
+    <!-- <VtronComputer :system="sys2"></VtronComputer> -->
   </div>
 </template>
 

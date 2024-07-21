@@ -22,7 +22,7 @@
     ref="$win_outer"
     v-dragable
   >
-    <div class="wintmp_uper" @contextmenu.stop="handleRightClick">
+    <div class="wintmp_uper">
       <MenuBar :browser-window="browserWindow"></MenuBar>
     </div>
     <div

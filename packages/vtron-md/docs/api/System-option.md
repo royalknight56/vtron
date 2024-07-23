@@ -27,30 +27,38 @@ let system = new System({
 ```typescript
 
 interface SystemOptions {
-  lang?: string;
-  logo?: string;
-  background?: string;
-  rootStyle?: any;
-  builtinApp?: BuiltinApp[];
-  desktop?: WinAppOptions[];
-  magnet?: WinAppOptions[];
-  menulist?: WinAppOptions[];
-  fs?: VtronFileInterface;
-  userLocation?: string;
-  systemLocation?: string;
-  initFile?: InitFileItem;
-  shell?: ShellInterface;
-  login?: {
-    username: string;
-    password: string;
-    init?: () => boolean;
-  };
-  contextMenus?: {
-    name: string;
-    click: () => void;
-  }[];
-  noPassword?: boolean;
-  loginCallback?: (username: string, password: string) => Promise<boolean>;
+    /**
+     * @description: 语言
+     */
+    lang?: string;
+    /**
+     * @description: logo
+     */
+    logo?: string;
+    background?: string;
+    rootStyle?: any;
+    builtinFeature?: BuiltinFeature[];
+    desktop?: WinAppOptions[];
+    magnet?: WinAppOptions[];
+    menulist?: WinAppOptions[];
+    fs?: VtronFileInterface;
+    userLocation?: string;
+    systemLocation?: string;
+    initFile?: InitFileItem;
+    shell?: ShellInterface;
+    brightness?: number;
+    login?: {
+        username: string;
+        password: string;
+        init?: () => boolean;
+    };
+    contextMenus?: Array<MenuItemConstructorOptions | MenuItem>;
+    noPassword?: boolean;
+    loginCallback?: (username: string, password: string) => Promise<boolean>;
+    /**
+     * 不立即挂载系统，默认为false
+     */
+    unMount?: boolean;
 }
 
 export interface WinAppOptions {
@@ -97,15 +105,36 @@ constructor(options?: SystemOptions)
 
 默认是win10的背景图，传入字符串改变
 
-## builtinApp
+## builtinFeature
 
-系统内置的app，可以通过数组设置是否显示
+系统内置的各种特性功能，可以通过数组设置是否显示
 
-type BuiltinApp = 'MyComputer' | 'AppStore';
+type BuiltinFeature =
+  | 'MyComputer'
+  | 'AppStore'
+  | 'DataTimeTray'
+  | 'BatteryTray'
+  | 'NetworkTray'
+  | 'ImageOpener'
+  | 'UrlOpener'
+  | 'TextOpener'
+  | 'ShortCutOpener'
+  | 'ExeOpener';
 
-目前只支持 我的电脑 和 应用商店
 
-默认值是 ['MyComputer', 'AppStore']
+默认值是 ['MyComputer', 'AppStore', 'DataTimeTray', 'BatteryTray', 'NetworkTray', 'ImageOpener', 'UrlOpener', 'TextOpener', 'ShortCutOpener', 'ExeOpener']
+
+ExeOpener 是一个打开exe文件的功能，如果不设置，则几乎所有应用程序都无法打开
+
+MyComputer 是文件浏览器，我的电脑
+
+AppStore 是应用商店
+
+DataTimeTray 是时间显示托盘图标
+
+BatteryTray 是电池显示托盘图标
+
+ShortCutOpener 是快捷方式打开器
 
 ## desktop
 
@@ -128,13 +157,19 @@ type BuiltinApp = 'MyComputer' | 'AppStore';
       }
 ```
 
+注意，每次更新桌面的应用时，都需要点击开始菜单的恢复选项。
+
 ## magnet
 
 系统的初始化的磁贴应用。
 
+注意，每次更新应用时，都需要点击开始菜单的恢复选项。
+
 ## menulist
 
 系统的初始化的开始菜单应用。
+
+注意，每次更新应用时，都需要点击开始菜单的恢复选项。
 
 ## fs
 
@@ -161,6 +196,10 @@ login中的init函数，是用来判断是否需要登录，如果返回true，�
 如果返回false，则会跳转到登录页。
 
 在用户输入完用户密码之后，点击登录，会调用loginCallback配置项，这个配置项是一个函数，需要返回一个`Promise<boolean >`，如果返回true，则代表登录成功，否则登录失败。不会打开系统。
+
+init是同步的，可以立即判断是否需要登录
+
+loginCallback是异步的，可以在这里进行登录验证
 
 ## noPassword
 

@@ -28,35 +28,45 @@ export interface WinAppOptions {
     }
 }
 interface SystemOptions {
-  lang?: string;
-  logo?: string;
-  background?: string;
-  rootStyle?: any;
-  builtinApp?: BuiltinApp[];
-  desktop?: WinAppOptions[];
-  magnet?: WinAppOptions[];
-  menulist?: WinAppOptions[];
-  fs?: VtronFileInterface;
-  userLocation?: string;
-  systemLocation?: string;
-  initFile?: InitFileItem;
-  shell?: ShellInterface;
-  login?: {
-    username: string;
-    password: string;
-    init?: () => boolean;
-  };
-  contextMenus?: {
-    name: string;
-    click: () => void;
-  }[];
-  noPassword?: boolean;
-  loginCallback?: (username: string, password: string) => Promise<boolean>;
+    /**
+     * @description: 语言
+     */
+    lang?: string;
+    /**
+     * @description: logo
+     */
+    logo?: string;
+    background?: string;
+    rootStyle?: any;
+    builtinFeature?: BuiltinFeature[];
+    desktop?: WinAppOptions[];
+    magnet?: WinAppOptions[];
+    menulist?: WinAppOptions[];
+    fs?: VtronFileInterface;
+    userLocation?: string;
+    systemLocation?: string;
+    initFile?: InitFileItem;
+    shell?: ShellInterface;
+    brightness?: number;
+    login?: {
+        username: string;
+        password: string;
+        init?: () => boolean;
+    };
+    contextMenus?: Array<MenuItemConstructorOptions | MenuItem>;
+    noPassword?: boolean;
+    loginCallback?: (username: string, password: string) => Promise<boolean>;
+    /**
+     * 不立即挂载系统，默认为false
+     */
+    unMount?: boolean;
 }
-
 
 constructor(options?: SystemOptions)
 ```
+
+## options-logo
+
 
 logo：可以设置系统的 logo，如果不设置则使用默认的 logo
 
@@ -83,21 +93,6 @@ const system = new System({
   ],
 });
 ```
-
-## options-lang
-
-可以设置语言，目前支持两种
-
-can set language, now support two languages
-
-- zh-CN
-- en-US
-
-## options-rootStyle
-
-可以设置根组件的样式变量
-
-（Md-TODO）
 
 ## options-fs
 

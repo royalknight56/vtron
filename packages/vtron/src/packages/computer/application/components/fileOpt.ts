@@ -71,10 +71,10 @@ async function openWith(system: System, file: VtronFileWithoutContent) {
   tempWin.show();
 }
 
-async function copyFile(system: System, files: VtronFileWithoutContent[]) {
+async function copyFile(system: System, paths: string[]) {
   const rootState = system.stateManager;
   if (!system) return;
-  rootState.clipboard.setClipboard(files.map((file) => file.path));
+  rootState.clipboard.setClipboard(paths);
 }
 async function pasteFile(system: System, path: string) {
   if (!system) return;

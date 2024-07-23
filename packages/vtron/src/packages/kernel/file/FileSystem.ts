@@ -484,16 +484,7 @@ class VtronFileSystem implements VtronFileInterface {
     }
   }
 
-  async stat(path: string): Promise<VtronFileWithoutContent | null> {
-    const volume = this.checkVolumePath(path);
-    if (volume) {
-      try {
-        return this.beforeGuard(volume, 'stat', path);
-      } catch {
-        this.onerror('Failed to read volume directory:' + path);
-      }
-    }
-
+  statBase(path: string): Promise<VtronFileWithoutContent | null> {
     const transaction = this.db.transaction('files', 'readonly');
     const objectStore = transaction.objectStore('files');
 
@@ -511,6 +502,19 @@ class VtronFileSystem implements VtronFileInterface {
         resolve(file);
       };
     });
+  }
+
+  async stat(path: string): Promise<VtronFileWithoutContent | null> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      try {
+        return this.beforeGuard(volume, 'stat', path);
+      } catch {
+        this.onerror('Failed to read volume directory:' + path);
+      }
+    }
+
+    return await this.statBase(path);
   }
 
   /**
@@ -645,6 +649,23 @@ class VtronFileSystem implements VtronFileInterface {
       }
     };
     this.commitWatch(vfile.path, vfile.content);
+  }
+  async rm(path: string): Promise<void> {
+    const volume = this.checkVolumePath(path);
+    if (volume) {
+      return this.beforeGuard(volume, 'rm', path);
+    }
+
+    const stats = await this.stat(path);
+    if (!stats) {
+      this.onerror('File not found');
+      return Promise.reject('File not found');
+    }
+    if (stats.isDirectory) {
+      return this.rmdir(path);
+    } else {
+      return this.unlink(path);
+    }
   }
   /**
    * 删除指定路径的文件夹及其内容

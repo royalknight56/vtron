@@ -16,6 +16,7 @@ export interface VtronFileInterface {
   stat: (path: string) => Promise<VtronFileWithoutContent | null>;
   unlink: (path: string) => Promise<void>;
   rename: (oldPath: string, newPath: string) => Promise<void>;
+  rm: (path: string) => Promise<void>;
   rmdir: (path: string) => Promise<void>;
   mkdir: (path: string) => Promise<void>;
   copyFile: (src: string, dest: string) => Promise<void>;

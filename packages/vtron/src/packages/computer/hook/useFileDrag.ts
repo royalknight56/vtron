@@ -6,10 +6,10 @@ let dragCallback = () => {
   //
 };
 export function useFileDrag(system: System) {
-  function startDrag(ev: DragEvent, items: VtronFileWithoutContent[], callback: () => void) {
+  function startDrag(ev: DragEvent, paths: string[], callback: () => void) {
     dragCallback = callback;
     ev?.dataTransfer?.setData('fromobj', 'web');
-    ev?.dataTransfer?.setData('frompath', JSON.stringify(items.map((item) => item.path)));
+    ev?.dataTransfer?.setData('frompath', JSON.stringify(paths));
   }
   // 拖到文件放下时
   async function folderDrop(ev: DragEvent, toPath: string) {

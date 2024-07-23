@@ -1,6 +1,6 @@
 <template>
   <template v-if="mode === 'detail'">
-    <div class="file-item file-bar mode-detail">
+    <div class="file-bar mode-detail">
       <div class="file-item_img"></div>
       <div class="file-item_title"></div>
       <div class="file-item_type">
@@ -17,24 +17,15 @@
       </div>
     </div>
   </template>
-  <div
-    draggable="true"
-    class="file-item"
-    :class="{
-      chosen: chosenIndexs.includes(index),
-      'no-chosen': !chosenIndexs.includes(index),
-      'mode-icon': mode === 'icon',
-      'mode-list': mode === 'list',
-      'mode-big': mode === 'big',
-      'mode-middle': mode === 'middle',
-      'mode-detail': mode === 'detail',
-      'drag-over': hoverIndex === index,
-    }"
-    :style="{
-      '--theme-color': theme === 'light' ? '#ffffff6b' : '#3bdbff3d',
-    }"
+  <FileItem
     v-for="(item, index) in fileList"
     :key="item.path"
+    :file="item"
+    :theme="theme"
+    :mode="mode"
+    :chosen-paths="chosenPaths"
+    :hover-path="hoverPath"
+    :edit-path="editPath"
     @dblclick="handleOnOpen(item)"
     @touchstart.passive="doubleTouch($event, item)"
     @contextmenu.stop.prevent="handleRightClick($event, item, index)"
@@ -43,55 +34,19 @@
     @dragover.prevent
     @dragleave="handleDragLeave()"
     @dragstart.stop="startDragApp($event, item)"
-    @click="handleClick(index)"
+    @click="handleClick(item)"
     @mousedown.stop
-    :ref="
+    @ref="
       (ref) => {
-        if (ref) {
-          appPositions[index] = markRaw(ref as Element);
-        }
+        appPositions[index] = markRaw(ref as Element);
       }
     "
   >
-    <div class="file-item_img">
-      <FileIcon :file="item" />
-    </div>
-    <span v-if="editIndex !== index" class="file-item_title">
-      {{ dealI18nName(basename(item.path)) }}
-    </span>
-    <input
-      autofocus
-      draggable="false"
-      @dragover.stop
-      @dragstart.stop
-      @dragenter.stop
-      @mousedown.prevent
-      @dblclick.stop
-      @click.stop
-      @blur="onEditNameEnd"
-      v-if="editIndex === index"
-      class="file-item_title file-item_editing"
-      v-model="editName"
-    />
-    <template v-if="mode === 'detail'">
-      <div class="file-item_type">
-        <span>{{ item.isDirectory ? '-' : dealSize(item.size) }}</span>
-      </div>
-      <div class="file-item_type">
-        <span>{{ item.birthtime.toLocaleString() }}</span>
-      </div>
-      <div class="file-item_type">
-        <span>{{ item.mtime.toLocaleString() }}</span>
-      </div>
-      <div class="file-item_type">
-        <span>{{ item.mode?.toString?.(8) || 'unknow' }}</span>
-      </div>
-    </template>
-  </div>
+  </FileItem>
 </template>
 <script lang="ts" setup>
 import { onMounted, ref, markRaw, inject } from 'vue';
-import { VtronFileWithoutContent, basename, dirname, join, System } from '@packages/kernel';
+import { VtronFileWithoutContent, basename, dirname, join, System, VtronFile } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
 import { openPropsWindow, copyFile, createLink, openWith } from './fileOpt';
@@ -99,6 +54,7 @@ import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { Rect } from '@/packages/computer/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
 import { dealSize } from '@/packages/util/fileUtils';
+import FileItem from './FileItem.vue';
 
 const sys = inject<System>('system')!;
 const { startDrag, folderDrop } = useFileDrag(sys);
@@ -132,15 +88,20 @@ const props = defineProps({
     default: 'icon',
   },
 });
+
+const hoverPath = ref<string>('');
+const appPositions = ref<Array<Element>>([]);
+const chosenPaths = ref<Array<string>>([]);
+
 function handleOnOpen(item: VtronFileWithoutContent) {
-  chosenIndexs.value = [];
+  chosenPaths.value = [];
   props.onOpen(item);
   sys.emitEvent('desktop.app.open');
 }
 function hadnleDrop(mouse: DragEvent, path: string) {
-  hoverIndex.value = -1;
+  hoverPath.value = '';
   folderDrop(mouse, path);
-  chosenIndexs.value = [];
+  chosenPaths.value = [];
 }
 let expired: number | null = null;
 function doubleTouch(e: TouchEvent, item: VtronFileWithoutContent) {
@@ -160,35 +121,29 @@ function doubleTouch(e: TouchEvent, item: VtronFileWithoutContent) {
   }
 }
 
-const editIndex = ref<number>(-1);
+const editPath = ref<string>('');
 const editName = ref<string>('');
 function onEditNameEnd() {
   const editEndName = editName.value.trim();
-  if (editEndName && editIndex.value >= 0) {
-    sys?.fs.rename(
-      props.fileList[editIndex.value].path,
-      join(dirname(props.fileList[editIndex.value].path), editEndName)
-    );
+  const editIndex = props.fileList.findIndex((item) => item.path === editPath.value);
+  if (editEndName && editIndex >= 0) {
+    sys?.fs.rename(editPath.value, join(dirname(editPath.value), editEndName));
     props.onRefresh();
   }
-  editIndex.value = -1;
+  editPath.value = '';
 }
 sys.mountEvent('edit.end', () => {
   onEditNameEnd();
 });
 
-const hoverIndex = ref<number>(-1);
-const appPositions = ref<Array<Element>>([]);
-
-const chosenIndexs = ref<Array<number>>([]);
-function handleClick(index: number) {
-  chosenIndexs.value = [index];
+function handleClick(file: VtronFileWithoutContent) {
+  chosenPaths.value = [file.path];
 }
 onMounted(() => {
-  chosenIndexs.value = [];
+  chosenPaths.value = [];
   props.onChosen(
     throttle((rect: Rect) => {
-      const tempChosen: number[] = [];
+      const tempChosen: string[] = [];
       appPositions.value.forEach((el, index) => {
         const rect2 = el.getBoundingClientRect();
         const rect2Center = {
@@ -201,35 +156,29 @@ onMounted(() => {
           rect2Center.y > rect.top &&
           rect2Center.y < rect.top + rect.height
         ) {
-          tempChosen.push(index);
+          tempChosen.push(props.fileList[index].path);
         }
       });
-      chosenIndexs.value = tempChosen;
+      chosenPaths.value = tempChosen;
     }, 100)
   );
 });
 
 function startDragApp(mouse: DragEvent, item: VtronFileWithoutContent) {
-  if (chosenIndexs.value.length) {
-    startDrag(
-      mouse,
-      chosenIndexs.value.map((index) => {
-        return props.fileList[index];
-      }),
-      () => {
-        chosenIndexs.value = [];
-      }
-    );
+  if (chosenPaths.value.length) {
+    startDrag(mouse, chosenPaths.value, () => {
+      chosenPaths.value = [];
+    });
   } else {
-    startDrag(mouse, [item], () => {
-      chosenIndexs.value = [];
+    startDrag(mouse, [item.path], () => {
+      chosenPaths.value = [];
     });
   }
 }
 
 function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, index: number) {
-  if (chosenIndexs.value.length <= 1) {
-    chosenIndexs.value = [props.fileList.findIndex((app) => app.path === item.path)];
+  if (chosenPaths.value.length <= 1) {
+    chosenPaths.value = [item.path];
   }
 
   sys
@@ -237,42 +186,39 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
       {
         label: i18n('open'),
         click: () => {
-          chosenIndexs.value = [];
+          chosenPaths.value = [];
           props.onOpen(item);
         },
       },
       {
         label: i18n('props'),
         click: () => {
-          chosenIndexs.value.forEach((index) => {
-            openPropsWindow(sys, props.fileList[index].path);
-            chosenIndexs.value = [];
+          chosenPaths.value.forEach((path) => {
+            openPropsWindow(sys, path);
+            chosenPaths.value = [];
           });
         },
       },
       {
         label: i18n('open.with'),
         click: () => {
-          chosenIndexs.value = [];
+          chosenPaths.value = [];
           openWith(sys, item);
         },
       },
       {
         label: i18n('copy'),
         click: () => {
-          copyFile(
-            sys,
-            chosenIndexs.value.map((index) => props.fileList[index])
-          );
-          chosenIndexs.value = [];
+          copyFile(sys, chosenPaths.value);
+          chosenPaths.value = [];
         },
       },
       {
         label: i18n('rename'),
         click: () => {
-          editIndex.value = index;
+          editPath.value = item.path;
           editName.value = basename(item.path);
-          chosenIndexs.value = [];
+          chosenPaths.value = [];
         },
       },
 
@@ -280,7 +226,7 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
         label: i18n('create.shortcut'),
         click: () => {
           createLink(sys, item.path)?.then(() => {
-            chosenIndexs.value = [];
+            chosenPaths.value = [];
             props.onRefresh();
           });
         },
@@ -290,16 +236,11 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
         label: i18n('delete'),
         click: async () => {
           await Promise.all(
-            chosenIndexs.value.map((index) => {
-              const item = props.fileList[index];
-              if (item.isDirectory) {
-                return sys?.fs.rmdir(item.path);
-              } else {
-                return sys?.fs.unlink(item.path);
-              }
+            chosenPaths.value.map((path) => {
+              sys?.fs.rm(path);
             })
           );
-          chosenIndexs.value = [];
+          chosenPaths.value = [];
           props.onRefresh();
         },
       },
@@ -308,19 +249,15 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
 }
 
 function handleDragEnter(mouse: DragEvent, item: VtronFileWithoutContent, index: number) {
-  hoverIndex.value = index;
+  hoverPath.value = item.path;
 }
 
 function handleDragLeave() {
-  hoverIndex.value = -1;
-}
-
-function dealI18nName(name: string) {
-  return name;
+  hoverPath.value = '';
 }
 </script>
 <style lang="scss" scoped>
-.file-item {
+.file-bar {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -333,6 +270,8 @@ function dealI18nName(name: string) {
   padding-top: 4px;
   border: 1px solid transparent;
   margin: 6px;
+  background-color: unset;
+  user-select: none;
 
   .file-item_img {
     width: 60%;
@@ -347,122 +286,6 @@ function dealI18nName(name: string) {
   .file-item_title {
     pointer-events: none;
   }
-
-  .file-item_editing {
-    outline: none;
-    pointer-events: all;
-    resize: none;
-    border-radius: 0;
-    width: 100%;
-    font-size: 12px;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    border: 1px solid #00000055;
-    font-family:
-      system-ui,
-      -apple-system,
-      BlinkMacSystemFont,
-      'Segoe UI',
-      Roboto,
-      Oxygen,
-      Ubuntu,
-      Cantarell,
-      'Open Sans',
-      'Helvetica Neue',
-      sans-serif;
-  }
-}
-
-.file-item:hover {
-  background-color: #b1f1ff4c;
-}
-
-.chosen {
-  border: 1px dashed #3bdbff3d;
-  // background-color: #ffffff6b;
-  background-color: var(--theme-color);
-
-  .file-item_title {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-all;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
-}
-
-.no-chosen {
-  .file-item_title {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-all;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
-}
-
-.drag-over {
-  border: 1px dashed #3bdbff3d;
-  // background-color: #ffffff6b;
-  background-color: var(--theme-color);
-}
-
-.mode-icon {
-  .file-item_img {
-    width: 60%;
-    height: calc(0.6 * var(--desk-item-size));
-    margin: 0px auto;
-    user-select: none;
-    flex-shrink: 0;
-  }
-
-  .file-item_title {
-    // color: var(--color-ui-desk-item-title);
-    // height: calc(0.4 * var(--desk-item-size));
-    // display: block;
-    text-align: center;
-    word-break: break-all;
-    flex-grow: 0;
-  }
-}
-
-.mode-list {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  height: var(--menulist-item-height);
-  width: var(--menulist-width);
-
-  .file-item_img {
-    width: var(--menulist-item-height);
-    height: calc(0.6 * var(--menulist-item-height));
-
-    flex-shrink: 0;
-    user-select: none;
-  }
-
-  .file-item_title {
-    height: min-content;
-    word-break: break-all;
-  }
-}
-
-.mode-icon {
-  width: var(--desk-item-size);
-  height: var(--desk-item-size);
-}
-
-.mode-big {
-  width: calc(var(--desk-item-size) * 2.5);
-  height: calc(var(--desk-item-size) * 2.5);
-}
-
-.mode-middle {
-  width: calc(var(--desk-item-size) * 1.5);
-  height: calc(var(--desk-item-size) * 1.5);
 }
 
 .mode-detail {
@@ -495,10 +318,5 @@ function dealI18nName(name: string) {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-}
-
-.file-bar:hover {
-  background-color: unset;
-  user-select: none;
 }
 </style>

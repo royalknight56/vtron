@@ -575,6 +575,7 @@ class VtronFileSystem implements VtronFileInterface {
     vfile.path = newPath;
     vfile.parentPath = vParentPath;
     vfile.mtime = new Date();
+    vfile.name = fspath.basename(newPath);
     objectStore.put(vfile);
   }
   async rename(path: string, newPath: string): Promise<void> {

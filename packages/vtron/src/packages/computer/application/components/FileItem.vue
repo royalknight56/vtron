@@ -1,6 +1,6 @@
 <template>
   <div
-    draggable="true"
+    :draggable="editPath !== file.path"
     class="file-item"
     :class="{
       chosen: chosenPaths.includes(file.path),
@@ -32,13 +32,13 @@
     <input
       autofocus
       draggable="false"
-      @dragover.stop
-      @dragstart.stop
+      @dragover.stop.prevent
+      @dragstart.stop.prevent
       @dragenter.stop
-      @mousedown.prevent
       @dblclick.stop
-      @click.stop
-      @blur="onEditNameEnd"
+      @mousedown.stop
+      @input="onEditName"
+      @blur="onEditName"
       v-if="editPath === file.path"
       class="file-item_title file-item_editing"
       v-model="editName"
@@ -93,13 +93,14 @@ const chosenIndexs = ref<Array<number>>([]);
 
 onMounted(() => {
   chosenIndexs.value = [];
+  editName.value = basename(props.file.path);
 });
 
 function dealI18nName(name: string) {
-  return name;
+  return name.replace(/.exe$/, '');
 }
 
-function onEditNameEnd() {
+function onEditName() {
   emit('edit', editName.value);
 }
 </script>

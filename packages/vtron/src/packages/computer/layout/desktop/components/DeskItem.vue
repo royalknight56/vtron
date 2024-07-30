@@ -1,6 +1,11 @@
 <template>
   <div class="desk-group">
-    <FileList :on-chosen="props.onChosen" :on-open="openapp" :file-list="appList"></FileList>
+    <FileList
+      :on-chosen="props.onChosen"
+      :show-hidden="false"
+      :on-open="openapp"
+      :file-list="appList"
+    ></FileList>
   </div>
 </template>
 <script lang="ts" setup>

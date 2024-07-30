@@ -18,7 +18,7 @@
     </div>
   </template>
   <FileItem
-    v-for="(item, index) in fileList"
+    v-for="(item, index) in fileListFilter"
     :key="item.path"
     :file="item"
     :theme="theme"
@@ -41,19 +41,18 @@
         appPositions[index] = markRaw(ref as Element);
       }
     "
+    @edit="onEdit"
   >
   </FileItem>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, markRaw, inject } from 'vue';
+import { onMounted, ref, markRaw, inject, computed } from 'vue';
 import { VtronFileWithoutContent, basename, dirname, join, System, VtronFile } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
-import FileIcon from '@/packages/computer/application/FileIcon.vue';
 import { openPropsWindow, copyFile, createLink, openWith } from './fileOpt';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { Rect } from '@/packages/computer/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
-import { dealSize } from '@/packages/util/fileUtils';
 import FileItem from './FileItem.vue';
 
 const sys = inject<System>('system')!;
@@ -87,6 +86,19 @@ const props = defineProps({
     type: String,
     default: 'icon',
   },
+  // 显示隐藏文件
+  showHidden: {
+    type: Boolean,
+    default: true,
+  },
+});
+const fileListFilter = computed(() => {
+  if (props.showHidden) {
+    return props.fileList;
+  }
+  return props.fileList.filter((item) => {
+    return !item.name.startsWith('.');
+  });
 });
 
 const hoverPath = ref<string>('');
@@ -123,6 +135,9 @@ function doubleTouch(e: TouchEvent, item: VtronFileWithoutContent) {
 
 const editPath = ref<string>('');
 const editName = ref<string>('');
+function onEdit(name: string) {
+  editName.value = name;
+}
 function onEditNameEnd() {
   const editEndName = editName.value.trim();
   const editIndex = props.fileList.findIndex((item) => item.path === editPath.value);

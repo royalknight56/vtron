@@ -77,6 +77,19 @@ export function initBuiltinApp(system: System) {
 
 export function initAppFileFromOption(system: System) {
   initBuiltinApp(system); // 初始化内建应用
+  system.fs.writeFile(
+    `${system._options.userLocation}${'Desktop'}/` + '.DS_Store',
+    JSON.stringify({
+      sortMap: system.stateManager.options.getOptions('desktop')?.reduce(
+        (pre, cur) => {
+          if (cur.sort === undefined) return pre;
+          pre[cur.name + '.exe'] = cur.sort;
+          return pre;
+        },
+        {} as Record<string, number>
+      ),
+    })
+  );
   system.stateManager.options.getOptions('desktop')?.forEach((item) => {
     system.addApp(item);
   });

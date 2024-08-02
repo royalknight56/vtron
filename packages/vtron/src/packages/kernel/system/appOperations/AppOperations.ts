@@ -25,14 +25,33 @@ export class AppOperations {
             }[element]
           }`
         )
-        .then((res) => {
+        .then(async (res) => {
           if (res) {
             const list = res;
-            const tempList = [];
+            let tempList = [];
+            let sortMap = {} as Record<string, number>;
+            const DsStoreIndex = list.findIndex((item) => item.name === '.DS_Store');
+
+            try {
+              if (DsStoreIndex !== -1) {
+                const DsStore = await system.fs.readFile(list[DsStoreIndex].path);
+                if (DsStore) {
+                  sortMap = JSON.parse(DsStore).sortMap;
+                }
+              }
+            } catch (error) {}
             for (let j = 0; j < list.length; j++) {
               const item = list[j];
-
               tempList.push(item);
+            }
+            if (sortMap) {
+              tempList = tempList.sort((a, b) => {
+                if (sortMap[a.name] && sortMap[b.name]) {
+                  return sortMap[a.name] - sortMap[b.name];
+                } else {
+                  return 0;
+                }
+              });
             }
 
             switch (element) {

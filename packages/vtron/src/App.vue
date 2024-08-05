@@ -64,7 +64,7 @@ const sys = new System({
         radius: 20,
         // backgroundColor: "rgba(0,0,0,1)",
       },
-      sort: 2,
+      order: 2,
     },
     {
       name: '测试无边框拖动2',
@@ -77,7 +77,7 @@ const sys = new System({
         frame: false,
         // backgroundColor: "rgba(0,0,0,1)",
       },
-      sort: 1,
+      order: 1,
     },
     {
       name: '测试按钮3',

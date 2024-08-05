@@ -82,8 +82,8 @@ export function initAppFileFromOption(system: System) {
     JSON.stringify({
       sortMap: system.stateManager.options.getOptions('desktop')?.reduce(
         (pre, cur) => {
-          if (cur.sort === undefined) return pre;
-          pre[cur.name + '.exe'] = cur.sort;
+          if (cur.order === undefined) return pre;
+          pre[cur.name + '.exe'] = cur.order;
           return pre;
         },
         {} as Record<string, number>

@@ -76,7 +76,7 @@ export interface WinAppOptions {
   name: string;
   icon?: string;
   multiple?: boolean;
-  sort?: number;
+  order?: number;
   window: BrowserWindowOption;
   _hasShow?: boolean;
 }

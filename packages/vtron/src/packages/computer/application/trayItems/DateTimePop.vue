@@ -41,9 +41,25 @@
         <div class="add-time">
           在
           <!-- 时 -->
-          <input type="number" :max="24" :min="0" v-model="alertHour" @blur="checkAlert()" /> 时
+          <input
+            class="add-time-input"
+            type="number"
+            :max="24"
+            :min="0"
+            v-model="alertHour"
+            @blur="checkAlert()"
+          />
+          时
           <!-- 分 -->
-          <input type="number" :max="60" :min="0" v-model="alertMin" @blur="checkAlert()" /> 分 提醒
+          <input
+            class="add-time-input"
+            type="number"
+            :max="60"
+            :min="0"
+            v-model="alertMin"
+            @blur="checkAlert()"
+          />
+          分 提醒
 
           <WinButtonVue v-if="alertText !== ''" @click="addAlert">确认添加</WinButtonVue>
         </div>
@@ -437,6 +453,7 @@ function clickDetail(item: { text: string; time: number }) {
           font-weight: 400;
           text-align: center;
           margin: 5px 5px;
+          outline: none;
         }
       }
     }

@@ -20,30 +20,6 @@ import { System, VtronFile, VtronComputer } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 import { Tray, Menu } from '@/packages/services';
 
-const sys2 = new System({
-  // lang: 'en-US',
-  // lang: "zh-CN",
-  // unMount: true,
-  logo: vtronLogoIcon,
-  // background: 'https://picsum.photos/1920/1080',
-
-  // shell: new TestShell(),
-  desktop: [
-    {
-      name: '测试Url',
-      icon: testicon,
-      multiple: false,
-      window: {
-        content: 'https://shimo.im/desktop',
-        title: '测试按钮',
-        icon: testicon,
-        center: true,
-        // backgroundColor: "rgba(0,0,0,1)",
-      },
-    },
-  ],
-});
-
 const sys = new System({
   // lang: 'en-US',
   // lang: "zh-CN",
@@ -152,6 +128,17 @@ const testapp = {
   },
 };
 sys.whenReady().then((readySys) => {
+  readySys.setAppOrder('Desktop', [
+    {
+      name: '此电脑',
+      order: 4,
+    },
+    {
+      name: '应用商店',
+      order: 2,
+    },
+  ]);
+
   const memoryFs: Record<string, VtronFile> = {
     '/': {
       name: '/',

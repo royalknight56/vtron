@@ -390,6 +390,31 @@ usage same as addApp
 
 用法同 addApp
 
+## setAppOrder
+
+设置 app 的顺序
+
+```typescript
+setAppOrder(loc: 'Desktop' | 'Magnet' | 'Menulist', orders: { name: string; order: number }[])
+
+
+// 使用方法
+
+  system.setAppOrder('Desktop', [
+    {
+      name: '此电脑',
+      order: 4,
+    },
+    {
+      name: '应用商店',
+      order: 2,
+    },
+  ]);
+
+```
+order越大，越靠后
+
+
 ## shutdown
 
 ```typescript

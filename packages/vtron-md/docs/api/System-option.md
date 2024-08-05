@@ -64,6 +64,7 @@ interface SystemOptions {
 export interface WinAppOptions {
     name:string;
     icon?:string;
+    order?:number;
     window: {
         title: string
         content: BrowserWindowContent,
@@ -147,6 +148,7 @@ ShortCutOpener 是快捷方式打开器
         name: '测试',
         icon: testicon,
         multiple:false,// 防止多开，默认为true
+        order: 3,// 排序 数字越大，越靠后
         window: {
           content: 'https://shimo.im/desktop',// 这里也可以是vue组件
           title: '测试按钮',

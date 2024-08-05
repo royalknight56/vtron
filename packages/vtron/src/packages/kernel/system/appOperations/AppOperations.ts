@@ -97,6 +97,28 @@ export class AppOperations {
     this.addWindowSysLink('Menulist', options, force);
   }
 
+  async setAppOrder(loc: 'Desktop' | 'Magnet' | 'Menulist', orders: { name: string; order: number }[]) {
+    let sortMap = {} as Record<string, number>;
+    const store = await this.system.fs.readFile(`${this.system._options.userLocation}${loc}/.DS_Store`);
+
+    try {
+      if (store) {
+        sortMap = JSON.parse(store).sortMap;
+      }
+    } catch (e) {
+      console.error('setAppOrder', e);
+    }
+    orders.forEach((item) => {
+      sortMap[item.name + '.exe'] = item.order;
+    });
+    await this.system.fs.writeFile(
+      `${this.system._options.userLocation}${loc}/.DS_Store`,
+      JSON.stringify({ sortMap })
+    );
+    console.log('setAppOrder', store, sortMap);
+    this.refershApp();
+  }
+
   private addWindowSysLink(
     loc: 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin',
     options: WinAppOptions,

@@ -162,6 +162,9 @@ export class System {
   refershApp: AppOperations['refershApp'] = () => {
     return this.appOperations.refershApp();
   };
+  setAppOrder: AppOperations['setAppOrder'] = (type, orders) => {
+    return this.appOperations.setAppOrder(type, orders);
+  };
 
   addBuiltInApp(options: WinAppOptions) {
     this.stateManager.windowMap.set('Builtin', options.name, options);

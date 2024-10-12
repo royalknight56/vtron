@@ -7,7 +7,7 @@ const system = new System({
   rootStyle: {},
 });
 system.whenReady().then(() => {
-  system.use(vtronPlus);
+  system.use(vtronPlus());
   console.log(system);
 });
 </script>

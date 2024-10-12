@@ -302,6 +302,9 @@ sys.whenReady().then((readySys) => {
     registerWatcher: (path: RegExp, callback: (path: string, content: string) => void) => {
       console.log(path, callback);
     },
+    rm: function (path: string): Promise<void> {
+      throw new Error('Function not implemented.');
+    },
   });
   for (let i = 0; i < 20; i++) {
     readySys.addMenuList({

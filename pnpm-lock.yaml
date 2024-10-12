@@ -112,8 +112,8 @@ importers:
         specifier: 0.7.3
         version: 0.7.3(typescript@5.4.5)
       vtron-plus:
-        specifier: ^0.6.2
-        version: 0.6.2(rollup@3.29.4)(typescript@5.4.5)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5))
+        specifier: ^0.6.3
+        version: 0.6.3(typescript@5.4.5)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5))
       vue:
         specifier: ^3.2.45
         version: 3.4.29(typescript@5.4.5)
@@ -2857,8 +2857,8 @@ packages:
   vscode-textmate@8.0.0:
     resolution: {integrity: sha512-AFbieoL7a5LMqcnOF04ji+rpXadgOXnZsxQr//r83kLPr7biP7am3g9zbaZIaBGwBRWeSvoMD4mgPdX3e4NWBg==}
 
-  vtron-plus@0.6.2:
-    resolution: {integrity: sha512-YLFfTLGy27OdjEkYuLFUEBg0yYgStnpnBEPsTFJofGvUf/zUYMHsWfn+pQmlX2/oLGcOnJrN+a5dqcctBo6Rbg==}
+  vtron-plus@0.6.3:
+    resolution: {integrity: sha512-RhY5vhQQAsjyia4fn8kd0+iiNPpzEaYaze0SMp3O0ErqxIFUqLCyWMN7WFguNLaVBPMCpE8H1s3VLofKrTYGOw==}
 
   vtron@0.7.3:
     resolution: {integrity: sha512-hz47jlfOa1TSW2uMMSU6QjdHmy1V78rjNsHUGocAVhBg8utlvZ3sQSnW4mpng2/hymqLgkBL/e9XHHmkd5P/jw==}
@@ -5803,6 +5803,24 @@ snapshots:
       - rollup
       - supports-color
 
+  vite-plugin-dts@2.3.0(@types/node@18.19.34)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5)):
+    dependencies:
+      '@babel/parser': 7.24.7
+      '@microsoft/api-extractor': 7.47.0(@types/node@18.19.34)
+      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
+      '@rushstack/node-core-library': 3.66.1(@types/node@18.19.34)
+      debug: 4.3.5(supports-color@8.1.1)
+      fast-glob: 3.3.2
+      fs-extra: 10.1.0
+      kolorist: 1.8.0
+      magic-string: 0.29.0
+      ts-morph: 18.0.0
+      vite: 4.5.3(@types/node@18.19.34)(sass@1.77.5)
+    transitivePeerDependencies:
+      - '@types/node'
+      - rollup
+      - supports-color
+
   vite-plugin-style-import@1.4.1(vite@4.5.3(@types/node@16.18.98)(sass@1.77.5)):
     dependencies:
       '@rollup/pluginutils': 4.2.1
@@ -5902,7 +5920,7 @@ snapshots:
 
   vscode-textmate@8.0.0: {}
 
-  vtron-plus@0.6.2(rollup@3.29.4)(typescript@5.4.5)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5)):
+  vtron-plus@0.6.3(typescript@5.4.5)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5)):
     dependencies:
       '@liripeng/vue-audio-player': 1.6.2(typescript@5.4.5)
       '@types/node': 18.19.34
@@ -5913,7 +5931,7 @@ snapshots:
       mavon-editor: 3.0.1
       pyodide: 0.24.1
       sass: 1.77.5
-      vite-plugin-dts: 2.3.0(@types/node@18.19.34)(rollup@3.29.4)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5))
+      vite-plugin-dts: 2.3.0(@types/node@18.19.34)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5))
       vtron: 0.7.3(typescript@5.4.5)
       vue: 3.4.29(typescript@5.4.5)
       vue-demi: 0.13.11(vue@3.4.29(typescript@5.4.5))

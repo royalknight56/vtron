@@ -93,15 +93,15 @@ const desktopConfig = [
   //     content: MusicVue,
   //     resizable: true
   // },
-  {
-    title: '友链',
-    icon: friendLinkicon,
-    width: 600,
-    height: 400,
-    center: true,
-    content: FriendLink,
-    resizable: true,
-  },
+  // {
+  //   title: '友链',
+  //   icon: friendLinkicon,
+  //   width: 600,
+  //   height: 400,
+  //   center: true,
+  //   content: FriendLink,
+  //   resizable: true,
+  // },
   {
     title: 'NoteMd',
     icon: markdownicon,

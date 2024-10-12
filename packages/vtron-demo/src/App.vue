@@ -56,7 +56,7 @@ system.whenReady().then((readySystem) => {
   //   system.recover();
   // }
 
-  readySystem.use(vtronPlus as any);
+  readySystem.use(vtronPlus());
 
   readySystem.fs.writeFile(
     '/C/Users/Desktop/使用教程.md',

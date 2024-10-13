@@ -1,142 +1,98 @@
-<!--
- * @Author: Royal
- * @LastEditTime: 2022-04-26 15:08:12
- * @Description:
- * @FilePath: /myindex/README.md
--->
+# Vtron
 
-<p align="center"><a href="https://vtron.site" target="_blank" rel="noopener noreferrer"><img width="200" src="./assert/vtron-logo-nobg.png" alt="vtron logo"></a></p>
+<p align="center">
+  <img width="200" src="./assert/vtron-logo-nobg.png" alt="vtron logo">
+</p>
 
 <div align="center">
-
-vtron, a Win10 UI framework based on Vue3
-
+  Vtron: A Win10 UI framework based on Vue3
 </div>
 
 <div align="center">
-
-<a href="https://vtron.site/doc" target="_blank">Document</a>|<a href="https://vtron.site/doc" target="_blank">Official website
-</a>|<a href="http://vtron.site" target="_blank">Demo</a>
-
+  <a href="https://vtron.site/doc" target="_blank">Documentation</a> |
+  <a href="https://vtron.site/doc" target="_blank">Official Website</a> |
+  <a href="http://vtron.site/win/" target="_blank">Demo</a>
 </div>
 
-<span style="color:#999;text-align:center">recommend Vue 3 + Typescript + Vite + Using `<script setup>`
+<div align="center">
+  <em>Recommended: Vue 3 + TypeScript + Vite
+</div>
 
-</span>
+![GitHub issues](https://img.shields.io/github/issues/royalknight56/vtron)
+![GitHub](https://img.shields.io/github/license/royalknight56/vtron)
+![GitHub last commit](https://img.shields.io/github/last-commit/royalknight56/vtron)
+![GitHub Repo stars](https://img.shields.io/github/stars/royalknight56/vtron?style=social)
+![GitHub forks](https://img.shields.io/github/forks/royalknight56/vtron?style=social)
 
-English | [中文](./README.md)
+## Introduction
 
-This framework allows your page to run a win10 system on a web page like the Win10 window system.
+Vtron is a framework that allows you to create web applications with a Windows 10-like interface using Vue 3. It provides a set of components and utilities to build a desktop-like experience in the browser.
 
-## Development Process
+## Features
 
-1. Install vtron
+- File system: Upload, preview, edit, and save files for long-term storage.
+- Terminal system: Control files through a terminal interface.
+- JavaScript execution: Execute saved JavaScript files.
+- App store: Download and save applications for long-term use.
+- Plugin mechanism for development: Control the system state.
 
-> npm install vtron
+## Installation
 
-2. Use the plugin in Vue
-
-```js
-import vtron from 'vtron';
+```bash
+npm install vtron
 ```
 
-Import the style file "vtron/distlib/style.css"
+## Quick Start
 
-```js
+1. Import the Vtron styles in your main entry file:
+
+```javascript
 import 'vtron/distlib/style.css';
 ```
 
-usage
-
-```js
-import { createApp } from 'vue';
-import App from './App.vue';
-import vtron from 'vtron';
-import 'vtron/distlib/style.css';
-
-createApp(App).use(vtron).mount('#app');
-```
-
-3. Include the Screen component in the page
-
-First, we need to create a system object, which manages all the system's state information.
-
-```vue
-// App.vue
-<Screen></Screen>
-<script setup>
-import { System } from 'vtron';
-let system = new System();
-</script>
-```
-
-After this step, you can see Win10 starting when you run dev.
-
-4. Control screen size
-
-Wrap the component in an outer div
-
-```vue
-<div class="outer">
-    <Screen></Screen>
-  </div>
-```
-
-Define outer style
-
-```html
-<style scoped>
-  .outer {
-    width: 100vw;
-    height: 100vh;
-  }
-</style>
-```
-
-This will make it occupy the entire page display.
-
-4. Create a new Vue file in the apps folder, mainly write window content in this folder (not required)
+2. Create a System instance and use the VtronComputer component in your Vue application:
 
 ```vue
 <template>
-  <div class="app">
-    <h1>HelloWorld</h1>
+  <div class="outer">
+    <VtronComputer :system="system"></VtronComputer>
   </div>
 </template>
-```
 
-5. Register the app in the system
-
-Pass configuration options to the system's constructor,
-
-The desktop is the configuration item for the desktop, which can be configured with multiple apps.
-
-```vue
-<Screen></Screen>
 <script setup>
-import { System, BrowserWindow } from 'vtron';
-import { App } from './apps/App.vue';
-import someicon from './assets/someicon.png';
-import HelloWorld from './apps/HelloWorld.vue';
-let system = new System({
-  desktop: [
-    {
-      name: 'HelloWorld',
-      icon: someicon,
-      window: {
-        content: HelloWorld,
-        icon: someicon,
-      },
-    },
-  ],
-});
+import { System, VtronComputer } from 'vtron';
+let system = new System();
 </script>
+
+<style scoped>
+.outer {
+  width: 100vw;
+  height: 100vh;
+}
+</style>
 ```
 
-# Thanks for the Star
+3. Configure your desktop apps and start developing!
 
-Thanks for your star, welcome to PR, opinion, idea, thanks for your support
+## Documentation
 
-![](https://komarev.com/ghpvc/?username=royalknight56&color=blue)
+For detailed usage and API documentation, please visit our [official documentation](https://vtron.site/doc).
 
-## Thanks
+## Contributing
+
+We welcome contributions to Vtron! Please read our contributing guidelines before submitting pull requests.
+
+
+## License
+
+Vtron is licensed under the [Apache License 2.0](LICENSE).
+
+## Acknowledgements
+
+Thank you to all our contributors and supporters!
+
+---
+
+<div align="center">
+  <img src="https://komarev.com/ghpvc/?username=royalknight56&color=blue" alt="profile views" />
+</div>

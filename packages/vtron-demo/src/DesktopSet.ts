@@ -1,6 +1,7 @@
 import GitHub from './assets/GitHub.png';
 import baidumapicon from './assets/baidumap.png';
 import flowicon from './assets/flowicon.png';
+import slinotesvg from './assets/slinote.svg';
 import friendLinkicon from './assets/friendLink.png';
 import markdownicon from './assets/markdown.png';
 import vscode from './assets/vscode.png';
@@ -119,6 +120,15 @@ const desktopConfig = [
     height: 600,
     center: true,
     content: 'https://app.flowoss.com/zh-CN',
+    resizable: true,
+  },
+  {
+    title: '书立笔记',
+    icon: slinotesvg,
+    width: 800,
+    height: 600,
+    center: true,
+    content: 'https://slinote.com/',
     resizable: true,
   },
 

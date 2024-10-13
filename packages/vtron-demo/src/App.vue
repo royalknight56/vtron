@@ -31,6 +31,7 @@ import { mountWebdav } from './hook/mountWebdav';
 // 在App中组织桌面图标t
 // 先清空再添加，防止热更新加入多重图标
 const system = new System({
+  id: 0,
   desktop: [...addListToDesktop(desktopConfig)],
   magnet: [...addListToDesktop(magnetConfig)],
   menulist: [
@@ -67,6 +68,8 @@ system.whenReady().then((readySystem) => {
 ## 欢迎加入qq群 712921211
 
 ## 已经更新至 ${readySystem.version}
+
+更新Chrome浏览器样式，主页
 
 #### 更新之后建议开始菜单->恢复。请自己保留重要数据
 

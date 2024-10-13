@@ -335,6 +335,7 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
         window: {
           width: 800,
           height: 600,
+          title: '浏览器',
           icon: chromeicon,
           center: true,
           content: Browser,

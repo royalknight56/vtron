@@ -64,12 +64,20 @@
       <input class="urlinput" v-model="urlinput" @keydown="urlkey" />
     </div>
 
-    <iframe class="broifame" :src="urlsrc"></iframe>
+    <iframe
+      class="broifame"
+      :class="{
+        'viewer-loading': isLoad,
+      }"
+      @load="isLoad = false"
+      :src="urlsrc"
+      :key="urlsrc"
+    ></iframe>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
-
+import { onUnmounted, ref } from 'vue';
+const isLoad = ref(true);
 const urlinput = ref('https://nav.yhz610.com/');
 const urlsrc = ref('https://nav.yhz610.com/');
 function urlkey(e: KeyboardEvent) {
@@ -83,7 +91,20 @@ function changeUrl() {
   } else {
     urlsrc.value = 'https://' + urlinput.value;
   }
+  isLoad.value = true;
 }
+function onKeyDown(e: KeyboardEvent) {
+  console.log(e.key);
+  if (e.key == 'Enter') {
+    urlsrc.value = '';
+    isLoad.value = true;
+    changeUrl();
+  }
+}
+document.addEventListener('keydown', onKeyDown);
+onUnmounted(() => {
+  document.removeEventListener('keydown', onKeyDown);
+});
 </script>
 <style>
 iframe {
@@ -165,5 +186,17 @@ iframe {
   /* height: 100%; */
   width: 100%;
   border: none;
+}
+.viewer-loading {
+  animation: loading 1s infinite;
+}
+@keyframes loading {
+  50% {
+    background-color: #00000051;
+  }
+  0%,
+  100% {
+    background-color: #00000000;
+  }
 }
 </style>

@@ -4,6 +4,7 @@ import { vtronPlus } from './packages/plug';
 import { VtronComputer } from 'vtron';
 
 const system = new System({
+  id: 0,
   rootStyle: {},
 });
 system.whenReady().then(() => {

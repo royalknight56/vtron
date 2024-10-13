@@ -62,6 +62,9 @@ export class System {
   stateManager: StateManager;
 
   constructor(options?: SystemOptions) {
+    if (options?.id !== undefined) {
+      this.id = options.id;
+    }
     logger('initOptions');
     this._options = this.initOptions(options);
 

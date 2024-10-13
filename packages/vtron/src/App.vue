@@ -22,6 +22,7 @@ import { Tray, Menu } from '@/packages/services';
 
 const sys = new System({
   // lang: 'en-US',
+  id: 0,
   // lang: "zh-CN",
   logo: vtronLogoIcon,
   // background: 'https://picsum.photos/1920/1080',
@@ -43,6 +44,20 @@ const sys = new System({
       order: 2,
     },
     {
+      name: '测试baidu',
+      icon: testicon,
+      multiple: false,
+      window: {
+        content: 'https://www.baidu.com',
+        title: '测试按钮',
+        icon: testicon,
+        center: true,
+        radius: 20,
+        // backgroundColor: "rgba(0,0,0,1)",
+      },
+      order: 2,
+    },
+    {
       name: '测试无边框拖动2',
       // icon: testicon,
       window: {
@@ -55,28 +70,7 @@ const sys = new System({
       },
       order: 1,
     },
-    {
-      name: '测试按钮3',
-      // icon: testicon,
-      window: {
-        content: TestButton,
-        title: '测试按钮',
-        icon: testicon,
-        center: true,
-        // backgroundColor: "rgba(0,0,0,1)",
-      },
-    },
-    {
-      name: '测试按钮4',
-      // icon: testicon,
-      window: {
-        content: TestButton,
-        title: '测试按钮',
-        icon: testicon,
-        center: true,
-        // backgroundColor: "rgba(0,0,0,1)",
-      },
-    },
+
     {
       name: '测试不可缩放',
       icon: testicon,

@@ -104,16 +104,6 @@ const desktopConfig = [
   //   resizable: true,
   // },
   {
-    title: 'NoteMd',
-    icon: markdownicon,
-    width: 800,
-    height: 600,
-    center: true,
-    content: NoteMd,
-
-    resizable: true,
-  },
-  {
     title: 'Flow-epub阅读器',
     icon: flowicon,
     width: 800,

@@ -36,6 +36,7 @@ export const Saveablekey: ('lang' | 'logo' | 'background' | 'rootStyle')[] = [
 export type SystemOptionsSaveable = Pick<SystemOptionsCertainly, (typeof Saveablekey)[number]>;
 
 export interface SystemOptionsCertainly {
+  id?: number;
   /**
    * @description: 语言
    */

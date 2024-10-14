@@ -165,7 +165,7 @@ async function importBackup(path = '') {
       if (zipEntry.dir) {
         await sys.fs.mkdir(join(path, zipEntry.name));
       } else {
-        const fileC = await zipEntry.async('base64');
+        const fileC = await zipEntry.async('text');
         sys.fs.writeFile(join(path, zipEntry.name), fileC);
       }
     }

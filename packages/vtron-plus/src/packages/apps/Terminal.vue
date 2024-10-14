@@ -92,6 +92,9 @@ onMounted(() => {
 
     term.clear();
     const onKey = async (e: { key: string; domEvent: KeyboardEvent }) => {
+      if (e.domEvent instanceof KeyboardEvent) {
+        e.domEvent.preventDefault();
+      }
       const { key, domEvent } = e;
       const { keyCode, altKey, ctrlKey, metaKey } = domEvent;
       const printAble = !(altKey || ctrlKey || metaKey); // 禁止相关按键

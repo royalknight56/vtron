@@ -339,6 +339,8 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
           icon: chromeicon,
           center: true,
           content: Browser,
+          frame: false,
+          backgroundColor: '#ffffff00',
         },
       });
     config.features.includes('PPTist') &&

@@ -451,7 +451,7 @@ pnpm e2e dev
 碎碎念：参见 Next.md
 
 ## 欢迎加入技术交流群
-
+技术交流 & 问题解答 & 项目合作 & 软件服务
 <div>
 <img src="./assert/qqgroup.jpg" alt="QQ" width="300" style="display: inline-block"/>
 </div>

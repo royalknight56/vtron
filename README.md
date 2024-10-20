@@ -48,6 +48,14 @@ qq群：712921211
 ![GitHub Repo stars](https://img.shields.io/github/stars/royalknight56/vtron?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/royalknight56/vtron?style=social)
 
+## 最新更新日志
+
+更新demo项目的主页，浏览器，以及添加flac音乐播放器
+
+![IMAGE](./rdmassert/startpage-update-md.gif)
+
+![IMAGE](./rdmassert/t-music-update-md.gif)
+
 ## 开发流程
 
 ### 使用 Github 模版

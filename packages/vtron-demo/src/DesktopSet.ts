@@ -6,6 +6,7 @@ import friendLinkicon from './assets/friendLink.png';
 import markdownicon from './assets/markdown.png';
 import vscode from './assets/vscode.png';
 import winv3icon from './assets/winv3.png';
+import Tmusicicon from './assets/t-music.png';
 
 import beaticon from './assets/beat.ico';
 import kiometicon from './assets/kiomet.webp';
@@ -141,6 +142,16 @@ const desktopConfig = [
     content: CreateUrl,
     // backgroundColor: "#71c5cf",
     resizable: false,
+  },
+  {
+    title: 'T-Music',
+    icon: Tmusicicon,
+    width: 800,
+    height: 700,
+    center: true,
+    content: 'https://vtron.site/tmusic/',
+    resizable: true,
+    backgroundColor: '#444',
   },
 
   // {

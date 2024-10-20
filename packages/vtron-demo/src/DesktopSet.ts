@@ -65,6 +65,26 @@ const magnetConfig = [
     center: true,
     content: 'https://w0akxkb81ek.feishu.cn/share/base/form/shrcnxXNS3dN7XpIfPdXNknjxNf',
   },
+  {
+    title: '抛硬币',
+    icon: beaticon,
+    width: 800,
+    height: 700,
+    center: true,
+    content: 'https://vtron.site/coin/',
+    resizable: true,
+    backgroundColor: '#444',
+  },
+  {
+    title: '掷骰子',
+    icon: beaticon,
+    width: 800,
+    height: 700,
+    center: true,
+    content: 'https://vtron.site/dice/',
+    resizable: true,
+    backgroundColor: '#444',
+  },
 ];
 const desktopConfig = [
   {

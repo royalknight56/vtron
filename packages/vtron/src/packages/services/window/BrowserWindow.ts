@@ -30,6 +30,7 @@ export interface BrowserWindowConstructorOptions {
   skipTaskbar: boolean;
   backgroundColor: string;
   textColor: string;
+  show: boolean;
 }
 export interface WindowInfo extends BrowserWindowConstructorOptions {
   state: WindowStateEnum;
@@ -60,6 +61,7 @@ class BrowserWindow {
     skipTaskbar: false,
     backgroundColor: '#fff',
     textColor: '#000',
+    show: false,
   };
   public static defaultInfo: Omit<WindowInfo, keyof BrowserWindowConstructorOptions> = {
     state: WindowStateEnum.normal,
@@ -98,6 +100,9 @@ class BrowserWindow {
     this._builtin = {
       previousState: this.windowInfo.state,
     };
+    if (this.windowInfo.show) {
+      this.show();
+    }
   }
 
   private _setZindex() {
@@ -156,6 +161,9 @@ class BrowserWindow {
   }
   on(event: string, callback: (...arg: any) => void) {
     this.eventer.on(event, callback);
+  }
+  off(event: string, callback?: (...arg: any) => void) {
+    this.eventer.off(event, callback);
   }
   emit(event: string, ...args: any[]) {
     this.eventer.emit(event, 'window', ...args);

@@ -34,7 +34,7 @@ const sys = new System({
       icon: testicon,
       multiple: false,
       window: {
-        content: 'https://shimo.im/desktop',
+        content: 'http://localhost:5174',
         title: '测试按钮',
         icon: testicon,
         center: true,

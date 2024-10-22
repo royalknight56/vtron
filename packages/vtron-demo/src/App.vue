@@ -30,6 +30,7 @@ import { mountWebdav } from './hook/mountWebdav';
 // import { mountOpener } from './hook/mountOpener';
 // 在App中组织桌面图标t
 // 先清空再添加，防止热更新加入多重图标
+
 const system = new System({
   id: 0,
   desktop: [...addListToDesktop(desktopConfig)],
@@ -50,6 +51,22 @@ const system = new System({
   ],
   background: backimg,
   lang: 'zh-CN',
+});
+let win: BrowserWindow | null = null;
+window.addEventListener('message', (e) => {
+  if (e.target !== window) return;
+  console.log('message-vtron', e.data);
+  if (e.data?.type === 'api-open-window') {
+    console.log('open-window', e.data.param);
+    win = system.createWindow(e.data.param);
+    win.show();
+  }
+  if (e.data?.type === 'api-close-window') {
+    win?.close();
+  }
+  if (e.data?.type === 'api-post-message') {
+    // win?.webContents?.postMessage(e.data.param);
+  }
 });
 
 system.whenReady().then((readySystem) => {

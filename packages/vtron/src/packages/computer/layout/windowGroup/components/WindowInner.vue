@@ -24,27 +24,37 @@ const props = defineProps<{
 const sys = inject<System>('system')!;
 const winiframe = ref<HTMLIFrameElement | null>(null);
 const isLoad = ref(true);
+let retResMap = new Map();
+let currentRetRes: any = undefined;
 const invoke = (data: any) => {
   if (data.type === 'browser-window') {
-    (props.window as any)[data.action]?.(...data.params);
+    currentRetRes = (props.window as any)[data.action]?.(...data.params);
   }
   if (data.type === 'system') {
-    (sys as any)[data.action]?.(...data.params);
+    currentRetRes = (sys as any)[data.action]?.(...data.params);
+  }
+  if (data.type === 'save-return') {
+    retResMap.set(data.id, currentRetRes);
+  }
+  if (data.type === 'invoke-return') {
+    retResMap.get(data.id)?.[data.action]?.(...data.params);
   }
 };
 
 const handleEvent = (e: MessageEvent<any>) => {
   const data = e.data;
   if (!data) return;
-  if (data.token === 'vtron') {
-    invoke(data);
+  if (e.source !== winiframe.value?.contentWindow) {
+    return;
   }
+  invoke(data);
 };
-props.window.addEventListener('message', handleEvent);
+props.window.addEventListener('message', (source, arg) => {
+  winiframe.value?.contentWindow?.postMessage(arg, '*');
+});
 window?.addEventListener('message', handleEvent);
 onUnmounted(() => {
   window?.removeEventListener('message', handleEvent);
-  props.window.addEventListener('message', handleEvent);
 });
 </script>
 <style scoped>

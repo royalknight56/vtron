@@ -3,7 +3,6 @@ import { VtronFileInterface } from '@packages/kernel/file/FIleInterface';
 import { ShellInterface } from '@packages/kernel/shell/ShellType';
 export type BuiltinFeature =
   | 'MyComputer'
-  | 'AppStore'
   | 'DataTimeTray'
   | 'BatteryTray'
   | 'NetworkTray'

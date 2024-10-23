@@ -15,9 +15,15 @@
 
 <script lang="ts" setup>
 import { inject, onMounted, ref } from 'vue';
-import { System } from '@/packages/kernel/system';
-import { BrowserWindow, Dialog, basename, vDragable } from '@packages/plug';
-import { i18n } from '@/packages/computer/i18n';
+import { System, BrowserWindow, Dialog, basename, vDragable } from 'vtron';
+function i18n(key: string) {
+  const map = {
+    'uninstall.success': '卸载成功',
+    'install.success': '安装成功',
+    confirm: '确认',
+  } as Record<string, string>;
+  return map[key] || key;
+}
 
 const system = inject<System>('system')!;
 

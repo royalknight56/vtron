@@ -1,5 +1,4 @@
 import vtronStoreLogoIcon from '@/assets/vtron-stroe-icon-nobg.png?url';
-import AppStore from '@/packages/computer/application/AppStore.vue';
 import MyComputerVue from '@/packages/computer/application/MyComputer/MyComputer.vue';
 import SettingVue from '@/packages/computer/application/Setting.vue';
 import { System } from '@/packages/kernel';
@@ -49,29 +48,6 @@ export function initBuiltinApp(system: System) {
     system.addApp(myComputer);
     system.addMagnet(myComputer);
     system.addMenuList(myComputer);
-  }
-
-  if (system._options.builtinFeature?.includes('AppStore')) {
-    const appStore: WinAppOptions = {
-      name: '应用商店',
-      icon: vtronStoreLogoIcon,
-      window: {
-        width: 900,
-        height: 630,
-        center: true,
-        title: i18n('appstore'),
-        icon: vtronStoreLogoIcon,
-        content: AppStore,
-        backgroundColor: '#ffffff00',
-        frame: false,
-        config: {
-          path: '/',
-        },
-      },
-    };
-    system.addApp(appStore);
-    system.addMagnet(appStore);
-    system.addMenuList(appStore);
   }
 }
 

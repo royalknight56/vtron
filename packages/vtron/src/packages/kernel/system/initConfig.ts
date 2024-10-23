@@ -6,7 +6,6 @@ export const defaultConfig: SystemOptions = {
   lang: 'zh-CN',
   builtinFeature: [
     'MyComputer',
-    'AppStore',
     'DataTimeTray',
     'BatteryTray',
     'NetworkTray',

@@ -166,13 +166,14 @@ const desktopConfig = [
   {
     title: 'T-Music',
     icon: Tmusicicon,
-    width: 800,
+    width: 1000,
     height: 700,
     center: true,
-    // content: 'http://localhost:5173/',
-    content: 'https://vtron.site/tmusic/',
+    content: 'http://localhost:5173/',
+    // content: 'https://vtron.site/tmusic/',
     resizable: true,
     backgroundColor: '#444',
+    textColor: '#fff',
   },
 
   // {

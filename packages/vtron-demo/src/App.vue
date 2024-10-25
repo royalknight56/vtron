@@ -52,22 +52,6 @@ const system = new System({
   background: backimg,
   lang: 'zh-CN',
 });
-let win: BrowserWindow | null = null;
-window.addEventListener('message', (e) => {
-  if (e.target !== window) return;
-  console.log('message-vtron', e.data);
-  if (e.data?.type === 'api-open-window') {
-    console.log('open-window', e.data.param);
-    win = system.createWindow(e.data.param);
-    win.show();
-  }
-  if (e.data?.type === 'api-close-window') {
-    win?.close();
-  }
-  if (e.data?.type === 'api-post-message') {
-    // win?.webContents?.postMessage(e.data.param);
-  }
-});
 
 system.whenReady().then((readySystem) => {
   // if (readySystem.version !== "0.4.4") {
@@ -284,6 +268,7 @@ function addListToDesktop(list: any[]) {
         center: item.center,
         backgroundColor: item.backgroundColor,
         content: item.content,
+        textColor: item.textColor,
       },
     });
   });

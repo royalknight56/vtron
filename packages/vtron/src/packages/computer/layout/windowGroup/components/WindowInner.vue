@@ -49,7 +49,7 @@ const handleEvent = (e: MessageEvent<any>) => {
   }
   invoke(data);
 };
-props.window.addEventListener('message', (source, arg) => {
+props.window.addEventListener('message', (source: string, arg: any) => {
   winiframe.value?.contentWindow?.postMessage(arg, '*');
 });
 window?.addEventListener('message', handleEvent);

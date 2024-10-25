@@ -27,7 +27,7 @@ import xlsxIcon from './assets/xlsx.png';
 
 import DocxViewerVue from './apps/DocxViewer.vue';
 import ExeclViewerVue from './apps/ExeclViewer.vue';
-import MusicStoreVue from './apps/MusicStore.vue';
+// import MusicStoreVue from './apps/MusicStore.vue';
 import MusicViewerVue from './apps/MusicViewer.vue';
 import PictureStoreVue from './apps/PictureStore.vue';
 import PythonVue from './apps/Python.vue';

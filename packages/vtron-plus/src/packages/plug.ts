@@ -382,20 +382,20 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
           icon: helpicon,
         },
       });
-    config.features.includes('music') &&
-      system.addApp({
-        name: '音乐库',
-        icon: musicAppIcon,
-        multiple: false,
-        window: {
-          title: '音乐库',
-          width: 800,
-          height: 600,
-          icon: musicAppIcon,
-          center: true,
-          content: MusicStoreVue,
-        },
-      });
+    // config.features.includes('music') &&
+    //   system.addApp({
+    //     name: '音乐库',
+    //     icon: musicAppIcon,
+    //     multiple: false,
+    //     window: {
+    //       title: '音乐库',
+    //       width: 800,
+    //       height: 600,
+    //       icon: musicAppIcon,
+    //       center: true,
+    //       content: MusicStoreVue,
+    //     },
+    //   });
     config.features.includes('gallery') &&
       system.addApp({
         name: '图库',

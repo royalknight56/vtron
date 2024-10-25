@@ -113,7 +113,7 @@ importers:
         version: 0.7.4(typescript@5.4.5)
       vtron-plus:
         specifier: ^0.6.5
-        version: 0.6.5(rollup@3.29.4)(typescript@5.4.5)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5))
+        version: 0.6.5(typescript@5.4.5)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5))
       vue:
         specifier: ^3.2.45
         version: 3.4.29(typescript@5.4.5)
@@ -192,8 +192,8 @@ importers:
         specifier: ^2.0.2
         version: 2.3.0(@types/node@18.19.34)(rollup@3.29.4)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5))
       vtron:
-        specifier: 0.7.4
-        version: 0.7.4(typescript@5.4.5)
+        specifier: 0.7.5
+        version: 0.7.5(typescript@5.4.5)
       vue:
         specifier: ^3.2.45
         version: 3.4.29(typescript@5.4.5)
@@ -2862,6 +2862,9 @@ packages:
 
   vtron@0.7.4:
     resolution: {integrity: sha512-QwGWUcTokpfMmbHeWFU1O2DmbFlWrlnHUvtU2/G5I9/eZ5pRS+yuB/pk/d8R3qFhRQsHY/EUtMgxGZcw+4V+QQ==}
+
+  vtron@0.7.5:
+    resolution: {integrity: sha512-I1PHJw0ZzqQ98AabCpbFas+IHf1z5QZq7PiYUiZk9P3furumBlnHU2YeECh5rX7WB6H0yXS7qmOnTfs33uAD7w==}
 
   vue-accessible-color-picker@5.0.1:
     resolution: {integrity: sha512-IaxDTzW652blWmaNNbqQZzORQAbP19sdO7oJ5fvJIfVizWr2fVV+3z39ORI210Ee7l8YiD5FhpOY/XrToQCBwg==}
@@ -5803,6 +5806,24 @@ snapshots:
       - rollup
       - supports-color
 
+  vite-plugin-dts@2.3.0(@types/node@18.19.34)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5)):
+    dependencies:
+      '@babel/parser': 7.24.7
+      '@microsoft/api-extractor': 7.47.0(@types/node@18.19.34)
+      '@rollup/pluginutils': 5.1.0(rollup@3.29.4)
+      '@rushstack/node-core-library': 3.66.1(@types/node@18.19.34)
+      debug: 4.3.5(supports-color@8.1.1)
+      fast-glob: 3.3.2
+      fs-extra: 10.1.0
+      kolorist: 1.8.0
+      magic-string: 0.29.0
+      ts-morph: 18.0.0
+      vite: 4.5.3(@types/node@18.19.34)(sass@1.77.5)
+    transitivePeerDependencies:
+      - '@types/node'
+      - rollup
+      - supports-color
+
   vite-plugin-style-import@1.4.1(vite@4.5.3(@types/node@16.18.98)(sass@1.77.5)):
     dependencies:
       '@rollup/pluginutils': 4.2.1
@@ -5902,7 +5923,7 @@ snapshots:
 
   vscode-textmate@8.0.0: {}
 
-  vtron-plus@0.6.5(rollup@3.29.4)(typescript@5.4.5)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5)):
+  vtron-plus@0.6.5(typescript@5.4.5)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5)):
     dependencies:
       '@liripeng/vue-audio-player': 1.6.2(typescript@5.4.5)
       '@types/node': 18.19.34
@@ -5913,7 +5934,7 @@ snapshots:
       mavon-editor: 3.0.1
       pyodide: 0.24.1
       sass: 1.77.5
-      vite-plugin-dts: 2.3.0(@types/node@18.19.34)(rollup@3.29.4)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5))
+      vite-plugin-dts: 2.3.0(@types/node@18.19.34)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5))
       vtron: 0.7.4(typescript@5.4.5)
       vue: 3.4.29(typescript@5.4.5)
       vue-demi: 0.13.11(vue@3.4.29(typescript@5.4.5))
@@ -5929,6 +5950,13 @@ snapshots:
       - vite
 
   vtron@0.7.4(typescript@5.4.5):
+    dependencies:
+      vue: 3.4.29(typescript@5.4.5)
+      vue-accessible-color-picker: 5.0.1(vue@3.4.29(typescript@5.4.5))
+    transitivePeerDependencies:
+      - typescript
+
+  vtron@0.7.5(typescript@5.4.5):
     dependencies:
       vue: 3.4.29(typescript@5.4.5)
       vue-accessible-color-picker: 5.0.1(vue@3.4.29(typescript@5.4.5))

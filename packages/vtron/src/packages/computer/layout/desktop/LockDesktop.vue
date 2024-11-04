@@ -19,7 +19,7 @@ function loginSuccess() {
   //     lockClassName.value = 'screen-hide';
   //   }, 500);
 }
-const userName = ref(sys._options.login?.username || 'admin');
+const userName = ref(sys._options.login?.username || '');
 const userPassword = ref(sys._options.login?.password || '');
 async function onLogin() {
   if (loginCallback) {

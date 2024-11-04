@@ -18,8 +18,8 @@ export const defaultConfig: SystemOptions = {
   userLocation: '/C/Users/',
   systemLocation: '/C/System/',
   login: {
-    username: localStorage.getItem('vtron-username') || 'admin',
-    password: 'admin',
+    username: localStorage.getItem('vtron-username') || '',
+    password: '',
     init: () => {
       return !localStorage.getItem('vtron-username');
     },

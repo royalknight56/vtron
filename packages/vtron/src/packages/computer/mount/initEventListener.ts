@@ -24,7 +24,8 @@ function initSizeEvent(system: System) {
     'mousemove',
     throttle((e) => {
       system.emitEvent('system.mousemove', e);
-    }, 100)
+    }, 100),
+    { passive: true } // 声明事件监听器不会调用 preventDefault(),有助于浏览器优化性能
   );
 }
 

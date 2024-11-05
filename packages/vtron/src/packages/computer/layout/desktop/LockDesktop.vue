@@ -4,8 +4,8 @@
  * @Description: Need CodeReview
 -->
 <script lang="ts" setup>
-import { inject, ref } from 'vue';
 import { System } from '@packages/kernel';
+import { inject, ref } from 'vue';
 
 const sys = inject<System>('system')!;
 const loginCallback = sys._options.loginCallback;
@@ -14,19 +14,19 @@ const lockClassName = ref('screen-show');
 const alertMsg = ref('');
 
 function loginSuccess() {
-  //   lockClassName.value = 'screen-hidean';
-  //   setTimeout(() => {
-  //     lockClassName.value = 'screen-hide';
-  //   }, 500);
+  lockClassName.value = 'screen-hidean';
+  setTimeout(() => {
+    lockClassName.value = 'screen-hide';
+  }, 500);
 }
 const userName = ref(sys._options.login?.username || '');
 const userPassword = ref(sys._options.login?.password || '');
 async function onLogin() {
   if (loginCallback) {
     alertMsg.value = '等待确认';
-    
+
     const res = await loginCallback(userName.value, userPassword.value);
-    console.log(userName.value, userPassword.value,res);
+
     if (res) {
       loginSuccess();
     } else {
@@ -54,10 +54,16 @@ async function onLogin() {
       </span>
       <div class="username">
         <span class="ant-input-group">
-          <input placeholder="请输入用户名" autofocus class="ant-input" v-model="userName" />
+          <input
+            placeholder="请输入用户名"
+            autofocus
+            class="ant-input"
+            v-model="userName"
+            @keyup.enter="onLogin"
+          />
         </span>
       </div>
-      <span>
+      <div class="password">
         <span class="ant-input-group">
           <!---->
           <input
@@ -67,6 +73,7 @@ async function onLogin() {
             autofocus
             class="ant-input"
             v-model="userPassword"
+            @keyup.enter="onLogin"
           />
           <span class="ant-input-group-addon">
             <button class="ant-btn-primary" type="button" @click="onLogin">
@@ -89,7 +96,7 @@ async function onLogin() {
           </span>
         </span>
         <div class="tip">{{ alertMsg }}</div>
-      </span>
+      </div>
     </div>
   </div>
 </template>
@@ -144,18 +151,19 @@ async function onLogin() {
         font-size: 16px;
         outline: none;
         border: none;
+        flex-grow: 1;
       }
       .ant-btn-primary {
         color: #fff;
-        background: #1890ff;
+        background: #1890ffb3;
         border-color: #1890ff;
         border: none;
         text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
         box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
-        height: 30px;
-        padding: 6.4px 15px;
+        height: 100%;
+        padding: 6.4px 8px;
         font-size: 16px;
-        border-radius: 2px;
+        border-radius: 0;
         transition: all 0.3s;
         cursor: pointer;
       }
@@ -174,12 +182,18 @@ async function onLogin() {
     .username {
       font-size: 30px;
       margin-bottom: 14px;
+      width: 100%;
+
+      input {
+        text-align: center;
+      }
     }
   }
   .tip {
     padding: 4px 0px;
     font-size: 12px;
     height: 30px;
+    text-align: center;
   }
 }
 
@@ -202,4 +216,3 @@ async function onLogin() {
   }
 }
 </style>
-../../../kernel/system

@@ -24,13 +24,13 @@ defineProps({
   cursor: pointer;
   transition: all 0.1s;
   font-size: var(--ui-font-size);
-  width: var(--ui-button-width);
+  min-width: var(--ui-button-width);
   height: var(--ui-button-height);
   border-width: 1px;
   box-sizing: border-box;
   white-space: nowrap;
   &:hover {
-    border-width: 2px;
+    box-shadow: inset 0 0 0 1px var(--color-blue);
     border-color: var(--color-blue);
     background-color: var(--color-light-blue);
   }

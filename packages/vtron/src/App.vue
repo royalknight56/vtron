@@ -16,6 +16,7 @@ import testicon from './assets/终端.png';
 import TestButton from './apps/TestButton.vue';
 import VtronTest from './apps/VtronTest.vue';
 import VtronPerfTest from './apps/VtronPerfTest.vue';
+import TestUiButton from './apps/TestUiButton.vue';
 import { System, VtronFile, VtronComputer } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 import { Tray, Menu } from '@/packages/services';
@@ -101,6 +102,16 @@ const sys = new System({
       window: {
         content: VtronPerfTest,
         title: 'Vtron自动性能测试',
+        icon: testicon,
+        center: true,
+      },
+    },
+    {
+      name: 'Vtron测试UI-按钮',
+      icon: testicon,
+      window: {
+        content: TestUiButton,
+        title: 'Vtron测试UI-按钮',
         icon: testicon,
         center: true,
       },

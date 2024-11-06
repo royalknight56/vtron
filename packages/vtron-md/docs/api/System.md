@@ -28,6 +28,7 @@ export interface WinAppOptions {
     }
 }
 interface SystemOptions {
+    id: number;
     /**
      * @description: 语言
      */
@@ -64,6 +65,11 @@ interface SystemOptions {
 
 constructor(options?: SystemOptions)
 ```
+## id
+
+系统的id，用来区分当一个页面下有多个系统的时候
+
+建议设置一个固定的id
 
 ## options-logo
 

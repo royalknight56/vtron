@@ -38,7 +38,7 @@ module.exports = {
     root: {
       label: 'Chinese',
       lang: 'zh-CN',
-    }
+    },
   },
   // 配置默认主题
   themeConfig: {
@@ -95,6 +95,10 @@ module.exports = {
         {
           text: 'Notify',
           link: '/api/Notify.md',
+        },
+        {
+          text: 'Iframe',
+          link: '/api/Iframe.md',
         },
         {
           text: '其他',

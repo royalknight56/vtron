@@ -45,7 +45,9 @@ constructor(option:{
     alwaysOnTop: boolean
     skipTaskbar: boolean
     backgroundColor: string
-    textColor: string
+    textColor: string;
+    menubarButtonColor: string;
+    fullDragable?: boolean;
 })
 ```
 
@@ -201,6 +203,18 @@ Type: string
 Type: string
 
 窗口的文字颜色。
+
+### menubarButtonColor
+
+Type: string
+
+窗口的菜单栏按钮颜色。
+
+### fullDragable
+
+Type: boolean
+
+是否允许窗口内部全部为可拖动区域。
 
 ## id
 
@@ -789,4 +803,56 @@ usage:
 ```ts
 const win = new BrowserWindow();
 win.setTextColor('#901');
+```
+
+## setFrame
+
+
+type:
+
+```ts
+setFrame(frame:boolean):void
+```
+
+设置窗口是否显示边框
+
+usage:
+
+```ts
+const win = new BrowserWindow();
+win.setFrame(true);
+```
+
+## setAlwaysOnTop
+
+type:
+
+```ts
+setAlwaysOnTop(alwaysOnTop:boolean):void
+```
+
+设置窗口是否总在顶部显示
+
+usage:
+
+```ts
+const win = new BrowserWindow();
+win.setAlwaysOnTop(true);
+```
+
+## setMenubarButtonColor
+
+type:
+
+```ts
+setMenubarButtonColor(color:string):void
+```
+
+设置窗口的菜单栏按钮颜色
+
+usage:
+
+```ts
+const win = new BrowserWindow();
+win.setMenubarButtonColor('#901');
 ```

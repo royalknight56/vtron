@@ -31,6 +31,7 @@
       @mousedown.stop="predown"
       @touchstart.stop.passive="predown"
       @contextmenu.stop.prevent
+      v-dragable="windowInfo.fullDragable"
     >
       <div class="content-mask" v-if="!istop && typeof browserWindow.content === 'string'"></div>
       <WindowInner :window="browserWindow"></WindowInner>

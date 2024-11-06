@@ -30,6 +30,8 @@ export interface BrowserWindowConstructorOptions {
   skipTaskbar: boolean;
   backgroundColor: string;
   textColor: string;
+  menubarButtonColor: string;
+  fullDragable?: boolean;
   show: boolean;
 }
 export interface WindowInfo extends BrowserWindowConstructorOptions {
@@ -61,6 +63,8 @@ class BrowserWindow {
     skipTaskbar: false,
     backgroundColor: '#fff',
     textColor: '#000',
+    menubarButtonColor: '#000',
+    fullDragable: false,
     show: false,
   };
   public static defaultInfo: Omit<WindowInfo, keyof BrowserWindowConstructorOptions> = {
@@ -391,6 +395,10 @@ class BrowserWindow {
   setAlwaysOnTop(flag: boolean) {
     this.windowInfo.alwaysOnTop = flag;
     this.emit('alwaysOnTop', flag);
+  }
+  setMenubarButtonColor(color: string) {
+    this.windowInfo.menubarButtonColor = color;
+    this.emit('menubarButtonColor', color);
   }
 }
 export { BrowserWindow };

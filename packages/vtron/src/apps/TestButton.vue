@@ -16,7 +16,10 @@ import { inject } from 'vue';
 const win = inject<BrowserWindow>('browserWindow');
 async function test() {
   win?.setBackgroundColor('#401');
-  win?.setTextColor('#fff');
+  win?.setTextColor('#a0f');
+  win?.setMenubarButtonColor('#ff2');
+  win?.setAlwaysOnTop(true);
+  win?.setFrame(false);
   new Notify({
     title: 'title',
     content: '111',

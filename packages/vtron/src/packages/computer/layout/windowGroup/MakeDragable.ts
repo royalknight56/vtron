@@ -5,6 +5,9 @@ import { Directive } from 'vue';
 
 const vDragable: Directive = {
   mounted(el, binding) {
+    if (binding.value === false) {
+      return;
+    }
     const browserWindow = (binding.instance?.$ as any).provides.browserWindow as BrowserWindow;
     const system = (binding.instance?.$ as any).provides.system as System;
     el.unback = makeDragable(el, browserWindow, system.rootRef as HTMLElement);

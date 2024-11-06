@@ -17,7 +17,7 @@ export { System } from '@/packages/kernel/system';
 export { BrowserWindow, Dialog, Menu, MenuItem, Tray } from '@/packages/services';
 export { Notify } from '@/packages/services/notification/Notification';
 export * from '@/packages/util/Path';
-export type { SystemOptions } from '@packages/type/type';
+export * from '@packages/type/type';
 export { VtronComputer } from './computer';
 export {
   WinButtonVue,

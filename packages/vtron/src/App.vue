@@ -73,20 +73,6 @@ const sys = new System({
     },
 
     {
-      name: '测试不可缩放',
-      icon: testicon,
-      window: {
-        content: TestButton,
-        title: '测试不可缩放',
-        icon: testicon,
-        center: true,
-        frame: false,
-        fullscreen: true,
-        resizable: false,
-        backgroundColor: 'rgba(0,0,0,0)',
-      },
-    },
-    {
       name: 'Vtron自动测试',
       icon: testicon,
       window: {

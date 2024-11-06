@@ -380,5 +380,17 @@ class BrowserWindow {
     this.windowInfo.textColor = color;
     this.emit('textColor', color);
   }
+  setFrame(flag: boolean) {
+    this.windowInfo.frame = flag;
+    this.emit('frame', flag);
+  }
+  setResizable(flag: boolean) {
+    this.windowInfo.resizable = flag;
+    this.emit('resizable', flag);
+  }
+  setAlwaysOnTop(flag: boolean) {
+    this.windowInfo.alwaysOnTop = flag;
+    this.emit('alwaysOnTop', flag);
+  }
 }
 export { BrowserWindow };

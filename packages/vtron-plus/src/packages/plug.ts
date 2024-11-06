@@ -19,6 +19,7 @@ import chromeicon from './assets/chromeicon.png';
 import docxIcon from './assets/docx.png';
 import backupIcon from './assets/e895.png';
 import galleryIcon from './assets/gallery.png';
+import storeIcon from './assets/vtron-stroe-icon-nobg.png';
 import musicAppIcon from './assets/musicApp.png';
 import pdfIcon from './assets/pdf.png';
 import ppticon from './assets/ppt.png';
@@ -36,6 +37,7 @@ import VideoViewerVue from './apps/VideoViewer.vue';
 import ZipBackupVue from './apps/ZipBackup.vue';
 import audioIcon from './assets/audio.png';
 import videoIcon from './assets/video.png';
+import AppStore from './apps/AppStore.vue';
 type VtronFeature =
   | 'doc'
   | 'xls'
@@ -51,7 +53,8 @@ type VtronFeature =
   | 'calc'
   | 'help'
   | 'music'
-  | 'gallery';
+  | 'gallery'
+  | 'store';
 function vtronPlus(configIn?: { features: VtronFeature[] }) {
   const config = {
     features: configIn?.features || [
@@ -70,6 +73,7 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
       'help',
       'music',
       'gallery',
+      'store',
     ],
   };
   return function vtronPlusPlugin(system: System) {
@@ -408,6 +412,26 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
           icon: galleryIcon,
           center: true,
           content: PictureStoreVue,
+        },
+      });
+
+    config.features.includes('store') &&
+      system.addApp({
+        name: 'AppStore',
+        icon: storeIcon,
+        multiple: false,
+        window: {
+          width: 900,
+          height: 630,
+          center: true,
+          title: 'AppStore',
+          icon: storeIcon,
+          content: AppStore,
+          backgroundColor: '#ffffff00',
+          frame: false,
+          config: {
+            path: '/',
+          },
         },
       });
 

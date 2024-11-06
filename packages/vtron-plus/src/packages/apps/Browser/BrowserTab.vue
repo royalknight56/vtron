@@ -80,6 +80,7 @@ const urlinput = ref('https://vtron.site/startpage');
 const urlsrc = ref('https://vtron.site/startpage');
 const props = defineProps<{
   isCurrent: boolean;
+  homepage?: string;
 }>();
 function urlkey(e: KeyboardEvent) {
   if (e.code == 'Enter') {

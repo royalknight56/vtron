@@ -4,8 +4,17 @@
  * @Description: 这是个未完成的浏览器窗口
 -->
 <template>
-  <div class="up-handle" v-dragable>
+  <div class="up-handle" v-dragable @dblclick="handleDbclick">
     <div class="tab-group">
+      <!-- <div
+        class="up-tab tab-setting"
+        :class="{
+          active: currentTab === '设置',
+        }"
+        @click="switchTab('设置')"
+      >
+        <div class="tab">设置</div>
+      </div> -->
       <div
         class="up-tab"
         :class="{
@@ -25,13 +34,23 @@
         @click="switchTab(item)"
       >
         <div class="tab">{{ item }}</div>
-        <div class="close" @click.stop="removeTab(item)">-</div>
+        <div class="close" @click.stop="removeTab(item)">
+          <svg viewBox="0 0 1024 1024">
+            <path
+              d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z"
+            ></path>
+          </svg>
+        </div>
       </div>
       <div class="up-tab-add" @click="addTab()">+</div>
     </div>
     <div class="up-button-group">
       <WinUpButtonGroupVue :browser-window="browserWindow"></WinUpButtonGroupVue>
     </div>
+  </div>
+  <div :key="'设置'" v-show="currentTab === '设置'" :isCurrent="currentTab === '设置'" class="setting-tab">
+    <h3>主页设置</h3>
+    <input type="text" />
   </div>
   <BrowserTab :key="'主页'" v-show="currentTab === '主页'" :isCurrent="currentTab === '主页'"></BrowserTab>
   <BrowserTab
@@ -66,6 +85,13 @@ const removeTab = (tab: string) => {
 };
 const switchTab = (tab: string) => {
   currentTab.value = tab;
+};
+const handleDbclick = () => {
+  if (browserWindow.isMaximized()) {
+    browserWindow.unmaximize();
+  } else {
+    browserWindow.maximize();
+  }
 };
 </script>
 
@@ -113,6 +139,9 @@ const switchTab = (tab: string) => {
   min-width: 20px;
   box-sizing: border-box;
 }
+.tab-setting {
+  width: 50px;
+}
 .up-tab.active {
   background-color: #ffffff;
   border-bottom: none;
@@ -131,13 +160,17 @@ const switchTab = (tab: string) => {
   width: 14px;
   height: 14px;
   align-self: flex-end;
-  background-color: #ffffff;
-  border: 1px solid #bebebe;
+  /* background-color: #ffffff; */
+  /** border: 1px solid #bebebe; **/
   border-radius: 8px;
   flex-shrink: 0;
 }
+.close svg {
+  width: 10px;
+  height: 10px;
+}
 .close:hover {
-  background-color: #ff0000;
+  background-color: #5757577f;
   color: #ffffff;
 }
 .up-tab-add {
@@ -154,5 +187,14 @@ const switchTab = (tab: string) => {
   border-radius: 8px 8px 0 0;
   border-bottom: none;
   flex-shrink: 0;
+}
+
+.setting-tab {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  user-select: none;
+  background-color: #ffffff;
 }
 </style>

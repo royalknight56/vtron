@@ -7,7 +7,7 @@ import shimo from './assets/shimo.base?raw';
 import zhengqiji from './assets/zhengqiji.base?raw';
 import vtbshuju from './assets/vtbshuju.base?raw';
 import defaulticon from './assets/default.base?raw';
-import redalertIcon from './assets/redalert.base?raw';
+import minecrafticon from './assets/minecrafticon.base?raw';
 
 const isready = ref(false);
 const isNoSystem = ref(false);
@@ -61,14 +61,17 @@ function uninstall(item: any) {
     '*'
   );
 }
-function transSimpleUrlApp(title: string, url: string, icon: string) {
+function transSimpleUrlApp(title: string, url: string, icon?: string) {
+  let iconFinnal = icon || `https://icon.bqb.cool?url=${url}`;
+
   return {
     name: title,
     desc: `添加${title} app`,
-    icon: icon,
+    icon: iconFinnal,
     type: 'once',
     content: `function main(system){
-      system.fs.writeFile(system._options.userLocation+'Desktop/${title}.url', "link::url::${url}::${icon}")
+     system.fs.writeFile(system._options.userLocation+'Desktop/${title}.url', "link::url::${url}::${iconFinnal}")
+ 
     }`,
     uninstallContent: `function main(system){
       system.fs.unlink(system._options.userLocation+'Desktop/${title}.url')
@@ -116,7 +119,9 @@ const temp = [
   // },
   transSimpleUrlApp('看月亮', 'https://static.vtron.site/moon/', moon),
   // transSimpleUrlApp('语音ChatGPT', 'https://gpt.myim.online/#/about', chatGPTIcon),
-  transSimpleUrlApp('红警', 'https://game.bun.sh.cn/', redalertIcon),
+  // transSimpleUrlApp('红警', 'https://game.bun.sh.cn/', redalertIcon),
+  transSimpleUrlApp('Minecraft', 'https://classic.minecraft.net/', minecrafticon),
+
   transSimpleUrlApp(
     '在线工具',
     'https://tool.lu/',
@@ -124,6 +129,9 @@ const temp = [
   ),
   transSimpleUrlApp('石墨文档', 'https://shimo.im/desktop', shimo),
   transSimpleUrlApp('在线节拍器', 'https://metronome.tooltool.net/?utm_source=xinquji', jiepaiqi),
+  transSimpleUrlApp('打字练习', 'https://typing-practice.toolsnav.top/'),
+
+  transSimpleUrlApp('数字华容道', 'https://number-sliding-puzzle-game.2play.top/'),
 
   transSimpleUrlApp('查看月食', 'https://nadc.china-vo.org/eclipse/', moon),
   transSimpleUrlApp('蒸 気 機', 'https://magiconch.com/vaporwave/?from=home', zhengqiji),

@@ -20,6 +20,7 @@ import TestUiButton from './apps/TestUiButton.vue';
 import { System, VtronFile, VtronComputer } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 import { Tray, Menu } from '@/packages/services';
+import TestBaidu from './apps/TestBaidu.vue';
 
 const sys = new System({
   // lang: 'en-US',
@@ -49,7 +50,7 @@ const sys = new System({
       icon: testicon,
       multiple: false,
       window: {
-        content: 'https://www.baidu.com',
+        content: TestBaidu,
         title: '测试按钮',
         icon: testicon,
         center: true,

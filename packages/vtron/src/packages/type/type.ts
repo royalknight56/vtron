@@ -10,7 +10,10 @@ export type BuiltinFeature =
   | 'UrlOpener'
   | 'TextOpener'
   | 'ShortCutOpener'
-  | 'ExeOpener';
+  | 'ExeOpener'
+  | 'Setting-Language'
+  | 'Setting-Account'
+  | 'Setting-Personalization';
 export interface InitFileItem {
   type: string;
   name: string;

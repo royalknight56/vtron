@@ -108,34 +108,47 @@ const setList = ref([
   //     desc: 'WLAN，飞行模式，VPN',
   //     icon: e774
   // },
-  {
-    key: 'custom',
-    title: i18n('personalization'),
-    desc: i18n('background.lockscreen.color'),
-    icon: e771,
-    content: markRaw(SetCustom),
-  },
+  ...(sys._options.builtinFeature?.includes('Setting-Personalization')
+    ? [
+        {
+          key: 'custom',
+          title: i18n('personalization'),
+          desc: i18n('background.lockscreen.color'),
+          icon: e771,
+          content: markRaw(SetCustom),
+        },
+      ]
+    : []),
+
   //  {
   //     title: '软件商店',
   //     desc: '获取网络上的应用',
   //     icon: e771,
   //     content:appstore
   // },
-  {
-    key: 'language',
-    title: i18n('time.and.language'),
-    desc: i18n('language'),
-    icon: e775,
-    content: markRaw(SetLang),
-  },
+  ...(sys._options.builtinFeature?.includes('Setting-Language')
+    ? [
+        {
+          key: 'language',
+          title: i18n('time.and.language'),
+          desc: i18n('language'),
+          icon: e775,
+          content: markRaw(SetLang),
+        },
+      ]
+    : []),
 
-  {
-    key: 'account',
-    title: i18n('account'),
-    desc: i18n('your.account'),
-    icon: e77b,
-    content: markRaw(SetAccount),
-  },
+  ...(sys._options.builtinFeature?.includes('Setting-Account')
+    ? [
+        {
+          key: 'account',
+          title: i18n('account'),
+          desc: i18n('your.account'),
+          icon: e77b,
+          content: markRaw(SetAccount),
+        },
+      ]
+    : []),
 
   // {
   //   key: 'update',

@@ -26,6 +26,9 @@ async function test() {
     timeout: 555000,
   });
 }
+win?.on('move', (...res) => {
+  console.log('move', res);
+});
 </script>
 <style></style>
 <style scoped>

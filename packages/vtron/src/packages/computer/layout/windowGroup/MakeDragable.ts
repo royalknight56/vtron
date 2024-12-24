@@ -28,6 +28,7 @@ function makeDragable(ref: HTMLElement, browserWindow: BrowserWindow, outerEleme
       browserWindow.windowInfo.x = x;
       browserWindow.windowInfo.y = y;
     }
+    browserWindow.emit('move', x, y);
   });
   return () => {
     dragAble.unMount();

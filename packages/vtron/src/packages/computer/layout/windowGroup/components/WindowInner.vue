@@ -15,7 +15,7 @@
   </Suspense>
 </template>
 <script setup lang="ts">
-import { inject, onUnmounted, ref, UnwrapNestedRefs } from 'vue';
+import { inject, onMounted, onUnmounted, ref, UnwrapNestedRefs } from 'vue';
 import { BrowserWindow } from '@/packages/services';
 import { System } from '@/packages/kernel';
 const props = defineProps<{
@@ -55,6 +55,11 @@ props.window.addEventListener('message', (source: string, arg: any) => {
 window?.addEventListener('message', handleEvent);
 onUnmounted(() => {
   window?.removeEventListener('message', handleEvent);
+});
+onMounted(() => {
+  setTimeout(() => {
+    isLoad.value = false;
+  }, 5000);
 });
 </script>
 <style scoped>

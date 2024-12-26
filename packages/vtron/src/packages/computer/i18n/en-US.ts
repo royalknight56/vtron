@@ -127,4 +127,5 @@ export const enUS: AllText = {
   'delete.account.tip':
     'After deleting the account, the lock screen function cannot be used, do you want to continue?',
   'cannot.create.file.here': 'Cannot Create File Here',
+  'file.group': 'File Group',
 };

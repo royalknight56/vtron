@@ -1,10 +1,14 @@
 <template>
-  <img v-if="icon" draggable="false" :src="iconR" @error="replaceIcon" />
+  <div v-if="file?.name.endsWith('.group')" class="file-icon-img">
+    <FileGroupIcon :file="file" />
+  </div>
+  <img v-else-if="icon" draggable="false" :src="iconR" @error="replaceIcon" />
   <img v-else draggable="false" :src="iconimg" @error="replaceIcon" />
 </template>
 <script setup lang="ts">
 import { System, VtronFileWithoutContent } from '@packages/kernel';
 import { dealIcon } from '@/packages/computer/utils/dealIcon';
+import FileGroupIcon from './FileGroupIcon.vue';
 import unknownicon from '@packages/assets/unknown.png';
 import { inject, onMounted, ref } from 'vue';
 const props = defineProps<{
@@ -17,7 +21,11 @@ const iconimg = ref('');
 const iconR = ref(props.icon);
 
 onMounted(async () => {
-  iconimg.value = await dealIcon(props.file, sys);
+  if (props.file?.name.endsWith('.group')) {
+    return;
+  } else {
+    iconimg.value = await dealIcon(props.file, sys);
+  }
 });
 function replaceIcon() {
   iconR.value = unknownicon;

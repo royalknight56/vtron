@@ -128,4 +128,5 @@ export const zhCN = {
   'create.account.for.unlock': '创建账户用于解锁',
   'delete.account.tip': '删除账户后，无法使用锁屏功能，是否继续？',
   'cannot.create.file.here': '无法在此处创建文件',
+  'file.group': '文件组',
 };

@@ -3,6 +3,7 @@ import imageicon from '@packages/assets/image.png';
 import unknownIcon from '@packages/assets/unknown.png';
 
 import FileViewer from '@/packages/computer/application/FileViewer.vue';
+import FileGroupViewer from '@/packages/computer/application/FileGroupViewer.vue';
 import ImageViewerVue from '@/packages/computer/application/ImageViewer.vue';
 import MyComputerVue from '@/packages/computer/application/MyComputer/MyComputer.vue';
 import UrlBrowser from '@/packages/computer/application/UrlBrowser.vue';
@@ -119,6 +120,32 @@ export function initBuiltinFileOpener(system: System) {
       },
     });
   }
+  system.registerFileOpener('.group', {
+    name: '文件组',
+    icon: unknownIcon,
+    hiddenInChosen: true,
+    func: async (path) => {
+      const content = (await system.fs.readFile(path)) || '';
+      const tempwindow = system.createWindow({
+        width: 800,
+        height: 600,
+        center: true,
+        title: i18n('file.group'),
+        content: FileGroupViewer,
+        config: {
+          content: content,
+          path: path,
+        },
+        fullscreen: true,
+        frame: false,
+        backgroundColor: '#cccccc00',
+        style: {
+          'backdrop-filter': 'blur(10px)',
+        },
+      });
+      tempwindow.show();
+    },
+  });
 
   system.registerFileOpener('dir', {
     name: '文件夹',

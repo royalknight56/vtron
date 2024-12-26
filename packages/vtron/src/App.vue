@@ -45,8 +45,61 @@ const sys = new System({
     },
 
     {
-      name: 'Vtron自动测试',
+      name: 'VtronGroup测试',
       icon: testicon,
+      type: 'group',
+      group: [
+        {
+          name: 'Vtron1',
+          icon: testicon,
+          window: {
+            content: VtronPerfTest,
+            title: 'Vtron自动性能测试',
+            icon: testicon,
+            center: true,
+          },
+        },
+        {
+          name: '2',
+          icon: testicon,
+          window: {
+            content: VtronPerfTest,
+            title: 'Vtron自动性能测试',
+            icon: testicon,
+            center: true,
+          },
+        },
+        {
+          name: '3',
+          icon: testicon,
+          window: {
+            content: VtronPerfTest,
+            title: 'Vtron自动性能测试',
+            icon: testicon,
+            center: true,
+          },
+        },
+        {
+          name: '4',
+          icon: testicon,
+          window: {
+            content: VtronPerfTest,
+            title: 'Vtron自动性能测试',
+            icon: testicon,
+            center: true,
+          },
+        },
+        {
+          name: '5',
+          icon: testicon,
+          window: {
+            content: VtronPerfTest,
+            title: 'Vtron自动性能测试',
+            icon: testicon,
+            center: true,
+          },
+        },
+      ],
       window: {
         content: VtronTest,
         title: 'Vtron自动测试',

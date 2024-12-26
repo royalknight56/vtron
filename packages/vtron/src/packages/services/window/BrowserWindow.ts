@@ -33,6 +33,7 @@ export interface BrowserWindowConstructorOptions {
   menubarButtonColor: string;
   fullDragable?: boolean;
   show: boolean;
+  style?: Record<string, string>;
 }
 export interface WindowInfo extends BrowserWindowConstructorOptions {
   state: WindowStateEnum;

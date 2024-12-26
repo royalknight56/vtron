@@ -157,6 +157,7 @@ onMounted(() => {
     color: computed(() => windowInfo.textColor),
     backgroundColor: computed(() => windowInfo.backgroundColor),
     borderRadius: windowInfo.radius ? windowInfo.radius + 'px' : 'var(--window-border-radius)',
+    ...windowInfo.style,
   };
 });
 

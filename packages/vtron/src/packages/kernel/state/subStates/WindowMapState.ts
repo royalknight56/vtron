@@ -5,12 +5,13 @@ export class WindowMapState {
   Magnet = new Map<string, WinAppOptions>();
   Menulist = new Map<string, WinAppOptions>();
   Builtin = new Map<string, WinAppOptions>();
+  Group = new Map<string, WinAppOptions>();
 
   constructor() {}
-  get(pos: 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin', key: string) {
+  get(pos: 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin' | 'Group', key: string) {
     return this[pos].get(key);
   }
-  set(pos: 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin', key: string, value: WinAppOptions) {
+  set(pos: 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin' | 'Group', key: string, value: WinAppOptions) {
     this[pos].set(key, value);
   }
 }

@@ -202,6 +202,7 @@ function onEditName() {
     margin: 0px auto;
     user-select: none;
     flex-shrink: 0;
+    margin-bottom: 4px;
   }
 
   .file-item_title {

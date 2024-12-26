@@ -115,7 +115,6 @@ export class AppOperations {
       `${this.system._options.userLocation}${loc}/.DS_Store`,
       JSON.stringify({ sortMap })
     );
-    console.log('setAppOrder', store, sortMap);
     this.refershApp();
   }
 
@@ -125,10 +124,17 @@ export class AppOperations {
     force = false
   ) {
     if (this.system.isFirstRun || force) {
-      this.system.fs.writeFile(
-        `${this.system._options.userLocation}${loc}/` + options.name + '.exe',
-        `link::${loc}::${options.name}::${options.icon}`
-      );
+      if (options.type === 'group') {
+        this.system.fs.writeFile(
+          `${this.system._options.userLocation}${loc}/` + options.name + '.group',
+          JSON.stringify(options.group)
+        );
+      } else {
+        this.system.fs.writeFile(
+          `${this.system._options.userLocation}${loc}/` + options.name + '.exe',
+          `link::${loc}::${options.name}::${options.icon}`
+        );
+      }
     } else {
       this.refershApp();
     }
@@ -137,6 +143,12 @@ export class AppOperations {
     } else {
       options.window.content = markRaw(options.window.content);
     }
-    this.system.stateManager.windowMap.set(loc, options.name, options);
+    if (options.type === 'group') {
+      options.group?.forEach((item) => {
+        this.system.stateManager.windowMap.set('Group', item.name, item);
+      });
+    } else {
+      this.system.stateManager.windowMap.set(loc, options.name, options);
+    }
   }
 }

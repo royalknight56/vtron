@@ -33,7 +33,20 @@ import { mountWebdav } from './hook/mountWebdav';
 
 const system = new System({
   id: 0,
-  desktop: [...addListToDesktop(desktopConfig)],
+  desktop: [
+    ...addListToDesktop(desktopConfig),
+    {
+      name: '小工具',
+      type: 'group',
+      group: [...addListToDesktop(magnetConfig)],
+      window: {
+        title: 'VtronGroup',
+        width: 400,
+        height: 200,
+        content: 'VtronGroup测试',
+      },
+    },
+  ],
   magnet: [...addListToDesktop(magnetConfig)],
   menulist: [
     {

@@ -39,12 +39,6 @@ const system = new System({
       name: '小工具',
       type: 'group',
       group: [...addListToDesktop(magnetConfig)],
-      window: {
-        title: 'VtronGroup',
-        width: 400,
-        height: 200,
-        content: 'VtronGroup测试',
-      },
     },
   ],
   magnet: [...addListToDesktop(magnetConfig)],

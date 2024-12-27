@@ -80,6 +80,9 @@ const closeWindow = () => {
   font-size: 16px;
   font-weight: bold;
   color: #ffffffd7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .file-group-viewer-content {
   width: 100%;

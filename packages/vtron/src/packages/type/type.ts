@@ -83,6 +83,8 @@ export interface WinAppOptionsGroup {
   /** 排列的顺序 */
   order?: number;
   group: WinAppOptions[];
+  /** @internal 是否已经显示 */
+  _hasShow?: boolean;
 }
 
 export interface WinAppOptionsApp {

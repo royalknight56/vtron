@@ -50,7 +50,7 @@ export function initBuiltinFileOpener(system: System) {
           exeContent[1] as 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin',
           exeContent[2]
         );
-        if (winopt) {
+        if (winopt && winopt.type === 'app') {
           if (winopt.multiple ?? true) {
             const win = system.createWindow(winopt.window);
             win.show();

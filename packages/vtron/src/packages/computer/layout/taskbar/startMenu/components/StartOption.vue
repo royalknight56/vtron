@@ -84,12 +84,14 @@ function handleClick(key: number, ev: MouseEvent) {
         if (winopt._hasShow) {
           return;
         } else {
-          winopt._hasShow = true;
-          const win = sys.createWindow(winopt.window);
-          win.show();
-          win.on('close', () => {
-            winopt._hasShow = false;
-          });
+          if (winopt.type === 'app') {
+            winopt._hasShow = true;
+            const win = sys.createWindow(winopt.window);
+            win.show();
+            win.on('close', () => {
+              winopt._hasShow = false;
+            });
+          }
         }
       }
       break;

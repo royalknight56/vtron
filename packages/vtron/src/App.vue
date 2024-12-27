@@ -46,7 +46,6 @@ const sys = new System({
 
     {
       name: 'VtronGroup测试',
-      icon: testicon,
       type: 'group',
       group: [
         {
@@ -100,12 +99,6 @@ const sys = new System({
           },
         },
       ],
-      window: {
-        content: VtronTest,
-        title: 'Vtron自动测试',
-        icon: testicon,
-        center: true,
-      },
     },
     {
       name: 'Vtron自动性能测试',

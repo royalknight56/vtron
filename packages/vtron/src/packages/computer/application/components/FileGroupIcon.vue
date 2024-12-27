@@ -1,12 +1,12 @@
 <template>
   <div class="file-group-icon">
     <div v-for="item in groupContent" :key="item.name" class="file-group-icon-item">
-      <VtronImage :path="item.icon" />
+      <VtronImage :path="(item as WinAppOptionsApp).icon" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { WinAppOptions } from '@/packages/type/type';
+import { WinAppOptions, WinAppOptionsApp } from '@/packages/type/type';
 import { VtronFileWithoutContent } from '@packages/kernel';
 import { inject, onMounted, ref } from 'vue';
 import { System } from '@packages/kernel';

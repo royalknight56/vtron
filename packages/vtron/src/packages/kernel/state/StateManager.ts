@@ -36,19 +36,23 @@ export class StateManager {
     this.system = system;
 
     const options = this.system._options;
-    options.desktop?.forEach((item) => {
-      if (typeof item.window.content !== 'string') {
-        item.window.content = markRaw(item.window.content);
-      }
-    });
-    options.magnet?.forEach((item) => {
-      if (typeof item.window.content !== 'string') {
-        item.window.content = markRaw(item.window.content);
-      }
-    });
-    options.menulist?.forEach((item) => {
-      if (typeof item.window.content !== 'string') {
-        item.window.content = markRaw(item.window.content);
+    [
+      ...(options.desktop || []),
+      ...(options.magnet || []),
+      ...(options.menulist || []),
+    ].forEach((item) => {
+      if (item.type !== 'group') {
+        if (typeof item.window.content !== 'string') {
+          item.window.content = markRaw(item.window.content);
+        }
+      } else {
+        item.group.forEach((item) => {
+          if (item.type !== 'group') {
+            if (typeof item.window.content !== 'string') {
+              item.window.content = markRaw(item.window.content);
+            }
+          }
+        });
       }
     });
     this.options = new OptionsState(options);

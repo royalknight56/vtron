@@ -75,7 +75,18 @@ export interface SystemOptionsCertainly {
 export type SystemOptions = SystemOptionsCertainly & {
   [key: string]: SafeAny;
 };
-export interface WinAppOptions {
+export interface WinAppOptionsGroup {
+  type: 'group';
+  name: string;
+  /** 是否可以同时打开多个 */
+  multiple?: boolean;
+  /** 排列的顺序 */
+  order?: number;
+  group: WinAppOptions[];
+}
+
+export interface WinAppOptionsApp {
+  type?: 'app';
   name: string;
   icon?: string;
   /** 是否可以同时打开多个 */
@@ -84,10 +95,8 @@ export interface WinAppOptions {
   order?: number;
   /** 窗口配置 */
   window: BrowserWindowOption;
-  /** 类型 */
-  type?: 'app' | 'group';
-  /** 组 */
-  group?: Omit<WinAppOptions, 'group'>[];
   /** @internal 是否已经显示 */
   _hasShow?: boolean;
 }
+
+export type WinAppOptions = WinAppOptionsGroup | WinAppOptionsApp;

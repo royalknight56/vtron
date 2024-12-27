@@ -17,12 +17,11 @@ export class AppOperations {
       const element = APP_TYPE[i];
       system?.fs
         .readdir(
-          `${system._options.userLocation}${
-            {
-              apps: 'Desktop',
-              magnet: 'Magnet',
-              menulist: 'Menulist',
-            }[element]
+          `${system._options.userLocation}${{
+            apps: 'Desktop',
+            magnet: 'Magnet',
+            menulist: 'Menulist',
+          }[element]
           }`
         )
         .then(async (res) => {
@@ -39,7 +38,7 @@ export class AppOperations {
                   sortMap = JSON.parse(DsStore).sortMap;
                 }
               }
-            } catch (error) {}
+            } catch (error) { }
             for (let j = 0; j < list.length; j++) {
               const item = list[j];
               tempList.push(item);
@@ -138,16 +137,16 @@ export class AppOperations {
     } else {
       this.refershApp();
     }
-    if (typeof options.window.content === 'string') {
-      // TODO: 当content是string的时候
-    } else {
-      options.window.content = markRaw(options.window.content);
-    }
+
     if (options.type === 'group') {
       options.group?.forEach((item) => {
         this.system.stateManager.windowMap.set('Group', item.name, item);
       });
     } else {
+      // TODO: 当content是string的时候
+      if (typeof options.window.content !== 'string') {
+        options.window.content = markRaw(options.window.content);
+      }
       this.system.stateManager.windowMap.set(loc, options.name, options);
     }
   }

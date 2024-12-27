@@ -12,7 +12,7 @@
           @click="openFile(item)"
         >
           <div class="file-group-viewer-item-icon">
-            <VtronImage :path="item.icon" />
+            <VtronImage :path="(item as WinAppOptionsApp).icon" />
           </div>
           <div class="file-group-viewer-item-name">{{ item.name }}</div>
         </div>
@@ -25,7 +25,7 @@ import { BrowserWindow } from '@/packages/services';
 import { basename, System, VtronFileWithoutContent } from '@packages/kernel';
 import { inject, onMounted, ref } from 'vue';
 import VtronImage from './components/VtronImage.vue';
-import { WinAppOptions } from '@/packages/type/type';
+import { WinAppOptions, WinAppOptionsApp } from '@/packages/type/type';
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 const fileContent = ref<WinAppOptions[]>([]);
 const system = inject<System>('system')!;
@@ -37,7 +37,7 @@ const openFile = (item: WinAppOptions) => {
   setTimeout(() => {
     const winGet = system.stateManager.windowMap.get('Group', item.name);
     if (winGet) {
-      const win = system.createWindow(winGet.window);
+      const win = system.createWindow((winGet as WinAppOptionsApp).window);
       win.show();
     }
   }, 200);

@@ -2,7 +2,6 @@ import vtronStoreLogoIcon from '@/assets/vtron-stroe-icon-nobg.png?url';
 import MyComputerVue from '@/packages/computer/application/MyComputer/MyComputer.vue';
 import SettingVue from '@/packages/computer/application/Setting.vue';
 import { System } from '@/packages/kernel';
-import { WinAppOptions } from '@/packages/type/type';
 import myComputerLogoIcon from '@packages/assets/computer.png?url';
 import settingicon from '@packages/assets/setting.png';
 import { i18n } from '../i18n';

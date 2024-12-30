@@ -77,8 +77,6 @@ system.whenReady().then((readySystem) => {
 
 ## 已经更新至 ${readySystem.version}
 
-重磅更新Chrome浏览器样式，主页
-
 #### 更新之后建议开始菜单->恢复。请自己保留重要数据
 
   本地上传的文件不会存储在服务端，文件都在本地保存

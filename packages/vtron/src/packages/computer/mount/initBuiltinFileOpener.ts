@@ -19,57 +19,56 @@ import type { System } from '@packages/kernel';
 import { basename } from '@packages/kernel';
 
 export function initBuiltinFileOpener(system: System) {
-  if (system._options.builtinFeature?.includes('ExeOpener')) {
-    system.registerFileOpener('.exe', {
-      name: i18n('exe.document'),
-      icon: unknownIcon,
-      hiddenInChosen: true,
-      func: async (path: string) => {
-        const fileContent = await system.fs.readFile(path);
-        if (!fileContent) {
-          system.createDialog().showMessageBox({
-            title: i18n('error'),
-            message: i18n('exe.error'),
-            type: 'error',
-          });
-          return;
-        }
-        const exeContent = fileContent.split('::');
-        if (!exeContent[1] || !exeContent[2]) {
-          system.createDialog().showMessageBox({
-            title: i18n('error'),
-            message: i18n('exe.error'),
-            type: 'error',
-          });
-          return;
-        }
-        // exeContent[1]= loc
-        // exeContent[2]= name
-        // exeContent[3]= icon
-        const winopt = system.stateManager.windowMap.get(
-          exeContent[1] as 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin',
-          exeContent[2]
-        );
-        if (winopt && winopt.type === 'app') {
-          if (winopt.multiple ?? true) {
+  system.registerFileOpener('.exe', {
+    name: i18n('exe.document'),
+    icon: unknownIcon,
+    hiddenInChosen: true,
+    func: async (path: string) => {
+      const fileContent = await system.fs.readFile(path);
+
+      if (!fileContent) {
+        system.createDialog().showMessageBox({
+          title: i18n('error'),
+          message: i18n('exe.error'),
+          type: 'error',
+        });
+        return;
+      }
+      const exeContent = fileContent.split('::');
+      if (!exeContent[1] || !exeContent[2]) {
+        system.createDialog().showMessageBox({
+          title: i18n('error'),
+          message: i18n('exe.error'),
+          type: 'error',
+        });
+        return;
+      }
+      // exeContent[1]= loc
+      // exeContent[2]= name
+      // exeContent[3]= icon
+      const winopt = system.stateManager.windowMap.get(
+        exeContent[1] as 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin',
+        exeContent[2]
+      );
+      if (winopt && winopt.type !== 'group') {
+        if (winopt.multiple ?? true) {
+          const win = system.createWindow(winopt.window);
+          win.show();
+        } else {
+          if (winopt._hasShow) {
+            return;
+          } else {
+            winopt._hasShow = true;
             const win = system.createWindow(winopt.window);
             win.show();
-          } else {
-            if (winopt._hasShow) {
-              return;
-            } else {
-              winopt._hasShow = true;
-              const win = system.createWindow(winopt.window);
-              win.show();
-              win.on('close', () => {
-                winopt._hasShow = false;
-              });
-            }
+            win.on('close', () => {
+              winopt._hasShow = false;
+            });
           }
         }
-      },
-    });
-  }
+      }
+    },
+  });
 
   if (system._options.builtinFeature?.includes('ShortCutOpener')) {
     system.registerFileOpener('.ln', {

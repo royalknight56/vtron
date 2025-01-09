@@ -109,8 +109,8 @@ importers:
         specifier: ^3.43.0
         version: 3.52.0(vue@3.4.29(typescript@5.4.5))
       vtron:
-        specifier: 0.7.7-beta.2
-        version: 0.7.7-beta.2(typescript@5.4.5)
+        specifier: 0.7.7-beta.3
+        version: 0.7.7-beta.3(typescript@5.4.5)
       vtron-plus:
         specifier: ^0.6.7
         version: 0.6.7(typescript@5.4.5)(vite@4.5.3(@types/node@18.19.34)(sass@1.77.5))
@@ -2864,8 +2864,8 @@ packages:
   vtron@0.7.6:
     resolution: {integrity: sha512-XwM/p22r4uS208OfVD0C3UUV9CQfp0UmP2vwXFfogUrI7h+k15p85nlDNcfFuBTB05pcCmCunP+57vs191wy4A==}
 
-  vtron@0.7.7-beta.2:
-    resolution: {integrity: sha512-dVBJrMbp9Ufg1vZTpPtirWCUkqyHLJep9C2i5LyzmreXTIt/zK5QZz6aOGgsTide1XHpiwZldcH1sFHVM0+Fbg==}
+  vtron@0.7.7-beta.3:
+    resolution: {integrity: sha512-PexQdg4yJZGq6uemspFKZ7oacn9xd1CcpOSE/nafzIPBdUU3f+EYwP2CskvHdtDOa5/2kTZCPhXqJd95GIUcTQ==}
 
   vue-accessible-color-picker@5.0.1:
     resolution: {integrity: sha512-IaxDTzW652blWmaNNbqQZzORQAbP19sdO7oJ5fvJIfVizWr2fVV+3z39ORI210Ee7l8YiD5FhpOY/XrToQCBwg==}
@@ -5957,7 +5957,7 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  vtron@0.7.7-beta.2(typescript@5.4.5):
+  vtron@0.7.7-beta.3(typescript@5.4.5):
     dependencies:
       vue: 3.4.29(typescript@5.4.5)
       vue-accessible-color-picker: 5.0.1(vue@3.4.29(typescript@5.4.5))

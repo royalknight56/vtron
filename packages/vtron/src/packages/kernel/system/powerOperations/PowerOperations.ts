@@ -37,7 +37,6 @@ export class PowerOperations {
   }
 
   shutdown() {
-    this.system.emitEvent('system.shutdown');
     this.system.stateManager.powerState.setPowerState(PowerStateEnum.close);
   }
   restart() {

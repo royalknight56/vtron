@@ -44,7 +44,7 @@ function handleClick(key: number, ev: MouseEvent) {
           {
             label: i18n('startMenu.shutdown'),
             click: () => {
-              sys.shutdown();
+              sys.emitEvent('system.shutdown');
             },
           },
           {
@@ -79,12 +79,12 @@ function handleClick(key: number, ev: MouseEvent) {
         mouse: ev,
       });
       const winopt = sys.stateManager.windowMap.get('Builtin', '设置');
-
+      console.log(winopt);
       if (winopt) {
         if (winopt._hasShow) {
           return;
         } else {
-          if (winopt.type === 'app') {
+          if (winopt.type !== 'group') {
             winopt._hasShow = true;
             const win = sys.createWindow(winopt.window);
             win.show();

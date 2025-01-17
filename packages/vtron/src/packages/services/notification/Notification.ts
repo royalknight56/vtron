@@ -4,6 +4,7 @@ export interface NotifyConstructorOptions {
   content: string;
   type?: 'message' | 'system';
   timeout?: number;
+  onClick?: () => void;
 }
 export class Notify {
   public static idcount = 0;
@@ -12,11 +13,13 @@ export class Notify {
   content: string;
   type: 'message' | 'system' = 'message';
   public static system: System;
+  /** @internal */
+  _onClickFn: (() => void) | undefined;
   constructor(option: NotifyConstructorOptions) {
     this.title = option.title;
     this.content = option.content;
     this.id = Notify.idcount++;
-
+    this._onClickFn = option.onClick;
     Notify.system.stateManager.notify.push(this);
     setTimeout(() => {
       this.close();

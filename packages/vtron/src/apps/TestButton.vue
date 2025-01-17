@@ -24,6 +24,9 @@ async function test() {
     title: 'title',
     content: '111',
     timeout: 555000,
+    onClick: () => {
+      console.log('click');
+    },
   });
 }
 win?.on('move', (...res) => {

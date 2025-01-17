@@ -1,7 +1,7 @@
 <template>
   <div class="notify">
     <TransitionGroup name="list" tag="div">
-      <div class="notify-item" v-for="notify in notifyGroup.current" :key="notify.id" v-glowing>
+      <div class="notify-item" v-for="notify in notifyGroup.current" :key="notify.id" v-glowing @click="notify._onClickFn">
         <div class="notify-item-title">
           <span> {{ notify.title }}</span>
         </div>

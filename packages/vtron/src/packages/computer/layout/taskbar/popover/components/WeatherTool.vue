@@ -17,6 +17,8 @@ onMounted(async () => {
     try {
         // 获取地理位置
         const position = await new Promise((resolve, reject) => {
+            // 获取权限
+            
             navigator.geolocation.getCurrentPosition(resolve, reject);
         });
 

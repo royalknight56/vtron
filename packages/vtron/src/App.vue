@@ -121,6 +121,98 @@ const sys = new System({
       },
     },
   ],
+  magnet: [
+    {
+      name: '测试2',
+      // icon: testicon,
+      window: {
+        content: TestButton,
+        title: '测试按钮',
+        icon: testicon,
+        center: true,
+        // frame: false,
+        // backgroundColor: "rgba(0,0,0,1)",
+      },
+      order: 1,
+    },
+
+    {
+      name: 'VtronGroup测试',
+      type: 'group',
+      group: [
+        {
+          name: 'Vtron1',
+          icon: testicon,
+          window: {
+            content: VtronPerfTest,
+            title: 'Vtron自动性能测试',
+            icon: testicon,
+            center: true,
+          },
+        },
+        {
+          name: '2',
+          icon: testicon,
+          window: {
+            content: VtronPerfTest,
+            title: 'Vtron自动性能测试',
+            icon: testicon,
+            center: true,
+          },
+        },
+        {
+          name: '3',
+          icon: testicon,
+          window: {
+            content: VtronPerfTest,
+            title: 'Vtron自动性能测试',
+            icon: testicon,
+            center: true,
+          },
+        },
+        {
+          name: '4',
+          icon: testicon,
+          window: {
+            content: VtronPerfTest,
+            title: 'Vtron自动性能测试',
+            icon: testicon,
+            center: true,
+          },
+        },
+        {
+          name: '5',
+          icon: testicon,
+          window: {
+            content: VtronPerfTest,
+            title: 'Vtron自动性能测试',
+            icon: testicon,
+            center: true,
+          },
+        },
+      ],
+    },
+    {
+      name: 'Vtron自动性能测试',
+      icon: testicon,
+      window: {
+        content: VtronPerfTest,
+        title: 'Vtron自动性能测试',
+        icon: testicon,
+        center: true,
+      },
+    },
+    {
+      name: 'Vtron测试UI-按钮',
+      icon: testicon,
+      window: {
+        content: TestUiButton,
+        title: 'Vtron测试UI-按钮',
+        icon: testicon,
+        center: true,
+      },
+    },
+  ],
 });
 // sys.onOuterFileDrop((files) => {
 //   console.log(files);

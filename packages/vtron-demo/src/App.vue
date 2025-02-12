@@ -221,7 +221,7 @@ NoteMd是和vtron契合的笔记软件
         new BrowserWindow({
           title: '创建网络链接',
           icon: signalicon,
-          width: 400,
+          width: 500,
           height: 400,
           center: true,
           content: CreateUrl,

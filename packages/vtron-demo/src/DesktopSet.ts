@@ -40,7 +40,7 @@ const magnetConfig = [
   {
     title: '创建网络链接',
     icon: signalicon,
-    width: 400,
+    width: 500,
     height: 400,
     center: true,
     content: CreateUrl,
@@ -153,8 +153,8 @@ const desktopConfig = [
   {
     title: '创建网络链接',
     icon: signalicon,
-    width: 400,
-    height: 400,
+    width: 500,
+    height: 360,
     center: true,
     content: CreateUrl,
     // backgroundColor: "#71c5cf",

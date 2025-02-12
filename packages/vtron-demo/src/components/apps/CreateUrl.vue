@@ -1,106 +1,189 @@
 <template>
-  <div class="outer">
-    <div class="uper">
-      <div class="title">创建网络链接</div>
-    </div>
-    <div class="content" v-if="step === 0">
-      <div class="txt">本程序将引导您在桌面创建其他网站的快捷链接，点击下一步继续</div>
-    </div>
-    <div class="content" v-if="step === 1">
-      <div class="txt">
-        <label for="linki">请输入网站链接</label>
-        <input id="linki" v-model="link" />
+  <div class="create-url">
+    <div class="create-url__header">
+      <div class="create-url__title">
+        <i class="iconfont icon-link"></i>
+        创建网络链接
       </div>
-      <div class="txt">
-        <label for="namei">请输入网站名称</label>
-        <input id="namei" v-model="name" />
+      <div class="create-url__subtitle">在桌面创建网站快捷方式</div>
+    </div>
+    <div class="create-url__content">
+      <div class="create-url__form-item">
+        <label for="linki" class="create-url__label">网站链接</label>
+        <input
+          id="linki"
+          v-model="link"
+          class="create-url__input"
+          :class="{ 'create-url__input--error': showError && !isValidUrl }"
+          placeholder="例如: https://www.example.com"
+        />
+        <span class="create-url__error-text" v-if="showError && !isValidUrl">请输入有效的网址</span>
+      </div>
+      <div class="create-url__form-item">
+        <label for="namei" class="create-url__label">网站名称</label>
+        <input
+          id="namei"
+          v-model="name"
+          class="create-url__input"
+          :class="{ 'create-url__input--error': showError && !name }"
+          placeholder="例如: 我的网站"
+        />
+        <span class="create-url__error-text" v-if="showError && !name">请输入网站名称</span>
       </div>
     </div>
-    <div class="footer">
-      <WinButtonVue @click="next"> 下一步 </WinButtonVue>
+    <div class="create-url__footer">
+      <WinButtonVue @click="create" :disabled="!isValid">创建快捷方式</WinButtonVue>
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { BrowserWindow, Dialog, System, WinButtonVue, join } from 'vtron';
-import { inject, ref } from 'vue';
-const step = ref(0);
+import { inject, ref, computed } from 'vue';
 const link = ref('');
 const name = ref('');
 const sys = inject<System>('system');
 const win = inject<BrowserWindow>('browserWindow');
+const showError = ref(false);
 
-function next() {
-  if (step.value === 1 && link.value && name.value) {
-    sys?.fs
-      .writeFile(
-        join(sys._options.userLocation || '', 'Desktop', name.value + '.url'),
-        `link::url::${link.value}::${link.value + '/favicon.ico'}`
-      )
-      .then(async () => {
-        await Dialog.showMessageBox({
-          message: '创建成功',
-          type: 'info',
-          title: '提示',
-        });
-        win?.close();
-      });
-    // sys?.addApp({
-    //   name: link.value,
-    //   icon: link.value + "/favicon.ico",
-    //   window: {
-    //     title: link.value,
-    //     width: 800,
-    //     height: 600,
-    //     center: true,
-    //     content: link.value,
-    //   },
-    // });
+const isValidUrl = computed(() => {
+  try {
+    new URL(link.value);
+    return true;
+  } catch {
+    return false;
   }
-  step.value = 1;
+});
+
+const isValid = computed(() => {
+  return isValidUrl.value && name.value.trim() !== '';
+});
+
+function create() {
+  showError.value = true;
+  if (!isValid.value) return;
+
+  sys?.fs
+    .writeFile(
+      join(sys._options.userLocation || '', 'Desktop', name.value + '.url'),
+      `link::url::${link.value}::${link.value + '/favicon.ico'}`
+    )
+    .then(async () => {
+      await Dialog.showMessageBox({
+        message: '创建成功',
+        type: 'info',
+        title: '提示',
+      });
+      win?.close();
+    });
 }
 </script>
+
 <style scoped>
-.outer {
-  padding: 20px;
+.create-url {
+  padding: 16px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  max-width: 360px;
+  gap: 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
-.uper {
-  width: 100%;
-  height: 50px;
 
+.create-url__header {
+  text-align: center;
+}
+
+.create-url__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 4px;
   display: flex;
-  justify-content: center;
   align-items: center;
-}
-.title {
-  font-size: 20px;
-  font-weight: bold;
-}
-.content {
-  width: 60%;
-  height: 150px;
-  display: flex;
   justify-content: center;
-  align-items: center;
-  margin-bottom: 30px;
-  flex-direction: column;
+  gap: 4px;
 }
-.txt {
-  margin-bottom: 10px;
+
+.create-url__title .iconfont {
+  font-size: 18px;
+  color: #409eff;
 }
-.txt label {
-  font-size: 14px;
+
+.create-url__subtitle {
+  font-size: 12px;
+  color: #606266;
 }
-.txt input {
+
+.create-url__content {
   width: 100%;
-  height: 30px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.create-url__form-item {
+  margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.create-url__label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #606266;
+  font-weight: 500;
+}
+
+.create-url__input {
+  width: 100%;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
   padding: 0 10px;
+  transition: all 0.2s;
+  font-size: 12px;
+  background: #f5f7fa;
+  box-sizing: border-box;
+}
+
+.create-url__input:hover {
+  border-color: #c0c4cc;
+}
+
+.create-url__input:focus {
+  border-color: #409eff;
+  outline: none;
+  background: #fff;
+}
+
+.create-url__input--error {
+  border-color: #f56c6c;
+  background: #fff;
+}
+
+.create-url__error-text {
+  color: #f56c6c;
+  font-size: 11px;
+  margin-top: 4px;
+  display: block;
+}
+
+.create-url__footer {
+  display: flex;
+  justify-content: center;
+}
+
+:deep(.win-button) {
+  min-width: 90px;
+  height: 32px;
+  font-size: 12px;
+}
+
+:deep(.win-button:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

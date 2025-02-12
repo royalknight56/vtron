@@ -17,25 +17,34 @@ import CreateUrl from './components/apps/CreateUrl.vue';
 import FriendLink from './components/apps/FriendLink.vue';
 import NoteMd from './components/apps/NoteMd.vue';
 // import Gallery from './components/apps/Gallery.vue';
+
+// 提取通用配置
+const commonConfig = {
+  center: true,
+  resizable: true,
+  width: 800,
+  height: 600,
+};
+
+const darkThemeConfig = {
+  backgroundColor: '#444',
+  textColor: '#fff',
+};
+
+// 重构 magnetConfig
 const magnetConfig = [
   {
     title: 'kiomet',
     icon: friendLinkicon,
-    width: 800,
-    height: 600,
-    center: true,
+    ...commonConfig,
     content: 'https://kiomet.com/',
     backgroundColor: '#2b3948',
-    resizable: true,
   },
   {
     title: '百度地图',
     icon: baidumapicon,
-    width: 800,
-    height: 600,
-    center: true,
+    ...commonConfig,
     content: 'https://map.baidu.com/',
-    resizable: true,
   },
   {
     title: '创建网络链接',
@@ -83,15 +92,15 @@ const magnetConfig = [
     backgroundColor: '#444',
   },
 ];
+
+// 重构 desktopConfig
 const desktopConfig = [
   {
     title: 'github1s',
     icon: vscode,
-    width: 800,
+    ...commonConfig,
     height: 700,
-    center: true,
     content: 'https://github1s.com/',
-    resizable: true,
   },
 
   // {
@@ -124,20 +133,14 @@ const desktopConfig = [
   {
     title: 'Flow-epub阅读器',
     icon: flowicon,
-    width: 800,
-    height: 600,
-    center: true,
+    ...commonConfig,
     content: 'https://app.flowoss.com/zh-CN',
-    resizable: true,
   },
   {
     title: '书立笔记',
     icon: slinotesvg,
-    width: 800,
-    height: 600,
-    center: true,
+    ...commonConfig,
     content: 'https://slinote.com/',
-    resizable: true,
   },
 
   // {
@@ -163,14 +166,11 @@ const desktopConfig = [
   {
     title: 'T-Music',
     icon: Tmusicicon,
+    ...commonConfig,
     width: 1000,
     height: 700,
-    center: true,
-    // content: 'http://localhost:5173/',
     content: 'https://vtron.site/tmusic/',
-    resizable: true,
-    backgroundColor: '#444',
-    textColor: '#fff',
+    ...darkThemeConfig,
   },
 
   // {
@@ -191,4 +191,5 @@ const desktopConfig = [
     resizable: true,
   },
 ];
+
 export { desktopConfig, magnetConfig };

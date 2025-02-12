@@ -48,8 +48,8 @@ const system = new System({
       icon: beaticon,
       window: {
         title: '开源项目',
-        width: 400,
-        height: 200,
+        width: 500,
+        height: 400,
         center: true,
         content: OpenSource,
         resizable: false,

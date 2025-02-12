@@ -1,75 +1,86 @@
 <!-- music app -->
 <template>
-  <div class="music">
-    <div class="music-header">
-      <div class="music-header-left">
-        <div class="music-header-left-icon">
+  <div class="picture-app">
+    <header class="picture-app__header">
+      <div class="picture-app__header-left">
+        <div class="picture-app__icon">
           <span class="segoicon SEGOEUIMDL">&#xE728;</span>
         </div>
-        <div class="music-header-left-title">
+        <div class="picture-app__title">
           <span>图片</span>
         </div>
       </div>
-      <div class="music-header-right">
-        <div class="music-header-right-icon">
-          <span class="segoicon SEGOEUIMDL">&#xE728;</span>
-        </div>
-        <div class="music-header-right-icon">
-          <span class="segoicon SEGOEUIMDL">&#xE728;</span>
-        </div>
-        <div class="music-header-right-icon">
-          <span class="segoicon SEGOEUIMDL">&#xE728;</span>
-        </div>
-      </div>
-    </div>
-    <div class="music-body">
-      <div class="music-body-left">
+      <div class="picture-app__header-right"></div>
+    </header>
+
+    <main class="picture-app__main">
+      <nav class="picture-app__nav">
         <div
-          class="music-body-left-title"
+          class="picture-app__nav-item"
           @click="jumpTo(1)"
           :class="{
-            chosen: router === 1,
+            'picture-app__nav-item--active': router === 1,
           }"
         >
           <span>我的图片</span>
         </div>
         <div
-          class="music-body-left-title"
+          class="picture-app__nav-item"
           @click="jumpTo(2)"
           :class="{
-            chosen: router === 2,
+            'picture-app__nav-item--active': router === 2,
           }"
         >
           <span>上传图片</span>
         </div>
-      </div>
-      <div class="music-body-right" v-if="router === 1">
-        <div class="music-list">
-          <div class="music-list-item" v-for="item in musicList" :key="item.path" @click="playPhoto(item)">
-            <span>{{ item.name }}</span>
+      </nav>
+
+      <div class="picture-app__container">
+        <div class="picture-app__content" v-if="router === 1">
+          <div class="picture-app__list">
+            <div
+              class="picture-app__list-item"
+              v-for="item in musicList"
+              :key="item.path"
+              @click="playPhoto(item)"
+              :class="{ 'picture-app__list-item--active': currentPhoto === item.path }"
+            >
+              <span>{{ item.name }}</span>
+            </div>
+          </div>
+
+          <div class="picture-app__viewer" @wheel="handleWheel">
+            <img
+              v-if="content"
+              :src="content"
+              draggable="false"
+              :style="{
+                transform: `scale(${scale})`,
+              }"
+              class="picture-app__image"
+            />
           </div>
         </div>
 
-        <div class="viewer" @wheel="handleWheel">
-          <img
-            v-if="content"
-            :src="content"
-            draggable="false"
-            :style="{
-              transform: `scale(${scale})`,
-            }"
-          />
-        </div>
-      </div>
-      <div class="music-body-right" v-if="router === 2">
-        <div class="music-upload">
-          <div class="music-upload-title">
-            <span>上传图片</span>
+        <div class="picture-app__content" v-if="router === 2">
+          <div class="picture-app__upload">
+            <div class="picture-app__upload-title">
+              <span>上传图片</span>
+            </div>
+            <FileUploader :accept="'image/*'" @change="upload">
+              <div class="picture-app__upload-area">
+                <span class="picture-app__upload-icon segoicon SEGOEUIMDL">&#xE7C5;</span>
+                <div class="picture-app__upload-text">
+                  <span>将文件拖到此处，或</span>
+                  <span class="picture-app__upload-highlight">点击上传</span>
+                </div>
+                <div class="picture-app__upload-hint">支持 jpg、png、gif 等图片格式</div>
+              </div>
+            </FileUploader>
           </div>
-          <FileUploader :accept="'image/*'" @change="upload"></FileUploader>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 <script setup lang="ts">
@@ -119,9 +130,14 @@ function upload(ev: Event) {
 
 const content = ref('');
 
+// 添加当前选中图片的路径
+const currentPhoto = ref('');
+
 async function playPhoto(item: VtronFileWithoutContent) {
   scale.value = 0.7;
   const path = item.path;
+  // 设置当前选中图片
+  currentPhoto.value = path;
   const fileC = await sys.fs.readFile(path);
   if (fileC) {
     content.value = 'data:image/png;base64,' + fileC;
@@ -143,230 +159,364 @@ function handleWheel(event: WheelEvent) {
 }
 </script>
 <style scoped lang="scss">
-.music {
+.picture-app {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
   user-select: none;
-  .music-header {
-    width: 100%;
-    // height: 50px;
+
+  &__header {
+    height: 50px;
     display: flex;
-    flex: 0 0 50px; /* 固定高度为100px */
-    flex-shrink: 0;
     justify-content: space-between;
     align-items: center;
-    .music-header-left {
-      width: 50%;
-      height: 100%;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      .music-header-left-icon {
-        width: 30px;
-        height: 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        .segoicon {
-          font-size: 20px;
-          color: #000;
-        }
-      }
-      .music-header-left-title {
-        width: 100px;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        span {
-          font-size: 20px;
-          color: #000;
-        }
-      }
+    background: #ffffff;
+    border-bottom: 1px solid #ebeef5;
+    padding: 0 20px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  }
+
+  &__header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f7ff;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(64, 158, 255, 0.15);
     }
-    .music-header-right {
-      width: 50%;
-      height: 100%;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      .music-header-right-icon {
-        width: 30px;
-        height: 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        .segoicon {
-          font-size: 20px;
-          color: #000;
-        }
-      }
+
+    .segoicon {
+      font-size: 20px;
+      color: #409eff;
     }
   }
-  .music-body {
-    width: 100%;
-    height: 0;
+
+  &__title {
+    span {
+      font-size: 18px;
+      font-weight: 600;
+      background: linear-gradient(120deg, #409eff, #69c0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  &__main {
     flex: 1;
     display: flex;
-    justify-content: flex-start;
+    flex-direction: column;
+    min-height: 0;
+    background-color: #fafafa;
+  }
+
+  &__nav {
+    height: 48px;
+    display: flex;
     align-items: center;
-    border-top: 1px dashed #545454;
-    .music-body-left {
-      width: 100px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      border-right: 1px dashed #545454;
-      margin-top: 20px;
-      // margin-top: 40px;
-      .music-body-left-title {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 80%;
-        padding: 6px;
-        border-radius: 4px;
-        margin: 4px;
-        cursor: pointer;
-        transition: all 0.1s;
-        span {
-          font-size: 16px;
-        }
-      }
-      .music-body-left-title.chosen {
-        background-color: #eee;
-      }
-      .music-body-left-title:hover {
-        color: white;
-        background-color: #808080;
-      }
-    }
-    .music-body-right {
-      width: calc(100% - 80px);
-      height: 100%;
-      display: flex;
-      .music-list {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        width: 30%;
-        padding-top: 20px;
-        overflow-y: auto;
-        border-right: 1px dashed #545454;
-        .music-list-item {
-          padding-left: 20px;
-          cursor: pointer;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          flex-shrink: 0;
-          margin: 2px;
-          padding: 4px;
-          border-radius: 4px;
-          transition: all 0.1s;
-        }
-        .music-list-item:hover {
-          color: white;
-          background-color: #808080;
-        }
-      }
-      .music-upload {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        width: 100%;
-        gap: 30px;
-        .music-upload-title {
-          // margin-bottom: 30px;
-        }
-      }
-    }
+    padding: 0 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ebeef5;
+    gap: 24px;
   }
-}
 
-.viewer {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  // top: 20%;
-  margin: 0 auto;
-  overflow: hidden;
-  img {
-    width: 100%;
+  &__nav-item {
     height: 100%;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    color: #606266;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 2px;
+      background-color: transparent;
+      transition: all 0.2s ease;
+    }
+
+    span {
+      font-size: 14px;
+    }
+
+    &--active {
+      color: #409eff;
+
+      &::after {
+        background-color: #409eff;
+      }
+    }
+
+    &:hover:not(&--active) {
+      color: #303133;
+
+      &::after {
+        background-color: #e0e0e0;
+      }
+    }
+  }
+
+  &__container {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+
+  &__content {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+
+  &__list {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #e0e0e0;
+    background-color: #fff;
+    overflow-y: auto;
+    padding: 20px 0;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 4px;
+
+      &:hover {
+        background: #999;
+      }
+    }
+  }
+
+  &__list-item {
+    position: relative;
+    padding: 8px 16px;
+    margin: 4px 8px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    color: #333;
+
+    &--active {
+      background-color: #e6f7ff;
+      color: #1890ff;
+      font-weight: 500;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background-color: #1890ff;
+        border-radius: 0 2px 2px 0;
+      }
+    }
+
+    &:hover:not(&--active) {
+      background-color: #f5f7fa;
+      color: #000;
+    }
+
+    span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__viewer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    position: relative;
+    padding: 24px;
+    overflow: hidden;
+
+    // 添加网格背景
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: linear-gradient(45deg, #f5f5f5 25%, transparent 25%),
+        linear-gradient(-45deg, #f5f5f5 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f5f5f5 75%),
+        linear-gradient(-45deg, transparent 75%, #f5f5f5 75%);
+      background-size: 20px 20px;
+      background-position:
+        0 0,
+        0 10px,
+        10px -10px,
+        -10px 0px;
+      opacity: 0.3;
+    }
+  }
+
+  &__image {
+    max-width: calc(100% - 48px);
+    max-height: calc(100% - 48px);
     object-fit: contain;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+
+    // 添加图片悬停效果
+    &:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
   }
-}
-.viewer-img {
-  /* 文本圆形排列，并一直旋转 */
-  position: relative;
-  width: 60px;
-  height: 60px;
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 50%;
-  border: 1px solid #ccc;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-  animation: rotate 10s linear infinite;
-  /* 文字滚动 */
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  box-shadow:
-    0 0 30px 2px #c8c8c8,
-    0 0 1px 25px #c0c0c0 inset,
-    0 0 5px 35px #545454 inset,
-    0 0 1px 40px #000000 inset;
-  transition: all 0.3s;
-}
-.viewer-img:hover {
-  box-shadow:
-    0 0 30px 4px #c8c8c8,
-    0 0 1px 25px #c0c0c0e4 inset,
-    0 0 5px 35px #6f6f6fd8 inset,
-    0 0 1px 40px rgb(0, 0, 0) inset;
-}
-.viewer-img::after {
-  content: ' ';
-  display: block;
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background-color: #ffffff;
-  border-radius: 50%;
-  margin: 0 auto;
-}
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
+
+  &__upload {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    padding: 40px;
+    overflow-y: auto;
   }
-  100% {
-    transform: rotate(360deg);
+
+  &__upload-title {
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 40px;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(90deg, #1890ff, #69c0ff);
+      border-radius: 2px;
+    }
   }
-}
-.ani-text {
-  display: inline-block;
-  white-space: nowrap;
-  animation: 4s wordsLoop linear infinite normal;
+
+  &__upload-area {
+    width: 400px;
+    height: 200px;
+    border: 2px dashed #d9d9d9;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: #fafafa;
+    padding: 32px;
+    gap: 16px;
+
+    &:hover {
+      border-color: #1890ff;
+      background-color: #f0f7ff;
+
+      .picture-app__upload-icon {
+        color: #1890ff;
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  &__upload-icon {
+    font-size: 48px;
+    color: #999;
+    transition: all 0.3s ease;
+  }
+
+  &__upload-text {
+    color: #666;
+    font-size: 16px;
+    text-align: center;
+    line-height: 1.6;
+
+    .picture-app__upload-highlight {
+      color: #1890ff;
+      font-weight: 500;
+      margin: 0 4px;
+    }
+  }
+
+  &__upload-hint {
+    margin-top: 8px;
+    color: #999;
+    font-size: 14px;
+  }
 }
 
-@keyframes wordsLoop {
-  0% {
-    transform: translateX(100%);
+// 删除旧的.viewer相关样式
+.viewer,
+.viewer-img {
+  display: none;
+}
+
+// 添加缩放动画
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
   }
-  100% {
-    transform: translateX(-100%);
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// 优化滚动条样式
+.music-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.music-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.music-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+
+  &:hover {
+    background: #999;
   }
 }
 </style>

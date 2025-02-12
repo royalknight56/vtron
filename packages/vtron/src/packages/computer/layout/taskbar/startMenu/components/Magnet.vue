@@ -104,7 +104,6 @@ function drop(event: DragEvent, dropIndex: number) {
     transition: all 0.2s;
     animation: transin both;
     position: relative;
-    cursor: move;
     overflow: hidden;
 
     &:hover {

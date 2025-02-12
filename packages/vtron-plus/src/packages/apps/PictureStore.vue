@@ -1,6 +1,6 @@
 <!-- music app -->
 <template>
-  <div class="picture-app">
+  <div class="picture-app" :class="{ 'picture-app--dark': isDarkTheme }">
     <header class="picture-app__header">
       <div class="picture-app__header-left">
         <div class="picture-app__icon">
@@ -10,7 +10,11 @@
           <span>图片</span>
         </div>
       </div>
-      <div class="picture-app__header-right"></div>
+      <div class="picture-app__header-right">
+        <div class="picture-app__theme-switch" @click="toggleTheme">
+          <span class="segoicon SEGOEUIMDL">{{ isDarkTheme ? '&#xE793;' : '&#xE708;' }}</span>
+        </div>
+      </div>
     </header>
 
     <main class="picture-app__main">
@@ -157,24 +161,67 @@ function handleWheel(event: WheelEvent) {
     scale.value += 0.1;
   }
 }
+
+const isDarkTheme = ref(false);
+
+function toggleTheme() {
+  isDarkTheme.value = !isDarkTheme.value;
+}
 </script>
 <style scoped lang="scss">
 .picture-app {
+  // 浅色主题变量
+  --app-bg: #fafafa;
+  --header-bg: #ffffff;
+  --nav-bg: #ffffff;
+  --content-bg: #ffffff;
+  --border-color: #ebeef5;
+  --text-primary: #303133;
+  --text-regular: #606266;
+  --text-secondary: #909399;
+  --hover-bg: #f5f7fa;
+  --active-bg: #f0f0f0;
+  --active-color: #000000;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --grid-color: #f5f5f5;
+  --upload-border: #d9d9d9;
+
+  // 基础样式
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   user-select: none;
+  background-color: var(--app-bg);
+  transition: all 0.3s ease;
+
+  // 深色主题
+  &--dark {
+    --app-bg: #141414;
+    --header-bg: #1e1e1e;
+    --nav-bg: #1e1e1e;
+    --content-bg: #1e1e1e;
+    --border-color: #2c2c2c;
+    --text-primary: #ffffff;
+    --text-regular: #999999;
+    --text-secondary: #666666;
+    --hover-bg: #262626;
+    --active-bg: #2c2c2c;
+    --active-color: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --grid-color: #262626;
+    --upload-border: #333333;
+  }
 
   &__header {
     height: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #ffffff;
-    border-bottom: 1px solid #ebeef5;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
     padding: 0 20px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 1px 4px var(--shadow-color);
   }
 
   &__header-left {
@@ -189,18 +236,18 @@ function handleWheel(event: WheelEvent) {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #f0f7ff;
+    background: var(--hover-bg);
     border-radius: 8px;
     transition: all 0.3s ease;
 
     &:hover {
       transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(64, 158, 255, 0.15);
+      background: var(--active-bg);
     }
 
     .segoicon {
       font-size: 20px;
-      color: #409eff;
+      color: var(--text-primary);
     }
   }
 
@@ -208,9 +255,7 @@ function handleWheel(event: WheelEvent) {
     span {
       font-size: 18px;
       font-weight: 600;
-      background: linear-gradient(120deg, #409eff, #69c0ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text-primary);
       letter-spacing: 0.5px;
     }
   }
@@ -220,7 +265,7 @@ function handleWheel(event: WheelEvent) {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    background-color: #fafafa;
+    background-color: var(--app-bg);
   }
 
   &__nav {
@@ -228,8 +273,8 @@ function handleWheel(event: WheelEvent) {
     display: flex;
     align-items: center;
     padding: 0 20px;
-    background-color: #ffffff;
-    border-bottom: 1px solid #ebeef5;
+    background-color: var(--nav-bg);
+    border-bottom: 1px solid var(--border-color);
     gap: 24px;
   }
 
@@ -241,7 +286,7 @@ function handleWheel(event: WheelEvent) {
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
-    color: #606266;
+    color: var(--text-regular);
     position: relative;
 
     &::after {
@@ -260,19 +305,15 @@ function handleWheel(event: WheelEvent) {
     }
 
     &--active {
-      color: #409eff;
+      color: var(--active-color);
 
       &::after {
-        background-color: #409eff;
+        background-color: var(--active-color);
       }
     }
 
     &:hover:not(&--active) {
-      color: #303133;
-
-      &::after {
-        background-color: #e0e0e0;
-      }
+      color: var(--text-primary);
     }
   }
 
@@ -292,8 +333,8 @@ function handleWheel(event: WheelEvent) {
     width: 200px;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid #e0e0e0;
-    background-color: #fff;
+    border-right: 1px solid var(--border-color);
+    background-color: var(--content-bg);
     overflow-y: auto;
     padding: 20px 0;
 
@@ -302,15 +343,14 @@ function handleWheel(event: WheelEvent) {
     }
 
     &::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: var(--content-bg);
     }
 
     &::-webkit-scrollbar-thumb {
-      background: #ccc;
-      border-radius: 4px;
+      background: var(--text-secondary);
 
       &:hover {
-        background: #999;
+        background: var(--text-primary);
       }
     }
   }
@@ -322,11 +362,11 @@ function handleWheel(event: WheelEvent) {
     cursor: pointer;
     border-radius: 6px;
     transition: all 0.2s ease;
-    color: #333;
+    color: var(--text-regular);
 
     &--active {
-      background-color: #e6f7ff;
-      color: #1890ff;
+      background-color: var(--active-bg);
+      color: var(--active-color);
       font-weight: 500;
 
       &::before {
@@ -336,14 +376,14 @@ function handleWheel(event: WheelEvent) {
         top: 0;
         bottom: 0;
         width: 3px;
-        background-color: #1890ff;
+        background-color: var(--active-color);
         border-radius: 0 2px 2px 0;
       }
     }
 
     &:hover:not(&--active) {
-      background-color: #f5f7fa;
-      color: #000;
+      background-color: var(--hover-bg);
+      color: var(--text-primary);
     }
 
     span {
@@ -359,7 +399,7 @@ function handleWheel(event: WheelEvent) {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #fff;
+    background-color: var(--content-bg);
     position: relative;
     padding: 24px;
     overflow: hidden;
@@ -372,10 +412,10 @@ function handleWheel(event: WheelEvent) {
       left: 0;
       right: 0;
       bottom: 0;
-      background-image: linear-gradient(45deg, #f5f5f5 25%, transparent 25%),
-        linear-gradient(-45deg, #f5f5f5 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #f5f5f5 75%),
-        linear-gradient(-45deg, transparent 75%, #f5f5f5 75%);
+      background-image: linear-gradient(45deg, var(--grid-color) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--grid-color) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--grid-color) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--grid-color) 75%);
       background-size: 20px 20px;
       background-position:
         0 0,
@@ -392,12 +432,12 @@ function handleWheel(event: WheelEvent) {
     object-fit: contain;
     transition: all 0.3s ease;
     border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px var(--shadow-color);
     z-index: 1;
 
     // 添加图片悬停效果
     &:hover {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 24px var(--shadow-color);
     }
   }
 
@@ -407,7 +447,7 @@ function handleWheel(event: WheelEvent) {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #fff;
+    background-color: var(--content-bg);
     padding: 40px;
     overflow-y: auto;
   }
@@ -415,7 +455,7 @@ function handleWheel(event: WheelEvent) {
   &__upload-title {
     font-size: 24px;
     font-weight: 500;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 40px;
     position: relative;
 
@@ -427,7 +467,7 @@ function handleWheel(event: WheelEvent) {
       transform: translateX(-50%);
       width: 40px;
       height: 3px;
-      background: linear-gradient(90deg, #1890ff, #69c0ff);
+      background: var(--text-primary);
       border-radius: 2px;
     }
   }
@@ -435,7 +475,7 @@ function handleWheel(event: WheelEvent) {
   &__upload-area {
     width: 400px;
     height: 200px;
-    border: 2px dashed #d9d9d9;
+    border: 2px dashed var(--upload-border);
     border-radius: 8px;
     display: flex;
     flex-direction: column;
@@ -443,35 +483,34 @@ function handleWheel(event: WheelEvent) {
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s;
-    background-color: #fafafa;
+    background-color: var(--hover-bg);
     padding: 32px;
     gap: 16px;
 
     &:hover {
-      border-color: #1890ff;
-      background-color: #f0f7ff;
+      border-color: var(--text-primary);
+      background-color: var(--active-bg);
 
       .picture-app__upload-icon {
-        color: #1890ff;
-        transform: translateY(-2px);
+        color: var(--text-primary);
       }
     }
   }
 
   &__upload-icon {
     font-size: 48px;
-    color: #999;
+    color: var(--text-secondary);
     transition: all 0.3s ease;
   }
 
   &__upload-text {
-    color: #666;
+    color: var(--text-regular);
     font-size: 16px;
     text-align: center;
     line-height: 1.6;
 
     .picture-app__upload-highlight {
-      color: #1890ff;
+      color: var(--text-primary);
       font-weight: 500;
       margin: 0 4px;
     }
@@ -479,8 +518,29 @@ function handleWheel(event: WheelEvent) {
 
   &__upload-hint {
     margin-top: 8px;
-    color: #999;
+    color: var(--text-secondary);
     font-size: 14px;
+  }
+
+  &__theme-switch {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-regular);
+
+    &:hover {
+      background: var(--hover-bg);
+      color: var(--text-primary);
+    }
+
+    .segoicon {
+      font-size: 20px;
+    }
   }
 }
 

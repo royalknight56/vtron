@@ -19,7 +19,7 @@ import { System } from 'vtron';
 import { vtronPlus } from 'vtron-plus';
 let system = new System({});
 system.whenReady().then(() => {
-  system.use(VtronPlus);
+  system.use(vtronPlus());
 });
 ```
 

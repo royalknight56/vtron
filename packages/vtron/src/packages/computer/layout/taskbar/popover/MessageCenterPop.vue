@@ -12,7 +12,6 @@
 <script setup lang="ts">
 import { System } from '@packages/kernel';
 import { inject, ref } from 'vue';
-import { i18n } from '@/packages/plug';
 import ClockTime from './components/ClockTime.vue';
 import NotifyCenter from './components/NotifyCenter.vue';
 import CalendarTime from './components/CalendarTime.vue';
@@ -20,7 +19,6 @@ import WeatherTool from './components/WeatherTool.vue';
 import NoteScheduler from './components/NoteScheduler.vue';
 const sys = inject<System>('system')!;
 const rootState = sys.stateManager;
-const notifyGroup = rootState.notify;
 
 const isPopShow = ref(false);
 sys.mountEvent('messagecenter.show', () => {
@@ -29,9 +27,7 @@ sys.mountEvent('messagecenter.show', () => {
 sys.mountEvent('messagecenter.hidden', () => {
   isPopShow.value = false;
 });
-function allClear() {
-  rootState.notify.clear();
-}
+
 </script>
 <style lang="scss" scoped>
 @import '@packages/assets/main.scss';

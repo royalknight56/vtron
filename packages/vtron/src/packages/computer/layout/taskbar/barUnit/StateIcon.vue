@@ -4,7 +4,7 @@
       <Error></Error>
     </div>
     <CustomIcon></CustomIcon>
-    <div @click="handleNotifyClick" class="state-item">
+    <div @click="handleNotifyClick" v-if="showMessageCenter" class="state-item">
       <MessageIcon></MessageIcon>
     </div>
     <div @click="showDesk" class="showdesk"></div>
@@ -20,7 +20,8 @@ import CustomIcon from './CustomIcon.vue';
 import { inject } from 'vue';
 
 const sys = inject<System>('system')!;
-
+const feature = sys._options.builtinFeature;
+const showMessageCenter = feature?.includes('MessageCenter');
 function handleNotifyClick() {
   sys.emitEvent('messagecenter.show');
 }

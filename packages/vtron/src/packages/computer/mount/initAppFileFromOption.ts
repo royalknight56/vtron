@@ -23,9 +23,11 @@ export function initBuiltinApp(system: System) {
       backgroundColor: '#00000000',
     },
   };
-  system.addMagnet(setting, true);
-  system.addMenuList(setting, true);
-  system.addBuiltInApp(setting);
+  if (system._options.builtinFeature?.includes('Setting')) {
+    system.addMagnet(setting, true);
+    system.addMenuList(setting, true);
+    system.addBuiltInApp(setting);
+  }
 
   if (system._options.builtinFeature?.length === 0) return;
   if (system._options.builtinFeature?.includes('MyComputer')) {

@@ -11,6 +11,9 @@ export type BuiltinFeature =
   | 'TextOpener'
   | 'ShortCutOpener'
   | 'ExeOpener'
+  | 'Power'
+  | 'MessageCenter'
+  | 'Setting'
   | 'Setting-Language'
   | 'Setting-Account'
   | 'Setting-Personalization';

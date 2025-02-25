@@ -13,7 +13,7 @@
       </div>
       <WindowGroup></WindowGroup>
       <NotificationGroup></NotificationGroup>
-      <MessageCenterPop></MessageCenterPop>
+      <MessageCenterPop v-if="showMessageCenter"></MessageCenterPop>
       <Chosen></Chosen>
     </div>
     <div class="bottom">
@@ -39,7 +39,8 @@ import { initComputer } from '../mount';
 
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 const sys = inject<System>('system')!;
-
+const feature = sys._options.builtinFeature;
+const showMessageCenter = feature?.includes('MessageCenter');
 const { dragFileToDrop } = useFileDrag(sys);
 
 let chosenCallback: (rect: Rect) => void = () => {

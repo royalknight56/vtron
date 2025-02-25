@@ -1,7 +1,7 @@
 <template>
   <div class="s-option">
     <div class="s-option-inner">
-      <div class="s-option-button" @click.stop="($ev) => handleClick(0, $ev)" v-glowing>
+      <div class="s-option-button" v-if="showPower" @click.stop="($ev) => handleClick(0, $ev)" v-glowing>
         <div class="s-option-button_img">
           <svg draggable="false" class="icon" viewBox="0 0 1024 1024">
             <path
@@ -13,7 +13,7 @@
           {{ i18n('startMenu.power') }}
         </div>
       </div>
-      <div class="s-option-button" @click.stop="($ev) => handleClick(1, $ev)" v-glowing>
+      <div class="s-option-button" v-if="showSetting" @click.stop="($ev) => handleClick(1, $ev)" v-glowing>
         <div class="s-option-button_img">
           <svg class="icon" viewBox="0 0 1024 1024">
             <path
@@ -36,6 +36,9 @@ import { Menu, Dialog } from '@/packages/services';
 import { inject } from 'vue';
 
 const sys = inject<System>('system')!;
+const feature = sys._options.builtinFeature;
+const showPower = feature?.includes('Power');
+const showSetting = feature?.includes('Setting');
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
     case 0:

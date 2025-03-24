@@ -7,6 +7,8 @@ import { createApp } from 'vue';
 import App from './App.vue';
 // Main中引入vtron，并且引入样式文件
 import 'vtron/distlib/style.css';
+import 'vtron-plus/distlib/style.css';
+
 import 'xterm/css/xterm.css';
 
 import { BrowserTracing } from '@sentry/tracing';

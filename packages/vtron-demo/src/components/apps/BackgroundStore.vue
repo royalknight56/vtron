@@ -23,8 +23,7 @@
   const storeRef = ref<HTMLIFrameElement | null>(null);
   const frameKey = ref(0);
   const closing = ref(false);
-//   const storeUrl = "https://vtron.site/react/#/background/";
-  const storeUrl = "http://localhost:5173/#/background/";
+  const storeUrl = "https://vtron.site/react/#/background/";
 
   const browserWindow: BrowserWindow = inject('browserWindow')!;
   const handleMessage = (event: MessageEvent) => {

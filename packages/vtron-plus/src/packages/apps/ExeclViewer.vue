@@ -8,7 +8,7 @@ import { BrowserWindow } from 'vtron';
 import { inject, ref, watch } from 'vue';
 // @ts-ignore
 import VueOfficeExcel from '@vue-office/excel/lib/v3/vue-office-excel.mjs';
-import '@vue-office/excel/lib/index.css';
+import '@vue-office/excel/lib/v3/index.css';
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 

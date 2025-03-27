@@ -9,7 +9,7 @@ import { inject } from 'vue';
 // @ts-ignore
 import VueOfficeDocx from '@vue-office/docx/lib/v3/vue-office-docx.mjs';
 
-import '@vue-office/docx/lib/index.css';
+import '@vue-office/docx/lib/v3/index.css';
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 

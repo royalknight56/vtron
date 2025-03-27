@@ -40,8 +40,6 @@
     "pyodide": "^0.24.1",
     "sass": "^1.45.1",
     "vite-plugin-dts": "^2.0.2",
-    "vtron": "0.7.8",
-    "vue": "^3.2.45",
     "vue-demi": "^0.13.11",
     "xterm": "^5.1.0",
     "xterm-addon-fit": "^0.7.0"
@@ -52,6 +50,12 @@
     "isomorphic-fetch": "^3.0.0",
     "typescript": "^5.1.6",
     "vite": "^4.4.9",
+    "vtron": "0.7.9",
+    "vue": "^3.2.45",
     "vue-tsc": "^1.8.11"
+  },
+  "peerDependencies": {
+    "vtron": "0.7.9",
+    "vue": "^3.2.45"
   }
 }

@@ -14,6 +14,7 @@ export const zhCN = {
   'windows.update.recover.backup': 'Windows 更新，恢复，备份',
   background: '背景',
   image: '图片',
+  url: '网址',
   color: '颜色',
   'set.background': '设置背景',
   'from.network': '来源网络',

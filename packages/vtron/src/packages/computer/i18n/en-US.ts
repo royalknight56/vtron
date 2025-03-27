@@ -13,6 +13,7 @@ export const enUS: AllText = {
   'update.security': 'Update & Security',
   'windows.update.recover.backup': 'Windows Update, Recovery, Backup',
   background: 'Background',
+  url: 'Url',
   image: 'Image',
   color: 'Color',
   'set.background': 'Set Background',

@@ -22,7 +22,7 @@
           <WinSelect
             :options="[
               {
-                label: i18n('image'),
+                label: i18n('url'),
                 value: 'image',
               },
               {

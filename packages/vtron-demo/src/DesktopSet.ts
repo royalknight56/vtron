@@ -72,6 +72,22 @@ const magnetConfig = [
     content: 'https://w0akxkb81ek.feishu.cn/share/base/form/shrcnxXNS3dN7XpIfPdXNknjxNf',
   },
   {
+    title: '2048',
+    icon: friendLinkicon,
+    width: 800,
+    height: 800,
+    center: true,
+    content: 'https://vtron.site/react/#/2048',
+  },
+  {
+    title: '井字棋',
+    icon: friendLinkicon,
+    width: 800,
+    height: 800,
+    center: true,
+    content: 'https://vtron.site/react/#/tic-tac-toe',
+  },
+  {
     title: '抛硬币',
     icon: friendLinkicon,
     width: 800,

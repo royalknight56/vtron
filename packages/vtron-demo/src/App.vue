@@ -8,7 +8,6 @@
     <VtronComputer :system="system"></VtronComputer>
     <!-- 一定需要引入Win10组件，组件已经在use时注册了 -->
   </div>
-  <a style="display: none" href="https://beian.miit.gov.cn/">豫ICP备19041315号</a>
 </template>
 
 <script lang="ts" setup>
@@ -25,6 +24,8 @@ import onetocicon from './assets/onetoc.png';
 import signalicon from './assets/signal.png';
 import OpenSource from './components/apps/OpenSource.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
+import BackgroundStore from './components/apps/BackgroundStore.vue';
+import backgroundstoreicon from './assets/backgroundstore.base?raw';
 
 import { mountWebdav } from './hook/mountWebdav';
 // import { mountOpener } from './hook/mountOpener';
@@ -39,6 +40,24 @@ const system = new System({
       name: '小工具',
       type: 'group',
       group: [...addListToDesktop(magnetConfig)],
+    },
+    {
+        name: '背景Store',
+        icon: backgroundstoreicon,
+        multiple: false,
+        window: {
+          width: 1100,
+          height: 630,
+          center: true,
+          title: '背景Store',
+          icon: backgroundstoreicon,
+          content: BackgroundStore,
+          backgroundColor: '#ffffff00',
+          frame: false,
+          config: {
+            path: '/',
+          },
+      },
     },
   ],
   magnet: [...addListToDesktop(magnetConfig)],

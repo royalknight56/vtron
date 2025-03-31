@@ -38,6 +38,7 @@ export class ConfigOperations {
     }
   }
 
+  // 检查版本
   async initCheckVersion() {
     const programVersion = this.system.version;
     const systemVersion = await this.system.fs.readFile(
@@ -45,9 +46,31 @@ export class ConfigOperations {
     );
     if (systemVersion && programVersion) {
       if (programVersion !== systemVersion) {
-        this.system.createNotify({
-          title: 'Vtron',
-          content: '本地程序和文件版本不一致，请恢复出厂设置',
+        // this.system.createNotify({
+        //   title: 'Vtron',
+        //   content: '本地程序和文件版本不一致，请恢复出厂设置',
+        // });
+        // 不一致，弹出升级弹窗
+        this.system.createDialog().showMessageBox({
+          message: '本地程序和文件版本不一致，是否运行升级程序',
+          buttons: ['是', '否'],
+        }).then(async (res) => {
+          if (res.response === 0) {
+            // 运行升级程序
+            let { setProgress } = this.system.createDialog().showProcessDialog({
+              message: '升级程序正在运行',
+              buttons: ['确定'],
+            });
+            setProgress(20);
+            // 获取对应版本的升级程序
+            if(this.system.upgradeProgram[systemVersion]){
+              // 运行对应版本的升级程序
+             await this.system.upgradeProgram[systemVersion]();
+             setProgress(80);
+            }
+            setProgress(100);
+
+          }
         });
       }
     }

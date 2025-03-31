@@ -83,6 +83,21 @@ export class AppOperations {
   }
 
   /**
+   * @internal
+   */
+  forceRefershOptionsApp() {
+    this.system.stateManager.options.getOptions('desktop')?.forEach((item) => {
+      this.addApp(item, true);
+    });
+    this.system.stateManager.options.getOptions('magnet')?.forEach((item) => {
+      this.addMagnet(item, true);
+    });
+    this.system.stateManager.options.getOptions('menulist')?.forEach((item) => {
+      this.addMenuList(item, true);
+    });
+  }
+
+  /**
    * @description: 添加应用
    * force 表示强制，在每次启动时都会添加
    */

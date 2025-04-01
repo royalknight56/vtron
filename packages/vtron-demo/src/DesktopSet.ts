@@ -8,6 +8,11 @@ import winv3icon from './assets/winv3.png';
 import Tmusicicon from './assets/t-music.png';
 import signalicon from './assets/signal.base?raw';
 import softkeyboardbase from './assets/softkeyboard.base?raw';
+import gamebase from './assets/game.base?raw';
+import touzi from './assets/touzi.base?raw';
+import coin from './assets/coin.base?raw';
+
+
 import GitStars from './components/apps/GitStars.vue';
 import GotoReadMe from './components/apps/GotoReadMe.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
@@ -29,13 +34,6 @@ const darkThemeConfig = {
 
 // 重构 magnetConfig
 const magnetConfig = [
-  {
-    title: 'kiomet',
-    icon: friendLinkicon,
-    ...commonConfig,
-    content: 'https://kiomet.com/',
-    backgroundColor: '#2b3948',
-  },
   {
     title: '百度地图',
     icon: baidumapicon,
@@ -69,7 +67,7 @@ const magnetConfig = [
   },
   {
     title: '2048',
-    icon: friendLinkicon,
+    icon: gamebase,
     width: 800,
     height: 800,
     center: true,
@@ -77,7 +75,7 @@ const magnetConfig = [
   },
   {
     title: '井字棋',
-    icon: friendLinkicon,
+    icon: gamebase,
     width: 800,
     height: 800,
     center: true,
@@ -85,7 +83,7 @@ const magnetConfig = [
   },
   {
     title: '抛硬币',
-    icon: friendLinkicon,
+    icon: coin,
     width: 800,
     height: 700,
     center: true,
@@ -95,7 +93,7 @@ const magnetConfig = [
   },
   {
     title: '掷骰子',
-    icon: friendLinkicon,
+    icon: touzi,
     width: 800,
     height: 700,
     center: true,

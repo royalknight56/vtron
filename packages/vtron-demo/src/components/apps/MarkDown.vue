@@ -33,7 +33,7 @@ function save(markdown: string, html: string) {
   sys?.fs.writeFile(path, btoa(unescape(encodeURIComponent(markdown)))).then(() => {
     new Notify({
       title: '保存成功',
-      content: '文件已保存到桌面',
+      content: '文件已保存',
     });
   });
 }

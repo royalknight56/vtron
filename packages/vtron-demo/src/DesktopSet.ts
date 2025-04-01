@@ -3,19 +3,15 @@ import baidumapicon from './assets/baidumap.base?raw';
 import flowicon from './assets/flowicon.png';
 import slinotesvg from './assets/slinote.svg';
 import friendLinkicon from './assets/friendLinkBase.base?raw';
-import markdownicon from './assets/markdown.png';
 import vscode from './assets/vscode.png';
 import winv3icon from './assets/winv3.png';
 import Tmusicicon from './assets/t-music.png';
-import beaticon from './assets/beat.ico';
-import kiometicon from './assets/kiomet.webp';
 import signalicon from './assets/signal.base?raw';
-
+import softkeyboardbase from './assets/softkeyboard.base?raw';
 import GitStars from './components/apps/GitStars.vue';
 import GotoReadMe from './components/apps/GotoReadMe.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
-import FriendLink from './components/apps/FriendLink.vue';
-import NoteMd from './components/apps/NoteMd.vue';
+import SoftKeyboard from './components/apps/SoftKeyboard.vue';
 // import Gallery from './components/apps/Gallery.vue';
 
 // 提取通用配置
@@ -117,6 +113,15 @@ const desktopConfig = [
     ...commonConfig,
     height: 700,
     content: 'https://github1s.com/',
+  },
+
+  {
+    title: '软键盘',
+    icon: softkeyboardbase,
+    ...commonConfig,
+    height: 700,
+    content: SoftKeyboard,
+    resizable: false,
   },
 
   // {

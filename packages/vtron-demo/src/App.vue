@@ -269,13 +269,6 @@ NoteMd是和vtron契合的笔记软件
     },
   });
 
-  setTimeout(() => {
-    new Notify({
-      title: `已经更新至 ${readySystem.version}`,
-      content: `欢迎加入qq群 712921211`,
-      timeout: 10000,
-    });
-  }, 100);
 });
 function addListToDesktop(list: any[]) {
   const res: any[] = [];

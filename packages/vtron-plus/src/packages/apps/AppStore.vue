@@ -1,6 +1,6 @@
 <template>
   <div class="store-outer">
-    <div class="store-handle" v-dragable>
+    <div class="store-handle" v-dragable @dblclick="maxWin">
       <div v-if="!closing" @click="closeWin" class="close-button">×</div>
     </div>
     <iframe
@@ -146,6 +146,14 @@ function closeWin() {
   setTimeout(() => {
     browserWindow.close();
   }, 200);
+}
+
+function maxWin() {
+  if (browserWindow.isMaximized()) {
+    browserWindow.unmaximize();
+  } else {
+    browserWindow.maximize();
+  }
 }
 </script>
 

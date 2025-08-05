@@ -17,7 +17,7 @@ import { System, BrowserWindow, Notify, VtronComputer } from 'vtron';
 import { vtronPlus } from 'vtron-plus';
 import MarkDown from './components/apps/MarkDown.vue';
 import 'vtron-plus/distlib/style.css';
-import backimg from './assets/back.jpg';
+// import backimg from './assets/back.jpg';
 import beaticon from './assets/beat.ico';
 import markdownicon from './assets/markdown.png';
 import onetocicon from './assets/onetoc.png';
@@ -75,7 +75,7 @@ const system = new System({
       },
     },
   ],
-  background: backimg,
+  background: "#65b8e0",
   lang: 'zh-CN',
 });
 

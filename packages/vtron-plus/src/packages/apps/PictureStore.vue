@@ -1,582 +1,926 @@
-<!-- music app -->
 <template>
   <div class="picture-app" :class="{ 'picture-app--dark': isDarkTheme }">
     <header class="picture-app__header">
       <div class="picture-app__header-left">
-        <div class="picture-app__icon">
-          <span class="segoicon SEGOEUIMDL">&#xE728;</span>
-        </div>
-        <div class="picture-app__title">
-          <span>图片</span>
-        </div>
+        <span class="picture-app__logo segoicon SEGOEUIMDL">&#xE728;</span>
+        <span class="picture-app__title">图片</span>
       </div>
-      <div class="picture-app__header-right">
-        <div class="picture-app__theme-switch" @click="toggleTheme">
+      <div class="picture-app__header-actions">
+        <div
+          class="picture-app__header-btn"
+          @click="toggleTheme"
+          :title="isDarkTheme ? '亮色模式' : '暗色模式'"
+        >
           <span class="segoicon SEGOEUIMDL">{{ isDarkTheme ? '&#xE793;' : '&#xE708;' }}</span>
         </div>
       </div>
     </header>
 
-    <main class="picture-app__main">
-      <nav class="picture-app__nav">
+    <nav class="picture-app__nav">
+      <div class="picture-app__tabs">
         <div
-          class="picture-app__nav-item"
-          @click="jumpTo(1)"
-          :class="{
-            'picture-app__nav-item--active': router === 1,
-          }"
+          class="picture-app__tab"
+          @click="activeTab = 1"
+          :class="{ 'picture-app__tab--active': activeTab === 1 }"
         >
+          <span class="segoicon SEGOEUIMDL">&#xE8B9;</span>
           <span>我的图片</span>
         </div>
         <div
-          class="picture-app__nav-item"
-          @click="jumpTo(2)"
-          :class="{
-            'picture-app__nav-item--active': router === 2,
-          }"
+          class="picture-app__tab"
+          @click="activeTab = 2"
+          :class="{ 'picture-app__tab--active': activeTab === 2 }"
         >
+          <span class="segoicon SEGOEUIMDL">&#xE7C5;</span>
           <span>上传图片</span>
         </div>
-      </nav>
+      </div>
+      <div class="picture-app__nav-meta" v-if="activeTab === 1 && photoList.length > 0">
+        {{ photoList.length }} 张图片
+      </div>
+    </nav>
 
-      <div class="picture-app__container">
-        <div class="picture-app__content" v-if="router === 1">
-          <div class="picture-app__list">
-            <div
-              class="picture-app__list-item"
-              v-for="item in musicList"
-              :key="item.path"
-              @click="playPhoto(item)"
-              :class="{ 'picture-app__list-item--active': currentPhoto === item.path }"
-            >
-              <span>{{ item.name }}</span>
-            </div>
-          </div>
-
-          <div class="picture-app__viewer" @wheel="handleWheel">
-            <img
-              v-if="content"
-              :src="content"
-              draggable="false"
-              :style="{
-                transform: `scale(${scale})`,
-              }"
-              class="picture-app__image"
-            />
-          </div>
+    <div class="picture-app__body">
+      <!-- Gallery Grid -->
+      <div class="picture-app__gallery" v-if="activeTab === 1 && !viewerOpen">
+        <div class="picture-app__empty" v-if="photoList.length === 0">
+          <span class="picture-app__empty-icon segoicon SEGOEUIMDL">&#xE8B9;</span>
+          <p class="picture-app__empty-title">暂无图片</p>
+          <p class="picture-app__empty-hint">前往「上传图片」添加你的图片</p>
         </div>
-
-        <div class="picture-app__content" v-if="router === 2">
-          <div class="picture-app__upload">
-            <div class="picture-app__upload-title">
-              <span>上传图片</span>
-            </div>
-            <FileUploader :accept="'image/*'" @change="upload">
-              <div class="picture-app__upload-area">
-                <span class="picture-app__upload-icon segoicon SEGOEUIMDL">&#xE7C5;</span>
-                <div class="picture-app__upload-text">
-                  <span>将文件拖到此处，或</span>
-                  <span class="picture-app__upload-highlight">点击上传</span>
-                </div>
-                <div class="picture-app__upload-hint">支持 jpg、png、gif 等图片格式</div>
+        <div class="picture-app__grid" v-else>
+          <div
+            class="picture-app__card"
+            v-for="(item, index) in photoList"
+            :key="item.path"
+            @click="openViewer(index)"
+          >
+            <div class="picture-app__card-preview">
+              <img
+                v-if="thumbnails[item.path]"
+                :src="thumbnails[item.path]"
+                draggable="false"
+              />
+              <div class="picture-app__card-loading" v-else>
+                <span class="segoicon SEGOEUIMDL">&#xE8B9;</span>
               </div>
-            </FileUploader>
+              <div class="picture-app__card-hover">
+                <span class="segoicon SEGOEUIMDL">&#xE71A;</span>
+              </div>
+            </div>
+            <div class="picture-app__card-info">
+              <span class="picture-app__card-name">{{ item.name }}</span>
+            </div>
           </div>
         </div>
       </div>
-    </main>
+
+      <!-- Image Viewer -->
+      <div class="picture-app__viewer" v-if="activeTab === 1 && viewerOpen">
+        <div class="picture-app__viewer-bar">
+          <button class="picture-app__viewer-back" @click="closeViewer">
+            <span class="segoicon SEGOEUIMDL">&#xE72B;</span>
+            <span>返回</span>
+          </button>
+          <div class="picture-app__viewer-meta">
+            <span class="picture-app__viewer-name">{{ photoList[currentIndex]?.name }}</span>
+            <span class="picture-app__viewer-pos">{{ currentIndex + 1 }} / {{ photoList.length }}</span>
+          </div>
+          <div class="picture-app__viewer-tools">
+            <button @click="zoomOut" title="缩小">
+              <span style="font-size: 16px; font-weight: bold;">−</span>
+            </button>
+            <span class="picture-app__viewer-scale">{{ Math.round(scale * 100) }}%</span>
+            <button @click="zoomIn" title="放大">
+              <span style="font-size: 16px; font-weight: bold;">+</span>
+            </button>
+            <button @click="fitView" title="适应窗口">
+              <span class="segoicon SEGOEUIMDL">&#xE72C;</span>
+            </button>
+            <button @click="rotateImage" title="旋转">
+              <span class="segoicon SEGOEUIMDL">&#xE7AD;</span>
+            </button>
+            <div class="picture-app__viewer-divider"></div>
+            <button class="picture-app__viewer-danger" @click="deletePhoto" title="删除">
+              <span class="segoicon SEGOEUIMDL">&#xE74D;</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="picture-app__viewer-stage" @wheel.prevent="handleWheel">
+          <button
+            class="picture-app__viewer-arrow picture-app__viewer-arrow--left"
+            @click="prevPhoto"
+            v-if="photoList.length > 1"
+          >
+            <span class="segoicon SEGOEUIMDL">&#xE76B;</span>
+          </button>
+
+          <img
+            v-if="viewerContent"
+            :src="viewerContent"
+            draggable="false"
+            class="picture-app__viewer-img"
+            :style="{ transform: `scale(${scale}) rotate(${rotation}deg)` }"
+          />
+          <div class="picture-app__viewer-placeholder" v-else>
+            <span class="segoicon SEGOEUIMDL">&#xE8B9;</span>
+            <p>加载中...</p>
+          </div>
+
+          <button
+            class="picture-app__viewer-arrow picture-app__viewer-arrow--right"
+            @click="nextPhoto"
+            v-if="photoList.length > 1"
+          >
+            <span class="segoicon SEGOEUIMDL">&#xE76C;</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Upload -->
+      <div class="picture-app__upload" v-if="activeTab === 2">
+        <div class="picture-app__upload-card">
+          <div class="picture-app__upload-heading">
+            <span class="picture-app__upload-title">上传图片</span>
+            <span class="picture-app__upload-subtitle">将图片添加到你的图库</span>
+          </div>
+          <FileUploader :accept="'image/*'" @change="upload">
+            <div class="picture-app__upload-drop">
+              <div class="picture-app__upload-icon-circle">
+                <span class="segoicon SEGOEUIMDL">&#xE7C5;</span>
+              </div>
+              <div class="picture-app__upload-text">
+                将文件拖到此处，或<span class="picture-app__upload-link">点击选择文件</span>
+              </div>
+              <div class="picture-app__upload-hint">支持 jpg、png、gif、webp 等格式</div>
+            </div>
+          </FileUploader>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue';
+import { inject, onMounted, ref, reactive } from 'vue';
 import { System, VtronFileWithoutContent, join } from 'vtron';
 import FileUploader from '../components/FileUploader.vue';
 
 const sys = inject<System>('system')!;
-const musicList = ref<VtronFileWithoutContent[]>([]);
-onMounted(async () => {
-  refershFileLst();
-});
-async function refershFileLst() {
-  const list = await sys.fs.readdir(join(sys._options.userLocation || '', 'Photo'));
-  musicList.value = list;
-}
-const router = ref(1);
-const jumpTo = (index: number) => {
-  router.value = index;
-};
+const photoList = ref<VtronFileWithoutContent[]>([]);
+const thumbnails = reactive<Record<string, string>>({});
 
-function upload(ev: Event) {
-  const tar = ev.target as HTMLInputElement;
-
-  if (tar.files) {
-    const reader = new FileReader();
-    reader.readAsDataURL(tar.files[0]);
-    reader.onloadend = function () {
-      if (tar.files) {
-        sys.fs
-          .writeFile(
-            join(sys._options.userLocation || '', 'Photo', tar.files[0].name),
-            (reader.result || '').toString().replace(/^data:(.)*;base64,/, '')
-          )
-          .then(() => {
-            tar.value = '';
-            refershFileLst();
-            sys.createNotify({
-              title: '上传成功',
-              content: '上传成功',
-            });
-          });
-      }
-    };
-  }
-}
-
-const content = ref('');
-
-// 添加当前选中图片的路径
-const currentPhoto = ref('');
-
-async function playPhoto(item: VtronFileWithoutContent) {
-  scale.value = 0.7;
-  const path = item.path;
-  // 设置当前选中图片
-  currentPhoto.value = path;
-  const fileC = await sys.fs.readFile(path);
-  if (fileC) {
-    content.value = 'data:image/png;base64,' + fileC;
-  } else {
-    content.value = '';
-  }
-}
-const scale = ref(0.7);
-function handleWheel(event: WheelEvent) {
-  event.preventDefault();
-  const delta = Math.sign(event.deltaY);
-  if (delta > 0) {
-    // 向下滚动，缩小图片
-    scale.value -= 0.1;
-  } else {
-    // 向上滚动，放大图片
-    scale.value += 0.1;
-  }
-}
-
+const activeTab = ref(1);
+const viewerOpen = ref(false);
+const viewerContent = ref('');
+const currentIndex = ref(0);
+const scale = ref(1);
+const rotation = ref(0);
 const isDarkTheme = ref(false);
+
+onMounted(() => {
+  refreshPhotoList();
+});
+
+async function refreshPhotoList() {
+  const list = await sys.fs.readdir(join(sys._options.userLocation || '', 'Photo'));
+  photoList.value = list;
+  loadThumbnails(list);
+}
+
+async function loadThumbnails(list: VtronFileWithoutContent[]) {
+  for (const item of list) {
+    if (!thumbnails[item.path]) {
+      const data = await sys.fs.readFile(item.path);
+      if (data) {
+        thumbnails[item.path] = 'data:image/png;base64,' + data;
+      }
+    }
+  }
+}
+
+async function openViewer(index: number) {
+  currentIndex.value = index;
+  scale.value = 1;
+  rotation.value = 0;
+  viewerOpen.value = true;
+  await loadViewerImage(index);
+}
+
+async function loadViewerImage(index: number) {
+  const item = photoList.value[index];
+  if (!item) return;
+  if (thumbnails[item.path]) {
+    viewerContent.value = thumbnails[item.path];
+    return;
+  }
+  const data = await sys.fs.readFile(item.path);
+  viewerContent.value = data ? 'data:image/png;base64,' + data : '';
+}
+
+function closeViewer() {
+  viewerOpen.value = false;
+  viewerContent.value = '';
+}
+
+function prevPhoto() {
+  currentIndex.value =
+    currentIndex.value > 0 ? currentIndex.value - 1 : photoList.value.length - 1;
+  scale.value = 1;
+  rotation.value = 0;
+  loadViewerImage(currentIndex.value);
+}
+
+function nextPhoto() {
+  currentIndex.value =
+    currentIndex.value < photoList.value.length - 1 ? currentIndex.value + 1 : 0;
+  scale.value = 1;
+  rotation.value = 0;
+  loadViewerImage(currentIndex.value);
+}
+
+function zoomIn() {
+  scale.value = Math.min(5, +(scale.value + 0.25).toFixed(2));
+}
+
+function zoomOut() {
+  scale.value = Math.max(0.1, +(scale.value - 0.25).toFixed(2));
+}
+
+function fitView() {
+  scale.value = 1;
+  rotation.value = 0;
+}
+
+function rotateImage() {
+  rotation.value = (rotation.value + 90) % 360;
+}
+
+function handleWheel(event: WheelEvent) {
+  if (Math.sign(event.deltaY) > 0) {
+    zoomOut();
+  } else {
+    zoomIn();
+  }
+}
+
+async function deletePhoto() {
+  const item = photoList.value[currentIndex.value];
+  if (!item) return;
+
+  await sys.fs.unlink(item.path);
+  delete thumbnails[item.path];
+  await refreshPhotoList();
+
+  if (photoList.value.length === 0) {
+    closeViewer();
+  } else {
+    currentIndex.value = Math.min(currentIndex.value, photoList.value.length - 1);
+    await loadViewerImage(currentIndex.value);
+  }
+
+  sys.createNotify({ title: '删除成功', content: `${item.name} 已删除` });
+}
+
+async function upload(ev: Event) {
+  const tar = ev.target as HTMLInputElement;
+  if (!tar.files?.[0]) return;
+
+  const file = tar.files[0];
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onloadend = async () => {
+    const base64 = (reader.result || '').toString().replace(/^data:(.)*;base64,/, '');
+    await sys.fs.writeFile(
+      join(sys._options.userLocation || '', 'Photo', file.name),
+      base64,
+    );
+    tar.value = '';
+    await refreshPhotoList();
+    sys.createNotify({ title: '上传成功', content: `${file.name} 已添加到图库` });
+  };
+}
 
 function toggleTheme() {
   isDarkTheme.value = !isDarkTheme.value;
 }
 </script>
+
 <style scoped lang="scss">
 .picture-app {
-  // 浅色主题变量
-  --app-bg: #fafafa;
-  --header-bg: #ffffff;
-  --nav-bg: #ffffff;
-  --content-bg: #ffffff;
-  --border-color: #ebeef5;
-  --text-primary: #303133;
-  --text-regular: #606266;
-  --text-secondary: #909399;
-  --hover-bg: #f5f7fa;
-  --active-bg: #f0f0f0;
-  --active-color: #000000;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --grid-color: #f5f5f5;
-  --upload-border: #d9d9d9;
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --surface-hover: #f0f1f3;
+  --surface-active: #e4e6e9;
+  --border: #e1e3e6;
+  --text-1: #1d1d1f;
+  --text-2: #5f6368;
+  --text-3: #9aa0a6;
+  --accent: #0071e3;
+  --accent-soft: #e8f0fe;
+  --danger: #ea4335;
+  --danger-soft: #fce8e6;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-3: 0 8px 28px rgba(0, 0, 0, 0.12);
+  --radius: 8px;
+  --radius-lg: 12px;
+  --thumb-size: 152px;
 
-  // 基础样式
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: var(--bg);
+  color: var(--text-1);
   user-select: none;
-  background-color: var(--app-bg);
-  transition: all 0.3s ease;
+  overflow: hidden;
+  transition:
+    background 0.3s,
+    color 0.3s;
 
-  // 深色主题
   &--dark {
-    --app-bg: #141414;
-    --header-bg: #1e1e1e;
-    --nav-bg: #1e1e1e;
-    --content-bg: #1e1e1e;
-    --border-color: #2c2c2c;
-    --text-primary: #ffffff;
-    --text-regular: #999999;
-    --text-secondary: #666666;
-    --hover-bg: #262626;
-    --active-bg: #2c2c2c;
-    --active-color: #ffffff;
-    --shadow-color: rgba(0, 0, 0, 0.3);
-    --grid-color: #262626;
-    --upload-border: #333333;
+    --bg: #1a1a1a;
+    --surface: #262626;
+    --surface-hover: #303030;
+    --surface-active: #3a3a3a;
+    --border: #3a3a3a;
+    --text-1: #e8eaed;
+    --text-2: #9aa0a6;
+    --text-3: #5f6368;
+    --accent: #8ab4f8;
+    --accent-soft: #1e3a5f;
+    --danger: #f28b82;
+    --danger-soft: #5f2120;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --shadow-3: 0 8px 28px rgba(0, 0, 0, 0.35);
   }
 
+  // ── Header ──
   &__header {
-    height: 50px;
+    height: 46px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    background: var(--header-bg);
-    border-bottom: 1px solid var(--border-color);
-    padding: 0 20px;
-    box-shadow: 0 1px 4px var(--shadow-color);
+    justify-content: space-between;
+    padding: 0 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
   }
 
   &__header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
 
-  &__icon {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: var(--hover-bg);
-    border-radius: 8px;
-    transition: all 0.3s ease;
-
-    &:hover {
-      transform: translateY(-1px);
-      background: var(--active-bg);
-    }
-
-    .segoicon {
-      font-size: 20px;
-      color: var(--text-primary);
-    }
+  &__logo {
+    font-size: 20px;
+    color: var(--accent);
   }
 
   &__title {
-    span {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text-primary);
-      letter-spacing: 0.5px;
-    }
-  }
-
-  &__main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    background-color: var(--app-bg);
-  }
-
-  &__nav {
-    height: 48px;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    background-color: var(--nav-bg);
-    border-bottom: 1px solid var(--border-color);
-    gap: 24px;
-  }
-
-  &__nav-item {
-    height: 100%;
-    padding: 0 16px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 500;
-    color: var(--text-regular);
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 2px;
-      background-color: transparent;
-      transition: all 0.2s ease;
-    }
-
-    span {
-      font-size: 14px;
-    }
-
-    &--active {
-      color: var(--active-color);
-
-      &::after {
-        background-color: var(--active-color);
-      }
-    }
-
-    &:hover:not(&--active) {
-      color: var(--text-primary);
-    }
-  }
-
-  &__container {
-    flex: 1;
-    display: flex;
-    min-height: 0;
-  }
-
-  &__content {
-    flex: 1;
-    display: flex;
-    min-height: 0;
-  }
-
-  &__list {
-    width: 200px;
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid var(--border-color);
-    background-color: var(--content-bg);
-    overflow-y: auto;
-    padding: 20px 0;
-
-    &::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: var(--content-bg);
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: var(--text-secondary);
-
-      &:hover {
-        background: var(--text-primary);
-      }
-    }
-  }
-
-  &__list-item {
-    position: relative;
-    padding: 8px 16px;
-    margin: 4px 8px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    color: var(--text-regular);
-
-    &--active {
-      background-color: var(--active-bg);
-      color: var(--active-color);
-      font-weight: 500;
-
-      &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 3px;
-        background-color: var(--active-color);
-        border-radius: 0 2px 2px 0;
-      }
-    }
-
-    &:hover:not(&--active) {
-      background-color: var(--hover-bg);
-      color: var(--text-primary);
-    }
-
-    span {
-      display: block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  }
-
-  &__viewer {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--content-bg);
-    position: relative;
-    padding: 24px;
-    overflow: hidden;
-
-    // 添加网格背景
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: linear-gradient(45deg, var(--grid-color) 25%, transparent 25%),
-        linear-gradient(-45deg, var(--grid-color) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, var(--grid-color) 75%),
-        linear-gradient(-45deg, transparent 75%, var(--grid-color) 75%);
-      background-size: 20px 20px;
-      background-position:
-        0 0,
-        0 10px,
-        10px -10px,
-        -10px 0px;
-      opacity: 0.3;
-    }
-  }
-
-  &__image {
-    max-width: calc(100% - 48px);
-    max-height: calc(100% - 48px);
-    object-fit: contain;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-    box-shadow: 0 4px 12px var(--shadow-color);
-    z-index: 1;
-
-    // 添加图片悬停效果
-    &:hover {
-      box-shadow: 0 8px 24px var(--shadow-color);
-    }
-  }
-
-  &__upload {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--content-bg);
-    padding: 40px;
-    overflow-y: auto;
-  }
-
-  &__upload-title {
-    font-size: 24px;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 40px;
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 40px;
-      height: 3px;
-      background: var(--text-primary);
-      border-radius: 2px;
-    }
-  }
-
-  &__upload-area {
-    width: 400px;
-    height: 200px;
-    border: 2px dashed var(--upload-border);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    background-color: var(--hover-bg);
-    padding: 32px;
-    gap: 16px;
-
-    &:hover {
-      border-color: var(--text-primary);
-      background-color: var(--active-bg);
-
-      .picture-app__upload-icon {
-        color: var(--text-primary);
-      }
-    }
-  }
-
-  &__upload-icon {
-    font-size: 48px;
-    color: var(--text-secondary);
-    transition: all 0.3s ease;
-  }
-
-  &__upload-text {
-    color: var(--text-regular);
-    font-size: 16px;
-    text-align: center;
-    line-height: 1.6;
-
-    .picture-app__upload-highlight {
-      color: var(--text-primary);
-      font-weight: 500;
-      margin: 0 4px;
-    }
-  }
-
-  &__upload-hint {
-    margin-top: 8px;
-    color: var(--text-secondary);
     font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
   }
 
-  &__theme-switch {
-    width: 36px;
-    height: 36px;
+  &__header-actions {
     display: flex;
-    justify-content: center;
     align-items: center;
-    border-radius: 8px;
+  }
+
+  &__header-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--text-regular);
+    color: var(--text-2);
+    transition: all 0.2s;
 
     &:hover {
-      background: var(--hover-bg);
-      color: var(--text-primary);
+      background: var(--surface-hover);
+      color: var(--text-1);
     }
 
     .segoicon {
-      font-size: 20px;
+      font-size: 16px;
     }
+  }
+
+  // ── Nav / Tabs ──
+  &__nav {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  &__tabs {
+    display: flex;
+    height: 100%;
+    gap: 2px;
+  }
+
+  &__tab {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 14px;
+    font-size: 13px;
+    color: var(--text-2);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+
+    .segoicon {
+      font-size: 13px;
+    }
+
+    &--active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      font-weight: 500;
+    }
+
+    &:hover:not(&--active) {
+      color: var(--text-1);
+      background: var(--surface-hover);
+    }
+  }
+
+  &__nav-meta {
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  // ── Body ──
+  &__body {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  // ── Gallery Grid ──
+  &__gallery {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--text-3);
+      border-radius: 3px;
+      &:hover {
+        background: var(--text-2);
+      }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--thumb-size), 1fr));
+    gap: 14px;
+  }
+
+  &__card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: var(--shadow-1);
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-2);
+
+      .picture-app__card-hover {
+        opacity: 1;
+      }
+      .picture-app__card-preview img {
+        transform: scale(1.06);
+      }
+    }
+
+    &:active {
+      transform: translateY(-1px);
+    }
+  }
+
+  &__card-preview {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--surface-hover);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+  }
+
+  &__card-loading {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+    .segoicon {
+      font-size: 28px;
+    }
+  }
+
+  &__card-hover {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+
+    .segoicon {
+      font-size: 24px;
+      color: #fff;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+    }
+  }
+
+  &__card-info {
+    padding: 8px 10px;
+  }
+
+  &__card-name {
+    font-size: 12px;
+    color: var(--text-2);
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // ── Empty State ──
+  &__empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 260px;
+  }
+
+  &__empty-icon {
+    font-size: 52px;
+    color: var(--text-3);
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  &__empty-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-2);
+    margin: 0 0 6px;
+  }
+
+  &__empty-hint {
+    font-size: 13px;
+    color: var(--text-3);
+    margin: 0;
+  }
+
+  // ── Viewer ──
+  &__viewer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    z-index: 10;
+    animation: viewerIn 0.2s ease;
+  }
+
+  &__viewer-bar {
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    gap: 8px;
+  }
+
+  &__viewer-back {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border: none;
+    background: none;
+    color: var(--text-2);
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: all 0.2s;
+    flex-shrink: 0;
+
+    .segoicon {
+      font-size: 14px;
+    }
+
+    &:hover {
+      background: var(--surface-hover);
+      color: var(--text-1);
+    }
+  }
+
+  &__viewer-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+    justify-content: center;
+  }
+
+  &__viewer-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-1);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__viewer-pos {
+    font-size: 11px;
+    color: var(--text-3);
+    white-space: nowrap;
+    background: var(--surface-hover);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  &__viewer-tools {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+
+    button {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: none;
+      color: var(--text-2);
+      cursor: pointer;
+      border-radius: var(--radius);
+      transition: all 0.15s;
+
+      .segoicon {
+        font-size: 14px;
+      }
+
+      &:hover {
+        background: var(--surface-hover);
+        color: var(--text-1);
+      }
+    }
+  }
+
+  &__viewer-scale {
+    font-size: 11px;
+    color: var(--text-3);
+    min-width: 38px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__viewer-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--border);
+    margin: 0 4px;
+  }
+
+  &__viewer-danger {
+    &:hover {
+      background: var(--danger-soft) !important;
+      color: var(--danger) !important;
+    }
+  }
+
+  &__viewer-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background-image: linear-gradient(45deg, var(--surface-hover) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--surface-hover) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--surface-hover) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--surface-hover) 75%);
+    background-size: 16px 16px;
+    background-position:
+      0 0,
+      0 8px,
+      8px -8px,
+      -8px 0;
+  }
+
+  &__viewer-img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: var(--shadow-3);
+    transition: transform 0.15s ease;
+    z-index: 1;
+  }
+
+  &__viewer-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-3);
+
+    .segoicon {
+      font-size: 36px;
+    }
+    p {
+      margin: 0;
+      font-size: 13px;
+    }
+  }
+
+  &__viewer-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--surface);
+    color: var(--text-2);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: var(--shadow-2);
+    z-index: 2;
+    transition: all 0.2s;
+
+    .segoicon {
+      font-size: 14px;
+    }
+
+    &:hover {
+      background: var(--surface-hover);
+      color: var(--text-1);
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    &--left {
+      left: 14px;
+    }
+    &--right {
+      right: 14px;
+    }
+  }
+
+  // ── Upload ──
+  &__upload {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+  }
+
+  &__upload-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    max-width: 440px;
+    width: 100%;
+  }
+
+  &__upload-heading {
+    text-align: center;
+  }
+
+  &__upload-title {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-1);
+    margin-bottom: 6px;
+  }
+
+  &__upload-subtitle {
+    font-size: 13px;
+    color: var(--text-3);
+  }
+
+  &__upload-drop {
+    width: 100%;
+    padding: 44px 28px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: var(--surface);
+
+    &:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+
+      .picture-app__upload-icon-circle {
+        background: var(--accent);
+        color: #fff;
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  &__upload-icon-circle {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--surface-hover);
+    color: var(--text-3);
+    transition: all 0.3s;
+
+    .segoicon {
+      font-size: 22px;
+    }
+  }
+
+  &__upload-text {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  &__upload-link {
+    color: var(--accent);
+    font-weight: 500;
+    margin-left: 2px;
+  }
+
+  &__upload-hint {
+    font-size: 12px;
+    color: var(--text-3);
   }
 }
 
-// 删除旧的.viewer相关样式
-.viewer,
-.viewer-img {
-  display: none;
-}
-
-// 添加缩放动画
-@keyframes zoomIn {
+@keyframes viewerIn {
   from {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.98);
   }
   to {
     opacity: 1;
     transform: scale(1);
-  }
-}
-
-// 优化滚动条样式
-.music-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.music-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.music-list::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
-
-  &:hover {
-    background: #999;
   }
 }
 </style>

@@ -1,200 +1,208 @@
-<!--
- * @Author: Royal
- * @LastEditTime: 2022-03-03 10:02:43
- * @Description: 这是个未完成的浏览器窗口
--->
 <template>
-  <div class="up-handle" v-dragable @dblclick="handleDbclick">
-    <div class="tab-group">
-      <!-- <div
-        class="up-tab tab-setting"
-        :class="{
-          active: currentTab === '设置',
-        }"
-        @click="switchTab('设置')"
-      >
-        <div class="tab">设置</div>
-      </div> -->
-      <div
-        class="up-tab"
-        :class="{
-          active: currentTab === '主页',
-        }"
-        @click="switchTab('主页')"
-      >
-        <div class="tab">主页</div>
-      </div>
-      <div
-        class="up-tab"
-        :class="{
-          active: currentTab === item,
-        }"
-        v-for="(item, index) in tabs"
-        :key="item"
-        @click="switchTab(item)"
-      >
-        <div class="tab">{{ item }}</div>
-        <div class="close" @click.stop="removeTab(item)">
-          <svg viewBox="0 0 1024 1024">
-            <path
-              d="M566.97558594 521.09667969L856.8828125 231.18945312c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355468l-1.58203125-1.58203125c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0L512 466.51660156 222.09277344 176.21386719c-14.63378906-14.63378906-38.75976563-14.63378906-53.39355469 0l-1.58203125 1.58203125c-15.02929688 14.63378906-15.02929688 38.75976563 0 53.39355469l289.90722656 289.90722656L167.1171875 811.00390625c-14.63378906 14.63378906-14.63378906 38.75976563 0 53.39355469l1.58203125 1.58203125c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0L512 576.07226563 801.90722656 865.97949219c14.63378906 14.63378906 38.75976563 14.63378906 53.39355469 0l1.58203125-1.58203125c14.63378906-14.63378906 14.63378906-38.75976563 0-53.39355469L566.97558594 521.09667969z"
-            ></path>
-          </svg>
+  <div class="browser">
+    <div class="browser__tabbar" v-dragable @dblclick="handleDbclick">
+      <div class="browser__tabs">
+        <div
+          class="browser__tab"
+          :class="{ 'browser__tab--active': currentTab === '主页' }"
+          @click="switchTab('主页')"
+        >
+          <span class="browser__tab-icon segoicon SEGOEUIMDL">&#xE80F;</span>
+          <span class="browser__tab-label">主页</span>
         </div>
+        <div
+          class="browser__tab"
+          v-for="item in tabs"
+          :key="item"
+          :class="{ 'browser__tab--active': currentTab === item }"
+          @click="switchTab(item)"
+        >
+          <span class="browser__tab-icon segoicon SEGOEUIMDL">&#xE774;</span>
+          <span class="browser__tab-label">{{ item }}</span>
+          <div class="browser__tab-close" @click.stop="removeTab(item)">
+            <span class="segoicon SEGOEUIMDL">&#xE711;</span>
+          </div>
+        </div>
+        <button class="browser__add" @click="addTab" title="新建标签页">
+          <span class="segoicon SEGOEUIMDL">&#xE710;</span>
+        </button>
       </div>
-      <div class="up-tab-add" @click="addTab()">+</div>
+      <div class="browser__winbtns">
+        <WinUpButtonGroupVue :browser-window="browserWindow" />
+      </div>
     </div>
-    <div class="up-button-group">
-      <WinUpButtonGroupVue :browser-window="browserWindow"></WinUpButtonGroupVue>
-    </div>
+
+    <BrowserTab
+      key="主页"
+      v-show="currentTab === '主页'"
+      :isCurrent="currentTab === '主页'"
+    />
+    <BrowserTab
+      v-for="item in tabs"
+      :key="item"
+      v-show="currentTab === item"
+      :isCurrent="currentTab === item"
+    />
   </div>
-  <div :key="'设置'" v-show="currentTab === '设置'" :isCurrent="currentTab === '设置'" class="setting-tab">
-    <h3>主页设置</h3>
-    <input type="text" />
-  </div>
-  <BrowserTab :key="'主页'" v-show="currentTab === '主页'" :isCurrent="currentTab === '主页'"></BrowserTab>
-  <BrowserTab
-    v-for="item in tabs"
-    v-show="currentTab === item"
-    :key="item"
-    :isCurrent="currentTab === item"
-  ></BrowserTab>
 </template>
+
 <script lang="ts" setup>
-import { inject, onUnmounted, ref } from 'vue';
+import { inject, ref } from 'vue';
 import { BrowserWindow, vDragable, WinUpButtonGroupVue } from 'vtron';
 import BrowserTab from './Browser/BrowserTab.vue';
+
 const browserWindow = inject<BrowserWindow>('browserWindow')!;
 const tabs = ref<string[]>([]);
-const currentTab = ref<string>('主页');
-const tabCount = ref(0);
-const addTab = () => {
-  const tab = '新标签' + tabCount.value++;
-  tabs.value.push(tab);
-  currentTab.value = tab;
-};
-const removeTab = (tab: string) => {
-  const index = tabs.value.indexOf(tab);
-  if (index !== -1) {
-    tabs.value.splice(index, 1);
-    if (currentTab.value === tab) {
-      currentTab.value = tabs.value[index - 1] || '主页';
-      console.log('remove', currentTab.value);
-    }
+const currentTab = ref('主页');
+let tabCounter = 0;
+
+function addTab() {
+  const name = '新标签页 ' + ++tabCounter;
+  tabs.value.push(name);
+  currentTab.value = name;
+}
+
+function removeTab(tab: string) {
+  const idx = tabs.value.indexOf(tab);
+  if (idx === -1) return;
+  tabs.value.splice(idx, 1);
+  if (currentTab.value === tab) {
+    currentTab.value = tabs.value[idx - 1] ?? tabs.value[idx] ?? '主页';
   }
-};
-const switchTab = (tab: string) => {
+}
+
+function switchTab(tab: string) {
   currentTab.value = tab;
-};
-const handleDbclick = () => {
+}
+
+function handleDbclick() {
   if (browserWindow.isMaximized()) {
     browserWindow.unmaximize();
   } else {
     browserWindow.maximize();
   }
-};
+}
 </script>
 
-<style scoped>
-.up-handle {
+<style scoped lang="scss">
+.browser {
   display: flex;
-  /* overflow: hidden; */
-  width: 100%;
-  height: 30px;
-  background-color: aliceblue;
-  /* border: 1px solid #bebebe; */
-  border-radius: 8px 8px 0 0;
-  overflow: hidden;
-  user-select: none;
-}
-.tab-group {
-  display: flex;
-  flex: 1;
-  justify-content: flex-start;
-  align-items: center;
+  flex-direction: column;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  background: #fff;
+}
+
+.browser__tabbar {
+  display: flex;
+  align-items: flex-end;
+  height: 38px;
+  background: #dee1e6;
   padding-left: 10px;
-  overflow: hidden;
-}
-.up-button-group {
-  width: 100px;
-}
-.up-tab {
-  margin-left: 2px;
-  font-size: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100px;
-  height: 20px;
-  align-self: flex-end;
-  background-color: #f5f5f5;
-  border: 1px solid #bebebe;
-  border-radius: 8px 8px 0 0;
-  padding: 0px 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 20px;
-  box-sizing: border-box;
-}
-.tab-setting {
-  width: 50px;
-}
-.up-tab.active {
-  background-color: #ffffff;
-  border-bottom: none;
-}
-.tab {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.close {
-  margin-left: 5px;
-  font-size: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 14px;
-  height: 14px;
-  align-self: flex-end;
-  /* background-color: #ffffff; */
-  /** border: 1px solid #bebebe; **/
-  border-radius: 8px;
-  flex-shrink: 0;
-}
-.close svg {
-  width: 10px;
-  height: 10px;
-}
-.close:hover {
-  background-color: #5757577f;
-  color: #ffffff;
-}
-.up-tab-add {
-  margin-left: 10px;
-  font-size: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 20px;
-  height: 20px;
-  align-self: flex-end;
-  background-color: #ffffff;
-  border: 1px solid #bebebe;
-  border-radius: 8px 8px 0 0;
-  border-bottom: none;
+  user-select: none;
   flex-shrink: 0;
 }
 
-.setting-tab {
+.browser__tabs {
   display: flex;
-  flex-direction: column;
+  align-items: flex-end;
+  flex: 1;
+  min-width: 0;
   height: 100%;
-  width: 100%;
-  user-select: none;
-  background-color: #ffffff;
+  gap: 1px;
+  overflow: hidden;
+  padding-top: 6px;
+}
+
+.browser__tab {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  max-width: 220px;
+  min-width: 48px;
+  padding: 0 6px 0 10px;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  gap: 6px;
+  transition: background 0.15s;
+  flex-shrink: 1;
+  flex-basis: 180px;
+
+  &--active {
+    background: #fff;
+  }
+
+  &:hover:not(&--active) {
+    background: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.browser__tab-icon {
+  font-size: 12px;
+  color: #5f6368;
+  flex-shrink: 0;
+}
+
+.browser__tab-label {
+  font-size: 12px;
+  color: #3c4043;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.browser__tab-close {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.15s;
+
+  .segoicon {
+    font-size: 9px;
+    color: #5f6368;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.12);
+  }
+}
+
+.browser__add {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0 4px;
+  align-self: center;
+  transition: background 0.15s;
+
+  .segoicon {
+    font-size: 12px;
+    color: #5f6368;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.08);
+  }
+}
+
+.browser__winbtns {
+  width: 100px;
+  flex-shrink: 0;
+  align-self: stretch;
 }
 </style>

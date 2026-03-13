@@ -1,22 +1,48 @@
 <template>
-  <div class="ai-chat">
-    <div class="ai-chat-toolbar">
-      <button class="ai-chat-toolbar__btn" @click="showSettings = !showSettings" title="设置">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3" />
-          <path
-            d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
-        </svg>
-      </button>
-      <span class="ai-chat-toolbar__title">AI Assistant</span>
-      <button class="ai-chat-toolbar__btn" @click="clearChat" title="清空对话">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="3 6 5 6 21 6" />
-          <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-        </svg>
-      </button>
+  <div v-if="mode === 'ball'" class="ai-ball" v-dragable @mousedown="onBallDown" @mouseup="onBallUp">
+    <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+      <path
+        d="M12 14h40a4 4 0 014 4v20a4 4 0 01-4 4H34l-9 8v-8h-13a4 4 0 01-4-4V18a4 4 0 014-4z"
+        fill="#fff" opacity=".9"
+      />
+      <circle cx="24" cy="28" r="2.5" fill="#7c3aed" />
+      <circle cx="32" cy="28" r="2.5" fill="#7c3aed" />
+      <circle cx="40" cy="28" r="2.5" fill="#7c3aed" />
+    </svg>
+  </div>
+
+  <div v-else class="ai-chat">
+    <div class="ai-chat-titlebar" v-dragable>
+      <div class="ai-chat-titlebar__actions">
+        <button class="ai-chat-titlebar__btn" @click.stop="showSettings = !showSettings" title="设置">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+          </svg>
+        </button>
+        <button class="ai-chat-titlebar__btn" @click.stop="clearChat" title="清空对话">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+          </svg>
+        </button>
+      </div>
+      <span class="ai-chat-titlebar__title">AI Assistant</span>
+      <div class="ai-chat-titlebar__actions">
+        <button class="ai-chat-titlebar__btn" @click.stop="collapseToBall" title="最小化">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
+        <button class="ai-chat-titlebar__btn ai-chat-titlebar__btn--close" @click.stop="closeWindow" title="关闭">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" />
+          </svg>
+        </button>
+      </div>
     </div>
 
     <div v-if="showSettings" class="ai-chat-settings">
@@ -109,7 +135,7 @@
 
 <script lang="ts" setup>
 import { ref, nextTick, onMounted, inject } from 'vue';
-import { System } from 'vtron';
+import { BrowserWindow, System, vDragable } from 'vtron';
 import { createDefaultToolRegistry } from './aiChatTools';
 
 interface ChatMessage {
@@ -129,9 +155,14 @@ interface ContentBlock {
 }
 
 const STORAGE_KEY = 'vtron-ai-chat-settings';
+const BALL_SIZE = 56;
+const CHAT_WIDTH = 400;
+const CHAT_HEIGHT = 560;
 
 const sys = inject<System>('system');
+const win = inject<BrowserWindow>('browserWindow');
 
+const mode = ref<'ball' | 'chat'>('ball');
 const messages = ref<ChatMessage[]>([]);
 const inputText = ref('');
 const isLoading = ref(false);
@@ -150,6 +181,45 @@ const inputRef = ref<HTMLTextAreaElement>();
 let abortController: AbortController | null = null;
 let apiHistory: any[] = [];
 const toolRegistry = createDefaultToolRegistry(sys);
+
+let ballDownPos = { x: 0, y: 0 };
+
+function onBallDown(e: MouseEvent) {
+  ballDownPos = { x: e.clientX, y: e.clientY };
+}
+
+function onBallUp(e: MouseEvent) {
+  const dx = Math.abs(e.clientX - ballDownPos.x);
+  const dy = Math.abs(e.clientY - ballDownPos.y);
+  if (dx < 5 && dy < 5) {
+    expandChat();
+  }
+}
+
+function expandChat() {
+  mode.value = 'chat';
+  if (win) {
+    win.setSize(CHAT_WIDTH, CHAT_HEIGHT);
+    win.windowInfo.radius = 12;
+    win.windowInfo.backgroundColor = '#ffffff';
+    win.windowInfo.resizable = true;
+  }
+}
+
+function collapseToBall() {
+  mode.value = 'ball';
+  showSettings.value = false;
+  if (win) {
+    win.setSize(BALL_SIZE, BALL_SIZE);
+    win.windowInfo.radius = BALL_SIZE / 2;
+    win.windowInfo.backgroundColor = '#ffffff00';
+    win.windowInfo.resizable = false;
+  }
+}
+
+function closeWindow() {
+  win?.close();
+}
 
 function loadSettings() {
   try {
@@ -480,12 +550,38 @@ async function callApi(maxDepth = 5) {
 onMounted(() => {
   loadSettings();
   if (!apiKey.value) {
-    showSettings.value = true;
+    nextTick(() => {
+      expandChat();
+      showSettings.value = true;
+    });
   }
 });
 </script>
 
 <style scoped>
+.ai-ball {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.45);
+  transition: transform 0.2s, box-shadow 0.2s;
+  user-select: none;
+}
+
+.ai-ball:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px rgba(124, 58, 237, 0.55);
+}
+
+.ai-ball:active {
+  transform: scale(0.95);
+}
+
 .ai-chat {
   display: flex;
   flex-direction: column;
@@ -495,27 +591,43 @@ onMounted(() => {
   font-size: 13px;
   color: #1a1a2e;
   overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid #e0e0e4;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
-.ai-chat-toolbar {
+.ai-chat-titlebar {
   display: flex;
   align-items: center;
   height: 40px;
-  padding: 0 8px;
+  padding: 0 6px;
   background: #fff;
   border-bottom: 1px solid #e8e8ec;
   flex-shrink: 0;
+  cursor: grab;
+  user-select: none;
 }
 
-.ai-chat-toolbar__title {
+.ai-chat-titlebar:active {
+  cursor: grabbing;
+}
+
+.ai-chat-titlebar__title {
   flex: 1;
   text-align: center;
   font-weight: 600;
   font-size: 13px;
   color: #1a1a2e;
+  pointer-events: none;
 }
 
-.ai-chat-toolbar__btn {
+.ai-chat-titlebar__actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.ai-chat-titlebar__btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -529,9 +641,14 @@ onMounted(() => {
   transition: all 0.15s;
 }
 
-.ai-chat-toolbar__btn:hover {
+.ai-chat-titlebar__btn:hover {
   background: #f3f4f6;
   color: #7c3aed;
+}
+
+.ai-chat-titlebar__btn--close:hover {
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 .ai-chat-settings {
@@ -571,6 +688,7 @@ onMounted(() => {
   color: #1a1a2e;
   outline: none;
   transition: border-color 0.15s;
+  box-sizing: border-box;
 }
 
 .ai-chat-settings__field input:focus {

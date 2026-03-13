@@ -3,7 +3,6 @@ import Browser from './apps/Browser.vue';
 // import ImageViewer from "./apps/ImageViewer.vue";
 import PdfViewer from './apps/PdfViewer.vue';
 // import MarkDown from "./apps/MarkDown.vue";
-import PPT from './apps/PPT.vue';
 import UrlBrowser from './apps/UrlBrowser.vue';
 
 import Version from './apps/Version.vue';
@@ -28,6 +27,9 @@ import xlsxIcon from './assets/xlsx.png';
 
 import DocxViewerVue from './apps/DocxViewer.vue';
 import ExeclViewerVue from './apps/ExeclViewer.vue';
+import ExcelEditorVue from './apps/ExcelEditor.vue';
+import WordEditorVue from './apps/WordEditor.vue';
+import PPTEditorVue from './apps/PPTEditor.vue';
 // import MusicStoreVue from './apps/MusicStore.vue';
 import MusicViewerVue from './apps/MusicViewer.vue';
 import PictureStoreVue from './apps/PictureStore.vue';
@@ -48,16 +50,17 @@ type VtronFeature =
   | 'ink'
   | 'mp3'
   | 'mp4'
-  | 'ppt'
   | 'term'
   | 'chrome'
-  | 'PPTist'
   | 'calc'
   | 'help'
   | 'music'
   | 'gallery'
   | 'store'
-  | 'ai';
+  | 'ai'
+  | 'excel'
+  | 'word'
+  | 'pptEditor';
 function vtronPlus(configIn?: { features: VtronFeature[] }) {
   const config = {
     features: configIn?.features || [
@@ -68,16 +71,17 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
       'ink',
       'mp3',
       'mp4',
-      'ppt',
       'term',
       'chrome',
-      'PPTist',
       'calc',
       'help',
       'music',
       'gallery',
       'store',
       'ai',
+      'excel',
+      'word',
+      'pptEditor',
     ],
   };
   return function vtronPlusPlugin(system: System) {
@@ -254,27 +258,6 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
           }).show();
         },
       });
-    config.features.includes('ppt') &&
-      system.registerFileOpener(['.ppt', '.pptx'], {
-        icon: pptxIcon,
-        func: async (path) => {
-          const content = (await system.fs.readFile(path)) || '';
-          new BrowserWindow({
-            title: path,
-            icon: ppticon,
-            width: 800,
-            height: 800,
-            resizable: true,
-            center: true,
-            content: PPT,
-            config: {
-              path: path,
-              content: content,
-            },
-          }).show();
-        },
-      });
-
     //#endregion
 
     /**------------------ 应用区--------------- */
@@ -349,18 +332,6 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
           content: Browser,
           frame: false,
           backgroundColor: '#ffffff00',
-        },
-      });
-    config.features.includes('PPTist') &&
-      system.addApp({
-        name: 'PPTist',
-        icon: ppticon,
-        window: {
-          width: 800,
-          height: 600,
-          icon: ppticon,
-          center: true,
-          content: PPT,
         },
       });
     config.features.includes('calc') &&
@@ -439,20 +410,119 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
         },
       });
 
+    config.features.includes('word') &&
+      system.registerFileOpener('.vtdoc', {
+        icon: docxIcon,
+        func: async (path) => {
+          new BrowserWindow({
+            title: path,
+            icon: docxIcon,
+            width: 900,
+            height: 700,
+            resizable: true,
+            center: true,
+            content: WordEditorVue,
+            config: { path },
+          }).show();
+        },
+      });
+
+    config.features.includes('word') &&
+      system.addApp({
+        name: 'Word',
+        icon: docxIcon,
+        window: {
+          title: 'Word',
+          width: 900,
+          height: 700,
+          icon: docxIcon,
+          center: true,
+          content: WordEditorVue,
+          resizable: true,
+        },
+      });
+
+    config.features.includes('pptEditor') &&
+      system.registerFileOpener('.vtppt', {
+        icon: pptxIcon,
+        func: async (path) => {
+          new BrowserWindow({
+            title: path,
+            icon: pptxIcon,
+            width: 1000,
+            height: 700,
+            resizable: true,
+            center: true,
+            content: PPTEditorVue,
+            config: { path },
+          }).show();
+        },
+      });
+
+    config.features.includes('pptEditor') &&
+      system.addApp({
+        name: 'PPT',
+        icon: pptxIcon,
+        window: {
+          title: 'PPT',
+          width: 1000,
+          height: 700,
+          icon: pptxIcon,
+          center: true,
+          content: PPTEditorVue,
+          resizable: true,
+        },
+      });
+
+    config.features.includes('excel') &&
+      system.registerFileOpener('.vtxls', {
+        icon: xlsxIcon,
+        func: async (path) => {
+          new BrowserWindow({
+            title: path,
+            icon: xlsxIcon,
+            width: 900,
+            height: 600,
+            resizable: true,
+            center: true,
+            content: ExcelEditorVue,
+            config: { path },
+          }).show();
+        },
+      });
+
+    config.features.includes('excel') &&
+      system.addApp({
+        name: 'Excel',
+        icon: xlsxIcon,
+        window: {
+          title: 'Excel',
+          width: 900,
+          height: 600,
+          icon: xlsxIcon,
+          center: true,
+          content: ExcelEditorVue,
+          resizable: true,
+        },
+      });
+
     config.features.includes('ai') &&
       system.addApp({
         name: 'AI Chat',
         icon: aiChatIcon,
         multiple: false,
         window: {
-          width: 420,
-          height: 580,
-          center: true,
+          width: 56,
+          height: 56,
           title: 'AI Assistant',
           icon: aiChatIcon,
           content: AiChat,
-          resizable: true,
+          frame: false,
+          backgroundColor: '#ffffff00',
+          radius: 28,
+          skipTaskbar: true,
           alwaysOnTop: true,
+          resizable: false,
         },
       });
 

@@ -110,6 +110,7 @@
 <script lang="ts" setup>
 import { ref, nextTick, onMounted, inject } from 'vue';
 import { System } from 'vtron';
+import { createDefaultToolRegistry } from './aiChatTools';
 
 interface ChatMessage {
   id: number;
@@ -148,6 +149,7 @@ const inputRef = ref<HTMLTextAreaElement>();
 
 let abortController: AbortController | null = null;
 let apiHistory: any[] = [];
+const toolRegistry = createDefaultToolRegistry(sys);
 
 function loadSettings() {
   try {
@@ -239,60 +241,6 @@ function stopGeneration() {
   isLoading.value = false;
 }
 
-function getAvailableApps(): { name: string; loc: string }[] {
-  if (!sys) return [];
-  const apps: { name: string; loc: string }[] = [];
-  const map = sys.stateManager.windowMap;
-  for (const loc of ['Desktop', 'Magnet', 'Menulist', 'Builtin'] as const) {
-    map[loc].forEach((_opt, name) => {
-      apps.push({ name, loc });
-    });
-  }
-  return apps;
-}
-
-function getTools() {
-  const apps = getAvailableApps();
-  const appNames = apps.map((a) => a.name);
-  if (appNames.length === 0) return [];
-  return [
-    {
-      name: 'open_app',
-      description: `Open an application window in the desktop. Available: ${appNames.join(', ')}`,
-      input_schema: {
-        type: 'object' as const,
-        properties: {
-          app_name: {
-            type: 'string',
-            description: 'The exact name of the application to open',
-            enum: appNames,
-          },
-        },
-        required: ['app_name'],
-      },
-    },
-  ];
-}
-
-function executeTool(name: string, input: any): string {
-  if (name === 'open_app') {
-    const appName = input.app_name;
-    const apps = getAvailableApps();
-    const found = apps.find((a) => a.name === appName);
-    if (!found || !sys) {
-      return `Application "${appName}" not found. Available: ${apps.map((a) => a.name).join(', ')}`;
-    }
-    const winopt = sys.stateManager.windowMap.get(found.loc as any, found.name);
-    if (winopt && winopt.type !== 'group') {
-      const win = sys.createWindow(winopt.window);
-      win.show();
-      return `Successfully opened "${appName}"`;
-    }
-    return `Could not open "${appName}"`;
-  }
-  return `Unknown tool "${name}"`;
-}
-
 function buildHeaders(): Record<string, string> {
   const isOfficialApi = baseUrl.value.includes('anthropic.com');
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -346,7 +294,7 @@ async function sendMessage() {
 async function callApi(maxDepth = 5) {
   for (let i = 0; i < maxDepth; i++) {
     const url = baseUrl.value.replace(/\/+$/, '') + '/v1/messages';
-    const tools = getTools();
+    const tools = toolRegistry.getToolDefinitions();
 
     const body: any = {
       model: model.value,
@@ -507,7 +455,7 @@ async function callApi(maxDepth = 5) {
         });
         scrollToBottom();
 
-        const result = executeTool(block.name, block.input);
+        const result = await toolRegistry.executeTool(block.name, block.input);
 
         messages.value.push({
           id: Date.now() + 1,

@@ -27,7 +27,6 @@ sys.mountEvent('messagecenter.show', () => {
 sys.mountEvent('messagecenter.hidden', () => {
   isPopShow.value = false;
 });
-
 </script>
 <style lang="scss" scoped>
 @import '@packages/assets/main.scss';
@@ -36,7 +35,7 @@ sys.mountEvent('messagecenter.hidden', () => {
   position: absolute;
   top: 0;
   right: 0;
-  width: 300px;
+  width: 310px;
   height: 100%;
   padding: 10px;
   z-index: 400;

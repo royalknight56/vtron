@@ -8,7 +8,7 @@
     </div>
     <div class="date-middle">
       <div class="week">
-        <div class="day" v-for="item in weeksPrefix" :key="item">
+        <div class="day" v-for="item in weekLabels" :key="item">
           <span>{{ item }}</span>
         </div>
       </div>
@@ -34,63 +34,59 @@
     </div>
     <div class="date-bottom">
       <div class="add-sch">
-        <div class="add-date">
-          在{{ today.year }}年{{ today.month }}月{{ month[chosen.weekIndex]?.[chosen.dayIndex] }}日添加日程
+        <div class="add-header">
+          <span class="add-label">{{ chosenDateLabel }}</span>
         </div>
-        <WinInput type="text" placeholder="输入日程或提醒内容" v-model="alertText" />
-        <div class="add-time">
-          在
-          <!-- 时 -->
+        <div class="add-form">
           <input
-            class="add-time-input"
-            type="number"
-            :max="24"
-            :min="0"
-            v-model="alertHour"
-            @blur="checkAlert()"
+            class="add-input"
+            type="text"
+            :placeholder="i18n('schedule.placeholder')"
+            v-model="alertText"
+            @keydown.enter="addAlert"
           />
-          时
-          <!-- 分 -->
-          <input
-            class="add-time-input"
-            type="number"
-            :max="60"
-            :min="0"
-            v-model="alertMin"
-            @blur="checkAlert()"
-          />
-          分 提醒
-
-          <WinButtonVue v-if="alertText !== ''" @click="addAlert">确认添加</WinButtonVue>
+          <input class="add-time" type="time" v-model="alertTimeStr" />
+          <button class="add-btn" @click="addAlert" :disabled="!alertText.trim()">
+            {{ i18n('schedule.add') }}
+          </button>
         </div>
       </div>
-      <div class="exist-sch">
-        <div class="no-sch" v-if="alertList.length <= 0">今日无日程</div>
-        <div class="sch-item" v-for="(item, index) in alertList" :key="item.text" @click="clickDetail(item)">
-          <span class="sch-time"
-            >{{ new Date(item.time).getHours() }}时{{ new Date(item.time).getMinutes() }}分：</span
-          >
-          <span class="sch-text">{{ item.text }}</span>
-
-          <WinButtonVue @click.stop="deleteAlert(index)">删除</WinButtonVue>
+      <div class="exist-sch scroll-bar">
+        <div class="no-sch" v-if="alertList.length <= 0">{{ i18n('schedule.no.selected') }}</div>
+        <div class="sch-item" v-for="(item, index) in alertList" :key="index" @click="clickDetail(item)">
+          <div class="sch-bar"></div>
+          <div class="sch-body">
+            <span class="sch-time">{{ formatNoteTime(item.time) }}</span>
+            <span class="sch-text">{{ item.text }}</span>
+          </div>
+          <span class="sch-del" @click.stop="deleteAlert(index)">×</span>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { inject, onMounted, onUnmounted, reactive, ref } from 'vue';
+import { inject, onMounted, onUnmounted, reactive, ref, computed } from 'vue';
 import { System } from '@packages/kernel';
-import { WinButtonVue, join, WinInput } from '@/packages/plug';
+import { join } from '@/packages/plug';
+import { i18n } from '@/packages/computer/i18n';
 
 import DateNote from '@/packages/computer/application/DateNote.vue';
 import { vGlowing } from '@/packages/computer/utils/glowingBorder';
 import { initAlertEvent } from '../../mount/initEventListener';
 
 const sys = inject<System>('system')!;
-const timeDisplay = ref(`00:00:00`);
-const dateDisplay = ref(`0000/00/00`);
-const weeksPrefix = ['日', '一', '二', '三', '四', '五', '六'];
+const timeDisplay = ref('00:00:00');
+const dateDisplay = ref('0000/00/00');
+const weekLabels = computed(() => [
+  i18n('week.sun'),
+  i18n('week.mon'),
+  i18n('week.tue'),
+  i18n('week.wed'),
+  i18n('week.thu'),
+  i18n('week.fri'),
+  i18n('week.sat'),
+]);
 const month = ref<Array<Array<string>>>([]);
 const date = new Date();
 const mFirstDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -108,31 +104,33 @@ const chosen = reactive({
   dayIndex: today.dayIndex,
 });
 
-// 选择日期
+const chosenDateLabel = computed(() => {
+  const dayStr = month.value[chosen.weekIndex]?.[chosen.dayIndex] || '';
+  return `${i18n('schedule.add.to')} ${today.year}/${today.month}/${dayStr}`;
+});
+
 function onDayClick(weekIndex: number, dayIndex: number) {
-  if (month.value[weekIndex][dayIndex] === '') {
-    return;
-  }
+  if (month.value[weekIndex][dayIndex] === '') return;
   chosen.weekIndex = weekIndex;
   chosen.dayIndex = dayIndex;
   readDateNotes();
 }
+
 function updateTime() {
-  const date = new Date();
-  const time = `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-  const dateStr = `${today.year}/${today.month}/${today.day}`;
-  timeDisplay.value = time;
-  dateDisplay.value = dateStr;
+  const d = new Date();
+  timeDisplay.value = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  dateDisplay.value = `${today.year}/${today.month}/${today.day}`;
 }
+
 const firstDay = new Date(today.year, today.month - 1, 1).getDay();
 const lastDay = new Date(today.year, today.month, 0).getDate();
 const weekNum = Math.ceil((firstDay + lastDay) / 7);
 let timer: any = null;
+
 onMounted(() => {
-  timer = setInterval(() => {
-    updateTime();
-  }, 500);
+  timer = setInterval(updateTime, 500);
   updateTime();
+  sys.mountEvent('schedule.change', onScheduleChange);
 
   for (let i = 0; i < weekNum; i++) {
     month.value[i] = [];
@@ -141,182 +139,143 @@ onMounted(() => {
     }
   }
   for (let i = 0; i < lastDay; i++) {
-    month.value[Math.floor((firstDay + i) / 7)][(firstDay + i) % 7] = `${i + 1}`;
-    readDateNotesAtDay(
-      new Date(
-        today.year,
-        today.month - 1,
-        parseInt(month.value[Math.floor((firstDay + i) / 7)][(firstDay + i) % 7])
-      )
-    ).then((notes) => {
+    const wi = Math.floor((firstDay + i) / 7);
+    const di = (firstDay + i) % 7;
+    month.value[wi][di] = `${i + 1}`;
+    readDateNotesAtDay(new Date(today.year, today.month - 1, i + 1)).then((notes) => {
       if (notes.length > 0) {
-        noteMap[Math.floor((firstDay + i) / 7)] = {
-          ...noteMap[Math.floor((firstDay + i) / 7)],
-          [(firstDay + i) % 7]: true,
-        };
+        noteMap[wi] = { ...noteMap[wi], [di]: true };
       }
     });
   }
   readDateNotes();
 });
+
 onUnmounted(() => {
   clearInterval(timer);
+  sys.offEvent('schedule.change', onScheduleChange);
 });
 
 function pad(num: number) {
   return num.toString().padStart(2, '0');
 }
 
-const alertText = ref('');
-const alertHour = ref(0);
-const alertMin = ref(0);
-function checkAlert() {
-  if (alertHour.value > 24) {
-    alertHour.value = 24;
-  }
-  if (alertHour.value < 0) {
-    alertHour.value = 0;
-  }
-  if (alertMin.value > 60) {
-    alertMin.value = 60;
-  }
-  if (alertMin.value < 0) {
-    alertMin.value = 0;
-  }
+function formatNoteTime(timestamp: number) {
+  const d = new Date(timestamp);
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
-// 添加日程
-async function addAlert() {
-  if (alertText.value === '') {
-    return;
-  }
-  if (alertHour.value > 24 || alertHour.value < 0 || alertMin.value > 60 || alertMin.value < 0) {
-    return;
-  }
-  const chosenDay = new Date(
+
+function schedulePath(d: Date) {
+  return join(
+    sys.stateManager.options.getOptions('userLocation') || '',
+    '/Schedule',
+    `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}.json`
+  );
+}
+
+function getChosenDate(hour = 0, minute = 0) {
+  return new Date(
     today.year,
     today.month - 1,
     parseInt(month.value[chosen.weekIndex][chosen.dayIndex]),
-    alertHour.value,
-    alertMin.value
+    hour,
+    minute
   );
-  const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
-  const alredyNotes = await sys.fs.readFile(
-    join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName)
-  );
-  if (alredyNotes) {
-    const notes = JSON.parse(alredyNotes);
-    notes.push({
-      text: alertText.value,
-      time: chosenDay.getTime(),
-    });
-    await sys.fs.writeFile(
-      join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName),
-      JSON.stringify(notes)
-    );
-  } else {
-    const notes = [
-      {
-        text: alertText.value,
-        time: chosenDay.getTime(),
-      },
-    ];
-    await sys.fs.writeFile(
-      join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName),
-      JSON.stringify(notes)
-    );
+}
+
+const alertText = ref('');
+const alertTimeStr = ref('09:00');
+
+async function addAlert() {
+  if (!alertText.value.trim()) return;
+  const [h, m] = alertTimeStr.value.split(':').map(Number);
+  const chosenDay = getChosenDate(h, m);
+  const filePath = schedulePath(chosenDay);
+
+  let notes: Array<{ text: string; time: number }> = [];
+  try {
+    const content = await sys.fs.readFile(filePath);
+    if (content) notes = JSON.parse(content);
+  } catch {
+    // file doesn't exist
   }
+
+  notes.push({ text: alertText.value, time: chosenDay.getTime() });
+  await sys.fs.writeFile(filePath, JSON.stringify(notes));
+
   initAlertEvent(sys);
   alertText.value = '';
-  alertHour.value = 0;
-  alertMin.value = 0;
-  if (noteMap[chosen.weekIndex]?.[chosen.dayIndex]) {
-    noteMap[chosen.weekIndex][chosen.dayIndex] = true;
-  }
+
+  noteMap[chosen.weekIndex] = { ...noteMap[chosen.weekIndex], [chosen.dayIndex]: true };
   readDateNotes();
+  sys.emitEvent('schedule.change');
 }
 
 async function deleteAlert(index: number) {
-  const chosenDay = new Date(
-    today.year,
-    today.month - 1,
-    parseInt(month.value[chosen.weekIndex]?.[chosen.dayIndex]),
-    alertHour.value,
-    alertMin.value
-  );
-  const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
-  const alredyNotes = await sys.fs.readFile(
-    join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName)
-  );
-  if (alredyNotes) {
-    const notes = JSON.parse(alredyNotes);
-    notes.splice(index, 1);
-    if (notes.length === 0) {
-      await sys.fs.unlink(
-        join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName)
-      );
-      noteMap[chosen.weekIndex][chosen.dayIndex] = false;
-    } else {
-      await sys.fs.writeFile(
-        join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName),
-        JSON.stringify(notes)
-      );
+  const chosenDay = getChosenDate();
+  const filePath = schedulePath(chosenDay);
+
+  try {
+    const content = await sys.fs.readFile(filePath);
+    if (content) {
+      const notes: Array<{ text: string; time: number }> = JSON.parse(content);
+      notes.splice(index, 1);
+      if (notes.length === 0) {
+        await sys.fs.unlink(filePath);
+        noteMap[chosen.weekIndex] = { ...noteMap[chosen.weekIndex], [chosen.dayIndex]: false };
+      } else {
+        await sys.fs.writeFile(filePath, JSON.stringify(notes));
+      }
     }
+  } catch {
+    // ignore
   }
   readDateNotes();
+  sys.emitEvent('schedule.change');
 }
 
-const alertList = ref<
-  Array<{
-    text: string;
-    time: number;
-  }>
->([]);
+const alertList = ref<Array<{ text: string; time: number }>>([]);
 
 async function readDateNotes() {
-  const list = await readDateNotesAtDay(
-    new Date(
-      today.year,
-      today.month - 1,
-      parseInt(month.value[chosen.weekIndex]?.[chosen.dayIndex]),
-      alertHour.value,
-      alertMin.value
-    )
-  );
-  alertList.value = list;
+  alertList.value = await readDateNotesAtDay(getChosenDate());
 }
-async function readDateNotesAtDay(chosenDay: Date) {
-  const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
-  const alredyNotes = await sys.fs.readFile(
-    join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName)
-  );
-  if (!alredyNotes) {
-    return [];
-  }
+
+async function readDateNotesAtDay(d: Date) {
   try {
-    return JSON.parse(alredyNotes);
-  } catch (error) {
-    return [];
+    const content = await sys.fs.readFile(schedulePath(d));
+    if (content) return JSON.parse(content);
+  } catch {
+    // ignore
+  }
+  return [];
+}
+
+function clickDetail(item: { text: string; time: number }) {
+  const win = sys.createWindow({
+    title: i18n('schedule.detail'),
+    content: DateNote,
+    config: { text: item.text, time: item.time },
+    width: 320,
+    height: 260,
+    center: true,
+    resizable: false,
+  });
+  win.show();
+}
+
+function refreshNoteMap() {
+  for (let i = 0; i < lastDay; i++) {
+    const wi = Math.floor((firstDay + i) / 7);
+    const di = (firstDay + i) % 7;
+    readDateNotesAtDay(new Date(today.year, today.month - 1, i + 1)).then((notes) => {
+      noteMap[wi] = { ...noteMap[wi], [di]: notes.length > 0 };
+    });
   }
 }
-const win = sys.createWindow({
-  title: '日程详情',
-  content: DateNote,
-  width: 300,
-  height: 200,
-});
-/** 点击日程，打开详情 */
-function clickDetail(item: { text: string; time: number }) {
-  const chosenDay = new Date(
-    today.year,
-    today.month - 1,
-    parseInt(month.value[chosen.weekIndex]?.[chosen.dayIndex])
-  );
-  win.config = {
-    text: item.text,
-    day: chosenDay,
-    time: item.time,
-  };
-  win.show();
+
+function onScheduleChange() {
+  readDateNotes();
+  refreshNoteMap();
 }
 </script>
 <style lang="scss" scoped>
@@ -326,42 +285,46 @@ function clickDetail(item: { text: string; time: number }) {
   right: 0;
   width: 320px;
   height: 600px;
-  background-color: var(--color-gray-dark-op9);
-  border: 1px solid rgba(0, 0, 0, 0.19);
+  background-color: #ededed;
+  border: 1px solid #9c9c9c;
   user-select: none;
   box-sizing: border-box;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+
   .date-up {
     width: 100%;
-    height: 70px;
-    padding: 20px;
-    margin-bottom: 20px;
+    padding: 16px 20px;
     box-sizing: border-box;
+
     .date-time {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
+
       .time {
         font-size: 30px;
         font-weight: 300;
       }
+
       .date {
         font-size: 12px;
         font-weight: 400;
+        margin-top: 2px;
       }
     }
   }
+
   .date-middle {
-    height: min-content;
-    padding-top: 10px;
-    padding: 10px 8px;
-    border-top: 1px solid rgba(0, 0, 0, 0.19);
+    padding: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+
     .week {
       width: 100%;
       height: 24px;
       display: flex;
-      margin: 1px 0px;
+      margin: 1px 0;
+
       .day {
         position: relative;
         width: 14.28%;
@@ -369,24 +332,23 @@ function clickDetail(item: { text: string; time: number }) {
         display: flex;
         align-items: center;
         justify-content: center;
+
         span {
           font-size: 12px;
           font-weight: 500;
         }
       }
     }
+
     .month {
       width: 100%;
-      // height: 390px;
       display: flex;
       flex-direction: column;
+
       .week {
-        width: 100%;
-        height: 42px;
-        display: flex;
+        height: 40px;
+
         .day {
-          // width: 14.28%;
-          // height: 100%;
           height: 100%;
           display: flex;
           align-items: center;
@@ -394,120 +356,209 @@ function clickDetail(item: { text: string; time: number }) {
           border: 3px solid transparent;
           transition: all 0.1s;
           box-sizing: border-box;
+
           span {
             font-size: 12px;
             font-weight: 400;
           }
         }
+
         .day:hover {
-          // background-color: #e6e6e6;
           user-select: none;
           border: 3px solid var(--color-gray-active);
         }
+
         .invday:hover {
           border: 3px solid transparent;
         }
+
         .istoday {
           background-color: var(--color-gray-op9);
         }
+
         .istoday.chosen {
           box-shadow: inset 0 0 0px 3px var(--color-dark-hover);
           border: 3px solid white;
         }
+
         .istoday.chosen:hover {
           border: 3px solid var(--color-gray-active);
         }
+
         .chosen {
           border: 3px solid rgba(77, 77, 77, 0.7);
         }
+
         .chosen:hover {
           border: 3px solid var(--color-dark-hover);
         }
+
         .haveNote {
           background-color: rgba(106, 194, 253, 0.167);
         }
       }
     }
   }
-  .date-note {
-    border: 1px solid rgba(0, 0, 0, 0.19);
-  }
+
   .date-bottom {
-    margin-top: 10px;
-    // padding: 0 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+
     .add-sch {
-      padding-left: 10px;
-      .add-date {
-        font-size: 12px;
-        font-weight: 400;
-        margin-bottom: 10px;
-      }
-      .add-time {
-        font-size: 12px;
-        font-weight: 400;
-        margin-bottom: 10px;
-        input {
-          width: 30px;
-          height: 20px;
+      padding: 8px 12px;
+
+      .add-header {
+        margin-bottom: 6px;
+
+        .add-label {
           font-size: 12px;
-          font-weight: 400;
-          text-align: center;
-          margin: 5px 5px;
+          color: #666;
+        }
+      }
+
+      .add-form {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+
+        .add-input {
+          flex: 1;
+          font-size: 12px;
+          padding: 5px 8px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
           outline: none;
+          background: #fff;
+          font-family: inherit;
+
+          &:focus {
+            border-color: var(--color-blue, #0078d7);
+          }
+        }
+
+        .add-time {
+          width: 80px;
+          font-size: 12px;
+          padding: 4px 4px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          outline: none;
+          background: #fff;
+          font-family: inherit;
+
+          &:focus {
+            border-color: var(--color-blue, #0078d7);
+          }
+        }
+
+        .add-btn {
+          padding: 5px 10px;
+          font-size: 12px;
+          border: none;
+          border-radius: 3px;
+          background: var(--color-blue, #0078d7);
+          color: #fff;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: opacity 0.15s;
+
+          &:hover:not(:disabled) {
+            opacity: 0.85;
+          }
+
+          &:disabled {
+            opacity: 0.4;
+            cursor: default;
+          }
         }
       }
     }
+
     .exist-sch {
-      height: 130px;
+      flex: 1;
       overflow-y: auto;
-      margin-top: 10px;
+      padding: 0 4px 8px;
+
       .no-sch {
-        padding-top: 30px;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 20px 0;
+        font-size: 12px;
+        color: #999;
       }
 
       .sch-item {
         position: relative;
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-        padding: 4px;
-        padding-left: 10px;
+        padding: 6px 8px;
+        margin: 2px 0;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.12s;
 
-        .sch-text {
-          font-size: 12px;
-          font-weight: 400;
-          padding-right: 20px;
-          width: 90px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+        &:hover {
+          background-color: var(--color-gray-op9);
         }
-        .sch-time {
-          font-size: 12px;
-          font-weight: 200;
-          padding-right: 2px;
-          width: 68px;
-        }
-      }
-      .sch-item::after {
-        position: absolute;
-        left: 0;
-        content: '';
-        display: block;
-        width: 4px;
-        height: 80%;
-        background-color: rgb(0, 115, 255);
-        transition: all 0.1s;
-      }
 
-      .sch-item:hover {
-        background-color: var(--color-gray-op9);
-      }
-      .sch-item:hover::after {
-        height: 100%;
+        .sch-bar {
+          width: 3px;
+          height: 100%;
+          min-height: 28px;
+          border-radius: 2px;
+          background: var(--color-blue, #0078d7);
+          flex-shrink: 0;
+          margin-right: 8px;
+          transition: background 0.12s;
+        }
+
+        .sch-body {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 1px;
+
+          .sch-time {
+            font-size: 11px;
+            color: #888;
+          }
+
+          .sch-text {
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+
+        .sch-del {
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          border-radius: 3px;
+          flex-shrink: 0;
+          opacity: 0;
+          cursor: pointer;
+          color: #888;
+          transition: opacity 0.12s, background 0.12s;
+
+          &:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: #d00;
+          }
+        }
+
+        &:hover .sch-del {
+          opacity: 1;
+        }
       }
     }
   }
@@ -516,6 +567,7 @@ function clickDetail(item: { text: string; time: number }) {
 .fade-enter-active {
   transition: all 0.4s var(--aniline);
 }
+
 .fade-leave-active {
   transition: all 0.2s;
 }

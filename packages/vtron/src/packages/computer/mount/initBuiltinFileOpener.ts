@@ -222,13 +222,13 @@ export function initBuiltinFileOpener(system: System) {
     const networkT = system.createTray({
       image: NetWorkVue,
     });
-    networkT.setContextMenu(NetworkPopVue, 200, 80);
+    networkT.setContextMenu(NetworkPopVue, 240, 150);
   }
 
   if (system._options.builtinFeature?.includes('BatteryTray')) {
     const batteryT = system.createTray({
       image: BatteryVue,
     });
-    batteryT.setContextMenu(BatteryPopVue, 200, 80);
+    batteryT.setContextMenu(BatteryPopVue, 240, 170);
   }
 }

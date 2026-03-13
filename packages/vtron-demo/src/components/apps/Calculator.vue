@@ -48,7 +48,7 @@
   </div>
 </template>
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, inject } from 'vue';
 
 class Calculations {
   static doMath = (currentResult = null, value = null, operator = null) => {

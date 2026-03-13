@@ -38,6 +38,8 @@ import ZipBackupVue from './apps/ZipBackup.vue';
 import audioIcon from './assets/audio.png';
 import videoIcon from './assets/video.png';
 import AppStore from './apps/AppStore.vue';
+import AiChat from './apps/AiChat.vue';
+import aiChatIcon from './assets/ai-chat.svg';
 type VtronFeature =
   | 'doc'
   | 'xls'
@@ -54,7 +56,8 @@ type VtronFeature =
   | 'help'
   | 'music'
   | 'gallery'
-  | 'store';
+  | 'store'
+  | 'ai';
 function vtronPlus(configIn?: { features: VtronFeature[] }) {
   const config = {
     features: configIn?.features || [
@@ -74,6 +77,7 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
       'music',
       'gallery',
       'store',
+      'ai',
     ],
   };
   return function vtronPlusPlugin(system: System) {
@@ -432,6 +436,23 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
           config: {
             path: '/',
           },
+        },
+      });
+
+    config.features.includes('ai') &&
+      system.addApp({
+        name: 'AI Chat',
+        icon: aiChatIcon,
+        multiple: false,
+        window: {
+          width: 420,
+          height: 580,
+          center: true,
+          title: 'AI Assistant',
+          icon: aiChatIcon,
+          content: AiChat,
+          resizable: true,
+          alwaysOnTop: true,
         },
       });
 

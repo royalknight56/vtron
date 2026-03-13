@@ -1,31 +1,39 @@
 <template>
   <div class="soft-keyboard" @mousedown="handleMouseDown">
-          <!-- handle -->
+    <!-- handle -->
     <div class="keyboard-handle" v-dragable>
-        <i class="fas fa-hand-pointer">↔</i>
-        <!-- close -->
-        <div class="close" @click="close">
-            <i class="fas fa-times">×</i>
-        </div>
+      <i class="fas fa-hand-pointer">↔</i>
+      <!-- close -->
+      <div class="close" @click="close">
+        <i class="fas fa-times">×</i>
+      </div>
     </div>
     <div class="keyboard-container">
       <div class="keyboard-row">
-        <button v-for="key in row1" :key="key" @mousedown="handleKeyPress(key, $event)" class="keyboard-key">{{ key }}</button>
+        <button v-for="key in row1" :key="key" @mousedown="handleKeyPress(key, $event)" class="keyboard-key">
+          {{ key }}
+        </button>
       </div>
       <div class="keyboard-row">
-        <button v-for="key in row2" :key="key" @mousedown="handleKeyPress(key, $event)" class="keyboard-key">{{ key }}</button>
+        <button v-for="key in row2" :key="key" @mousedown="handleKeyPress(key, $event)" class="keyboard-key">
+          {{ key }}
+        </button>
       </div>
       <div class="keyboard-row">
         <button class="keyboard-key shift" @mousedown="toggleShift($event)">
           <i class="fas fa-arrow-up">⇧</i>
         </button>
-        <button v-for="key in row3" :key="key" @mousedown="handleKeyPress(key, $event)" class="keyboard-key">{{ key }}</button>
+        <button v-for="key in row3" :key="key" @mousedown="handleKeyPress(key, $event)" class="keyboard-key">
+          {{ key }}
+        </button>
         <button class="keyboard-key backspace" @mousedown="handleBackspace($event)">
           <i class="fas fa-backspace">⌫</i>
         </button>
       </div>
       <div class="keyboard-row">
-        <button class="keyboard-key" @mousedown="toggleSymbols($event)">{{ isSymbolMode ? 'ABC' : '?123' }}</button>
+        <button class="keyboard-key" @mousedown="toggleSymbols($event)">
+          {{ isSymbolMode ? 'ABC' : '?123' }}
+        </button>
         <button class="keyboard-key space" @mousedown="handleKeyPress(' ', $event)">空格</button>
         <button class="keyboard-key enter" @mousedown="handleEnter($event)">回车</button>
       </div>
@@ -34,19 +42,22 @@
 </template>
 
 <script lang="ts" setup>
-import { BrowserWindow,vDragable } from 'vtron';
+import { BrowserWindow, vDragable } from 'vtron';
 import { ref, computed, onMounted, onUnmounted, inject } from 'vue';
 
 const browserWindow = inject<BrowserWindow>('browserWindow');
+
+console.log(browserWindow);
+
 const props = defineProps({
   onInput: {
     type: Function,
-    default: () => {}
+    default: () => {},
   },
   onEnter: {
     type: Function,
-    default: () => {}
-  }
+    default: () => {},
+  },
 });
 
 const isShiftActive = ref(false);
@@ -57,20 +68,20 @@ let activeElement: HTMLElement | null = null;
 const lettersLower = {
   row1: ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   row2: ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-  row3: ['z', 'x', 'c', 'v', 'b', 'n', 'm']
+  row3: ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
 };
 
 const lettersUpper = {
   row1: ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
   row2: ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-  row3: ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
+  row3: ['Z', 'X', 'C', 'V', 'B', 'N', 'M'],
 };
 
 // 符号键盘布局
 const symbols = {
   row1: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
   row2: ['@', '#', '$', '%', '&', '*', '-', '+', '(', ')'],
-  row3: ['!', '"', '\'', ':', ';', '/', '?', ',', '.']
+  row3: ['!', '"', "'", ':', ';', '/', '?', ',', '.'],
 };
 
 const row1 = computed(() => {
@@ -90,10 +101,12 @@ const row3 = computed(() => {
 
 // 监听焦点变化，记录当前活动元素
 function handleFocusIn(e: FocusEvent) {
-  if (e.target instanceof HTMLElement && 
-      (e.target.tagName === 'INPUT' || 
-       e.target.tagName === 'TEXTAREA' || 
-       e.target.getAttribute('contenteditable') === 'true')) {
+  if (
+    e.target instanceof HTMLElement &&
+    (e.target.tagName === 'INPUT' ||
+      e.target.tagName === 'TEXTAREA' ||
+      e.target.getAttribute('contenteditable') === 'true')
+  ) {
     activeElement = e.target;
   }
 }
@@ -105,20 +118,20 @@ function handleMouseDown(event: MouseEvent) {
 // 模拟键盘输入
 function simulateKeyInput(key: string) {
   if (!activeElement) return;
-  
+
   if (key === 'Backspace') {
     // 处理退格键
     if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
       const input = activeElement as HTMLInputElement | HTMLTextAreaElement;
       const start = input.selectionStart || 0;
       const end = input.selectionEnd || 0;
-      
+
       if (start === end && start > 0) {
         // 没有选中文本，删除前一个字符
         const value = input.value;
         input.value = value.substring(0, start - 1) + value.substring(end);
         input.selectionStart = input.selectionEnd = start - 1;
-        
+
         // 触发input事件
         const event = new Event('input', { bubbles: true });
         input.dispatchEvent(event);
@@ -127,7 +140,7 @@ function simulateKeyInput(key: string) {
         const value = input.value;
         input.value = value.substring(0, start) + value.substring(end);
         input.selectionStart = input.selectionEnd = start;
-        
+
         // 触发input事件
         const event = new Event('input', { bubbles: true });
         input.dispatchEvent(event);
@@ -142,8 +155,10 @@ function simulateKeyInput(key: string) {
       document.execCommand('insertLineBreak');
     } else if (activeElement.tagName === 'INPUT') {
       // 对于input元素，可以触发表单提交或模拟Tab键
-      if ("form" in activeElement) {
-        (activeElement as unknown as HTMLFormElement).form?.dispatchEvent(new Event('submit', { bubbles: true }));
+      if ('form' in activeElement) {
+        (activeElement as unknown as HTMLFormElement).form?.dispatchEvent(
+          new Event('submit', { bubbles: true })
+        );
       }
     }
   } else {
@@ -152,12 +167,12 @@ function simulateKeyInput(key: string) {
       const input = activeElement as HTMLInputElement | HTMLTextAreaElement;
       const start = input.selectionStart || 0;
       const end = input.selectionEnd || 0;
-      
+
       // 替换选中文本或插入字符
       const value = input.value;
       input.value = value.substring(0, start) + key + value.substring(end);
       input.selectionStart = input.selectionEnd = start + key.length;
-      
+
       // 触发input事件
       const event = new Event('input', { bubbles: true });
       input.dispatchEvent(event);
@@ -171,7 +186,7 @@ function simulateKeyInput(key: string) {
 function handleKeyPress(key: string, event: MouseEvent) {
   event.preventDefault(); // 阻止默认行为
   simulateKeyInput(key);
-  
+
   if (isShiftActive.value && !isSymbolMode.value) {
     isShiftActive.value = false;
   }
@@ -263,7 +278,7 @@ onUnmounted(() => {
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
-  
+
   &:active {
     background-color: rgba(220, 220, 220, 0.8);
     transform: translateY(1px);
@@ -271,7 +286,8 @@ onUnmounted(() => {
   }
 }
 
-.shift, .backspace {
+.shift,
+.backspace {
   min-width: 50px;
 }
 
@@ -282,9 +298,9 @@ onUnmounted(() => {
 
 .enter {
   min-width: 70px;
-//   background-color: rgba(74, 144, 226, 0.8);
-//   color: white;
-  
+  //   background-color: rgba(74, 144, 226, 0.8);
+  //   color: white;
+
   &:active {
     // background-color: rgba(58, 128, 210, 0.9);
   }
@@ -306,7 +322,7 @@ onUnmounted(() => {
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px 10px 0 0;
-  .close{
+  .close {
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -327,11 +343,9 @@ onUnmounted(() => {
   cursor: pointer;
   opacity: 0.7;
   transition: opacity 0.2s ease;
-  
+
   &:hover {
     opacity: 1;
   }
-
 }
-
 </style>

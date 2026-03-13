@@ -243,7 +243,7 @@ class VtronFileSystem implements VtronFileInterface {
       [K in keyof VtronFileInterface]-?: VtronFileInterface[K] extends (...args: any) => any ? K : never;
     }[keyof VtronFileInterface] &
       keyof VtronFileInterface,
-  >(volume: VtronFileInterface, opt: T, ...args: Parameters<Required<VtronFileInterface>[T] & ((...args: any) => any)>) {
+  >(volume: VtronFileInterface, opt: T, ...args: any[]) {
     return (volume[opt] as (...args: any) => any)(...args);
   }
 

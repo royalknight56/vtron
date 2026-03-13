@@ -1,6 +1,6 @@
 {
   "name": "vtron",
-  "version": "0.7.9",
+  "version": "0.8.0",
   "description": "A Vue 3 component library",
   "files": [
     "distlib",

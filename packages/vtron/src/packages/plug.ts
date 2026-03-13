@@ -11,6 +11,7 @@ export { i18n } from '@/packages/computer/i18n';
 export { vDragable } from '@/packages/computer/layout/windowGroup/MakeDragable';
 export type { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 export * from '@/packages/kernel/file/FileSystem';
+export * from '@/packages/kernel/file/MemoryFileSystem';
 export * from '@/packages/kernel/shell/Shell';
 export type { ShellInterface } from '@/packages/kernel/shell/ShellType';
 export { System } from '@/packages/kernel/system';

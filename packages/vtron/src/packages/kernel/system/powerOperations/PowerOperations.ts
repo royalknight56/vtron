@@ -46,7 +46,6 @@ export class PowerOperations {
   }
   recover() {
     this.system.fs.removeFileSystem();
-    localStorage.removeItem('vtronFirstRun' + this.system.id);
     localStorage.removeItem('vtron-username');
     localStorage.removeItem('vtron-password');
     localStorage.removeItem('vtronCommandHistory');

@@ -84,6 +84,7 @@ export const zhCN = {
   permission: '权限',
   'modification.time': '修改时间',
   'creation.time': '创建时间',
+  'fs.type': '文件系统',
 
   'large.icon': '大图标',
   'middle.icon': '中图标',

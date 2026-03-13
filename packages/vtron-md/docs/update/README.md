@@ -1,5 +1,14 @@
 # 更新日志
 
+## 0.8.0
+
++ 新增 `VtronMemoryFileSystem`，基于内存的文件系统实现，适用于无需持久化的场景
++ 文件系统接口 `VtronFileInterface` 新增 `isFirstRun` 属性
++ `isFirstRun` 判断逻辑从 System（localStorage）移至文件系统内部：
+  - `VtronFileSystem`（IndexedDB）：数据库首次创建时为 `true`
+  - `VtronMemoryFileSystem`（内存）：始终为 `true`
++ 移除 System 中 `vtronFirstRun` 相关的 localStorage 依赖
+
 ## 0.7.7
 
 + 可以隐藏内置的设置页面

@@ -1,6 +1,8 @@
 import type { VtronFile, VtronFileWithoutContent } from '@/packages/kernel/file/FileSystem';
 
 export interface VtronFileInterface {
+  readonly name: string;
+  isFirstRun: boolean;
   whenReady: () => Promise<VtronFileInterface>;
   readFile: (path: string) => Promise<string | null>;
   writeFile: (
@@ -25,6 +27,7 @@ export interface VtronFileInterface {
   serializeFileSystem: () => Promise<unknown>;
   deserializeFileSystem: (files: VtronFile[]) => Promise<unknown>;
   removeFileSystem: () => Promise<void>;
+  mountVolume?: (path: string, volume: VtronFileInterface) => void;
   registerWatcher: (path: RegExp, callback: (path: string, content: string) => void) => void;
   on: (event: 'error', callback: (err: string) => void) => void;
 }

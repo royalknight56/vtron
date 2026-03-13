@@ -45,8 +45,11 @@ export class System {
   private _ready: ((value: System) => void) | null = null;
   private _error: ((reason: unknown) => void) | null = null;
   version = version;
-  isFirstRun = true;
   rootRef: HTMLElement | undefined = undefined;
+
+  get isFirstRun() {
+    return this.fs.isFirstRun;
+  }
 
   get fs() {
     return this.fileSystemOperations.fs;
@@ -93,9 +96,6 @@ export class System {
 
     logger('initSystem');
     this.initSystem();
-
-    logger('firstRun');
-    this.firstRun();
   }
   activeCurrentSystem() {
     System.GLOBAL_SYSTEM = this;
@@ -120,6 +120,10 @@ export class System {
 
     logger('initFileSystem');
     await this.fileSystemOperations.initFileSystem(); // 初始化文件系统
+
+    logger('firstRun');
+    this.firstRun();
+
     logger('initSavedConfig');
     await this.configOperations.initSavedConfig(); // 初始化保存的配置
     logger('isLogin');
@@ -194,15 +198,10 @@ export class System {
     });
   }
   firstRun() {
-    if (localStorage.getItem('vtronFirstRun' + this.id)) {
-      this.isFirstRun = false;
-      return false;
-    } else {
-      this.isFirstRun = true;
-      localStorage.setItem('vtronFirstRun' + this.id, 'true');
+    if (this.fs.isFirstRun) {
       this.emit('firstRun');
-      return true;
     }
+    return this.fs.isFirstRun;
   }
 
   shutdown: PowerOperations['shutdown'] = () => {

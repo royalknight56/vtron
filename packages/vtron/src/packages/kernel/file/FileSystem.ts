@@ -113,7 +113,9 @@ class VtronFileSystem implements VtronFileInterface {
   private _watchMap: Map<RegExp, (path: string, content: string) => void> = new Map();
 
   private volumeMap: Map<string, VtronFileInterface> = new Map();
+  readonly name = 'IndexedDB';
   id = 0;
+  isFirstRun = false;
   onerror: (e: any) => void = (e) => {
     console.error('Failed to open database', e);
   };
@@ -130,6 +132,7 @@ class VtronFileSystem implements VtronFileInterface {
     };
 
     request.onupgradeneeded = () => {
+      this.isFirstRun = true;
       this.db = request.result;
       const objectStore = this.db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
       objectStore.createIndex('parentPath', 'parentPath');
@@ -235,14 +238,13 @@ class VtronFileSystem implements VtronFileInterface {
   /**
    * 使用对应的卷的文件系统
    */
-  beforeGuard<T extends keyof VtronFileInterface>(
-    volume: VtronFileInterface,
-    opt: T,
-    ...args: Parameters<VtronFileInterface[T]>
-  ) {
-    return (volume[opt] as (...args: Parameters<VtronFileInterface[T]>) => ReturnType<VtronFileInterface[T]>)(
-      ...args
-    );
+  beforeGuard<
+    T extends {
+      [K in keyof VtronFileInterface]-?: VtronFileInterface[K] extends (...args: any) => any ? K : never;
+    }[keyof VtronFileInterface] &
+      keyof VtronFileInterface,
+  >(volume: VtronFileInterface, opt: T, ...args: Parameters<Required<VtronFileInterface>[T] & ((...args: any) => any)>) {
+    return (volume[opt] as (...args: any) => any)(...args);
   }
 
   /**

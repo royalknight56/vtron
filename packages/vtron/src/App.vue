@@ -17,10 +17,10 @@ import TestButton from './apps/TestButton.vue';
 import VtronTest from './apps/VtronTest.vue';
 import VtronPerfTest from './apps/VtronPerfTest.vue';
 import TestUiButton from './apps/TestUiButton.vue';
-import { System, VtronFile, VtronComputer } from './packages/plug';
+import { System, VtronFile, VtronComputer, VtronMemoryFileSystem } from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 import { Tray, Menu } from '@/packages/services';
-
+const fs = new VtronMemoryFileSystem('/');
 const sys = new System({
   // lang: 'en-US',
   id: 0,
@@ -28,10 +28,11 @@ const sys = new System({
   logo: vtronLogoIcon,
   // background: 'https://picsum.photos/1920/1080',
 
+  fs,
   // shell: new TestShell(),
   desktop: [
     {
-      name: '测试2',
+      name: '测试23232342',
       // icon: testicon,
       window: {
         content: TestButton,
@@ -307,6 +308,9 @@ sys.whenReady().then((readySys) => {
 
   // sys.mountVolume('/D', new VtronFileSystem('/D', '2'));
   sys.mountVolume('/D', {
+    isFirstRun: false,
+    name: 'exist',
+    // mountVolume(path, volume) {},
     whenReady: async () => {
       return memoryFs as any;
     },

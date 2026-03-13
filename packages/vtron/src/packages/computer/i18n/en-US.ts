@@ -83,6 +83,7 @@ export const enUS: AllText = {
   permission: 'Permission',
   'modification.time': 'Modification Time',
   'creation.time': 'Creation Time',
+  'fs.type': 'File System',
   'large.icon': 'Large Icon',
   'middle.icon': 'Middle Icon',
   'small.icon': 'Small Icon',

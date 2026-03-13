@@ -132,12 +132,25 @@ export class AppOperations {
     this.refershApp();
   }
 
-  private addWindowSysLink(
+  private async addWindowSysLink(
     loc: 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin',
     options: WinAppOptions,
     force = false
   ) {
-    if (this.system.isFirstRun || force) {
+    if (options.type === 'group') {
+      options.group?.forEach((item) => {
+        this.system.stateManager.windowMap.set('Group', item.name, item);
+      });
+    } else {
+      // TODO: 当content是string的时候
+      if (typeof options.window.content !== 'string') {
+        options.window.content = markRaw(options.window.content);
+      }
+      this.system.stateManager.windowMap.set(loc, options.name, options);
+    }
+
+    await this.system.fs.whenReady();
+    if (this.system.fs.isFirstRun || force) {
       if (options.type === 'group') {
         this.system.fs.writeFile(
           `${this.system._options.userLocation}${loc}/` + options.name + '.group',
@@ -151,18 +164,6 @@ export class AppOperations {
       }
     } else {
       this.refershApp();
-    }
-
-    if (options.type === 'group') {
-      options.group?.forEach((item) => {
-        this.system.stateManager.windowMap.set('Group', item.name, item);
-      });
-    } else {
-      // TODO: 当content是string的时候
-      if (typeof options.window.content !== 'string') {
-        options.window.content = markRaw(options.window.content);
-      }
-      this.system.stateManager.windowMap.set(loc, options.name, options);
     }
   }
 }

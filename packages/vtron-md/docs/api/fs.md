@@ -1,8 +1,38 @@
 # fs
 
-fs 是用于在浏览器端进行文件操作的库，使用了类似于node fs的接口，文件保存在内部的indexedDB中。保存时间和大小相较于localStorage都有明显的提升
+fs 是用于在浏览器端进行文件操作的库，使用了类似于 node fs 的接口。vtron 提供了两种文件系统实现：
 
-在应用中 fs需要等待system完成初始化工作之后才能使用，所以，在new System的运行帧中，fs是不可用的。可以调用system.whenReady()来等待system初始化完成。
+- **VtronFileSystem**：基于 IndexedDB，数据持久化保存，页面刷新后数据不丢失。
+- **VtronMemoryFileSystem**：基于内存（Map），数据不持久化，页面刷新后数据丢失，适用于无需持久化的场景，或服务端渲染等无 IndexedDB 环境。
+
+在应用中 fs 需要等待 system 完成初始化工作之后才能使用，所以，在 new System 的运行帧中，fs 是不可用的。可以调用 system.whenReady() 来等待 system 初始化完成。
+
+## 使用方式
+
+默认使用 `VtronFileSystem`（IndexedDB），如需使用内存文件系统，通过 System 配置项传入：
+
+```typescript
+import { System, VtronMemoryFileSystem } from 'vtron';
+
+const system = new System({
+  fs: new VtronMemoryFileSystem('/'),
+});
+```
+
+## isFirstRun
+
+文件系统提供 `isFirstRun` 属性，用于判断是否为首次运行：
+
+- **VtronFileSystem**：当 IndexedDB 数据库首次创建时为 `true`，已存在数据库时为 `false`。
+- **VtronMemoryFileSystem**：始终为 `true`，因为内存无持久化，每次启动都视为首次运行。
+
+```typescript
+system.whenReady().then(() => {
+  console.log(system.fs.isFirstRun); // true or false
+});
+```
+
+## 类型定义
 
 ```typescript
 class VtronFileInfo {
@@ -28,6 +58,36 @@ class VtronFile {
   parentPath: string;
   content: string;
   constructor(path: string, content: string, info: Partial<VtronFileInfo>);
+}
+```
+
+## VtronFileInterface
+
+所有文件系统实现均需实现此接口：
+
+```typescript
+interface VtronFileInterface {
+  isFirstRun: boolean;
+  whenReady: () => Promise<VtronFileInterface>;
+  readFile: (path: string) => Promise<string | null>;
+  writeFile: (path: string, data: string, opt?: { flag?: 'w' | 'a' | 'wx' }) => Promise<void>;
+  appendFile: (path: string, content: string) => Promise<void>;
+  readdir: (path: string) => Promise<VtronFileWithoutContent[]>;
+  exists: (path: string) => Promise<boolean>;
+  stat: (path: string) => Promise<VtronFileWithoutContent | null>;
+  unlink: (path: string) => Promise<void>;
+  rename: (oldPath: string, newPath: string) => Promise<void>;
+  rm: (path: string) => Promise<void>;
+  rmdir: (path: string) => Promise<void>;
+  mkdir: (path: string) => Promise<void>;
+  copyFile: (src: string, dest: string) => Promise<void>;
+  chmod: (path: string, mode: number) => Promise<void>;
+  search: (keyword: string) => Promise<VtronFileWithoutContent[]>;
+  serializeFileSystem: () => Promise<unknown>;
+  deserializeFileSystem: (files: VtronFile[]) => Promise<unknown>;
+  removeFileSystem: () => Promise<void>;
+  registerWatcher: (path: RegExp, callback: (path: string, content: string) => void) => void;
+  on: (event: 'error', callback: (err: string) => void) => void;
 }
 ```
 

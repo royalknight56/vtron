@@ -46,6 +46,12 @@
         <div class="propname">{{ i18n('modification.time') }}：</div>
         <div class="propvalue">{{ file?.mtime?.toLocaleString?.() || '' }}</div>
       </div>
+
+      <div class="split-line"></div>
+      <div class="propitem">
+        <div class="propname">{{ i18n('fs.type') }}：</div>
+        <div class="propvalue">{{ sys?.fs?.name || '' }}</div>
+      </div>
     </div>
     <div class="button-group">
       <WinButton @click="confirm">

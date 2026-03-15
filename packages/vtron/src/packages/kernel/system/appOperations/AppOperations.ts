@@ -157,10 +157,12 @@ export class AppOperations {
           JSON.stringify(options.group)
         );
       } else {
-        this.system.fs.writeFile(
-          `${this.system._options.userLocation}${loc}/` + options.name + '.exe',
-          `link::${loc}::${options.name}::${options.icon}`
-        );
+        const filePath = `${this.system._options.userLocation}${loc}/` + options.name + '.exe';
+        this.system.fs.writeFile(filePath, `link::${loc}::${options.name}::${options.icon}`).then(() => {
+          if (options.readonly) {
+            this.system.fs.chmod(filePath, 0o111);
+          }
+        });
       }
     } else {
       this.refershApp();

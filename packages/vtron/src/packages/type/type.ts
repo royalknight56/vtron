@@ -16,7 +16,8 @@ export type BuiltinFeature =
   | 'Setting'
   | 'Setting-Language'
   | 'Setting-Account'
-  | 'Setting-Personalization';
+  | 'Setting-Personalization'
+  | 'RecycleBin';
 export interface InitFileItem {
   type: string;
   name: string;
@@ -98,6 +99,8 @@ export interface WinAppOptionsApp {
   multiple?: boolean;
   /** 排列的顺序 */
   order?: number;
+  /** 只读，防止被删除 */
+  readonly?: boolean;
   /** 窗口配置 */
   window: BrowserWindowOption;
   /** @internal 是否已经显示 */

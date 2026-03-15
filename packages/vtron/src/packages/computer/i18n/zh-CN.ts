@@ -162,4 +162,14 @@ export const zhCN = {
   'week.thu': '四',
   'week.fri': '五',
   'week.sat': '六',
+
+  'recycle.bin': '回收站',
+  'recycle.bin.empty': '回收站为空',
+  'recycle.bin.restore': '还原',
+  'recycle.bin.delete.permanent': '彻底删除',
+  'recycle.bin.empty.all': '清空回收站',
+  'recycle.bin.original.path': '原始位置',
+  'recycle.bin.deleted.at': '删除时间',
+  'recycle.bin.confirm.empty': '确定要清空回收站吗？此操作不可撤销。',
+  'recycle.bin.confirm.delete': '确定要彻底删除此文件吗？',
 };

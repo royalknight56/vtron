@@ -42,6 +42,12 @@ import videoIcon from './assets/video.png';
 import AppStore from './apps/AppStore.vue';
 import AiChat from './apps/AiChat.vue';
 import aiChatIcon from './assets/ai-chat.svg';
+import PaintAppVue from './apps/PaintApp.vue';
+import paintIcon from './assets/paint.svg';
+import TaskManagerVue from './apps/TaskManager.vue';
+import taskmgrIcon from './assets/taskmgr.svg';
+import CameraAppVue from './apps/CameraApp.vue';
+import cameraIcon from './assets/camera.svg';
 type VtronFeature =
   | 'doc'
   | 'xls'
@@ -60,7 +66,10 @@ type VtronFeature =
   | 'ai'
   | 'excel'
   | 'word'
-  | 'pptEditor';
+  | 'pptEditor'
+  | 'paint'
+  | 'taskmgr'
+  | 'camera';
 function vtronPlus(configIn?: { features: VtronFeature[] }) {
   const config = {
     features: configIn?.features || [
@@ -82,6 +91,9 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
       'excel',
       'word',
       'pptEditor',
+      'paint',
+      'taskmgr',
+      'camera',
     ],
   };
   return function vtronPlusPlugin(system: System) {
@@ -502,6 +514,70 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
           icon: xlsxIcon,
           center: true,
           content: ExcelEditorVue,
+          resizable: true,
+        },
+      });
+
+    config.features.includes('paint') &&
+      system.registerFileOpener('.vtimg', {
+        icon: paintIcon,
+        func: async (path) => {
+          new BrowserWindow({
+            title: path,
+            icon: paintIcon,
+            width: 900,
+            height: 650,
+            resizable: true,
+            center: true,
+            content: PaintAppVue,
+            config: { path },
+          }).show();
+        },
+      });
+
+    config.features.includes('paint') &&
+      system.addApp({
+        name: '画板',
+        icon: paintIcon,
+        window: {
+          title: '画板',
+          width: 900,
+          height: 650,
+          icon: paintIcon,
+          center: true,
+          content: PaintAppVue,
+          resizable: true,
+        },
+      });
+
+    config.features.includes('taskmgr') &&
+      system.addApp({
+        name: '任务管理器',
+        icon: taskmgrIcon,
+        multiple: false,
+        window: {
+          title: '任务管理器',
+          width: 700,
+          height: 500,
+          icon: taskmgrIcon,
+          center: true,
+          content: TaskManagerVue,
+          resizable: true,
+        },
+      });
+
+    config.features.includes('camera') &&
+      system.addApp({
+        name: '相机',
+        icon: cameraIcon,
+        multiple: false,
+        window: {
+          title: '相机',
+          width: 640,
+          height: 520,
+          icon: cameraIcon,
+          center: true,
+          content: CameraAppVue,
           resizable: true,
         },
       });

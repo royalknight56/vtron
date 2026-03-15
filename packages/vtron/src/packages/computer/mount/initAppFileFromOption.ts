@@ -1,8 +1,10 @@
 import vtronStoreLogoIcon from '@/assets/vtron-stroe-icon-nobg.png?url';
 import MyComputerVue from '@/packages/computer/application/MyComputer/MyComputer.vue';
+import RecycleBinVue from '@/packages/computer/application/RecycleBin.vue';
 import SettingVue from '@/packages/computer/application/Setting.vue';
 import { System } from '@/packages/kernel';
 import myComputerLogoIcon from '@packages/assets/computer.png?url';
+import recycleBinIcon from '@packages/assets/vtron-recyle-bin.png?url';
 import settingicon from '@packages/assets/setting.png';
 import { i18n } from '../i18n';
 
@@ -30,10 +32,12 @@ export function initBuiltinApp(system: System) {
   }
 
   if (system._options.builtinFeature?.length === 0) return;
+
   if (system._options.builtinFeature?.includes('MyComputer')) {
     const myComputer = {
       name: '此电脑',
       icon: myComputerLogoIcon,
+      readonly: true,
       window: {
         width: 800,
         height: 600,
@@ -49,6 +53,22 @@ export function initBuiltinApp(system: System) {
     system.addApp(myComputer);
     system.addMagnet(myComputer);
     system.addMenuList(myComputer);
+  }
+  if (system._options.builtinFeature?.includes('RecycleBin')) {
+    const recycleBin = {
+      name: i18n('recycle.bin'),
+      icon: recycleBinIcon,
+      readonly: true,
+      window: {
+        width: 700,
+        height: 500,
+        center: true,
+        title: i18n('recycle.bin'),
+        icon: recycleBinIcon,
+        content: RecycleBinVue,
+      },
+    };
+    system.addApp(recycleBin);
   }
 }
 

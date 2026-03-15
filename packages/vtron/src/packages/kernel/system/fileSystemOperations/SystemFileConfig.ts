@@ -65,6 +65,17 @@ const InitUserFile = {
       type: 'dir',
       mode: 0o111,
     },
+    {
+      name: 'RecycleBin',
+      type: 'dir',
+      children: [
+        {
+          name: '.meta.json',
+          type: 'file',
+          content: '[]',
+        },
+      ],
+    },
   ],
 };
 

@@ -49,7 +49,7 @@
 import { onMounted, ref, markRaw, inject, computed } from 'vue';
 import { VtronFileWithoutContent, basename, dirname, join, System, VtronFile } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
-import { openPropsWindow, copyFile, createLink, openWith } from './fileOpt';
+import { openPropsWindow, copyFile, createLink, openWith, moveToRecycleBin } from './fileOpt';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { Rect } from '@/packages/computer/hook/useRectChosen';
 import { throttle } from '@/packages/util/debounce';
@@ -196,38 +196,43 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
     chosenPaths.value = [item.path];
   }
 
-  sys
-    .buildFromTemplate([
-      {
-        label: i18n('open'),
-        click: () => {
+  const isReadonly = item.mode !== undefined && item.mode <= 0o111;
+
+  const menu = [
+    {
+      label: i18n('open'),
+      click: () => {
+        chosenPaths.value = [];
+        props.onOpen(item);
+      },
+    },
+    {
+      label: i18n('props'),
+      click: () => {
+        chosenPaths.value.forEach((path) => {
+          openPropsWindow(sys, path);
           chosenPaths.value = [];
-          props.onOpen(item);
-        },
+        });
       },
-      {
-        label: i18n('props'),
-        click: () => {
-          chosenPaths.value.forEach((path) => {
-            openPropsWindow(sys, path);
-            chosenPaths.value = [];
-          });
-        },
+    },
+    {
+      label: i18n('open.with'),
+      click: () => {
+        chosenPaths.value = [];
+        openWith(sys, item);
       },
-      {
-        label: i18n('open.with'),
-        click: () => {
-          chosenPaths.value = [];
-          openWith(sys, item);
-        },
+    },
+    {
+      label: i18n('copy'),
+      click: () => {
+        copyFile(sys, chosenPaths.value);
+        chosenPaths.value = [];
       },
-      {
-        label: i18n('copy'),
-        click: () => {
-          copyFile(sys, chosenPaths.value);
-          chosenPaths.value = [];
-        },
-      },
+    },
+  ];
+
+  if (!isReadonly) {
+    menu.push(
       {
         label: i18n('rename'),
         click: () => {
@@ -236,7 +241,6 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
           chosenPaths.value = [];
         },
       },
-
       {
         label: i18n('create.shortcut'),
         click: () => {
@@ -246,21 +250,24 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
           });
         },
       },
-
       {
         label: i18n('delete'),
         click: async () => {
-          await Promise.all(
-            chosenPaths.value.map((path) => {
-              sys?.fs.rm(path);
-            })
-          );
+          const paths = [...chosenPaths.value];
           chosenPaths.value = [];
+          try {
+            await moveToRecycleBin(sys, paths);
+          } catch {
+            await Promise.allSettled(paths.map((p) => sys.fs.rm(p)));
+          }
           props.onRefresh();
+          sys.refershApp();
         },
-      },
-    ])
-    .popup(mouse);
+      }
+    );
+  }
+
+  sys.buildFromTemplate(menu).popup(mouse);
 }
 
 function handleDragEnter(mouse: DragEvent, item: VtronFileWithoutContent, index: number) {

@@ -6,8 +6,12 @@
 -->
 <template>
   <div class="outer">
+    <!-- <div v-if="!started" class="pick-dir-overlay">
+      <template v-if="!restoring">
+        <button class="pick-dir-btn" @click="pickDirectory">选择本地目录并启动</button>
+      </template>
+    </div> -->
     <VtronComputer :system="sys"></VtronComputer>
-    <!-- <VtronComputer :system="sys2"></VtronComputer> -->
   </div>
 </template>
 
@@ -17,10 +21,34 @@ import TestButton from './apps/TestButton.vue';
 import VtronTest from './apps/VtronTest.vue';
 import VtronPerfTest from './apps/VtronPerfTest.vue';
 import TestUiButton from './apps/TestUiButton.vue';
-import { System, VtronFile, VtronComputer, VtronMemoryFileSystem } from './packages/plug';
+import {
+  System,
+  VtronFile,
+  VtronComputer,
+  VtronMemoryFileSystem,
+  VtronLocalFileSystem,
+} from './packages/plug';
 import vtronLogoIcon from './assets/vtron-icon-nobg.png';
 import { Tray, Menu } from '@/packages/services';
+import { ref, onMounted } from 'vue';
+
+const started = ref(false);
+const restoring = ref(true);
 const fs = new VtronMemoryFileSystem('/');
+
+// onMounted(async () => {
+//   const restored = await fs.tryRestore();
+//   if (restored) {
+//     started.value = true;
+//   }
+//   restoring.value = false;
+// });
+
+// async function pickDirectory() {
+//   await fs.openDirectoryPicker();
+//   started.value = true;
+// }
+
 const sys = new System({
   // lang: 'en-US',
   id: 0,
@@ -425,6 +453,27 @@ sys.whenReady().then((readySys) => {
   top: 0px;
   width: 100vw;
   height: 100vh;
+}
+.pick-dir-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #1a1a2e;
+}
+.pick-dir-btn {
+  padding: 16px 40px;
+  font-size: 18px;
+  color: #fff;
+  cursor: pointer;
+  background: #0078d4;
+  border: none;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.pick-dir-btn:hover {
+  background: #005a9e;
 }
 </style>
 <style>

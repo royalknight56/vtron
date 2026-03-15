@@ -20,6 +20,7 @@ export const defaultConfig: SystemOptions = {
     'Setting-Language',
     'Setting-Account',
     'Setting-Personalization',
+    'RecycleBin',
   ],
   userLocation: '/C/Users/',
   systemLocation: '/C/System/',

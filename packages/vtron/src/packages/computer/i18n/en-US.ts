@@ -161,4 +161,14 @@ export const enUS: AllText = {
   'week.thu': 'Thu',
   'week.fri': 'Fri',
   'week.sat': 'Sat',
+
+  'recycle.bin': 'Recycle Bin',
+  'recycle.bin.empty': 'Recycle Bin is empty',
+  'recycle.bin.restore': 'Restore',
+  'recycle.bin.delete.permanent': 'Delete Permanently',
+  'recycle.bin.empty.all': 'Empty Recycle Bin',
+  'recycle.bin.original.path': 'Original Location',
+  'recycle.bin.deleted.at': 'Deleted At',
+  'recycle.bin.confirm.empty': 'Are you sure you want to empty the Recycle Bin? This cannot be undone.',
+  'recycle.bin.confirm.delete': 'Are you sure you want to permanently delete this file?',
 };

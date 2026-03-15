@@ -66,7 +66,7 @@
       <input ref="myinput" v-model="inputStr" @keyup.enter="endInput()" />
     </div>
     <div class="search path_inputing">
-      <input placeholder="search" v-model="searchStr" @keyup.enter="endSearch" @blur="endSearch" />
+      <input placeholder="search" v-model="searchStr" @input="onSearchInput" @keyup.enter="endSearch" />
     </div>
   </div>
 </template>
@@ -75,7 +75,7 @@ import { ref, nextTick } from 'vue';
 const props = defineProps<{
   modelValue?: string;
 }>();
-const emit = defineEmits(['update:modelValue', 'backFolder', 'changeHistory', 'refresh', 'search']);
+const emit = defineEmits(['update:modelValue', 'backFolder', 'changeHistory', 'refresh', 'search', 'searchInput']);
 
 function backFolder() {
   emit('backFolder');
@@ -104,6 +104,9 @@ function endInput() {
 
 /* ------------ 搜索框 ------------*/
 const searchStr = ref('');
+function onSearchInput() {
+  emit('searchInput', searchStr.value);
+}
 function endSearch() {
   if (searchStr.value == '') return;
   emit('search', searchStr.value);

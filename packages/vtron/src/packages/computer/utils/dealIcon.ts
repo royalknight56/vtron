@@ -25,7 +25,6 @@ export async function dealIcon(
 ): Promise<string> {
   if (!file) return unknownicon;
   if (file.isDirectory && file.parentPath === '/') {
-    // 是挂载在根目录的卷
     if (system.fs instanceof VtronFileSystem) {
       if (system.fs.checkVolumePath(file.path)) {
         return volumeNetIcon;
@@ -33,6 +32,7 @@ export async function dealIcon(
         return volumeLocalIcon;
       }
     }
+    return volumeLocalIcon;
   }
   if (file.isDirectory) return foldericon;
   const ext = extname(file.path);

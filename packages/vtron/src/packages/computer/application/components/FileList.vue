@@ -74,6 +74,12 @@ const props = defineProps({
       //
     },
   },
+  onSelect: {
+    type: Function,
+    default: () => {
+      //
+    },
+  },
   fileList: {
     type: Array<VtronFileWithoutContent>,
     default: () => [],
@@ -153,6 +159,7 @@ sys.mountEvent('edit.end', () => {
 
 function handleClick(file: VtronFileWithoutContent) {
   chosenPaths.value = [file.path];
+  props.onSelect(file);
 }
 onMounted(() => {
   chosenPaths.value = [];

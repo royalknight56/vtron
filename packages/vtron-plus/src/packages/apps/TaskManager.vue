@@ -1,76 +1,36 @@
 <template>
   <div class="tm-app" ref="appRef">
     <div class="tab-bar">
-      <button
-        class="tab-btn"
-        :class="{ active: tab === 'process' }"
-        @click="tab = 'process'"
-      >
-        进程
-      </button>
-      <button
-        class="tab-btn"
-        :class="{ active: tab === 'perf' }"
-        @click="tab = 'perf'"
-      >
-        性能
-      </button>
+      <button class="tab-btn" :class="{ active: tab === 'process' }" @click="tab = 'process'">进程</button>
+      <button class="tab-btn" :class="{ active: tab === 'perf' }" @click="tab = 'perf'">性能</button>
     </div>
 
     <div v-show="tab === 'process'" class="tab-pane process-pane">
       <table class="proc-table">
         <thead>
           <tr>
-            <th class="th-name" @click="toggleSort('name')">
-              名称 {{ sortArrow('name') }}
-            </th>
-            <th class="th-status" @click="toggleSort('status')">
-              状态 {{ sortArrow('status') }}
-            </th>
+            <th class="th-name" @click="toggleSort('name')">名称 {{ sortArrow('name') }}</th>
+            <th class="th-status" @click="toggleSort('status')">状态 {{ sortArrow('status') }}</th>
             <th class="th-id" @click="toggleSort('id')">ID {{ sortArrow('id') }}</th>
             <th class="th-size">大小</th>
             <th class="th-actions">操作</th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="p in sortedProcesses"
-            :key="p.id"
-            :class="{ highlight: p.istop }"
-          >
+          <tr v-for="p in sortedProcesses" :key="p.id" :class="{ highlight: p.istop }">
             <td class="td-name">
               <img v-if="p.icon" :src="p.icon" class="proc-icon" />
               <span class="proc-name-text">{{ p.title || '(无标题)' }}</span>
             </td>
             <td>
-              <span class="badge" :class="'badge-' + p.state">{{
-                stateLabel(p.state)
-              }}</span>
+              <span class="badge" :class="'badge-' + p.state">{{ stateLabel(p.state) }}</span>
             </td>
             <td class="td-id">{{ p.id }}</td>
             <td class="td-size">{{ p.width }}×{{ p.height }}</td>
             <td class="td-actions">
-              <button
-                class="act-btn focus-btn"
-                @click="doFocus(p.win)"
-                title="聚焦"
-              >
-                ⬆
-              </button>
-              <button
-                class="act-btn min-btn"
-                @click="doMinimize(p.win)"
-                title="最小化"
-              >
-                −
-              </button>
-              <button
-                class="act-btn close-btn"
-                @click="doClose(p.win)"
-                title="结束任务"
-              >
-                ×
-              </button>
+              <button class="act-btn focus-btn" @click="doFocus(p.win)" title="聚焦">⬆</button>
+              <button class="act-btn min-btn" @click="doMinimize(p.win)" title="最小化">−</button>
+              <button class="act-btn close-btn" @click="doClose(p.win)" title="结束任务">×</button>
             </td>
           </tr>
         </tbody>
@@ -159,7 +119,7 @@ interface ProcInfo {
   width: number;
   height: number;
   istop: boolean;
-  win: BrowserWindow;
+  win: any;
 }
 
 const processes = ref<ProcInfo[]>([]);
@@ -167,8 +127,8 @@ const processes = ref<ProcInfo[]>([]);
 function refreshProcesses() {
   const order = sys.stateManager.windowTree.windowOrder;
   processes.value = order
-    .filter((w: BrowserWindow) => w.windowInfo.isCreated)
-    .map((w: BrowserWindow) => ({
+    .filter((w) => w.windowInfo.isCreated)
+    .map((w) => ({
       id: w.id,
       title: w.windowInfo.title || '',
       icon: w.windowInfo.icon,
@@ -205,23 +165,23 @@ function stateLabel(s: string) {
   return stateLabels[s] || s;
 }
 
-function doFocus(w: BrowserWindow) {
+function doFocus(w: any) {
   if (w.isMinimized()) w.restore();
   w.moveTop();
 }
 
-function doMinimize(w: BrowserWindow) {
+function doMinimize(w: any) {
   w.minimize();
 }
 
-function doClose(w: BrowserWindow) {
+function doClose(w: any) {
   w.close();
   setTimeout(refreshProcesses, 600);
 }
 
 function endAllOther() {
   const order = [...sys.stateManager.windowTree.windowOrder];
-  order.forEach((w: BrowserWindow) => {
+  order.forEach((w) => {
     if (w !== selfWin && w.windowInfo.isCreated) w.close();
   });
   setTimeout(refreshProcesses, 600);
@@ -246,8 +206,7 @@ const loadTime = performance.now();
 const uptimeStr = ref('0:00:00');
 
 const memInfo = computed(() => {
-  if (memTotalMB.value > 0)
-    return `已用 ${memUsedMB.value} MB / ${memTotalMB.value} MB`;
+  if (memTotalMB.value > 0) return `已用 ${memUsedMB.value} MB / ${memTotalMB.value} MB`;
   return 'JS 堆内存';
 });
 
@@ -270,10 +229,7 @@ function tick() {
   frameCount = 0;
   lastSecond = now;
 
-  cpuPercent.value = Math.max(
-    1,
-    Math.min(100, Math.round(100 - (currentFps.value / 60) * 95)),
-  );
+  cpuPercent.value = Math.max(1, Math.min(100, Math.round(100 - (currentFps.value / 60) * 95)));
   cpuData.push(cpuPercent.value);
   if (cpuData.length > MAX_PTS) cpuData.shift();
 
@@ -291,26 +247,16 @@ function tick() {
   uptimeStr.value = `${h}:${String(m).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 
   windowCount.value = sys.stateManager.windowTree.windowOrder.filter(
-    (w: BrowserWindow) => w.windowInfo.isCreated,
+    (w) => w.windowInfo.isCreated
   ).length;
 
   refreshProcesses();
 
   syncAndDraw(cpuCanvas.value, cpuData, 100, '#4CAF50');
-  syncAndDraw(
-    memCanvas.value,
-    memDataArr,
-    memTotalMB.value || Math.max(...memDataArr, 50),
-    '#42A5F5',
-  );
+  syncAndDraw(memCanvas.value, memDataArr, memTotalMB.value || Math.max(...memDataArr, 50), '#42A5F5');
 }
 
-function syncAndDraw(
-  canvas: HTMLCanvasElement | undefined,
-  data: number[],
-  max: number,
-  color: string,
-) {
+function syncAndDraw(canvas: HTMLCanvasElement | undefined, data: number[], max: number, color: string) {
   if (!canvas) return;
   const rect = canvas.getBoundingClientRect();
   if (rect.width === 0 || rect.height === 0) return;
@@ -323,12 +269,7 @@ function syncAndDraw(
   drawChart(canvas, data, max, color);
 }
 
-function drawChart(
-  canvas: HTMLCanvasElement,
-  data: number[],
-  max: number,
-  color: string,
-) {
+function drawChart(canvas: HTMLCanvasElement, data: number[], max: number, color: string) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
   const w = canvas.width;

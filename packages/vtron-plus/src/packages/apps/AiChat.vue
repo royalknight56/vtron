@@ -162,7 +162,7 @@ const CHAT_HEIGHT = 560;
 const sys = inject<System>('system');
 const win = inject<BrowserWindow>('browserWindow');
 
-const mode = ref<'ball' | 'chat'>('ball');
+const mode = ref<'ball' | 'chat'>('chat');
 const messages = ref<ChatMessage[]>([]);
 const inputText = ref('');
 const isLoading = ref(false);
@@ -550,10 +550,7 @@ async function callApi(maxDepth = 5) {
 onMounted(() => {
   loadSettings();
   if (!apiKey.value) {
-    nextTick(() => {
-      expandChat();
-      showSettings.value = true;
-    });
+    showSettings.value = true;
   }
 });
 </script>

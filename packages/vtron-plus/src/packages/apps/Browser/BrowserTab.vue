@@ -63,6 +63,7 @@ const HOMEPAGE = 'https://vtron.site/startpage';
 const props = defineProps<{
   isCurrent: boolean;
   homepage?: string;
+  proxyUrl?: string;
 }>();
 
 const startUrl = props.homepage || HOMEPAGE;
@@ -74,9 +75,18 @@ const historyIndex = ref(0);
 const isLoading = ref(false);
 const frameKey = ref(0);
 
-const currentUrl = computed(() => history.value[historyIndex.value]);
+const rawUrl = computed(() => history.value[historyIndex.value]);
 const canGoBack = computed(() => historyIndex.value > 0);
 const canGoForward = computed(() => historyIndex.value < history.value.length - 1);
+
+const currentUrl = computed(() => {
+  const url = rawUrl.value;
+  if (!props.proxyUrl || !url) return url;
+  if (props.proxyUrl.includes('{url}')) {
+    return props.proxyUrl.replace('{url}', encodeURIComponent(url));
+  }
+  return props.proxyUrl + encodeURIComponent(url);
+});
 
 function normalizeUrl(input: string): string {
   const trimmed = input.trim();
@@ -98,14 +108,14 @@ function navigate() {
 function goBack() {
   if (!canGoBack.value) return;
   historyIndex.value--;
-  urlInput.value = currentUrl.value;
+  urlInput.value = rawUrl.value;
   isLoading.value = true;
 }
 
 function goForward() {
   if (!canGoForward.value) return;
   historyIndex.value++;
-  urlInput.value = currentUrl.value;
+  urlInput.value = rawUrl.value;
   isLoading.value = true;
 }
 

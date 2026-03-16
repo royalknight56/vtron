@@ -1,6 +1,6 @@
 {
   "name": "vtron",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A Vue 3 component library",
   "files": [
     "distlib",
@@ -30,7 +30,7 @@
     "tsc": "vue-tsc",
     "tag": "node script/auto_tag.js",
     "pre": "lint-staged",
-    "pub": "node script/update.js"
+    "pub": "npm publish"
   },
   "dependencies": {
     "vue": "^3.2.37",

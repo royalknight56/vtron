@@ -319,10 +319,12 @@ export class System {
     }, 1000 * 4);
   }
 
-
   // 升级程序
 
   upgradeProgram: Record<string, () => void> = {
+    default: () => {
+      this.appOperations.forceRefershOptionsApp();
+    },
     '0.7.9': () => {
       this.appOperations.forceRefershOptionsApp();
     },

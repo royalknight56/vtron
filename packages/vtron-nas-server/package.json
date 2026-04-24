@@ -1,0 +1,43 @@
+{
+  "name": "vtron-nas-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "koa": "^2.15.3",
+    "@koa/router": "^13.1.0",
+    "@koa/cors": "^5.0.0",
+    "koa-bodyparser": "^4.4.1",
+    "@koa/multer": "^3.0.2",
+    "multer": "^1.4.5-lts.1",
+    "koa-static": "^5.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.7.0",
+    "ws": "^8.18.0",
+    "node-pty": "^1.0.0",
+    "mime-types": "^2.1.35",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.15.0",
+    "@types/koa__router": "^12.0.4",
+    "@types/koa__cors": "^5.0.0",
+    "@types/koa-bodyparser": "^4.3.12",
+    "@types/koa-static": "^4.0.4",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/ws": "^8.5.13",
+    "@types/multer": "^1.4.12",
+    "@types/mime-types": "^2.1.4",
+    "@types/uuid": "^10.0.0",
+    "@types/node": "^20.14.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}

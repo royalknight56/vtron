@@ -6,6 +6,8 @@
     "shop": "pnpm -C packages/vtron-store",
     "md": "pnpm -C packages/vtron-md",
     "e2e": "pnpm -C packages/vtron-e2e",
+    "nas": "pnpm -C packages/vtron-nas",
+    "nas-server": "pnpm -C packages/vtron-nas-server",
     "demo-build": "pnpm -C ./packages/vtron-demo build",
     "prepare": "husky install",
     "pre": "lint-staged",

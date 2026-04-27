@@ -7,8 +7,8 @@
   <div class="nas-root">
     <!-- 未登录 -->
     <LoginPage v-if="!loggedIn" @loginSuccess="onLoginSuccess" />
-    <!-- 已登录 -- vtron 桌面 -->
-    <VtronComputer v-else :system="system!" />
+    <!-- 已登录且系统已创建 -->
+    <VtronComputer v-else-if="system" :system="system" />
   </div>
 </template>
 
@@ -17,7 +17,7 @@ import { ref, onMounted, markRaw, shallowRef } from 'vue';
 import { System, VtronComputer } from 'vtron';
 import 'vtron/distlib/style.css';
 import { RemoteFileSystem } from './fs/RemoteFileSystem';
-import { getToken, removeToken } from './api/client';
+import { getToken, removeToken, enableAutoLogout, disableAutoLogout } from './api/client';
 import { getMe } from './api/auth';
 import LoginPage from './components/LoginPage.vue';
 import FileManager from './apps/FileManager.vue';
@@ -31,13 +31,16 @@ const loggedIn = ref(false);
 const system = shallowRef<System | null>(null);
 
 /** 登录成功后初始化 vtron 系统 */
-function onLoginSuccess(user: any) {
-  loggedIn.value = true;
+function onLoginSuccess(_user: any) {
   initSystem();
+  loggedIn.value = true;
 }
 
 /** 创建 vtron System 实例 */
 function initSystem() {
+  /* 初始化期间禁用自动登出，避免 vtron 初始化偶发 401 破坏整个会话 */
+  disableAutoLogout();
+
   const remoteFs = new RemoteFileSystem();
 
   const sys = new System({
@@ -137,18 +140,23 @@ function initSystem() {
         },
       },
     ],
-    loginCallback: async (username: string, password: string) => {
-      /* vtron 内置登录回调，此处直接放行（已通过我们自己的登录页认证） */
+    loginCallback: async (_username: string, _password: string) => {
       return true;
     },
     noPassword: true,
   });
 
   system.value = sys;
+
+  /* 系统就绪后再启用自动登出 */
+  sys.whenReady().then(() => {
+    enableAutoLogout();
+  });
 }
 
 /** 监听全局登出事件 */
 window.addEventListener('vtron-nas-logout', () => {
+  disableAutoLogout();
   loggedIn.value = false;
   system.value?.shutdown();
   system.value = null;
@@ -160,8 +168,8 @@ onMounted(async () => {
   if (token) {
     try {
       await getMe();
-      loggedIn.value = true;
       initSystem();
+      loggedIn.value = true;
     } catch {
       removeToken();
     }
@@ -176,16 +184,16 @@ onMounted(async () => {
   box-sizing: border-box;
 }
 html, body, #app {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 }
 </style>
 
 <style scoped>
 .nas-root {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   position: relative;
 }
 </style>

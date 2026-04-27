@@ -24,12 +24,16 @@ export async function authMiddleware(ctx: Context, next: Next): Promise<void> {
     return;
   }
   const token = authHeader.slice(7);
+
+  let payload: JwtPayload;
   try {
-    const payload = jwt.verify(token, config.jwtSecret) as JwtPayload;
-    ctx.state.user = payload;
-    await next();
+    payload = jwt.verify(token, config.jwtSecret) as JwtPayload;
   } catch {
     ctx.status = 401;
     ctx.body = { success: false, message: '认证令牌无效或已过期' };
+    return;
   }
+
+  ctx.state.user = payload;
+  await next();
 }

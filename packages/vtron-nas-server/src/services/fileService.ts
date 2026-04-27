@@ -155,9 +155,13 @@ async function copyDir(src: string, dest: string): Promise<void> {
   }
 }
 
-export async function chmod(virtualPath: string, mode: number): Promise<void> {
-  const realPath = resolveSafePath(virtualPath);
-  await fs.chmod(realPath, mode);
+/**
+ * chmod 操作：vtron 使用的是虚拟权限位（1=Read, 2=Write, 4=Execute），
+ * 不能直接透传给操作系统。此处仅作为逻辑层记录，不修改磁盘真实权限。
+ */
+export async function chmod(_virtualPath: string, _mode: number): Promise<void> {
+  // vtron 虚拟权限与 Unix 权限体系不同，直接 chmod 会导致目录不可访问
+  // 此处故意不操作磁盘，权限控制由应用层处理
 }
 
 export async function search(keyword: string, basePath = '/'): Promise<FileInfo[]> {

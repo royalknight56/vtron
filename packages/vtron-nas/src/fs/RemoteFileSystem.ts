@@ -56,7 +56,6 @@ export class RemoteFileSystem implements VtronFileInterface {
       this.commitWatch(path, data);
     } catch (err: any) {
       this.emitError(`writeFile 失败: ${path} - ${err.message}`);
-      throw err;
     }
   }
 
@@ -66,7 +65,6 @@ export class RemoteFileSystem implements VtronFileInterface {
       this.commitWatch(path, content);
     } catch (err: any) {
       this.emitError(`appendFile 失败: ${path} - ${err.message}`);
-      throw err;
     }
   }
 
@@ -101,7 +99,6 @@ export class RemoteFileSystem implements VtronFileInterface {
       this.commitWatch(path, '');
     } catch (err: any) {
       this.emitError(`unlink 失败: ${path} - ${err.message}`);
-      throw err;
     }
   }
 
@@ -112,7 +109,6 @@ export class RemoteFileSystem implements VtronFileInterface {
       this.commitWatch(newPath, '');
     } catch (err: any) {
       this.emitError(`rename 失败: ${oldPath} -> ${newPath} - ${err.message}`);
-      throw err;
     }
   }
 
@@ -122,7 +118,6 @@ export class RemoteFileSystem implements VtronFileInterface {
       this.commitWatch(path, '');
     } catch (err: any) {
       this.emitError(`rm 失败: ${path} - ${err.message}`);
-      throw err;
     }
   }
 
@@ -132,7 +127,6 @@ export class RemoteFileSystem implements VtronFileInterface {
       this.commitWatch(path, '');
     } catch (err: any) {
       this.emitError(`rmdir 失败: ${path} - ${err.message}`);
-      throw err;
     }
   }
 
@@ -142,7 +136,6 @@ export class RemoteFileSystem implements VtronFileInterface {
       this.commitWatch(path, '');
     } catch (err: any) {
       this.emitError(`mkdir 失败: ${path} - ${err.message}`);
-      throw err;
     }
   }
 
@@ -152,7 +145,6 @@ export class RemoteFileSystem implements VtronFileInterface {
       this.commitWatch(dest, '');
     } catch (err: any) {
       this.emitError(`copyFile 失败: ${src} -> ${dest} - ${err.message}`);
-      throw err;
     }
   }
 

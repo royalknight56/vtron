@@ -4,6 +4,8 @@
   "scripts": {
     "dev": "vite --force",
     "build": "vite build",
+    "build:cf": "vite build --base=/win/ --outDir=dist-cloudflare/win",
+    "deploy:cf": "pnpm run build:cf && wrangler deploy",
     "build-tsc": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
     "install-npm": "npm install --registry https://registry.npmjs.org/"
@@ -25,6 +27,7 @@
     "@vue/compiler-sfc": "^3.2.37",
     "typescript": "^5.0.2",
     "vite": "^4.3.9",
-    "vue-tsc": "^1.4.2"
+    "vue-tsc": "^1.4.2",
+    "wrangler": "^4.154.0"
   }
 }

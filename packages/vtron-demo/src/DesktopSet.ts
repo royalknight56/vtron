@@ -71,7 +71,7 @@ const magnetConfig = [
     width: 800,
     height: 800,
     center: true,
-    content: 'https://vtron.site/react/#/2048',
+    content: 'https://vtronjs.com/react/#/2048',
   },
   {
     title: '井字棋',
@@ -79,7 +79,7 @@ const magnetConfig = [
     width: 800,
     height: 800,
     center: true,
-    content: 'https://vtron.site/react/#/tic-tac-toe',
+    content: 'https://vtronjs.com/react/#/tic-tac-toe',
   },
   {
     title: '抛硬币',

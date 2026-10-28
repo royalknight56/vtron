@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "vtron-win",
+  "account_id": "5eb07a2e9d5867b4d15a8686a38cf53b",
+  "compatibility_date": "2026-10-28",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    {
+      "pattern": "vtronjs.com/win",
+      "zone_name": "vtronjs.com"
+    },
+    {
+      "pattern": "vtronjs.com/win/*",
+      "zone_name": "vtronjs.com"
+    }
+  ],
+  "assets": {
+    "directory": "./dist-cloudflare",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  }
+}

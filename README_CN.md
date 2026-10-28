@@ -5,7 +5,7 @@
  * @FilePath: /myindex/README.md
 -->
 
-<p align="center"><a href="https://vtron.site" target="_blank" rel="noopener noreferrer"><img width="200" src="./assert/vtron-logo-nobg.png" alt="vtron logo"></a></p>
+<p align="center"><a href="https://vtronjs.com/win/" target="_blank" rel="noopener noreferrer"><img width="200" src="./assert/vtron-logo-nobg.png" alt="vtron logo"></a></p>
 
 <div align="center">
 
@@ -15,7 +15,7 @@ vtron, 基于Vue3的 Win10 UI 框架
 
 <div align="center">
 
-<a href="https://vtron.site/doc" target="_blank">文档</a>|<a href="https://vtron.site/doc" target="_blank">官网</a>|<a href="http://vtron.site/win/" target="_blank">样例</a>
+<a href="https://vtron.site/doc" target="_blank">文档</a>|<a href="https://vtronjs.com/win/" target="_blank">官网</a>|<a href="https://vtronjs.com/win/" target="_blank">样例</a>
 
 </div>
 
@@ -381,7 +381,7 @@ Vtron 只有在系统第一次启动的时候，才会在文件系统中添加 a
 
 vtron: 核心项目，包含核心逻辑，vtron核心包。
 
-vtron-demo: demo项目，也是线上vtron.site/win的项目。
+vtron-demo: demo 项目，线上地址为 [vtronjs.com/win/](https://vtronjs.com/win/)。
 
 vtron-e2e: e2e测试监控项目。
 

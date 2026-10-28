@@ -17,7 +17,7 @@ import calcicon from './assets/calcicon.png';
 import chromeicon from './assets/chromeicon.png';
 import docxIcon from './assets/docx.png';
 import backupIcon from './assets/e895.png';
-import galleryIcon from './assets/gallery.png';
+import galleryIcon from './assets/gallery.svg';
 import storeIcon from './assets/vtron-stroe-icon-nobg.png';
 import musicAppIcon from './assets/musicApp.png';
 import pdfIcon from './assets/pdf.png';

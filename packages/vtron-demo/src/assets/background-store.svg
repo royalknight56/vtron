@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="background-store-frame" x1="10" y1="8" x2="43" y2="43" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F9FCFF"/>
+      <stop offset=".5" stop-color="#DCE7EF"/>
+      <stop offset="1" stop-color="#A3B8C8"/>
+    </linearGradient>
+    <linearGradient id="background-store-sky" x1="27" y1="12" x2="27" y2="35" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5AB8ED"/>
+      <stop offset="1" stop-color="#CAEFFF"/>
+    </linearGradient>
+    <linearGradient id="background-store-stand" x1="27" y1="41" x2="27" y2="53" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8CA4B7"/>
+      <stop offset=".55" stop-color="#DCE8F0"/>
+      <stop offset="1" stop-color="#A9BFCE"/>
+    </linearGradient>
+    <linearGradient id="background-store-card" x1="45" y1="36" x2="58" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF"/>
+      <stop offset="1" stop-color="#DCE5ED"/>
+    </linearGradient>
+    <linearGradient id="background-store-blue" x1="47" y1="38" x2="56" y2="49" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6BCCF9"/>
+      <stop offset="1" stop-color="#3489D8"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="32" cy="57" rx="24" ry="2.5" fill="#16416B" fill-opacity=".14"/>
+  <path d="M22 41H31L33 50H20L22 41Z" fill="url(#background-store-stand)" stroke="#8A9FAF" stroke-width=".8"/>
+  <path d="M16 50H37L40 53C40.7 53.8 40.1 55 39 55H14C12.9 55 12.3 53.8 13 53L16 50Z" fill="url(#background-store-frame)" stroke="#8CA4B7" stroke-width=".8"/>
+  <path d="M15 52H38" stroke="#FFF" stroke-opacity=".8"/>
+  <rect x="5.5" y="7.5" width="44" height="35" rx="2.5" fill="url(#background-store-frame)" stroke="#7891A5"/>
+  <rect x="9" y="11" width="37" height="26" rx=".8" fill="url(#background-store-sky)" stroke="#6499B8" stroke-width=".7"/>
+  <circle cx="37" cy="17.5" r="3.5" fill="#FFF3B8"/>
+  <path d="M10 32L21 19L31 30L37 24L45 34V36H10V32Z" fill="#518CB6"/>
+  <path d="M10 36L23 28L31 33L38 29L45 34V36H10Z" fill="#3AA69D"/>
+  <path d="M10 12H45V16L10 28V12Z" fill="#FFF" fill-opacity=".13"/>
+  <path d="M7.5 9H47.5" stroke="#FFF" stroke-opacity=".9"/>
+  <circle cx="27.5" cy="39.7" r=".9" fill="#6799B8"/>
+  <g transform="rotate(-20 43 46)">
+    <rect x="36" y="34" width="14" height="22" rx="1.5" fill="url(#background-store-card)" stroke="#879DAE" stroke-width=".8"/>
+    <rect x="38" y="36" width="10" height="13" rx=".5" fill="#E6B852"/>
+    <path d="M39 52H47" stroke="#B9C8D3" stroke-width="1.2" stroke-linecap="round"/>
+  </g>
+  <g transform="rotate(-8 48 46)">
+    <rect x="41" y="34" width="14" height="22" rx="1.5" fill="url(#background-store-card)" stroke="#879DAE" stroke-width=".8"/>
+    <rect x="43" y="36" width="10" height="13" rx=".5" fill="#8B77D8"/>
+    <path d="M44 52H52" stroke="#B9C8D3" stroke-width="1.2" stroke-linecap="round"/>
+  </g>
+  <g transform="rotate(6 52 46)">
+    <rect x="45" y="34" width="14" height="22" rx="1.5" fill="url(#background-store-card)" stroke="#8297A8" stroke-width=".8"/>
+    <rect x="47" y="36" width="10" height="13" rx=".5" fill="url(#background-store-blue)"/>
+    <path d="M48 52H56" stroke="#B9C8D3" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M47.5 36.5H56.5" stroke="#FFF" stroke-opacity=".65"/>
+  </g>
+</svg>

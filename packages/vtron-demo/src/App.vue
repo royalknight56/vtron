@@ -5,13 +5,15 @@
 -->
 <template>
   <div class="outer">
-    <VtronComputer :system="system"></VtronComputer>
+    <VtronComputer v-if="iconsReady" :system="system"></VtronComputer>
     <!-- 一定需要引入Win10组件，组件已经在use时注册了 -->
   </div>
 </template>
 
 <script lang="ts" setup>
 import { desktopConfig, magnetConfig } from './DesktopSet';
+import { ref } from 'vue';
+import { applyDesktopIcons, desktopIcons } from './desktopIcons';
 
 import { System, BrowserWindow, Notify, VtronComputer } from 'vtron';
 import { vtronPlus } from 'vtron-plus';
@@ -21,16 +23,18 @@ import 'vtron-plus/distlib/style.css';
 import beaticon from './assets/beat.ico';
 import markdownicon from './assets/markdown.png';
 import onetocicon from './assets/onetoc.png';
-import signalicon from './assets/signal.png';
 import OpenSource from './components/apps/OpenSource.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
 import BackgroundStore from './components/apps/BackgroundStore.vue';
-import backgroundstoreicon from './assets/backgroundstore.base?raw';
 
 import { mountWebdav } from './hook/mountWebdav';
 // import { mountOpener } from './hook/mountOpener';
 // 在App中组织桌面图标t
 // 先清空再添加，防止热更新加入多重图标
+
+const iconsReady = ref(false);
+const signalicon = desktopIcons['创建网络链接'];
+const backgroundstoreicon = desktopIcons['背景Store'];
 
 const system = new System({
   id: 0,
@@ -79,12 +83,19 @@ const system = new System({
   lang: 'zh-CN',
 });
 
-system.whenReady().then((readySystem) => {
+system.whenReady().then(async (readySystem) => {
   // if (readySystem.version !== "0.4.4") {
   //   system.recover();
   // }
 
   readySystem.use(vtronPlus());
+  try {
+    await applyDesktopIcons(readySystem);
+  } catch (error) {
+    console.warn('无法更新桌面图标', error);
+  } finally {
+    iconsReady.value = true;
+  }
 
   readySystem.fs.writeFile(
     '/C/Users/Desktop/使用教程.md',

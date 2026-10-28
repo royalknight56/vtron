@@ -6,11 +6,13 @@ import friendLinkicon from './assets/friendLinkBase.base?raw';
 import vscode from './assets/vscode.png';
 import winv3icon from './assets/winv3.png';
 import Tmusicicon from './assets/t-music.png';
-import signalicon from './assets/signal.base?raw';
+import { desktopIcons } from './desktopIcons';
 import softkeyboardbase from './assets/softkeyboard.base?raw';
 import gamebase from './assets/game.base?raw';
 import touzi from './assets/touzi.base?raw';
 import coin from './assets/coin.base?raw';
+
+const signalicon = desktopIcons['创建网络链接'];
 
 
 import GitStars from './components/apps/GitStars.vue';

@@ -48,7 +48,13 @@ class DragElement extends DragObj {
   canDrag: boolean;
   el: HTMLElement | null;
   outerElement: HTMLElement;
-  constructor(element: any, outerElement: HTMLElement, x: number, y: number) {
+  constructor(
+    element: HTMLElement,
+    outerElement: HTMLElement,
+    x: number,
+    y: number,
+    private readonly getPosition?: () => { x: number; y: number }
+  ) {
     super(x, y);
     this.el = null;
     this.ifDraging = false;
@@ -85,32 +91,31 @@ class DragElement extends DragObj {
       this.notify(posX, posY);
     }
   };
+  private startDrag(pageX: number, pageY: number) {
+    let position = this.getPosition?.();
+    if (!position) {
+      const rect = this.el!.getBoundingClientRect();
+      const parentRect = this.outerElement.getBoundingClientRect();
+      position = { x: rect.left - parentRect.left, y: rect.top - parentRect.top };
+    }
+    // 窗口把手可能位于内容区内部；拖动起点必须使用被移动窗口的坐标。
+    this.startMove(pageX, pageY, position.x, position.y);
+    this.ifDraging = true;
+  }
   mountDomEvent(element: HTMLElement) {
     this.el = element;
     this.ifDraging = false;
 
-    element.addEventListener('mousedown', (ev: any) => {
+    element.addEventListener('mousedown', (ev: MouseEvent) => {
       if (this.canDrag) {
-        const rect = this.el!.getBoundingClientRect();
-        const parentRect = this.outerElement.getBoundingClientRect();
-        this.startMove(ev.pageX, ev.pageY, rect.left - parentRect.left, rect.top - parentRect.top);
-        this.ifDraging = true;
+        this.startDrag(ev.pageX, ev.pageY);
       }
     });
     element.addEventListener(
       'touchstart',
       (ev: TouchEvent) => {
         if (this.canDrag) {
-          const rect = this.el!.getBoundingClientRect();
-          const parentRect = this.outerElement.getBoundingClientRect();
-          this.startMove(
-            ev.touches[0].pageX,
-            ev.touches[0].pageY,
-            rect.left - parentRect.left,
-            rect.top - parentRect.top
-          );
-
-          this.ifDraging = true;
+          this.startDrag(ev.touches[0].pageX, ev.touches[0].pageY);
         }
       },
       {

@@ -18,16 +18,19 @@ const vDragable: Directive = {
 };
 
 function makeDragable(ref: HTMLElement, browserWindow: BrowserWindow, outerElement: HTMLElement) {
-  const rect = ref.getBoundingClientRect();
-  const dragAble = new DragElement(ref, outerElement, rect.left, rect.top);
+  const dragAble = new DragElement(
+    ref,
+    outerElement,
+    browserWindow.windowInfo.x,
+    browserWindow.windowInfo.y,
+    () => ({ x: browserWindow.windowInfo.x, y: browserWindow.windowInfo.y })
+  );
   dragAble.onDrag((x, y) => {
-    if (browserWindow.windowInfo.disable) {
+    if (browserWindow.windowInfo.disable || browserWindow.windowInfo.state === WindowStateEnum.maximize) {
       return;
     }
-    if (browserWindow.windowInfo.state !== WindowStateEnum.maximize) {
-      browserWindow.windowInfo.x = x;
-      browserWindow.windowInfo.y = y;
-    }
+    browserWindow.windowInfo.x = x;
+    browserWindow.windowInfo.y = y;
     browserWindow.emit('move', x, y);
   });
   return () => {

@@ -4,10 +4,14 @@ import { defineConfig } from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
-  // Demo 始终使用工作区源码，避免编辑器的改动被旧的 npm 包覆盖。
+  // Demo 始终使用工作区源码，避免内核和编辑器的改动被旧的 npm 包覆盖。
   resolve: {
     alias: [
       { find: 'node-fetch', replacement: 'isomorphic-fetch' },
+      { find: /^vtron$/, replacement: path.resolve(__dirname, '../vtron/src/packages/plug.ts') },
+      { find: '@', replacement: path.resolve(__dirname, '../vtron/src') },
+      { find: '@packages', replacement: path.resolve(__dirname, '../vtron/src/packages') },
+      { find: '@feature', replacement: path.resolve(__dirname, '../vtron/src/packages/feature') },
       {
         find: 'vtron-plus/distlib/style.css',
         replacement: path.resolve(__dirname, '../vtron-plus/src/style.css'),

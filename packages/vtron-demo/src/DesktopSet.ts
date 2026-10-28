@@ -11,6 +11,7 @@ import softkeyboardbase from './assets/softkeyboard.base?raw';
 import gamebase from './assets/game.base?raw';
 import touzi from './assets/touzi.base?raw';
 import coin from './assets/coin.base?raw';
+import type { WinAppOptions } from 'vtron';
 
 const signalicon = desktopIcons['创建网络链接'];
 
@@ -115,15 +116,6 @@ const desktopConfig = [
     content: 'https://github1s.com/',
   },
 
-  {
-    title: '软键盘',
-    icon: softkeyboardbase,
-    ...commonConfig,
-    height: 700,
-    content: SoftKeyboard,
-    resizable: false,
-  },
-
   // {
   //   title: "MarkDown",
   //   icon: markdownicon,
@@ -213,4 +205,23 @@ const desktopConfig = [
   },
 ];
 
-export { desktopConfig, magnetConfig };
+const menuConfig: WinAppOptions[] = [
+  {
+    name: '软键盘',
+    icon: softkeyboardbase,
+    multiple: false,
+    window: {
+      title: '软键盘',
+      icon: softkeyboardbase,
+      width: 640,
+      height: 286,
+      center: true,
+      frame: false,
+      resizable: false,
+      backgroundColor: '#ffffff00',
+      content: SoftKeyboard,
+    },
+  },
+];
+
+export { desktopConfig, magnetConfig, menuConfig };

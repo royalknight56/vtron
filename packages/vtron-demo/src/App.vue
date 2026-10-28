@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts" setup>
-import { desktopConfig, magnetConfig } from './DesktopSet';
+import { desktopConfig, magnetConfig, menuConfig } from './DesktopSet';
 import { ref } from 'vue';
 import { applyDesktopIcons, desktopIcons } from './desktopIcons';
 
-import { System, BrowserWindow, Notify, VtronComputer } from 'vtron';
+import { System, BrowserWindow, Notify, VtronComputer, join } from 'vtron';
 import { vtronPlus } from 'vtron-plus';
 import MarkDown from './components/apps/MarkDown.vue';
 import 'vtron-plus/distlib/style.css';
@@ -66,6 +66,7 @@ const system = new System({
   ],
   magnet: [...addListToDesktop(magnetConfig)],
   menulist: [
+    ...menuConfig,
     {
       name: '开源项目',
       icon: beaticon,
@@ -89,6 +90,23 @@ system.whenReady().then(async (readySystem) => {
   // }
 
   readySystem.use(vtronPlus());
+  try {
+    const keyboard = menuConfig[0];
+    const userLocation = readySystem.getConfig('userLocation') || '/C/Users/';
+    const menuPath = join(userLocation, 'Menulist', keyboard.name + '.exe');
+    if (!(await readySystem.fs.stat(menuPath))) {
+      await readySystem.fs.writeFile(menuPath, `link::Menulist::${keyboard.name}::${keyboard.icon}`);
+    }
+
+    // 只迁移旧版默认快捷方式，保留用户创建的同名文件。
+    const desktopPath = join(userLocation, 'Desktop', keyboard.name + '.exe');
+    const legacyShortcut = `link::Desktop::${keyboard.name}::${keyboard.icon}`;
+    if ((await readySystem.fs.readFile(desktopPath)) === legacyShortcut) {
+      await readySystem.fs.unlink(desktopPath);
+    }
+  } catch (error) {
+    console.warn('无法更新软键盘入口', error);
+  }
   try {
     await applyDesktopIcons(readySystem);
   } catch (error) {

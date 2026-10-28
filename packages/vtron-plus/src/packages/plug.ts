@@ -100,6 +100,13 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
     const officeWindowSize = (width: number, height: number) => ({
       width: Math.min(width, Math.max(240, window.innerWidth - 32)),
       height: Math.min(height, Math.max(200, window.innerHeight - 80)),
+      frame: false,
+      fullDragable: false,
+      backgroundColor: 'transparent',
+      radius: 8,
+      style: {
+        boxShadow: '0 16px 44px rgb(0 0 0 / 22%), 0 3px 10px rgb(0 0 0 / 14%)',
+      },
     });
     /**------------------ 桌面右键菜单--------------- */
     //#region
@@ -400,6 +407,12 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
           title: '图库',
           width: 800,
           height: 600,
+          frame: false,
+          fullDragable: false,
+          resizable: true,
+          backgroundColor: 'transparent',
+          radius: 8,
+          style: { boxShadow: '0 12px 36px rgb(0 0 0 / 24%)' },
           icon: galleryIcon,
           center: true,
           content: PictureStoreVue,

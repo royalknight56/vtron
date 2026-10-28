@@ -1,44 +1,40 @@
 <template>
-  <div class="soft-keyboard" @mousedown="handleMouseDown">
-    <!-- handle -->
-    <div class="keyboard-handle" v-dragable>
-      <i class="fas fa-hand-pointer">↔</i>
-      <!-- close -->
-      <div class="close" @click="close">
-        <i class="fas fa-times">×</i>
+  <section class="soft-keyboard" aria-label="软键盘" @mousedown="handleMouseDown">
+    <header class="keyboard-handle" v-dragable>
+      <div class="keyboard-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="2.5" y="5" width="19" height="14" rx="3" />
+          <path d="M6.5 9h1m4 0h1m4 0h1M6.5 12h1m4 0h1m4 0h1M8 15.5h8" stroke-linecap="round" />
+        </svg>
+        <span>软键盘</span>
       </div>
-    </div>
+      <button type="button" class="keyboard-close" title="关闭软键盘" aria-label="关闭软键盘" @mousedown.stop @touchstart.stop @click="close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" stroke-linecap="round" /></svg>
+      </button>
+    </header>
     <div class="keyboard-container">
       <div class="keyboard-row">
-        <button v-for="key in row1" :key="key" @mousedown="handleKeyPress(key, $event)" class="keyboard-key">
-          {{ key }}
+        <button v-for="key in row1" :key="key" type="button" class="keyboard-key" @click="handleKeyPress(key, $event)">{{ key }}</button>
+      </div>
+      <div class="keyboard-row" :class="{ 'keyboard-row-inset': !isSymbolMode }">
+        <button v-for="key in row2" :key="key" type="button" class="keyboard-key" @click="handleKeyPress(key, $event)">{{ key }}</button>
+      </div>
+      <div class="keyboard-row">
+        <button v-if="!isSymbolMode" type="button" class="keyboard-key keyboard-function shift" :class="{ 'is-active': isShiftActive }" :aria-pressed="isShiftActive" title="切换大写" aria-label="切换大写" @click="toggleShift($event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m12 4 8 9h-5v7H9v-7H4Z" stroke-linejoin="round" /></svg>
+        </button>
+        <button v-for="key in row3" :key="key" type="button" class="keyboard-key" @click="handleKeyPress(key, $event)">{{ key }}</button>
+        <button type="button" class="keyboard-key keyboard-function backspace" title="退格" aria-label="退格" @click="handleBackspace($event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m8 5-6 7 6 7h13V5Z" stroke-linejoin="round" /><path d="m11 9 6 6m0-6-6 6" stroke-linecap="round" /></svg>
         </button>
       </div>
       <div class="keyboard-row">
-        <button v-for="key in row2" :key="key" @mousedown="handleKeyPress(key, $event)" class="keyboard-key">
-          {{ key }}
-        </button>
-      </div>
-      <div class="keyboard-row">
-        <button class="keyboard-key shift" @mousedown="toggleShift($event)">
-          <i class="fas fa-arrow-up">⇧</i>
-        </button>
-        <button v-for="key in row3" :key="key" @mousedown="handleKeyPress(key, $event)" class="keyboard-key">
-          {{ key }}
-        </button>
-        <button class="keyboard-key backspace" @mousedown="handleBackspace($event)">
-          <i class="fas fa-backspace">⌫</i>
-        </button>
-      </div>
-      <div class="keyboard-row">
-        <button class="keyboard-key" @mousedown="toggleSymbols($event)">
-          {{ isSymbolMode ? 'ABC' : '?123' }}
-        </button>
-        <button class="keyboard-key space" @mousedown="handleKeyPress(' ', $event)">空格</button>
-        <button class="keyboard-key enter" @mousedown="handleEnter($event)">回车</button>
+        <button type="button" class="keyboard-key keyboard-function keyboard-mode" :aria-pressed="isSymbolMode" :aria-label="isSymbolMode ? '切换字母' : '切换数字和符号'" @click="toggleSymbols($event)">{{ isSymbolMode ? 'ABC' : '123 / 符' }}</button>
+        <button type="button" class="keyboard-key space" aria-label="空格" @click="handleKeyPress(' ', $event)">空格</button>
+        <button type="button" class="keyboard-key enter" @click="handleEnter($event)">回车</button>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts" setup>
@@ -47,7 +43,6 @@ import { ref, computed, onMounted, onUnmounted, inject } from 'vue';
 
 const browserWindow = inject<BrowserWindow>('browserWindow');
 
-console.log(browserWindow);
 
 const props = defineProps({
   onInput: {
@@ -223,8 +218,10 @@ onMounted(() => {
 
   // 初始化样式
   browserWindow?.setFrame(false);
-  browserWindow?.setSize(600, 280);
-  browserWindow?.setBackgroundColor('rgba(240, 240, 240, 0.0)');
+  const width = Math.min(640, window.innerWidth - 24);
+  browserWindow?.setSize(width, 286);
+  browserWindow?.setPosition(Math.max(12, (window.innerWidth - width) / 2), Math.max(12, window.innerHeight - 342));
+  browserWindow?.setBackgroundColor('transparent');
   browserWindow?.setResizable(false);
   browserWindow?.setAlwaysOnTop(true);
 });
@@ -237,115 +234,133 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .soft-keyboard {
-  width: 100%;
-  background-color: rgba(240, 240, 240, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  padding: 18px;
-  box-sizing: border-box;
-  user-select: none;
-  position: absolute;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.keyboard-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 30px;
+  width: 100%;
+  height: 100%;
+  padding: 10px 12px 14px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, .9);
+  border-radius: 18px;
+  background: rgba(235, 238, 244, .96);
+  color: #303744;
+  box-shadow: 0 16px 48px rgba(22, 33, 53, .18), 0 2px 8px rgba(22, 33, 53, .06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
-
-.keyboard-row {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-}
-
-.keyboard-key {
-  min-width: 32px;
-  height: 40px;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
-
-  &:active {
-    background-color: rgba(220, 220, 220, 0.8);
-    transform: translateY(1px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-}
-
-.shift,
-.backspace {
-  min-width: 50px;
-}
-
-.space {
-  flex: 1;
-  min-width: 120px;
-}
-
-.enter {
-  min-width: 70px;
-  //   background-color: rgba(74, 144, 226, 0.8);
-  //   color: white;
-
-  &:active {
-    // background-color: rgba(58, 128, 210, 0.9);
-  }
-}
-
 .keyboard-handle {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  justify-content: space-between;
+  flex-shrink: 0;
   height: 30px;
-  padding: 0 15px;
-  box-sizing: border-box;
-  background-color: rgba(240, 240, 240, 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px 10px 0 0;
-  .close {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.3);
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .close:hover {
-    background-color: rgba(243, 75, 75, 0.3);
-  }
+  margin: 0 0 12px;
+  cursor: grab;
+  &:active { cursor: grabbing; }
 }
-
-.keyboard-handle-icon {
+.keyboard-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 4px;
+  color: #626c7d;
+  font-size: 12px;
+  font-weight: 500;
+  svg { width: 19px; height: 19px; }
+}
+.keyboard-close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 5px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #697384;
   cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 1;
-  }
+  &:hover { background: rgba(35, 47, 69, .08); color: #303744; }
+  &:active { background: rgba(35, 47, 69, .13); }
+  svg { width: 18px; height: 18px; }
+}
+.keyboard-container {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+.keyboard-row {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  gap: 6px;
+  justify-content: center;
+}
+.keyboard-row-inset { margin-inline: calc((100% + 6px) / 20); }
+.keyboard-key {
+  display: grid;
+  place-items: center;
+  flex: 1;
+  min-width: 0;
+  padding: 0 4px;
+  border: 1px solid rgba(208, 214, 224, .8);
+  border-bottom-color: #c5ccd8;
+  border-radius: 9px;
+  background: #fff;
+  color: #303744;
+  box-shadow: 0 2px 0 rgba(180, 189, 204, .5);
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 100ms ease, transform 100ms ease, box-shadow 100ms ease;
+  &:hover { background: #f8faff; border-color: #b9c9e5; }
+  &:active { transform: translateY(2px); background: #e0e9fa; box-shadow: none; }
+  svg { width: 21px; height: 21px; }
+}
+.keyboard-key:focus-visible, .keyboard-close:focus-visible { outline: 2px solid #4677cb; outline-offset: 2px; }
+.keyboard-function {
+  background: #dce2eb;
+  color: #536074;
+  border-color: #cdd5e1;
+  &:hover { background: #d2ddeb; }
+}
+.shift, .backspace { flex: 1.5; }
+.keyboard-mode { flex: 1.7; font-size: 13px; font-weight: 500; }
+.space { flex: 6; color: #778295; font-size: 13px; }
+.enter {
+  flex: 2;
+  border-color: #4774ba;
+  background: #4d7bc7;
+  color: #fff;
+  box-shadow: 0 2px 0 #3e66aa;
+  font-size: 14px;
+  font-weight: 500;
+  &:hover { border-color: #3969b6; background: #4272c0; }
+  &:active { background: #3563aa; }
+}
+.is-active {
+  border-color: #a8bfe8;
+  background: #d2e2ff;
+  color: #2a61bc;
+  &:hover { background: #c5d9fb; }
+}
+@media (max-width: 600px) {
+  .soft-keyboard { padding: 8px 8px 12px; border-radius: 15px; }
+  .keyboard-row { gap: 4px; }
+  .keyboard-row-inset { margin-inline: calc((100% + 4px) / 20); }
+  .keyboard-key { border-radius: 7px; font-size: 16px; }
+  .keyboard-mode { font-size: 11px; }
+  .space, .enter { font-size: 13px; }
+  .shift, .backspace { flex: 1.35; }
+  .keyboard-key svg { width: 18px; height: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .keyboard-key { transition: none; }
 }
 </style>

@@ -5,7 +5,7 @@
  * @FilePath: /myindex/README.md
 -->
 
-<p align="center"><a href="https://vtronjs.com/win/" target="_blank" rel="noopener noreferrer"><img width="200" src="./assert/vtron-logo-nobg.png" alt="vtron logo"></a></p>
+<p align="center"><a href="https://vtronjs.com/subapps/doc/" target="_blank" rel="noopener noreferrer"><img width="200" src="./assert/vtron-logo-nobg.png" alt="vtron logo"></a></p>
 
 <div align="center">
 
@@ -15,7 +15,7 @@ vtron, 基于Vue3的 Win10 UI 框架
 
 <div align="center">
 
-<a href="https://vtronjs.com/subapps/doc/" target="_blank">文档</a>|<a href="https://vtronjs.com/win/" target="_blank">官网</a>|<a href="https://vtronjs.com/win/" target="_blank">样例</a>
+<a href="https://vtronjs.com/subapps/doc/" target="_blank">文档</a>|<a href="https://vtronjs.com/subapps/doc/" target="_blank">官网</a>|<a href="https://vtronjs.com/win/" target="_blank">样例</a>
 
 </div>
 

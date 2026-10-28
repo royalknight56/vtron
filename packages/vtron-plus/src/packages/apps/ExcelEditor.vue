@@ -1,14 +1,14 @@
 <template>
   <div
     ref="appRef"
-    class="excel-app"
+    class="excel-app office-window"
     tabindex="0"
     @keydown="onKeyDown"
     @copy="onCopy"
     @cut="onCut"
     @paste="onPaste"
   >
-    <header class="office-title">
+    <OfficeTitlebar class="office-title" @close="closeWindow">
       <span class="app-icon" aria-hidden="true">X</span>
       <input v-model="documentName" class="document-name" aria-label="工作簿名称" @change="renameDocument" />
       <span class="save-state" role="status">{{
@@ -21,7 +21,7 @@
         <button title="撤销 Ctrl+Z" aria-label="撤销" :disabled="!undoStack.length" @click="undo">↶</button>
         <button title="重做 Ctrl+Y" aria-label="重做" :disabled="!redoStack.length" @click="redo">↷</button>
       </div>
-    </header>
+    </OfficeTitlebar>
     <nav class="ribbon-tabs" role="tablist" aria-label="Excel 功能区">
       <button
         v-for="item in tabs"
@@ -559,6 +559,7 @@
 <script setup lang="ts">
 import { computed, inject, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { BrowserWindow, join, System } from 'vtron';
+import OfficeTitlebar from './office/OfficeTitlebar.vue';
 import {
   address,
   cellKey,
@@ -1398,6 +1399,9 @@ async function mayReplace() {
   const result = await confirmAction('保存工作簿', '当前工作簿有未保存的更改。');
   return result === 'discard' || (result === 'save' && (await saveFile()));
 }
+async function closeWindow() {
+  if (await mayReplace()) win?.close();
+}
 async function createNew() {
   if (!(await mayReplace())) return;
   removeDraft();
@@ -1851,11 +1855,12 @@ function persistDraft() {
 }
 let draftTimer: ReturnType<typeof setTimeout> | undefined;
 watch(snapshot, () => {
-  win?.setTitle(`${documentName.value}${dirty.value ? ' *' : ''} - Excel`);
   clearTimeout(draftTimer);
   draftTimer = setTimeout(persistDraft, 500);
 });
-watch(documentName, () => win?.setTitle(`${documentName.value}${dirty.value ? ' *' : ''} - Excel`));
+watch([documentName, dirty], () =>
+  win?.setTitle(`${documentName.value}${dirty.value ? ' *' : ''} - Excel`)
+);
 function beforeUnload(e: BeforeUnloadEvent) {
   if (dirty.value) {
     persistDraft();
@@ -1958,7 +1963,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 16px;
+  padding: 0 0 0 16px;
   background: var(--accent);
   color: white;
 }

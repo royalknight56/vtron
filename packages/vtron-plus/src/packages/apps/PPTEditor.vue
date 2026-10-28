@@ -1,6 +1,6 @@
 <template>
-  <div ref="appRef" class="ppt-app" tabindex="0" @keydown="onKeyDown">
-    <header class="ppt-titlebar">
+  <div ref="appRef" class="ppt-app office-window" tabindex="0" @keydown="onKeyDown">
+    <OfficeTitlebar class="ppt-titlebar" @close="guarded(() => win?.close())">
       <span class="app-mark" aria-hidden="true">P</span>
       <button class="quick-button" title="保存 Ctrl+S" aria-label="保存" @click="saveFile()">
         <Icon name="save" />
@@ -35,7 +35,7 @@
         busy ? '正在保存…' : dirty ? '未保存' : filePath ? '已保存' : '新建演示文稿'
       }}</span>
       <button class="title-play" @click="startPresentation(0)"><Icon name="play" />放映</button>
-    </header>
+    </OfficeTitlebar>
 
     <nav class="ribbon-tabs" role="tablist" aria-label="功能区">
       <button
@@ -728,6 +728,7 @@ import {
   watch,
 } from 'vue';
 import { BrowserWindow, System, join } from 'vtron';
+import OfficeTitlebar from './office/OfficeTitlebar.vue';
 import { downloadPptFile, exportPptx, importPptx, normalizePresentation, pptId } from './office/pptFile';
 import type { Presentation, Slide, SlideElement } from './office/pptFile';
 
@@ -1952,7 +1953,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 0 12px;
+  padding: 0 0 0 12px;
   background: #b7472a;
   color: #fff;
 }

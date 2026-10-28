@@ -5,14 +5,14 @@
  * @FilePath: /myindex/README.md
 -->
 
-<p align="center"><a href="https://vtronjs.com/win/" target="_blank" rel="noopener noreferrer"><img width="200" src="./assert/vtron-logo-nobg.png" alt="vtron logo"></a></p>
+<p align="center"><a href="https://vtronjs.com/subapps/doc/" target="_blank" rel="noopener noreferrer"><img width="200" src="./assert/vtron-logo-nobg.png" alt="vtron logo"></a></p>
 
 <div align="center">
 Vtron: A Win10 UI framework based on Vue3
 </div>
 
 <div align="center">
-<a href="https://vtronjs.com/subapps/doc/" target="_blank">Documentation</a> | <a href="https://vtronjs.com/win/" target="_blank">Official Website</a> | <a href="https://vtronjs.com/win/" target="_blank">Demo</a>
+<a href="https://vtronjs.com/subapps/doc/" target="_blank">Documentation</a> | <a href="https://vtronjs.com/subapps/doc/" target="_blank">Official Website</a> | <a href="https://vtronjs.com/win/" target="_blank">Demo</a>
 </div>
 
 <div align="center">

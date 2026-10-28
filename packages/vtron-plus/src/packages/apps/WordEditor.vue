@@ -1,6 +1,6 @@
 <template>
-  <section ref="appRef" class="word-app" @keydown="onKeyDown">
-    <header class="word-titlebar">
+  <section ref="appRef" class="word-app office-window" @keydown="onKeyDown">
+    <OfficeTitlebar class="word-titlebar" @close="closeWindow">
       <span class="word-mark" aria-hidden="true">W</span><strong>Word</strong>
       <button class="quick" title="保存 Ctrl+S" aria-label="保存" @click="saveFile()">▣</button>
       <button class="quick" title="撤销 Ctrl+Z" aria-label="撤销" @mousedown.prevent @click="exec('undo')">
@@ -15,7 +15,7 @@
       <span class="save-state" role="status">{{
         busy ? '正在处理…' : dirty ? '未保存' : filePath ? '已保存' : '本地文档'
       }}</span>
-    </header>
+    </OfficeTitlebar>
     <nav class="word-tabs" aria-label="功能区" role="tablist">
       <button
         v-for="tab in tabs"
@@ -472,6 +472,7 @@
 <script setup lang="ts">
 import { computed, inject, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { BrowserWindow, Notify, System, join } from 'vtron';
+import OfficeTitlebar from './office/OfficeTitlebar.vue';
 import { wordEscape, wordReadDocx, wordSafeUrl, wordSanitize, wordWriteDocx } from './office/wordFormats';
 
 const sys = inject<System>('system')!;
@@ -743,6 +744,9 @@ async function confirmDiscard() {
     return !dirty.value;
   }
   return result.response === 1;
+}
+async function closeWindow() {
+  if (!busy.value && await confirmDiscard()) win?.close();
 }
 async function createNew() {
   if (!(await confirmDiscard())) return;
@@ -1235,7 +1239,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 15px;
+  padding: 0 0 0 15px;
   color: #fff;
 }
 .word-mark {
@@ -1249,7 +1253,7 @@ onBeforeUnmount(() => {
   color: #185abd;
   border-radius: 2px;
 }
-.word-titlebar > strong {
+.word-titlebar strong {
   font-size: 14px;
   letter-spacing: 0.1px;
   margin-right: 10px;
@@ -1821,7 +1825,7 @@ onBeforeUnmount(() => {
 @media (max-width: 700px) {
   .word-titlebar {
     gap: 4px;
-    padding: 0 9px;
+    padding: 0 0 0 9px;
   }
   .document-title {
     max-width: 170px;

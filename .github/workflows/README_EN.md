@@ -10,7 +10,7 @@
 
 <div align="center">
   <a href="https://vtronjs.com/subapps/doc/" target="_blank">Documentation</a> |
-  <a href="https://vtronjs.com/win/" target="_blank">Official Website</a> |
+  <a href="https://vtronjs.com/subapps/doc/" target="_blank">Official Website</a> |
   <a href="https://vtronjs.com/win/" target="_blank">Demo</a>
 </div>
 

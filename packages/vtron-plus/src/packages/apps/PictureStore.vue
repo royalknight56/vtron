@@ -1,5 +1,5 @@
 <template>
-  <div class="g" :class="{ 'g--dark': isDarkTheme }">
+  <div class="g gallery-window" :class="{ 'g--dark': isDarkTheme, 'g--maximized': maximized }">
     <!-- Activity Bar -->
     <div class="g-activity">
       <div class="g-activity__top">
@@ -137,8 +137,16 @@
     <!-- Main Area -->
     <div class="g-main">
       <!-- Tabs -->
-      <div class="g-tabs">
-        <div class="g-tabs__item" :class="{ 'g-tabs__item--active': !viewerOpen }" @click="closeViewer">
+      <div
+        v-dragable
+        class="g-tabs"
+        @mousedown.capture="win?.moveTop()"
+        @touchstart.capture.passive="win?.moveTop()"
+        @mousedown.stop
+        @touchstart.stop.passive
+        @dblclick="toggleMaximize"
+      >
+        <div class="g-tabs__item" :class="{ 'g-tabs__item--active': !viewerOpen }" @mousedown.stop @touchstart.stop.passive @dblclick.stop @click="closeViewer">
           <svg
             viewBox="0 0 24 24"
             width="14"
@@ -154,7 +162,7 @@
           </svg>
           <span>图库</span>
         </div>
-        <div v-if="viewerOpen && photoList[currentIndex]" class="g-tabs__item g-tabs__item--active">
+        <div v-if="viewerOpen && photoList[currentIndex]" class="g-tabs__item g-tabs__item--active" @mousedown.stop @touchstart.stop.passive @dblclick.stop>
           <svg
             viewBox="0 0 24 24"
             width="14"
@@ -169,6 +177,20 @@
           </svg>
           <span>{{ photoList[currentIndex]?.name }}</span>
           <div class="g-tabs__close" @click.stop="closeViewer">×</div>
+        </div>
+        <div class="g-window-controls" @mousedown.stop @touchstart.stop.passive @dblclick.stop>
+          <button type="button" aria-label="最小化图库" title="最小化" @click="win?.minimize()">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10" /></svg>
+          </button>
+          <button type="button" :aria-label="maximized ? '还原图库' : '最大化图库'" :title="maximized ? '还原' : '最大化'" @click="toggleMaximize">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path v-if="maximized" d="M5.5 5.5v-3h8v8h-3m-8-5h8v8h-8Z" />
+              <path v-else d="M3.5 3.5h9v9h-9Z" />
+            </svg>
+          </button>
+          <button type="button" class="g-window-controls__close" aria-label="关闭图库" title="关闭" @click="win?.close()">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 3.5 9 9m0-9-9 9" /></svg>
+          </button>
         </div>
       </div>
 
@@ -296,11 +318,19 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, ref, reactive } from 'vue';
-import { System, VtronFileWithoutContent, join } from 'vtron';
+import { computed, inject, onMounted, ref, reactive } from 'vue';
+import { BrowserWindow, System, VtronFileWithoutContent, join, vDragable } from 'vtron';
 import FileUploader from '../components/FileUploader.vue';
 
 const sys = inject<System>('system')!;
+const win = inject<BrowserWindow>('browserWindow');
+const maximized = computed(() => win?.isMaximized() ?? false);
+
+function toggleMaximize() {
+  if (maximized.value) win?.unmaximize();
+  else win?.maximize();
+}
+
 const photoList = ref<VtronFileWithoutContent[]>([]);
 const thumbnails = reactive<Record<string, string>>({});
 
@@ -490,6 +520,7 @@ function toggleTheme() {
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
+  border-radius: inherit;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 13px;
   color: var(--sb-fg);
@@ -755,8 +786,9 @@ function toggleTheme() {
   background: var(--tab-bg);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
 
   &__item {
     display: flex;
@@ -769,6 +801,10 @@ function toggleTheme() {
     border-right: 1px solid var(--tab-border);
     background: var(--tab-inactive-bg);
     white-space: nowrap;
+    min-width: 0;
+    overflow: hidden;
+    > span { overflow: hidden; text-overflow: ellipsis; }
+    > svg { flex-shrink: 0; }
     transition: all 0.1s;
     user-select: none;
 
@@ -798,6 +834,28 @@ function toggleTheme() {
       background: rgba(128, 128, 128, 0.3);
     }
   }
+}
+
+.g-window-controls {
+  display: flex;
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--tab-active-fg);
+
+  button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: default;
+    &:hover { background: var(--card-hover); }
+    &:focus-visible { outline: 2px solid var(--act-indicator); outline-offset: -3px; }
+    svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1; pointer-events: none; }
+  }
+  .g-window-controls__close:hover { background: #c42b1c; color: white; }
 }
 
 // ── Editor / Grid ──
@@ -1037,5 +1095,20 @@ function toggleTheme() {
   &__right {
     margin-left: auto;
   }
+}
+</style>
+
+<style>
+.wintmp_outer.max:has(> .wintmp_main > .gallery-window),
+.wintmp_outer.fullscreen:has(> .wintmp_main > .gallery-window) {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.wintmp_outer.max > .wintmp_main > .gallery-window,
+.wintmp_outer.fullscreen > .wintmp_main > .gallery-window {
+  border-radius: 0;
+}
+.wintmp_outer.max:has(> .wintmp_main > .gallery-window) > .win_drag_border {
+  display: none;
 }
 </style>

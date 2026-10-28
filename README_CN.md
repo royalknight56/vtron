@@ -15,7 +15,7 @@ vtron, 基于Vue3的 Win10 UI 框架
 
 <div align="center">
 
-<a href="https://vtron.site/doc" target="_blank">文档</a>|<a href="https://vtronjs.com/win/" target="_blank">官网</a>|<a href="https://vtronjs.com/win/" target="_blank">样例</a>
+<a href="https://vtronjs.com/subapps/doc/" target="_blank">文档</a>|<a href="https://vtronjs.com/win/" target="_blank">官网</a>|<a href="https://vtronjs.com/win/" target="_blank">样例</a>
 
 </div>
 
@@ -385,11 +385,11 @@ vtron-demo: demo 项目，线上地址为 [vtronjs.com/win/](https://vtronjs.com
 
 vtron-e2e: e2e测试监控项目。
 
-vtron-md: 文档项目，指线上[vtron.site/doc/](https://vtron.site/doc/)
+文档已迁至 [vtron-home/subapps/doc](https://github.com/royalknight56/vtron-home/tree/master/subapps/doc)，线上地址为 [vtronjs.com/subapps/doc/](https://vtronjs.com/subapps/doc/)。
 
 vtron-plus: plus插件，包含了部分占用体积的附加功能。
 
-vtron-store: 应用商店，线上应用商店打开时的内嵌网页，可以与vtron框架交互，提供应用安装功能。
+应用商店已迁至 [vtron-home/subapps/store](https://github.com/royalknight56/vtron-home/tree/master/subapps/store)，线上地址为 [vtronjs.com/subapps/store/](https://vtronjs.com/subapps/store/)，通过内嵌网页与 Vtron 交互并安装应用。
 
 ### 启动项目
 
@@ -422,16 +422,11 @@ pnpm plus build
 pnpm demo dev
 ```
 
-对于md项目，运行：
+文档和应用商店在 `vtron-home` 仓库中启动：
 
 ```bash
-pnpm md dev
-```
-
-对于shop项目，运行：
-
-```bash
-pnpm shop dev
+pnpm -C subapps/doc dev
+pnpm -C subapps/store dev
 ```
 
 对于e2e项目，运行：

@@ -153,15 +153,6 @@ importers:
         specifier: ^13.7.3
         version: 13.11.0
 
-  packages/vtron-md:
-    devDependencies:
-      vitepress:
-        specifier: 1.0.0-alpha.49
-        version: 1.0.0-alpha.49(@algolia/client-search@4.23.3)(@types/node@20.19.39)(sass@1.77.5)(search-insights@2.14.0)(typescript@5.9.3)
-      vue:
-        specifier: ^3.2.47
-        version: 3.4.29(typescript@5.9.3)
-
   packages/vtron-nas:
     dependencies:
       axios:
@@ -352,25 +343,6 @@ importers:
         version: 3.4.29(typescript@5.4.5)
       vue-tsc:
         specifier: ^1.8.11
-        version: 1.8.27(typescript@5.4.5)
-
-  packages/vtron-store:
-    dependencies:
-      vue:
-        specifier: ^3.2.47
-        version: 3.4.29(typescript@5.4.5)
-    devDependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^4.1.0
-        version: 4.6.2(vite@4.5.3(@types/node@20.19.39)(sass@1.77.5))(vue@3.4.29(typescript@5.4.5))
-      typescript:
-        specifier: ^5.0.2
-        version: 5.4.5
-      vite:
-        specifier: ^4.3.9
-        version: 4.5.3(@types/node@20.19.39)(sass@1.77.5)
-      vue-tsc:
-        specifier: ^1.4.2
         version: 1.8.27(typescript@5.4.5)
 
 packages:

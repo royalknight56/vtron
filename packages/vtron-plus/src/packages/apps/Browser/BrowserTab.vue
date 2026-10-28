@@ -58,7 +58,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
 
-const HOMEPAGE = 'https://vtron.site/startpage';
+const HOMEPAGE = 'https://vtronjs.com/subapps/startpage/';
 
 const props = defineProps<{
   isCurrent: boolean;

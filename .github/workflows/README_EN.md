@@ -9,9 +9,9 @@
 </div>
 
 <div align="center">
-  <a href="https://vtron.site/doc" target="_blank">Documentation</a> |
-  <a href="https://vtron.site/doc" target="_blank">Official Website</a> |
-  <a href="http://vtron.site/win/" target="_blank">Demo</a>
+  <a href="https://vtronjs.com/subapps/doc/" target="_blank">Documentation</a> |
+  <a href="https://vtronjs.com/win/" target="_blank">Official Website</a> |
+  <a href="https://vtronjs.com/win/" target="_blank">Demo</a>
 </div>
 
 <div align="center">
@@ -76,7 +76,7 @@ let system = new System();
 
 ## Documentation
 
-For detailed usage and API documentation, please visit our [official documentation](https://vtron.site/doc).
+For detailed usage and API documentation, please visit our [official documentation](https://vtronjs.com/subapps/doc/).
 
 ## Contributing
 

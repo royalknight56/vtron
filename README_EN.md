@@ -12,7 +12,7 @@ Vtron: A Win10 UI framework based on Vue3
 </div>
 
 <div align="center">
-<a href="https://vtron.site/doc" target="_blank">Documentation</a> | <a href="https://vtronjs.com/win/" target="_blank">Official Website</a> | <a href="https://vtronjs.com/win/" target="_blank">Demo</a>
+<a href="https://vtronjs.com/subapps/doc/" target="_blank">Documentation</a> | <a href="https://vtronjs.com/win/" target="_blank">Official Website</a> | <a href="https://vtronjs.com/win/" target="_blank">Demo</a>
 </div>
 
 <div align="center">
@@ -81,6 +81,8 @@ let system = new System();
 ```
 
 [... Rest of English documentation ...]
+
+Documentation and the app store are maintained in [vtron-home](https://github.com/royalknight56/vtron-home), under `subapps/doc` and `subapps/store`.
 
 ## Contributing
 

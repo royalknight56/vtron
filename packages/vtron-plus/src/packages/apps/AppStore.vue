@@ -31,7 +31,7 @@ const storeRef = ref<HTMLIFrameElement | null>(null);
 const frameKey = ref(0);
 const closing = ref(false);
 const isProduction = import.meta.env.PROD;
-const storeUrl = isProduction ? 'https://vtron.site/store/' : 'http://localhost:3001';
+const storeUrl = isProduction ? 'https://vtronjs.com/subapps/store/' : 'http://localhost:3001';
 const browserWindow: BrowserWindow = inject('browserWindow')!;
 const handleMessage = (event: MessageEvent) => {
   if (event.source !== storeRef.value?.contentWindow) {

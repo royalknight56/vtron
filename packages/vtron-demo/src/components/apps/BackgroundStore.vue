@@ -28,7 +28,7 @@
   const frameKey = ref(0);
   const closing = ref(false);
   const isLoading = ref(true);
-  const storeUrl = "https://vtronjs.com/react/#/background/";
+  const storeUrl = "https://vtronjs.com/subapps/react/#/background/";
 
   const browserWindow: BrowserWindow = inject('browserWindow')!;
   const handleMessage = (event: MessageEvent) => {

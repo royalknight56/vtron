@@ -1,37 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
-    <linearGradient id="taskmgr-frame" x1="12" y1="8" x2="49" y2="48" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FAFCFE"/>
-      <stop offset=".52" stop-color="#DCE8F0"/>
-      <stop offset="1" stop-color="#A1B6C8"/>
-    </linearGradient>
-    <linearGradient id="taskmgr-screen" x1="32" y1="13" x2="32" y2="41" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FAFEFF"/>
-      <stop offset="1" stop-color="#DBF1FB"/>
-    </linearGradient>
-    <linearGradient id="taskmgr-stand" x1="27" y1="46" x2="37" y2="58" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#7895AE"/>
-      <stop offset=".5" stop-color="#D5E3EC"/>
-      <stop offset="1" stop-color="#8CA8BD"/>
-    </linearGradient>
-    <linearGradient id="taskmgr-chart" x1="14" y1="34" x2="49" y2="19" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#188FCB"/>
-      <stop offset="1" stop-color="#0877B7"/>
-    </linearGradient>
-    <filter id="taskmgr-shadow" x="0" y="0" width="64" height="64" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="1.2" stdDeviation=".9" flood-color="#244C68" flood-opacity=".22"/>
-    </filter>
+    <linearGradient id="task-back" x1="12" y1="7" x2="50" y2="51" gradientUnits="userSpaceOnUse"><stop stop-color="#4BCBFF"/><stop offset="1" stop-color="#146DD3"/></linearGradient>
+    <linearGradient id="task-card" x1="16" y1="17" x2="50" y2="55" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#CBE6FC"/></linearGradient>
+    <linearGradient id="task-area" x1="34" y1="28" x2="34" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#0B99EB" stop-opacity=".4"/><stop offset="1" stop-color="#0B99EB" stop-opacity=".02"/></linearGradient>
   </defs>
-  <g filter="url(#taskmgr-shadow)">
-    <path d="M28 46H36L38 54H26L28 46Z" fill="url(#taskmgr-stand)" stroke="#7893A9"/>
-    <path d="M23 54H41L45 57V58H19V57L23 54Z" fill="url(#taskmgr-frame)" stroke="#809AAE" stroke-linejoin="round"/>
-    <rect x="6.5" y="8.5" width="51" height="39" rx="3" fill="url(#taskmgr-frame)" stroke="#718FA7"/>
-    <path d="M10 10H54" stroke="white" stroke-opacity=".9" stroke-linecap="round"/>
-    <rect x="10.5" y="12.5" width="43" height="29" rx=".8" fill="url(#taskmgr-screen)" stroke="#7DA1B9"/>
-    <path d="M19 14V40M27 14V40M35 14V40M43 14V40M12 21.5H52M12 29.5H52M12 37.5H52" stroke="#AED1E1" stroke-width=".8"/>
-    <path d="M14 34H20L25 23L30 30L36 18L41 25L49 19V40H14V34Z" fill="#47B3DC" fill-opacity=".18"/>
-    <path d="M14 34H20L25 23L30 30L36 18L41 25L49 19" stroke="url(#taskmgr-chart)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M11 43H53" stroke="#F3F8FC" stroke-opacity=".8"/>
-    <circle cx="50.5" cy="44.5" r="1" fill="#2F99CD"/>
-  </g>
+  <rect x="7" y="7" width="43" height="43" rx="5" fill="url(#task-back)"/>
+  <rect x="13" y="12" width="16" height="2" rx="1" fill="#D8F5FF"/>
+  <rect x="14" y="19" width="44" height="38" rx="5" fill="#145AAB" fill-opacity=".18"/>
+  <rect x="14" y="17" width="44" height="38" rx="5" fill="url(#task-card)"/>
+  <path d="M20 27H52M20 35H52M20 43H52" stroke="#8DBCE0" stroke-opacity=".4"/>
+  <path d="M21 43L28 36L33 40L40 28L46 34L52 29V49H21V43Z" fill="url(#task-area)"/>
+  <path d="M21 43L28 36L33 40L40 28L46 34L52 29" stroke="#0877D5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

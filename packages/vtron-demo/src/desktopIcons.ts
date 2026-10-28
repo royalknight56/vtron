@@ -5,6 +5,9 @@ import gallerySvg from '../../vtron-plus/src/packages/assets/gallery.svg?raw';
 import paintSvg from '../../vtron-plus/src/packages/assets/paint.svg?raw';
 import taskManagerSvg from '../../vtron-plus/src/packages/assets/taskmgr.svg?raw';
 import cameraSvg from '../../vtron-plus/src/packages/assets/camera.svg?raw';
+import wordSvg from '../../vtron-plus/src/packages/assets/office-word.svg?raw';
+import excelSvg from '../../vtron-plus/src/packages/assets/office-excel.svg?raw';
+import powerpointSvg from '../../vtron-plus/src/packages/assets/office-powerpoint.svg?raw';
 
 const svgIcon = (svg: string) => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 
@@ -15,11 +18,14 @@ export const desktopIcons = {
   '画板': svgIcon(paintSvg),
   '任务管理器': svgIcon(taskManagerSvg),
   '相机': svgIcon(cameraSvg),
+  Word: svgIcon(wordSvg),
+  Excel: svgIcon(excelSvg),
+  PPT: svgIcon(powerpointSvg),
 };
 
 export async function applyDesktopIcons(system: System) {
-  // demo 使用已发布的 plus 包；直接更新其注册配置，无需重新构建或发布库。
-  for (const name of ['图库', '画板', '任务管理器', '相机'] as const) {
+  // 同步已安装的快捷方式，用户刷新后即可看到新版内置图标。
+  for (const name of ['图库', '画板', '任务管理器', '相机', 'Word', 'Excel', 'PPT'] as const) {
     const app = system.stateManager.windowMap.get('Desktop', name);
     if (app && app.type !== 'group') {
       app.icon = desktopIcons[name];

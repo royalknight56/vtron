@@ -15,15 +15,15 @@ import termIcon from './assets/term.png';
 import pythonIcon from './assets/Python.png';
 import calcicon from './assets/calcicon.png';
 import chromeicon from './assets/chromeicon.png';
-import docxIcon from './assets/docx.png';
+import docxIcon from './assets/office-word.svg';
 import backupIcon from './assets/e895.png';
 import galleryIcon from './assets/gallery.svg';
 import storeIcon from './assets/vtron-stroe-icon-nobg.png';
 import musicAppIcon from './assets/musicApp.png';
 import pdfIcon from './assets/pdf.png';
 import ppticon from './assets/ppt.png';
-import pptxIcon from './assets/pptx.png';
-import xlsxIcon from './assets/xlsx.png';
+import pptxIcon from './assets/office-powerpoint.svg';
+import xlsxIcon from './assets/office-excel.svg';
 
 import DocxViewerVue from './apps/DocxViewer.vue';
 import ExeclViewerVue from './apps/ExeclViewer.vue';
@@ -97,6 +97,10 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
     ],
   };
   return function vtronPlusPlugin(system: System) {
+    const officeWindowSize = (width: number, height: number) => ({
+      width: Math.min(width, Math.max(240, window.innerWidth - 32)),
+      height: Math.min(height, Math.max(200, window.innerHeight - 80)),
+    });
     /**------------------ 桌面右键菜单--------------- */
     //#region
     //#endregion
@@ -104,7 +108,7 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
     /**------------------ 打开器区--------------- */
     //#region
     config.features.includes('doc') &&
-      system.registerFileOpener(['.doc', '.docx'], {
+      system.registerFileOpener(config.features.includes('word') ? ['.doc'] : ['.doc', '.docx'], {
         icon: docxIcon,
         func: async (path) => {
           const content = (await system.fs.readFile(path)) || '';
@@ -125,7 +129,7 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
       });
 
     config.features.includes('xls') &&
-      system.registerFileOpener(['.xls', '.xlsx'], {
+      system.registerFileOpener(config.features.includes('excel') ? ['.xls'] : ['.xls', '.xlsx'], {
         icon: xlsxIcon,
         func: async (path) => {
           const content = (await system.fs.readFile(path)) || '';
@@ -423,14 +427,13 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
       });
 
     config.features.includes('word') &&
-      system.registerFileOpener('.vtdoc', {
+      system.registerFileOpener(['.vtdoc', '.docx'], {
         icon: docxIcon,
         func: async (path) => {
           new BrowserWindow({
             title: path,
             icon: docxIcon,
-            width: 900,
-            height: 700,
+            ...officeWindowSize(1120, 760),
             resizable: true,
             center: true,
             content: WordEditorVue,
@@ -445,8 +448,7 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
         icon: docxIcon,
         window: {
           title: 'Word',
-          width: 900,
-          height: 700,
+          ...officeWindowSize(1120, 760),
           icon: docxIcon,
           center: true,
           content: WordEditorVue,
@@ -455,14 +457,13 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
       });
 
     config.features.includes('pptEditor') &&
-      system.registerFileOpener('.vtppt', {
+      system.registerFileOpener(['.vtppt', '.pptx'], {
         icon: pptxIcon,
         func: async (path) => {
           new BrowserWindow({
             title: path,
             icon: pptxIcon,
-            width: 1000,
-            height: 700,
+            ...officeWindowSize(1180, 760),
             resizable: true,
             center: true,
             content: PPTEditorVue,
@@ -476,9 +477,8 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
         name: 'PPT',
         icon: pptxIcon,
         window: {
-          title: 'PPT',
-          width: 1000,
-          height: 700,
+          title: 'PowerPoint',
+          ...officeWindowSize(1180, 760),
           icon: pptxIcon,
           center: true,
           content: PPTEditorVue,
@@ -487,14 +487,13 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
       });
 
     config.features.includes('excel') &&
-      system.registerFileOpener('.vtxls', {
+      system.registerFileOpener(['.vtxls', '.xlsx', '.csv', '.tsv'], {
         icon: xlsxIcon,
         func: async (path) => {
           new BrowserWindow({
             title: path,
             icon: xlsxIcon,
-            width: 900,
-            height: 600,
+            ...officeWindowSize(1120, 740),
             resizable: true,
             center: true,
             content: ExcelEditorVue,
@@ -509,8 +508,7 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
         icon: xlsxIcon,
         window: {
           title: 'Excel',
-          width: 900,
-          height: 600,
+          ...officeWindowSize(1120, 740),
           icon: xlsxIcon,
           center: true,
           content: ExcelEditorVue,

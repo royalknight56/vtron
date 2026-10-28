@@ -1,40 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
-    <linearGradient id="network-frame" x1="12" y1="8" x2="42" y2="42" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F8FCFF"/>
-      <stop offset=".48" stop-color="#D5E4EF"/>
-      <stop offset="1" stop-color="#91AABE"/>
-    </linearGradient>
-    <linearGradient id="network-screen" x1="11" y1="12" x2="42" y2="35" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#9EE5FC"/>
-      <stop offset=".5" stop-color="#3FA7DD"/>
-      <stop offset="1" stop-color="#2278BB"/>
-    </linearGradient>
-    <linearGradient id="network-stand" x1="24" y1="42" x2="24" y2="54" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#8CA7BB"/>
-      <stop offset=".5" stop-color="#DCE8EF"/>
-      <stop offset="1" stop-color="#A9BFCE"/>
-    </linearGradient>
-    <radialGradient id="network-globe" cx="0" cy="0" r="1" gradientTransform="translate(42 39) rotate(51) scale(19)" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#8DE7FD"/>
-      <stop offset=".55" stop-color="#279BD6"/>
-      <stop offset="1" stop-color="#1167AB"/>
-    </radialGradient>
+    <linearGradient id="net-sphere" x1="15" y1="9" x2="42" y2="48" gradientUnits="userSpaceOnUse"><stop stop-color="#35D7F6"/><stop offset=".5" stop-color="#1694EB"/><stop offset="1" stop-color="#1554BD"/></linearGradient>
+    <linearGradient id="net-link" x1="34" y1="35" x2="57" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#F7FDFF"/><stop offset="1" stop-color="#BEE6FF"/></linearGradient>
   </defs>
-  <ellipse cx="31.5" cy="56" rx="24.5" ry="2.5" fill="#16416B" fill-opacity=".14"/>
-  <path d="M21 41H31L33 50H19L21 41Z" fill="url(#network-stand)" stroke="#829EB2" stroke-width=".8"/>
-  <path d="M14 50H37L40 53.5C40.3 54.1 39.9 55 39.1 55H11.9C11.1 55 10.7 54.1 11 53.5L14 50Z" fill="url(#network-frame)" stroke="#8CA7BA" stroke-width=".8"/>
-  <path d="M13 52H38" stroke="#FFF" stroke-opacity=".8"/>
-  <rect x="6.5" y="7.5" width="44" height="35" rx="2.5" fill="url(#network-frame)" stroke="#738FA4"/>
-  <rect x="10" y="11" width="37" height="26" rx=".8" fill="url(#network-screen)" stroke="#4E89B0" stroke-width=".7"/>
-  <path d="M11 12H46V18L11 31V12Z" fill="#FFF" fill-opacity=".2"/>
-  <path d="M11 34L46 20V36H11V34Z" fill="#6CCDF0" fill-opacity=".25"/>
-  <path d="M8.5 9H48.5" stroke="#FFF" stroke-opacity=".85"/>
-  <circle cx="28.5" cy="39.7" r=".9" fill="#5C93B8"/>
-  <circle cx="46" cy="44" r="12.3" fill="#FFF" fill-opacity=".75"/>
-  <circle cx="46" cy="44" r="11.5" fill="url(#network-globe)" stroke="#246AA0" stroke-width=".8"/>
-  <path d="M34.9 44H57.1M37.1 37.4C42.3 39.6 49.7 39.6 54.9 37.4M37.1 50.6C42.3 48.4 49.7 48.4 54.9 50.6" stroke="#CDF4FF" stroke-width="1" stroke-opacity=".85"/>
-  <ellipse cx="46" cy="44" rx="5.2" ry="11.1" stroke="#D2F5FF" stroke-width="1"/>
-  <path d="M46 33V55" stroke="#D2F5FF" stroke-width="1"/>
-  <path d="M38.4 37.7C40 35.6 42.3 34.4 44.8 34.2" stroke="#FFF" stroke-width="1.5" stroke-linecap="round" stroke-opacity=".8"/>
+  <circle cx="27" cy="28" r="22" fill="url(#net-sphere)"/>
+  <path d="M6 26H48M9 16C19 21 35 21 45 16M9 40C19 35 35 35 45 40" stroke="#C2F5FF" stroke-opacity=".65" stroke-width="1.8"/>
+  <ellipse cx="27" cy="28" rx="10" ry="21" stroke="#C2F5FF" stroke-opacity=".65" stroke-width="1.8"/>
+  <path d="M27 7V49" stroke="#C2F5FF" stroke-opacity=".65" stroke-width="1.8"/>
+  <path d="M12 17C15 12 20 9 25 9" stroke="#E6FCFF" stroke-opacity=".65" stroke-width="2.5" stroke-linecap="round"/>
+  <rect x="29" y="33" width="31" height="25" rx="6" fill="#0E4C9B" fill-opacity=".18"/>
+  <rect x="29" y="31" width="31" height="25" rx="6" fill="url(#net-link)"/>
+  <g transform="rotate(-35 44.5 43.5)" stroke="#0875D1" stroke-width="3" stroke-linecap="round">
+    <rect x="34" y="39" width="13" height="9" rx="4.5"/><rect x="42" y="39" width="13" height="9" rx="4.5"/>
+  </g>
 </svg>

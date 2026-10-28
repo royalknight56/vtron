@@ -1,8 +1,24 @@
 import vue from '@vitejs/plugin-vue';
+import path from 'path';
 import { defineConfig } from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
+  // Demo 始终使用工作区源码，避免编辑器的改动被旧的 npm 包覆盖。
+  resolve: {
+    alias: [
+      { find: 'node-fetch', replacement: 'isomorphic-fetch' },
+      {
+        find: 'vtron-plus/distlib/style.css',
+        replacement: path.resolve(__dirname, '../vtron-plus/src/style.css'),
+      },
+      {
+        find: /^vtron-plus$/,
+        replacement: path.resolve(__dirname, '../vtron-plus/src/packages/plug.ts'),
+      },
+    ],
+    dedupe: ['vue', 'vtron'],
+  },
   server: {
     port: 3000,
   },

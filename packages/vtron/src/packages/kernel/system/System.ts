@@ -42,8 +42,10 @@ export class System {
 
   readonly _options: SystemOptions;
 
-  private _ready: ((value: System) => void) | null = null;
-  private _error: ((reason: unknown) => void) | null = null;
+  private readonly _readyPromise: Promise<System>;
+  private _resolveReady!: (value: System) => void;
+  private _rejectReady!: (reason: unknown) => void;
+  private _mountStarted = false;
   version = version;
   rootRef: HTMLElement | undefined = undefined;
 
@@ -65,6 +67,10 @@ export class System {
   stateManager: StateManager;
 
   constructor(options?: SystemOptions) {
+    this._readyPromise = new Promise<System>((resolve, reject) => {
+      this._resolveReady = resolve;
+      this._rejectReady = reject;
+    });
     if (options?.id !== undefined) {
       this.id = options.id;
     }
@@ -85,7 +91,12 @@ export class System {
     this.mount();
   }
 
-  mount() {
+  mount(): Promise<System> {
+    if (this._mountStarted) {
+      return this._readyPromise;
+    }
+    this._mountStarted = true;
+
     logger('mountGlobalSystem');
     System.GLOBAL_SYSTEM = this; // 挂载全局系统
     BrowserWindow.system = this;
@@ -95,7 +106,17 @@ export class System {
     Menu.system = this;
 
     logger('initSystem');
-    this.initSystem();
+    void this.initSystem().then(
+      () => {
+        this._resolveReady(this);
+      },
+      (error: unknown) => {
+        const message = error instanceof Error ? error.message : String(error);
+        this.emitError(message);
+        this._rejectReady(error);
+      }
+    );
+    return this._readyPromise;
   }
   activeCurrentSystem() {
     System.GLOBAL_SYSTEM = this;
@@ -132,8 +153,6 @@ export class System {
     this.fs?.on('error', (err: string) => {
       this.emitError(err);
     });
-
-    this._ready && this._ready(this);
 
     logger('start');
     this.emit('start');
@@ -192,10 +211,7 @@ export class System {
     }
   }
   whenReady(): Promise<System> {
-    return new Promise<System>((resolve, reject) => {
-      this._ready = resolve;
-      this._error = reject;
-    });
+    return this._readyPromise;
   }
   firstRun() {
     if (this.fs.isFirstRun) {
@@ -309,7 +325,6 @@ export class System {
 
   errorHandler = 0;
   emitError(error: string) {
-    this._error && this._error(error);
     this.stateManager.error.setError(error);
     this.errorHandler = Date.now();
     setTimeout(() => {

@@ -1,47 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
-    <linearGradient id="paint-palette" x1="17" y1="10" x2="38" y2="55" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFFEF4"/>
-      <stop offset=".55" stop-color="#F4E7BE"/>
-      <stop offset="1" stop-color="#D5BD87"/>
-    </linearGradient>
-    <linearGradient id="paint-handle" x1="40" y1="18" x2="46" y2="20" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#71BFED"/>
-      <stop offset=".4" stop-color="#2787C7"/>
-      <stop offset="1" stop-color="#16598F"/>
-    </linearGradient>
-    <linearGradient id="paint-ferrule" x1="40" y1="36" x2="46" y2="38" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#9BABB5"/>
-      <stop offset=".4" stop-color="#FAFEFF"/>
-      <stop offset="1" stop-color="#8499A8"/>
-    </linearGradient>
-    <linearGradient id="paint-bristles" x1="40" y1="42" x2="45" y2="51" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#BD874E"/>
-      <stop offset="1" stop-color="#725032"/>
-    </linearGradient>
-    <filter id="paint-shadow" x="0" y="0" width="64" height="64" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="1.2" stdDeviation=".9" flood-color="#4B4B40" flood-opacity=".22"/>
-    </filter>
+    <linearGradient id="art-palette" x1="13" y1="13" x2="40" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#FFFDF4"/><stop offset="1" stop-color="#D7EAF5"/></linearGradient>
+    <linearGradient id="art-brush" x1="41" y1="8" x2="46" y2="38" gradientUnits="userSpaceOnUse"><stop stop-color="#54D3F5"/><stop offset="1" stop-color="#1968CE"/></linearGradient>
   </defs>
-  <g filter="url(#paint-shadow)">
-    <path d="M29 9C15.5 8 5.5 18 5.5 31C5.5 44.2 15.9 54.6 29 55C36.2 55.2 44 53 44.5 48C45 43.7 37.5 43.7 38 39C38.5 34 54.5 33.8 54.5 24.5C54.5 15.8 41.5 9.5 29 9ZM35 44A4 4 0 1 1 27 44A4 4 0 1 1 35 44Z" fill="url(#paint-palette)" fill-rule="evenodd" stroke="#B99D68" stroke-width="1"/>
-    <path d="M9 28C10.3 17.9 18.3 11.5 28.5 11.5C36.5 11.5 44.1 14.1 48.5 18" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-opacity=".85"/>
-    <path d="M27 43.5C27.3 41.4 29 40 31 40C33 40 34.7 41.4 35 43.5" stroke="#B49966" stroke-width="1.1"/>
-    <circle cx="18" cy="21" r="4.6" fill="#DB574A" stroke="#BB4439" stroke-width=".8"/>
-    <ellipse cx="16.8" cy="19.6" rx="1.7" ry="1" fill="#FFAA96"/>
-    <circle cx="31.5" cy="17.5" r="4.6" fill="#F2C33D" stroke="#D7A62D" stroke-width=".8"/>
-    <ellipse cx="30.3" cy="16.1" rx="1.7" ry="1" fill="#FFEF9D"/>
-    <circle cx="43" cy="25" r="4.4" fill="#5B9D65" stroke="#43834D" stroke-width=".8"/>
-    <ellipse cx="41.9" cy="23.7" rx="1.6" ry=".9" fill="#A4D19A"/>
-    <circle cx="14.5" cy="35" r="4.5" fill="#438DCB" stroke="#3177AD" stroke-width=".8"/>
-    <ellipse cx="13.3" cy="33.6" rx="1.7" ry="1" fill="#9BCDF0"/>
-    <g transform="rotate(38 43 30)">
-      <path d="M40.5 8A2.5 2.5 0 0 1 45.5 8L45 34H41L40.5 8Z" fill="url(#paint-handle)" stroke="#256A9D" stroke-width=".8"/>
-      <path d="M42 9L42.4 30" stroke="#B5E1F6" stroke-width=".9" stroke-linecap="round" stroke-opacity=".8"/>
-      <path d="M40.5 33.5H45.5L46 42H40L40.5 33.5Z" fill="url(#paint-ferrule)" stroke="#7C909E" stroke-width=".8"/>
-      <path d="M40.5 36H45.5M40.3 39.5H45.7" stroke="#8DA1AE" stroke-width=".7"/>
-      <path d="M40 42H46C48 47.5 44.8 52.6 37 54C40.5 49.5 38.2 47 40 42Z" fill="url(#paint-bristles)" stroke="#795936" stroke-width=".8" stroke-linejoin="round"/>
-      <path d="M42.5 43C42 46.4 43 49 40.7 51.8" stroke="#D6AC72" stroke-width="1" stroke-linecap="round"/>
-    </g>
+  <path d="M29 10C16 10 6 20 6 33C6 46 16 56 29 56C37 56 43 53 43 48C43 44 37 44 38 39C39 34 54 35 54 26C54 17 42 10 29 10ZM30 44A4 4 0 1 1 22 44A4 4 0 1 1 30 44Z" fill="#2C689E" fill-opacity=".16"/>
+  <path d="M29 8C16 8 6 18 6 31C6 44 16 54 29 54C37 54 43 51 43 46C43 42 37 42 38 37C39 32 54 33 54 24C54 15 42 8 29 8ZM30 42A4 4 0 1 1 22 42A4 4 0 1 1 30 42Z" fill="url(#art-palette)" fill-rule="evenodd"/>
+  <circle cx="17" cy="21" r="4" fill="#F16B68"/><circle cx="30" cy="16" r="4" fill="#F4C344"/><circle cx="42" cy="23" r="4" fill="#45B992"/><circle cx="14" cy="34" r="4" fill="#3B9EEA"/>
+  <g transform="rotate(38 43 30)">
+    <path d="M40 8A3 3 0 0 1 46 8L45.5 34H40.5L40 8Z" fill="url(#art-brush)"/>
+    <rect x="40" y="32" width="6" height="8" rx="1" fill="#B5D2E6"/>
+    <path d="M40 39H46C48 45 44 51 36 53C40 48 37 44 40 39Z" fill="#344F72"/>
+    <path d="M36 53C39 49 42 50 45 47C43 51 40 53 36 53Z" fill="#128CE4"/>
   </g>
 </svg>

@@ -510,7 +510,8 @@ function backgroundMove(e: MouseEvent) {
     chosenCallback(rectValue);
   }
 }
-function backgroundUp() {
+function backgroundUp(e: MouseEvent) {
+  chosing(e);
   choseEnd();
   const rectValue = getRect();
   if (rectValue) {

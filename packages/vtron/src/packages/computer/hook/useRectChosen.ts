@@ -22,6 +22,8 @@ export function useRectChosen() {
     isDown.value = true;
     startPoint.x = e.clientX;
     startPoint.y = e.clientY;
+    rect.value.left = e.clientX;
+    rect.value.top = e.clientY;
     rect.value.width = 0;
     rect.value.height = 0;
   }

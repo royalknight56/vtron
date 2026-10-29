@@ -73,6 +73,7 @@ function backgroundMove(e: MouseEvent) {
 }
 function backgroundUp(e: MouseEvent) {
   sys.emitEvent('desktop.background.leftUp', e);
+  chosing(e);
   choseEnd();
   const rectValue = getRect();
   if (rectValue) {

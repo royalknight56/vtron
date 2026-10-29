@@ -36,23 +36,18 @@
     @dragstart.stop="startDragApp($event, item)"
     @click="handleClick(item)"
     @mousedown.stop
-    @ref="
-      (ref) => {
-        appPositions[index] = markRaw(ref as Element);
-      }
-    "
+    @ref="(element) => setFileElement(item.path, element)"
     @edit="onEdit"
   >
   </FileItem>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, markRaw, inject, computed } from 'vue';
+import { onMounted, ref, inject, computed } from 'vue';
 import { VtronFileWithoutContent, basename, dirname, join, System, VtronFile } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
 import { openPropsWindow, copyFile, createLink, openWith, moveToRecycleBin } from './fileOpt';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { Rect } from '@/packages/computer/hook/useRectChosen';
-import { throttle } from '@/packages/util/debounce';
 import FileItem from './FileItem.vue';
 
 const sys = inject<System>('system')!;
@@ -108,8 +103,13 @@ const fileListFilter = computed(() => {
 });
 
 const hoverPath = ref<string>('');
-const appPositions = ref<Array<Element>>([]);
+const fileElements = new Map<string, Element>();
 const chosenPaths = ref<Array<string>>([]);
+
+function setFileElement(path: string, element: Element | null) {
+  if (element) fileElements.set(path, element);
+  else fileElements.delete(path);
+}
 
 function handleOnOpen(item: VtronFileWithoutContent) {
   chosenPaths.value = [];
@@ -164,9 +164,11 @@ function handleClick(file: VtronFileWithoutContent) {
 onMounted(() => {
   chosenPaths.value = [];
   props.onChosen(
-    throttle((rect: Rect) => {
+    (rect: Rect) => {
       const tempChosen: string[] = [];
-      appPositions.value.forEach((el, index) => {
+      fileListFilter.value.forEach((item) => {
+        const el = fileElements.get(item.path);
+        if (!el?.isConnected) return;
         const rect2 = el.getBoundingClientRect();
         const rect2Center = {
           x: rect2.left + rect2.width / 2,
@@ -178,11 +180,11 @@ onMounted(() => {
           rect2Center.y > rect.top &&
           rect2Center.y < rect.top + rect.height
         ) {
-          tempChosen.push(props.fileList[index].path);
+          tempChosen.push(item.path);
         }
       });
       chosenPaths.value = tempChosen;
-    }, 100)
+    }
   );
 });
 

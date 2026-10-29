@@ -5,8 +5,7 @@
  */
 import { createApp } from 'vue';
 import App from './App.vue';
-// Main中引入vtron，并且引入样式文件
-import 'vtron/distlib/style.css';
+// 工作区内核的样式由各 Vue 组件随源码加载。
 import 'vtron-plus/distlib/style.css';
 
 import 'xterm/css/xterm.css';

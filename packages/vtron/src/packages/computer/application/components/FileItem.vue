@@ -17,9 +17,7 @@
     }"
     :ref="
       (ref) => {
-        if (ref) {
-          emit('ref', ref as Element);
-        }
+        emit('ref', ref as Element | null);
       }
     "
   >
@@ -84,7 +82,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   edit: [name: string];
-  ref: [el: Element];
+  ref: [el: Element | null];
 }>();
 
 const editName = ref<string>('');

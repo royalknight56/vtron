@@ -12,6 +12,7 @@ export default defineConfig({
       { find: '@', replacement: path.resolve(__dirname, '../vtron/src') },
       { find: '@packages', replacement: path.resolve(__dirname, '../vtron/src/packages') },
       { find: '@feature', replacement: path.resolve(__dirname, '../vtron/src/packages/feature') },
+      { find: 'SegMDL2.ttf', replacement: path.resolve(__dirname, '../vtron/public/SegMDL2.ttf') },
       {
         find: 'vtron-plus/distlib/style.css',
         replacement: path.resolve(__dirname, '../vtron-plus/src/style.css'),

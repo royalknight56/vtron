@@ -13,6 +13,7 @@ async function rm(input: string, output: (text: string) => void, shell: Shell) {
         await shell.system.fs.rmdir(fspath.join(shell.router, path));
       }
     } else {
+      shell.exitCode = 1;
       output(`\x1b[31m${path}: No such file or directory\x1b[0m\r\n`);
     }
   }

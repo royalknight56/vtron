@@ -16,7 +16,7 @@ import { ref } from 'vue';
 import { applyDesktopIcons, desktopIcons } from './desktopIcons';
 
 import { System, BrowserWindow, Notify, VtronComputer, join } from 'vtron';
-import { vtronPlus } from 'vtron-plus';
+import { vtronPlus, enableVirtualPreview } from 'vtron-plus';
 import MarkDown from './components/apps/MarkDown.vue';
 import 'vtron-plus/distlib/style.css';
 // import backimg from './assets/back.jpg';
@@ -83,6 +83,13 @@ const system = new System({
   background: "#65b8e0",
   lang: 'zh-CN',
 });
+
+const localPreviewOrigin = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname) && location.port && Number(location.port) < 65535
+  ? `${location.protocol}//${location.hostname}:${Number(location.port) + 1}`
+  : undefined;
+if (import.meta.env.VITE_PREVIEW_ORIGIN || localPreviewOrigin) {
+  enableVirtualPreview(system, { previewOrigin: import.meta.env.VITE_PREVIEW_ORIGIN || localPreviewOrigin });
+}
 
 system.whenReady().then(async (readySystem) => {
   // if (readySystem.version !== "0.4.4") {

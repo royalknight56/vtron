@@ -4,6 +4,7 @@ async function touch(input: string, output: (text: string) => void, shell: Shell
   const fileName = input.split(' ')[1].trim();
   const res = await shell.system.fs.stat(fspath.join(shell.router, fileName));
   if (res) {
+    shell.exitCode = 1;
     output(`\x1b[31m${fileName}: File exists\x1b[0m\r\n`);
   } else {
     await shell.system.fs.writeFile(fspath.join(shell.router, fileName), '');

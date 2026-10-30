@@ -3,7 +3,6 @@ import baidumapicon from './assets/baidumap.base?raw';
 import flowicon from './assets/flowicon.png';
 import slinotesvg from './assets/slinote.svg';
 import friendLinkicon from './assets/friendLinkBase.base?raw';
-import vscode from './assets/vscode.png';
 import winv3icon from './assets/winv3.png';
 import Tmusicicon from './assets/t-music.png';
 import { desktopIcons } from './desktopIcons';
@@ -108,14 +107,6 @@ const magnetConfig = [
 
 // 重构 desktopConfig
 const desktopConfig = [
-  {
-    title: 'github1s',
-    icon: vscode,
-    ...commonConfig,
-    height: 700,
-    content: 'https://github1s.com/',
-  },
-
   // {
   //   title: "MarkDown",
   //   icon: markdownicon,
@@ -182,7 +173,7 @@ const desktopConfig = [
     ...commonConfig,
     width: 1000,
     height: 700,
-    content: 'https://vtron.site/tmusic/',
+    content: 'https://vtronjs.com/subapps/tmusic/',
     ...darkThemeConfig,
   },
 

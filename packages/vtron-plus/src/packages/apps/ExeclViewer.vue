@@ -1,5 +1,5 @@
 <template>
-  <div class="viewer" ref="viewer">
+  <div class="vtron-excel-viewer" ref="viewer">
     <vue-office-excel :src="base64PDFToBlobUrl()" />
   </div>
 </template>
@@ -8,7 +8,6 @@ import { BrowserWindow } from 'vtron';
 import { inject, ref, watch } from 'vue';
 // @ts-ignore
 import VueOfficeExcel from '@vue-office/excel/lib/v3/vue-office-excel.mjs';
-import '@vue-office/excel/lib/v3/index.css';
 
 const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
@@ -39,8 +38,14 @@ watch(
   }
 );
 </script>
+<style lang="scss">
+.vtron-excel-viewer {
+  // 省略扩展名，让 Sass 内联第三方 CSS，并加上应用容器前缀。
+  @import '@vue-office/excel/lib/v3/index';
+}
+</style>
 <style scoped>
-.viewer {
+.vtron-excel-viewer {
   width: 100%;
   height: 100%;
   background-color: #ffffff;

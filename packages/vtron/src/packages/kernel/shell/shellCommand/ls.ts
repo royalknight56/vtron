@@ -15,9 +15,11 @@ async function ls(input: string, output: (text: string) => void, shell: Shell) {
           }
         });
       } else {
+        shell.exitCode = 1;
         output(`\x1b[31m${path}: Not a directory\x1b[0m\r\n`);
       }
     } else {
+      shell.exitCode = 1;
       output(`\x1b[31m${path}: No such file or directory\x1b[0m\r\n`);
     }
   } else {

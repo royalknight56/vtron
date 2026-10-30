@@ -10,6 +10,7 @@ import { pwd } from './pwd';
 import { rm } from './rm';
 import { sh } from './sh';
 import { touch } from './touch';
+import type { Shell } from '../Shell';
 const commandMap = [
   {
     name: 'ls',
@@ -79,17 +80,17 @@ const commandMap = [
   },
   {
     name: 'node',
-    description: 'run node script',
-    usage: 'node [FILE]',
+    description: 'run JavaScript with Vtron fs/process',
+    usage: 'node <FILE> [args] | node -e "code"',
     callback: node,
   },
   {
     name: 'help',
     description: 'display help information',
     usage: 'help',
-    callback: (input: string, output: (text: string) => void) => {
+    callback: (input: string, output: (text: string) => void, shell: Shell) => {
       let outputString = '';
-      for (const command of commandMap) {
+      for (const command of [...commandMap, ...shell.system.getShellCommands()]) {
         outputString += `${command.name}: ${command.description}\r\n`;
       }
       output(outputString);

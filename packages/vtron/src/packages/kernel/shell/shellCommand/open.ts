@@ -8,6 +8,7 @@ async function open(input: string, output: (text: string) => void, shell: Shell)
     if (res) {
       shell.system.openFile(res.path);
     } else {
+      shell.exitCode = 1;
       output(`\x1b[31m${path}: No such file or directory\x1b[0m\r\n`);
     }
   }

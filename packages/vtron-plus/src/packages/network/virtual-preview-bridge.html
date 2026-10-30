@@ -1,0 +1,40 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Vtron preview bridge</title>
+<script>
+(async () => {
+  const parameters = new URLSearchParams(location.hash.slice(1));
+  const session = parameters.get('session');
+  const owner = parameters.get('owner');
+  if (!session || !/^[\w-]{20,80}$/.test(session) || !owner || parent === self) return;
+  const send = (type, extra = {}, ports = []) => parent.postMessage({ type, session, ...extra }, owner, ports);
+  await new Promise(resolve => {
+    const initialize = event => {
+      if (event.source !== parent || event.origin !== owner || event.data?.type !== 'vtron:preview:init' || event.data.session !== session) return;
+      removeEventListener('message', initialize); resolve();
+    };
+    addEventListener('message', initialize);
+  });
+  try {
+    const workerUrl = new URL('worker.js', location.href);
+    const registration = await navigator.serviceWorker.register(workerUrl, { scope: './' });
+    if (!registration.active) {
+      const worker = registration.installing || registration.waiting;
+      if (!worker) throw new Error('Preview worker did not start');
+      await new Promise((resolve, reject) => {
+        const changed = () => {
+          if (worker.state === 'activated') { worker.removeEventListener('statechange', changed); resolve(); }
+          else if (worker.state === 'redundant') { worker.removeEventListener('statechange', changed); reject(new Error('Preview worker installation failed')); }
+        };
+        worker.addEventListener('statechange', changed); changed();
+      });
+    }
+    navigator.serviceWorker.addEventListener('message', event => {
+      if (event.source?.scriptURL !== workerUrl.href || event.data?.session !== session) return;
+      if (event.data.type === 'vtron:preview:registered') send('vtron:preview:ready');
+      if (event.data.type === 'vtron:preview:request' && event.ports[0]) send(event.data.type, event.data, [event.ports[0]]);
+    });
+    registration.active.postMessage({ type: 'vtron:preview:register', session });
+  } catch (error) { send('vtron:preview:error', { error: error.message }); }
+})();
+</script>

@@ -1,6 +1,9 @@
 import * as fspath from '@/packages/util/Path';
 import { VtronFileInterface } from './FIleInterface';
 import { VtronFile, VtronFileMode, VtronFileWithoutContent } from './FileSystem';
+function fileSystemError(code: string, message: string) {
+  return Object.assign(new Error(message), { code });
+}
 
 class VtronMemoryFileSystem implements VtronFileInterface {
   private files: Map<string, VtronFile> = new Map();
@@ -286,29 +289,30 @@ class VtronMemoryFileSystem implements VtronFileInterface {
     this.files.set(newPath, file);
   }
 
-  async rename(path: string, newPath: string): Promise<void> {
+  async rename(path: string, newPath: string, options?: { overwrite?: boolean }): Promise<void> {
     const volume = this.checkVolumePath(path);
-    const volume2 = this.checkVolumePath(newPath);
-    if (!!volume && !!volume2) {
-      return this.beforeGuard(volume, 'rename', path, newPath);
-    } else if ((!!volume && !volume2) || (!volume && !!volume2)) {
-      this.onerror('Cannot rename between volumes');
-      return Promise.reject('Cannot rename between volumes');
-    }
-
-    if (path === newPath) {
-      return;
-    }
-    if (fspath.isChildPath(path, newPath)) {
-      this.onerror('Cannot rename to child path');
-      return Promise.reject('Cannot rename to child path');
-    }
+    const destinationVolume = this.checkVolumePath(newPath);
+    if (volume !== destinationVolume) throw fileSystemError('EXDEV', 'Cannot rename between volumes');
+    if (volume) return this.beforeGuard(volume, 'rename', path, newPath, options);
 
     const file = this.files.get(path);
-    if (file) {
-      this.dfsRename(path, newPath);
-      this.commitWatch(path, file.content);
+    if (!file) throw fileSystemError('ENOENT', 'File not found: ' + path);
+    if (path === newPath) return;
+    if (fspath.isChildPath(path, newPath)) throw fileSystemError('EINVAL', 'Cannot rename to child path');
+    const parent = this.files.get(fspath.dirname(newPath));
+    if (!parent) throw fileSystemError('ENOENT', 'Destination parent not found');
+    if (!parent.isDirectory) throw fileSystemError('ENOTDIR', 'Destination parent is not a directory');
+    const destination = this.files.get(newPath);
+    if (destination && options?.overwrite === false)
+      throw fileSystemError('EEXIST', 'Destination already exists');
+    if (destination && options?.overwrite === true && (!file.isFile || !destination.isFile)) {
+      throw fileSystemError(
+        destination.isDirectory ? 'EISDIR' : 'EINVAL',
+        'Only regular files can be overwritten'
+      );
     }
+    this.dfsRename(path, newPath);
+    this.commitWatch(path, file.content);
   }
 
   private dfsRmdir(filePath: string) {

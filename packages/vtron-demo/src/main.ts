@@ -8,8 +8,6 @@ import App from './App.vue';
 // 工作区内核的样式由各 Vue 组件随源码加载。
 import 'vtron-plus/distlib/style.css';
 
-import 'xterm/css/xterm.css';
-
 import { BrowserTracing } from '@sentry/tracing';
 import * as Sentry from '@sentry/vue';
 // import PrimeVue from 'primevue/config';

@@ -99,7 +99,9 @@ export function initBuiltinFileOpener(system: System) {
   }
 
   if (system._options.builtinFeature?.includes('TextOpener')) {
-    system.registerFileOpener(['.txt', '.js', '.json', ''], {
+    // 保留插件预先注册的编辑器，内置文本查看器只作为默认打开方式。
+    const textTypes = ['.txt', '.js', '.json', ''].filter((type) => !system.getOpener(type));
+    system.registerFileOpener(textTypes, {
       name: '文本文件',
       icon: unknownIcon,
       func: async (path) => {

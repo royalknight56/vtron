@@ -1,5 +1,6 @@
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
+import type { ShellCommand, ScriptModuleContext, ScriptModuleLoader } from '@/packages/kernel/shell/ScriptModule';
 import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
 import { FileSystemOperations } from '@/packages/kernel/system/fileSystemOperations/FileSystemOperations';
 import {
@@ -41,6 +42,10 @@ export class System {
   id: number = System.GLOBAL_SYSTEM_ID++;
 
   readonly _options: SystemOptions;
+  /** 初始化时捕获的脚本请求能力，不受桌面持久化设置影响。 */
+  readonly scriptRuntime: Readonly<{ fetch: typeof globalThis.fetch }>;
+  private readonly shellCommands = new Map<string, ShellCommand>();
+  private scriptModuleLoader?: ScriptModuleLoader;
 
   private readonly _readyPromise: Promise<System>;
   private _resolveReady!: (value: System) => void;
@@ -67,6 +72,9 @@ export class System {
   stateManager: StateManager;
 
   constructor(options?: SystemOptions) {
+    const fetch = options?.scriptRuntime?.fetch;
+    if (fetch !== undefined && typeof fetch !== 'function') throw new TypeError('scriptRuntime.fetch must be a function');
+    this.scriptRuntime = Object.freeze({ fetch: fetch ?? ((...args) => globalThis.fetch(...args)) });
     this._readyPromise = new Promise<System>((resolve, reject) => {
       this._resolveReady = resolve;
       this._rejectReady = reject;
@@ -195,6 +203,22 @@ export class System {
   addBuiltInApp(options: WinAppOptions) {
     this.stateManager.windowMap.set('Builtin', options.name, options);
   }
+
+  registerShellCommand(command: ShellCommand): () => void {
+    if (!/^[a-zA-Z][\w.-]*$/.test(command.name) || typeof command.callback !== 'function') throw new TypeError('Invalid shell command');
+    if (this.shellCommands.has(command.name)) throw new Error(`Shell command already registered: ${command.name}`);
+    this.shellCommands.set(command.name, command);
+    return () => { if (this.shellCommands.get(command.name) === command) this.shellCommands.delete(command.name); };
+  }
+  getShellCommand(name: string) { return this.shellCommands.get(name); }
+  getShellCommands(): readonly ShellCommand[] { return [...this.shellCommands.values()]; }
+  registerScriptModuleLoader(loader: ScriptModuleLoader): () => void {
+    if (typeof loader !== 'function') throw new TypeError('Invalid script module loader');
+    if (this.scriptModuleLoader) throw new Error('A script module loader is already registered');
+    this.scriptModuleLoader = loader;
+    return () => { if (this.scriptModuleLoader === loader) this.scriptModuleLoader = undefined; };
+  }
+  prepareScriptModules(context: ScriptModuleContext) { return this.scriptModuleLoader?.(context); }
 
   createShell(): ShellInterface {
     if (this._options.shell) {

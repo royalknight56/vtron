@@ -1,5 +1,6 @@
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -29,6 +30,23 @@ export default defineConfig({
   },
   plugins: [
     vue(),
+    {
+      name: 'vtron-virtual-preview-worker',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          const file = req.url?.split('?')[0].match(/\/__vtron_preview__\/(worker\.js|bridge\.html)$/)?.[1];
+          if (!file) return next();
+          res.setHeader('Content-Type', file.endsWith('.js') ? 'text/javascript' : 'text/html');
+          res.setHeader('Cache-Control', 'no-cache');
+          res.end(readFileSync(path.resolve(__dirname, '../vtron-plus/src/packages/network/' + (file === 'worker.js' ? 'virtual-preview-sw.js' : 'virtual-preview-bridge.html')), 'utf8'));
+        });
+      },
+      generateBundle() {
+        for (const [source, target] of [['virtual-preview-sw.js', 'worker.js'], ['virtual-preview-bridge.html', 'bridge.html']]) {
+          this.emitFile({ type: 'asset', fileName: '__vtron_preview__/' + target, source: readFileSync(path.resolve(__dirname, '../vtron-plus/src/packages/network/' + source), 'utf8') });
+        }
+      },
+    },
     {
       name: 'vtron-plus-subapp-urls',
       apply: 'build',

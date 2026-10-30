@@ -1,5 +1,8 @@
 import * as fspath from '@/packages/util/Path';
 import { VtronFileInterface } from './FIleInterface';
+function fileSystemError(code: string, message: string) {
+  return Object.assign(new Error(message), { code });
+}
 
 type DateLike = Date | string | number;
 export enum VtronFileMode {
@@ -561,97 +564,140 @@ class VtronFileSystem implements VtronFileInterface {
       };
     });
   }
-  private async dfsRename(vfile: VtronFile, objectStore: IDBObjectStore, newPath: string) {
+  private dfsRename(
+    vfile: VtronFile,
+    objectStore: IDBObjectStore,
+    newPath: string,
+    fail: (error: unknown) => void
+  ): void {
     if (vfile.isDirectory) {
       objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
         const cursor: IDBCursorWithValue = event.target.result;
         if (cursor) {
-          const tempfile = cursor.value;
-          const tempNewPath = fspath.join(newPath, fspath.basename(tempfile.path));
-          this.dfsRename(tempfile, objectStore, tempNewPath);
-          cursor.continue();
+          try {
+            const tempfile = cursor.value;
+            const tempNewPath = fspath.join(newPath, fspath.basename(tempfile.path));
+            this.dfsRename(tempfile, objectStore, tempNewPath, fail);
+            cursor.continue();
+          } catch (error) {
+            fail(error);
+          }
         }
       };
     }
-    const vParentPath = fspath.dirname(newPath);
     vfile.path = newPath;
-    vfile.parentPath = vParentPath;
+    vfile.parentPath = fspath.dirname(newPath);
     vfile.mtime = new Date();
     vfile.name = fspath.basename(newPath);
     objectStore.put(vfile);
   }
-  async rename(path: string, newPath: string): Promise<void> {
+  async rename(path: string, newPath: string, options?: { overwrite?: boolean }): Promise<void> {
     const volume = this.checkVolumePath(path);
-    const volume2 = this.checkVolumePath(newPath);
-    if (!!volume && !!volume2) {
-      return this.beforeGuard(volume, 'rename', path, newPath);
-    } else if ((!!volume && !volume2) || (!volume && !!volume2)) {
-      this.onerror('Cannot rename between volumes');
-      return Promise.reject('Cannot rename between volumes');
+    const destinationVolume = this.checkVolumePath(newPath);
+    if (volume !== destinationVolume) {
+      throw fileSystemError('EXDEV', 'Cannot rename between volumes');
     }
-
-    // this.beforeGuard('rename', path, newPath);
-    // cannot rename to child path
-    // /C/Users /C/Users/Desktop/Users
-    if (path === newPath) {
-      return Promise.resolve();
+    if (volume) return this.beforeGuard(volume, 'rename', path, newPath, options);
+    if (path !== newPath && fspath.isChildPath(path, newPath)) {
+      throw fileSystemError('EINVAL', 'Cannot rename to child path');
     }
-    if (fspath.isChildPath(path, newPath)) {
-      this.onerror('Cannot rename to child path');
-      return Promise.reject('Cannot rename to child path');
-    }
-    // if (newPath.startsWith(path)) {//bug
-    //   return Promise.reject('Cannot rename to child path');
-    // }
 
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
-
     const index = objectStore.index('path');
-    const range = IDBKeyRange.only(path);
-    const request = index.get(range);
-
-    return new Promise((resolve, reject) => {
-      request.onerror = () => {
-        this.onerror('Failed to read file');
-        reject('Failed to read file');
-      };
-      request.onsuccess = () => {
-        const file: VtronFile = request.result;
-        if (file) {
-          this.dfsRename(file, objectStore, newPath);
-          this.commitWatch(path, file.content);
+    return new Promise<void>((resolve, reject) => {
+      let failure: unknown;
+      let moved = false;
+      let content = '';
+      const fail = (error: unknown) => {
+        if (failure) return;
+        failure = error;
+        try {
+          transaction.abort();
+        } catch {
+          reject(error);
         }
-
+      };
+      transaction.onerror = (event) => {
+        failure ||= (event.target as IDBRequest).error || transaction.error;
+      };
+      transaction.onabort = () =>
+        reject(failure || transaction.error || fileSystemError('EIO', 'Rename transaction aborted'));
+      transaction.oncomplete = () => {
         resolve();
+        if (moved) this.commitWatch(path, content);
+      };
+      const sourceRequest = index.get(IDBKeyRange.only(path));
+      sourceRequest.onsuccess = () => {
+        try {
+          const source: VtronFile | undefined = sourceRequest.result;
+          if (!source) return fail(fileSystemError('ENOENT', 'File not found: ' + path));
+          if (path === newPath) return;
+          const parentRequest = index.get(IDBKeyRange.only(fspath.dirname(newPath)));
+          parentRequest.onsuccess = () => {
+            try {
+              const parent: VtronFile | undefined = parentRequest.result;
+              if (!parent) return fail(fileSystemError('ENOENT', 'Destination parent not found'));
+              if (!parent.isDirectory)
+                return fail(fileSystemError('ENOTDIR', 'Destination parent is not a directory'));
+              const destinationRequest = index.get(IDBKeyRange.only(newPath));
+              destinationRequest.onsuccess = () => {
+                try {
+                  const destination: VtronFile | undefined = destinationRequest.result;
+                  if (destination) {
+                    if (!options?.overwrite)
+                      return fail(fileSystemError('EEXIST', 'Destination already exists'));
+                    if (!source.isFile || !destination.isFile) {
+                      return fail(
+                        fileSystemError(
+                          destination.isDirectory ? 'EISDIR' : 'EINVAL',
+                          'Only regular files can be overwritten'
+                        )
+                      );
+                    }
+                    objectStore.delete(destination.id!);
+                  }
+                  content = source.content;
+                  this.dfsRename(source, objectStore, newPath, fail);
+                  moved = true;
+                } catch (error) {
+                  fail(error);
+                }
+              };
+            } catch (error) {
+              fail(error);
+            }
+          };
+        } catch (error) {
+          fail(error);
+        }
       };
     });
   }
-  private async dfsRmdir(vfile: VtronFile, objectStore: IDBObjectStore) {
-    if (vfile.mode) {
-      if (vfile.mode <= 0o111) {
-        this.onerror('Cannot delete a readonly file');
-        return Promise.reject('Cannot delete a readonly file');
-      }
+  private dfsRmdir(
+    vfile: VtronFile,
+    objectStore: IDBObjectStore,
+    removed: { path: string; content: string }[],
+    fail: (error: unknown) => void
+  ): void {
+    if (vfile.mode !== undefined && vfile.mode <= 0o111) {
+      throw fileSystemError('EACCES', 'Cannot delete a readonly file');
     }
     if (vfile.isDirectory) {
       objectStore.index('parentPath').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
         const cursor: IDBCursorWithValue = event.target.result;
         if (cursor) {
-          const tempfile = cursor.value;
-          this.dfsRmdir(tempfile, objectStore);
-          cursor.continue();
+          try {
+            this.dfsRmdir(cursor.value, objectStore, removed, fail);
+            cursor.continue();
+          } catch (error) {
+            fail(error);
+          }
         }
       };
     }
-    objectStore.index('path').openCursor(IDBKeyRange.only(vfile.path)).onsuccess = (event: any) => {
-      const cursor: IDBCursorWithValue = event.target.result;
-      if (cursor) {
-        objectStore.delete(cursor.value.id);
-        cursor.continue();
-      }
-    };
-    this.commitWatch(vfile.path, vfile.content);
+    objectStore.delete(vfile.id!);
+    removed.push({ path: vfile.path, content: vfile.content });
   }
   async rm(path: string): Promise<void> {
     const volume = this.checkVolumePath(path);
@@ -676,29 +722,42 @@ class VtronFileSystem implements VtronFileInterface {
    */
   async rmdir(path: string): Promise<void> {
     const volume = this.checkVolumePath(path);
-    if (volume) {
-      return this.beforeGuard(volume, 'rmdir', path);
-    }
+    if (volume) return this.beforeGuard(volume, 'rmdir', path);
 
     const transaction = this.db.transaction('files', 'readwrite');
     const objectStore = transaction.objectStore('files');
-
-    const index = objectStore.index('path');
-    const range = IDBKeyRange.only(path);
-    const request = index.get(range);
-
-    return new Promise((resolve, reject) => {
-      request.onerror = () => {
-        this.onerror('Failed to read file');
-        reject('Failed to read file');
-      };
-      request.onsuccess = () => {
-        const file: VtronFile = request.result;
-        if (file) {
-          this.dfsRmdir(file, objectStore);
+    return new Promise<void>((resolve, reject) => {
+      let failure: unknown;
+      const removed: { path: string; content: string }[] = [];
+      const fail = (error: unknown) => {
+        if (failure) return;
+        failure = error;
+        try {
+          transaction.abort();
+        } catch {
+          reject(error);
         }
-        this.commitWatch(path, file.content);
+      };
+      transaction.onerror = (event) => {
+        failure ||= (event.target as IDBRequest).error || transaction.error;
+      };
+      transaction.onabort = () =>
+        reject(
+          failure || transaction.error || fileSystemError('EIO', 'Remove directory transaction aborted')
+        );
+      transaction.oncomplete = () => {
         resolve();
+        removed.forEach((file) => this.commitWatch(file.path, file.content));
+      };
+      const request = objectStore.index('path').get(IDBKeyRange.only(path));
+      request.onsuccess = () => {
+        try {
+          const file: VtronFile | undefined = request.result;
+          if (!file) return fail(fileSystemError('ENOENT', 'Directory not found: ' + path));
+          this.dfsRmdir(file, objectStore, removed, fail);
+        } catch (error) {
+          fail(error);
+        }
       };
     });
   }

@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import type { System } from 'vtron';
+import { enableVirtualPreview, virtualPreviewUrl } from '../../network/virtualPreview';
 import BrowserIcon from './BrowserIcon.vue';
 
 const HOMEPAGE = import.meta.env.VITE_STARTPAGE_URL || 'https://vtronjs.com/subapps/startpage/';
+const system = inject<System>('system')!;
 
 const props = defineProps<{
   isCurrent: boolean;
@@ -22,6 +25,7 @@ const history = ref<string[]>([startUrl]);
 const historyIndex = ref(0);
 const isLoading = ref(true);
 const frameKey = ref(0);
+const navigationError = ref('');
 
 const rawUrl = computed(() => history.value[historyIndex.value]);
 const isHomepage = computed(() => rawUrl.value.replace(/\/$/, '') === startUrl.replace(/\/$/, ''));
@@ -37,6 +41,8 @@ const pageTitle = computed(() => {
 });
 const currentUrl = computed(() => {
   const url = rawUrl.value;
+  const preview = virtualPreviewUrl(system, url);
+  if (preview) return preview;
   if (!props.proxyUrl || isHomepage.value) return url;
   const encoded = encodeURIComponent(url);
   return props.proxyUrl.includes('{url}')
@@ -69,7 +75,12 @@ function normalizeInput(input: string): string {
   return 'https://www.bing.com/search?q=' + encodeURIComponent(value);
 }
 
-function navigateTo(url: string) {
+async function navigateTo(url: string) {
+  navigationError.value = '';
+  if (virtualPreviewUrl(system, url)) {
+    try { await enableVirtualPreview(system).ready; }
+    catch (error) { navigationError.value = error instanceof Error ? error.message : String(error); isLoading.value = false; return; }
+  }
   if (url === rawUrl.value) {
     refresh();
   } else {
@@ -118,7 +129,7 @@ function handleHomepageMessage(event: MessageEvent) {
 }
 
 function openExternal() {
-  window.open(rawUrl.value, '_blank', 'noopener,noreferrer');
+  window.open(virtualPreviewUrl(system, rawUrl.value) || rawUrl.value, '_blank', 'noopener,noreferrer');
 }
 
 function handleShortcut(event: KeyboardEvent) {
@@ -183,7 +194,8 @@ onBeforeUnmount(() => {
       </button>
     </div>
     <div class="tab-page__progress" :class="{ 'tab-page__progress--loading': isLoading }" aria-hidden="true"><span></span></div>
-    <iframe ref="frameRef" :key="frameKey" class="tab-page__frame" :src="currentUrl" :title="pageTitle" @load="onLoad" />
+    <p v-if="navigationError" role="alert">{{ navigationError }}</p>
+    <iframe v-else ref="frameRef" :key="frameKey" class="tab-page__frame" :src="currentUrl" :title="pageTitle" @load="onLoad" />
   </section>
 </template>
 

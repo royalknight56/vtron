@@ -1,6 +1,9 @@
 import * as fspath from '@/packages/util/Path';
 import { VtronFileInterface } from './FIleInterface';
 import { VtronFile, VtronFileMode, VtronFileWithoutContent } from './FileSystem';
+function fileSystemError(code: string, message: string) {
+  return Object.assign(new Error(message), { code });
+}
 
 class VtronLocalFileSystem implements VtronFileInterface {
   private static IDB_NAME = 'VtronLocalFSHandles';
@@ -476,62 +479,87 @@ class VtronLocalFileSystem implements VtronFileInterface {
     this.commitWatch(path, '');
   }
 
-  async rename(path: string, newPath: string): Promise<void> {
+  async rename(path: string, newPath: string, options?: { overwrite?: boolean }): Promise<void> {
     const volume = this.checkVolumePath(path);
-    const volume2 = this.checkVolumePath(newPath);
-    if (!!volume && !!volume2) {
-      return this.beforeGuard(volume, 'rename', path, newPath);
-    } else if ((!!volume && !volume2) || (!volume && !!volume2)) {
-      this.onerror('Cannot rename between volumes');
-      return Promise.reject('Cannot rename between volumes');
-    }
+    const destinationVolume = this.checkVolumePath(newPath);
+    if (volume !== destinationVolume) throw fileSystemError('EXDEV', 'Cannot rename between volumes');
+    if (volume) return this.beforeGuard(volume, 'rename', path, newPath, options);
 
+    const kind = await this.getEntryKind(path);
+    if (!kind) throw fileSystemError('ENOENT', 'File not found: ' + path);
     if (path === newPath) return;
-    if (fspath.isChildPath(path, newPath)) {
-      this.onerror('Cannot rename to child path');
-      return Promise.reject('Cannot rename to child path');
+    if (path === this.rootPath) throw fileSystemError('EPERM', 'Cannot rename the root directory');
+    if (fspath.isChildPath(path, newPath)) throw fileSystemError('EINVAL', 'Cannot rename to child path');
+    if ((this.permissionMap.get(path) ?? 0o777) <= 0o111)
+      throw fileSystemError('EACCES', 'Cannot delete a readonly file');
+    const parentKind = await this.getEntryKind(fspath.dirname(newPath));
+    if (!parentKind) throw fileSystemError('ENOENT', 'Destination parent not found');
+    if (parentKind !== 'directory') throw fileSystemError('ENOTDIR', 'Destination parent is not a directory');
+    const destinationKind = await this.getEntryKind(newPath);
+    if (destinationKind && options?.overwrite === false)
+      throw fileSystemError('EEXIST', 'Destination already exists');
+    if (destinationKind && options?.overwrite === true && (kind !== 'file' || destinationKind !== 'file')) {
+      throw fileSystemError(
+        destinationKind === 'directory' ? 'EISDIR' : 'EINVAL',
+        'Only regular files can be overwritten'
+      );
     }
-
-    await this.dfsCopy(path, newPath);
-    await this.dfsRemove(path);
+    await this.dfsCopy(path, newPath, true);
+    await this.dfsRemove(path, true);
     this.commitWatch(path, '');
   }
 
-  private async dfsCopy(srcPath: string, destPath: string): Promise<void> {
+  private async dfsCopy(srcPath: string, destPath: string, strict = false): Promise<void> {
     const kind = await this.getEntryKind(srcPath);
-    if (!kind) return;
+    if (!kind) {
+      if (strict) throw fileSystemError('ENOENT', 'Source not found: ' + srcPath);
+      return;
+    }
 
     if (kind === 'file') {
       const fileHandle = await this.resolveFileHandle(srcPath);
-      if (!fileHandle) return;
+      if (!fileHandle) {
+        if (strict) throw fileSystemError('EIO', 'Cannot access source file: ' + srcPath);
+        return;
+      }
       const file = await fileHandle.getFile();
-      const content = await file.text();
-
       const parentPath = fspath.dirname(destPath);
-      await this.resolveDirectoryHandle(parentPath, true);
+      const parentHandle = await this.resolveDirectoryHandle(parentPath, true);
+      if (strict && !parentHandle) throw fileSystemError('EIO', 'Cannot access destination parent: ' + parentPath);
 
       const newHandle = await this.resolveFileHandle(destPath, true);
-      if (!newHandle) return;
+      if (!newHandle) {
+        if (strict) throw fileSystemError('EIO', 'Cannot create destination file: ' + destPath);
+        return;
+      }
       const writable = await (newHandle as any).createWritable();
-      await writable.write(content);
+      await writable.write(file);
       await writable.close();
     } else {
-      await this.resolveDirectoryHandle(destPath, true);
+      const destinationHandle = await this.resolveDirectoryHandle(destPath, true);
+      if (strict && !destinationHandle) throw fileSystemError('EIO', 'Cannot create destination directory: ' + destPath);
 
       const srcDir = await this.resolveDirectoryHandle(srcPath);
-      if (!srcDir) return;
+      if (!srcDir) {
+        if (strict) throw fileSystemError('EIO', 'Cannot access source directory: ' + srcPath);
+        return;
+      }
 
       for await (const [name] of (srcDir as any).entries()) {
-        await this.dfsCopy(fspath.join(srcPath, name), fspath.join(destPath, name));
+        await this.dfsCopy(fspath.join(srcPath, name), fspath.join(destPath, name), strict);
       }
     }
   }
 
-  private async dfsRemove(path: string): Promise<void> {
-    if (path === this.rootPath) return;
+  private async dfsRemove(path: string, strict = false): Promise<void> {
+    if (path === this.rootPath) {
+      if (strict) throw fileSystemError('EPERM', 'Cannot remove the root directory');
+      return;
+    }
 
     const mode = this.permissionMap.get(path) ?? 0o777;
     if (mode <= 0o111) {
+      if (strict) throw fileSystemError('EACCES', 'Cannot delete a readonly file');
       this.onerror('Cannot delete a readonly file');
       return;
     }
@@ -539,11 +567,15 @@ class VtronLocalFileSystem implements VtronFileInterface {
     const parentPath = fspath.dirname(path);
     const name = fspath.basename(path);
     const parentHandle = await this.resolveDirectoryHandle(parentPath);
-    if (!parentHandle) return;
+    if (!parentHandle) {
+      if (strict) throw fileSystemError('ENOENT', 'Source parent not found');
+      return;
+    }
 
     try {
       await parentHandle.removeEntry(name, { recursive: true });
-    } catch {
+    } catch (error) {
+      if (strict) throw error;
       // entry might already be removed
     }
     this.commitWatch(path, '');

@@ -48,6 +48,10 @@ import TaskManagerVue from './apps/TaskManager.vue';
 import taskmgrIcon from './assets/taskmgr.svg';
 import CameraAppVue from './apps/CameraApp.vue';
 import cameraIcon from './assets/camera.svg';
+import CodeEditorVue from './apps/code/CodeEditor.vue';
+import { codeFileIcon } from './apps/code/fileIcons';
+import vscodeIcon from './assets/vscode.svg';
+import { installNpmSupport, type NpmOptions } from './npm';
 type VtronFeature =
   | 'doc'
   | 'xls'
@@ -69,8 +73,10 @@ type VtronFeature =
   | 'pptEditor'
   | 'paint'
   | 'taskmgr'
-  | 'camera';
-function vtronPlus(configIn?: { features: VtronFeature[] }) {
+  | 'camera'
+  | 'code'
+  | 'npm';
+function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | false }) {
   const config = {
     features: configIn?.features || [
       'doc',
@@ -94,9 +100,12 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
       'paint',
       'taskmgr',
       'camera',
+      'code',
+      'npm',
     ],
   };
   return function vtronPlusPlugin(system: System) {
+    if (configIn?.npm !== false && (config.features.includes('npm') || config.features.includes('code') || config.features.includes('term'))) installNpmSupport(system, configIn?.npm || {});
     const officeWindowSize = (width: number, height: number) => ({
       width: Math.min(width, Math.max(240, window.innerWidth - 32)),
       height: Math.min(height, Math.max(200, window.innerHeight - 80)),
@@ -107,6 +116,15 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
       style: {
         boxShadow: '0 16px 44px rgb(0 0 0 / 22%), 0 3px 10px rgb(0 0 0 / 14%)',
       },
+    });
+    const codeWindowOptions = (path?: string) => ({
+      ...officeWindowSize(1060, 700),
+      title: path ? `${path.split('/').pop()} — VS Code` : 'VS Code',
+      icon: vscodeIcon,
+      content: CodeEditorVue,
+      center: true,
+      resizable: true,
+      config: path ? { path } : {},
     });
     /**------------------ 桌面右键菜单--------------- */
     //#region
@@ -198,6 +216,42 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
           }).show();
         },
       });
+
+    if (config.features.includes('code')) {
+      const openCodeFile = (path: string) => {
+        const existing = system.stateManager.windowTree.windowOrder.find(
+          (window) => window.content === CodeEditorVue && window.windowInfo.isCreated
+        );
+        if (existing) {
+          existing.config ||= {};
+          existing.config.path = path;
+          if (existing.isMinimized()) existing.restore();
+          existing.moveTop();
+          existing.emit('code:open', path);
+        } else {
+          const editor = new BrowserWindow(codeWindowOptions(path));
+          const app = system.stateManager.windowMap.get('Desktop', 'VS Code');
+          if (app && app.type !== 'group') {
+            app._hasShow = true;
+            editor.on('close', () => { app._hasShow = false; });
+          }
+          editor.show();
+        }
+      };
+      for (const extension of [
+        '.js', '.mjs', '.cjs', '.ts', '.mts', '.cts', '.jsx', '.tsx',
+        '.json', '.jsonc', '.html', '.htm', '.css', '.scss', '.sass', '.less',
+        '.vue', '.svelte', '.astro', '.yaml', '.yml', '.xml', '.sh', '.bash',
+        '.sql', '.toml', '.ini', '.conf', '.rs', '.go', '.java', '.c', '.h',
+        '.cpp', '.hpp', '.rb', '.php', '.txt',
+      ]) {
+        system.registerFileOpener(extension, {
+          name: 'VS Code',
+          icon: codeFileIcon('file' + extension) || vscodeIcon,
+          func: openCodeFile,
+        });
+      }
+    }
 
     // const imgType = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
     // const imgOpener = (path: string, content: any) => {
@@ -319,6 +373,14 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
     };
 
     config.features.includes('py') && system.addApp(pythonTerminal);
+
+    config.features.includes('code') &&
+      system.addApp({
+        name: 'VS Code',
+        icon: vscodeIcon,
+        multiple: false,
+        window: codeWindowOptions(),
+      });
 
     const terminal = {
       name: 'Terminal',
@@ -627,4 +689,8 @@ function vtronPlus(configIn?: { features: VtronFeature[] }) {
   };
 }
 
-export { vtronPlus };
+export { vtronPlus, installNpmSupport };
+export type { NpmOptions };
+
+export { enableVirtualPreview, virtualPreviewUrl } from './network/virtualPreview';
+export type { VirtualPreview, VirtualPreviewOptions } from './network/virtualPreview';

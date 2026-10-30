@@ -33,6 +33,8 @@
     "pub": "npm publish"
   },
   "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "buffer": "6.0.3",
     "vue": "^3.2.37",
     "vue-accessible-color-picker": "^5.0.1"
   },

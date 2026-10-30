@@ -41,6 +41,11 @@ export const Saveablekey: ('lang' | 'logo' | 'background' | 'rootStyle')[] = [
 ];
 export type SystemOptionsSaveable = Pick<SystemOptionsCertainly, (typeof Saveablekey)[number]>;
 
+export interface ScriptRuntimeOptions {
+  /** 终端脚本的请求实现；未配置时使用原生 fetch。仅初始化时生效。 */
+  fetch?: typeof globalThis.fetch;
+}
+
 export interface SystemOptionsCertainly {
   id?: number;
   /**
@@ -62,6 +67,7 @@ export interface SystemOptionsCertainly {
   systemLocation?: string;
   initFile?: InitFileItem;
   shell?: ShellInterface;
+  scriptRuntime?: ScriptRuntimeOptions;
   brightness?: number;
   login?: {
     username: string;

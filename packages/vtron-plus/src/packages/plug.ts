@@ -52,6 +52,7 @@ import CodeEditorVue from './apps/code/CodeEditor.vue';
 import { codeFileIcon } from './apps/code/fileIcons';
 import vscodeIcon from './assets/vscode.svg';
 import { installNpmSupport, type NpmOptions } from './npm';
+import { installNodeSupport } from './node';
 type VtronFeature =
   | 'doc'
   | 'xls'
@@ -75,6 +76,7 @@ type VtronFeature =
   | 'taskmgr'
   | 'camera'
   | 'code'
+  | 'node'
   | 'npm';
 function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | false }) {
   const config = {
@@ -101,10 +103,12 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
       'taskmgr',
       'camera',
       'code',
+      'node',
       'npm',
     ],
   };
   return function vtronPlusPlugin(system: System) {
+    if (config.features.includes('node') || config.features.includes('code') || config.features.includes('term') || config.features.includes('npm')) installNodeSupport(system);
     if (configIn?.npm !== false && (config.features.includes('npm') || config.features.includes('code') || config.features.includes('term'))) installNpmSupport(system, configIn?.npm || {});
     const officeWindowSize = (width: number, height: number) => ({
       width: Math.min(width, Math.max(240, window.innerWidth - 32)),
@@ -689,8 +693,13 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
   };
 }
 
-export { vtronPlus, installNpmSupport };
+export { vtronPlus, installNodeSupport, installNpmSupport };
 export type { NpmOptions };
 
 export { enableVirtualPreview, virtualPreviewUrl } from './network/virtualPreview';
 export type { VirtualPreview, VirtualPreviewOptions } from './network/virtualPreview';
+
+export type { ScriptModuleContext, ScriptModuleResolver, ScriptModuleLoader } from './node/ScriptModule';
+export { scriptPathToFileURL, scriptFileURLToPath } from './node/scriptURL';
+export { getVirtualNetwork, VirtualNetwork } from './network/virtualNet';
+export { requestVirtualHTTP, type VirtualHTTPRequest, type VirtualHTTPResponse } from './network/virtualHTTP';

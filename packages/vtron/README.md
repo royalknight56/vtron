@@ -1,11 +1,14 @@
 # Vtron
 
+`vtron` 提供桌面、虚拟文件系统和 Shell。`node` 命令及 Node API 适配由 `vtron-plus` 提供；仅安装 core 时不会注册 `node`。使用完整的 `vtronPlus()` 插件会默认启用，也可以单独调用 `installNodeSupport(system)`。
+
 ## 终端脚本的网络请求
 
 Vtron 默认使用浏览器原生 `fetch`。宿主应用可以在创建 `System` 时注入请求实现，让终端里的脚本使用自己的代理服务：
 
 ```ts
 import { System, createProxyFetch } from 'vtron';
+import { installNodeSupport } from 'vtron-plus';
 
 const system = new System({
   scriptRuntime: {
@@ -15,11 +18,12 @@ const system = new System({
     }),
   },
 });
+installNodeSupport(system);
 ```
 
 `endpoint` 支持同源相对路径或 HTTP(S) 绝对地址，推荐使用同源地址；跨域代理接口仍需允许宿主页面的 CORS 请求。`allowedOrigins` 按完整来源匹配，即协议、域名和端口均需一致；不支持通配符、子串或自动匹配子域名。未命中的请求仍使用原生 `fetch` 直连。
 
-该配置仅作用于当前 `System` 的终端脚本。它不会替换全局 `window.fetch`，也不会接管第三方应用或 iframe 的请求。各实例可以分别配置，配置在初始化时传入，不作为桌面设置持久化。
+该配置仅作用于当前 `System` 的 Node 脚本和 npm 下载。它不会替换全局 `window.fetch`，也不会接管第三方应用或 iframe 的请求。各实例可以分别配置，配置在初始化时传入，不作为桌面设置持久化。
 
 如果宿主已有请求封装，也可以直接传入与原生 `fetch` 签名相同的函数：
 

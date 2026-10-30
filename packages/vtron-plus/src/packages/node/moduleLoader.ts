@@ -1,4 +1,6 @@
-import { basename, dirname, extname, join, resolve, scriptPathToFileURL, scriptFileURLToPath, type ScriptModuleContext, type ScriptModuleResolver, type System } from 'vtron';
+import { basename, dirname, extname, join, resolve, type System } from 'vtron';
+import type { ScriptModuleContext, ScriptModuleResolver } from './ScriptModule';
+import { scriptPathToFileURL, scriptFileURLToPath } from './scriptURL';
 
 const MAX_FILES = 8192;
 const MAX_BYTES = 32 * 1024 * 1024;
@@ -44,7 +46,7 @@ function parseJson(source: string, filename: string): unknown {
 }
 
 /** Read text modules once, then provide Node-style synchronous require over that snapshot. */
-export function createNpmModuleLoader(system: System) {
+export function createNodeModuleLoader(system: System) {
   return async (context: ScriptModuleContext): Promise<ScriptModuleResolver> => {
     const isEvalEntry = !context.filename.startsWith('/');
     const entry = isEvalEntry ? join(context.cwd, '[eval]') : resolve(context.filename);

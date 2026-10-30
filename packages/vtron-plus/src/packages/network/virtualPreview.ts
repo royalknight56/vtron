@@ -1,4 +1,6 @@
-import { getVirtualNetwork, requestVirtualHTTP, type System } from 'vtron';
+import type { System } from 'vtron';
+import { getVirtualNetwork } from './virtualNet';
+import { requestVirtualHTTP } from './virtualHTTP';
 
 export interface VirtualPreviewOptions {
   /** Dedicated same-site preview origin, different from the desktop origin. */

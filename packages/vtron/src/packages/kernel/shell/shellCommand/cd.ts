@@ -1,9 +1,9 @@
 import * as fspath from '@/packages/util/Path';
 import type { Shell } from '../Shell';
-import { scriptArguments } from '../scriptRuntime';
+import { parseShellArguments } from '../shellArguments';
 async function cd(input: string, output: (text: string) => void, shell: Shell) {
   try {
-    const args = scriptArguments(input).slice(1);
+    const args = parseShellArguments(input).slice(1);
     if (args.length > 1) throw new Error('too many arguments');
     const path = args[0] ?? shell.system._options.userLocation ?? '/C/Users/';
     if (!path) throw new Error('empty directory path');

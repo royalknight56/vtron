@@ -4,7 +4,6 @@ import { chmod } from './chmod';
 import { echo } from './echo';
 import { ls } from './ls';
 import { mkdir } from './mkdir';
-import { node } from './node';
 import { open } from './open';
 import { pwd } from './pwd';
 import { rm } from './rm';
@@ -77,12 +76,6 @@ const commandMap = [
     description: 'run shell script',
     usage: 'sh [FILE]',
     callback: sh,
-  },
-  {
-    name: 'node',
-    description: 'run JavaScript with Vtron fs/process',
-    usage: 'node <FILE> [args] | node -e "code"',
-    callback: node,
   },
   {
     name: 'help',

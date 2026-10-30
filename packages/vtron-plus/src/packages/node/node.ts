@@ -1,13 +1,14 @@
-import * as fspath from '@/packages/util/Path';
+import * as fspath from 'vtron';
 import * as ivue from 'vue';
-import type { Shell } from '../Shell';
-import { executeScript, scriptArguments } from '../scriptRuntime';
-import { ScriptFailure } from '../scriptDiagnostics';
+import type { Shell } from 'vtron';
+import { executeScript } from './scriptRuntime';
+import { parseShellArguments } from 'vtron';
+import { ScriptFailure } from './scriptDiagnostics';
 async function node(input: string, output: (text: string) => void, shell: Shell) {
   const source = input.replace(/^\S+\s*/, '');
   if (!source) { shell.exitCode = 1; output('Usage: node <file.js> [args] | node -e "code"\r\n'); return; }
   try {
-    const args = scriptArguments(source);
+    const args = parseShellArguments(source);
     if (args[0] === '-e') {
       if (args[1] === undefined) throw new Error('node -e requires JavaScript code');
       shell.exitCode = await executeScript(args[1], shell, output, '[eval]', args.slice(2), ivue);

@@ -1,6 +1,6 @@
-import * as path from '@/packages/util/Path';
-import type { VtronFileWithoutContent } from '../file/FileSystem';
-import type { Shell } from './Shell';
+import * as path from 'vtron';
+import type { VtronFileWithoutContent } from 'vtron';
+import type { Shell } from 'vtron';
 import { compileScript, formatScriptError, locateSyntaxError, scriptBody, ScriptFailure, scriptStackOffset } from './scriptDiagnostics';
 import { timersPromises } from './scriptTimers';
 import { createScriptUtil } from './scriptUtil';
@@ -8,14 +8,15 @@ import { createReadlineModules } from './scriptReadline';
 import { createScriptIO, ScriptEmitter, scriptAbortError } from './scriptIO';
 import { createScriptTasks } from './scriptTasks';
 import type { ScriptModuleContext, ScriptModuleResolver } from './ScriptModule';
+import { createNodeModuleLoader } from './moduleLoader';
 import { scriptFileURLToPath, scriptPathToFileURL } from './scriptURL';
 import { createScriptPerformance } from './scriptPerformance';
 import { createScriptCrypto } from './scriptCrypto';
 import { createScriptWorkerThreads } from './scriptWorkerThreads';
 import { createScriptChildProcess } from './scriptChildProcess';
 import { createScriptDNS } from './scriptDNS';
-import { createScriptNet, getVirtualNetwork } from '../../network/virtualNet';
-import { createScriptHTTP } from '../../network/virtualHTTP';
+import { createScriptNet, getVirtualNetwork } from '../network/virtualNet';
+import { createScriptHTTP } from '../network/virtualHTTP';
 import { createScriptTTY } from './scriptTTY';
 import { Buffer } from 'buffer/';
 import { createScriptAssert } from './scriptAssert';
@@ -402,7 +403,7 @@ export async function executeScript(code: string, shell: Shell, output: (text: s
   let finished = false;
   try {
     await Promise.race([(async () => {
-      const prepared = await shell.system.prepareScriptModules({ filename, source: code, cwd: shell.router, requireBuiltin: runtime.requireBuiltin, main: runtime.module, globals: runtime.globals, signal: shell.executionSignal, track: runtime.tasks.track });
+      const prepared = await createNodeModuleLoader(shell.system)({ filename, source: code, cwd: shell.router, requireBuiltin: runtime.requireBuiltin, main: runtime.module, globals: runtime.globals, signal: shell.executionSignal, track: runtime.tasks.track });
       if (finished || shell.executionSignal?.aborted) { prepared?.dispose?.(); throw scriptAbortError(); }
       resolver = prepared;
       runtime.setModuleResolver(resolver);
@@ -432,20 +433,3 @@ export async function executeScript(code: string, shell: Shell, output: (text: s
   return Number.isInteger(exitCode) ? exitCode & 255 : 1;
 }
 
-export function scriptArguments(input: string): string[] {
-  const result: string[] = [];
-  let value = '';
-  let quote = '';
-  let started = false;
-  for (let index = 0; index < input.length; index++) {
-    const char = input[index];
-    if (char === '\\' && input[index + 1] && quote !== "'" && (quote !== '"' || ['"', '\\'].includes(input[index + 1]))) { value += input[++index]; started = true; }
-    else if (quote) { if (char === quote) quote = ''; else value += char; }
-    else if (char === '"' || char === "'") { quote = char; started = true; }
-    else if (/\s/.test(char)) { if (started) { result.push(value); value = ''; started = false; } }
-    else { value += char; started = true; }
-  }
-  if (quote) throw new Error('Unclosed quote in command');
-  if (started) result.push(value);
-  return result;
-}

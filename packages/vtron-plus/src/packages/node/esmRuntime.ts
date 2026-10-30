@@ -1,4 +1,5 @@
-import { dirname, type ScriptModuleContext } from 'vtron';
+import { dirname } from 'vtron';
+import type { ScriptModuleContext } from './ScriptModule';
 import { TraceMap, originalPositionFor, type SourceMapInput } from '@jridgewell/trace-mapping';
 
 type Namespace = Record<string, unknown>;

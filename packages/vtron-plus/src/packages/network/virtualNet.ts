@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer/';
-import { ScriptEmitter } from '../kernel/shell/scriptIO';
-import { ipFamily } from '../kernel/shell/scriptDNS';
+import { ScriptEmitter } from '../node/scriptIO';
+import { ipFamily } from '../node/scriptDNS';
 
 type Callback = (...args: any[]) => void;
 type Hooks = { track: <T>(promise: Promise<T>) => Promise<T>; reportError: (error: unknown) => void };

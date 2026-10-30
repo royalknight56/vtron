@@ -1,4 +1,4 @@
-import type { ShellTerminal } from './ShellType';
+import type { ShellTerminal } from 'vtron';
 
 type Listener = (...args: any[]) => void;
 

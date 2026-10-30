@@ -1,9 +1,9 @@
 import * as fspath from '@/packages/util/Path';
 import { Shell } from '../Shell';
-import { scriptArguments } from '../scriptRuntime';
+import { parseShellArguments } from '../shellArguments';
 async function sh(input: string, output: (text: string) => void, shell: Shell) {
   try {
-    const args = scriptArguments(input).slice(1);
+    const args = parseShellArguments(input).slice(1);
     if (args.length !== 1) throw new Error('Usage: sh <file>');
     const path = fspath.resolve(shell.router, args[0]);
     if (!(await shell.system.fs.stat(path))?.isFile) throw new Error(`${args[0]}: Not a file`);

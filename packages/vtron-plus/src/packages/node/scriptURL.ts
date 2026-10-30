@@ -1,4 +1,4 @@
-import { resolve } from '@/packages/util/Path';
+import { resolve } from 'vtron';
 
 /** Convert between virtual POSIX paths and file: URLs; never access the host filesystem. */
 export function scriptPathToFileURL(path: string, cwd = '/'): URL {

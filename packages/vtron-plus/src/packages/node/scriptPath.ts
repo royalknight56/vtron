@@ -1,4 +1,4 @@
-import * as paths from '@/packages/util/Path';
+import * as paths from 'vtron';
 
 type ParsedPath = { root: string; dir: string; base: string; ext: string; name: string };
 type PathObject = Partial<ParsedPath>;

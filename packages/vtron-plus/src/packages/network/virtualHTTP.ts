@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer/';
-import { ScriptEmitter } from '../kernel/shell/scriptIO';
+import { ScriptEmitter } from '../node/scriptIO';
 import { createScriptNet, type ScriptNetModule, type VirtualNetwork, type VirtualSocket, type VirtualServer } from './virtualNet';
 
 type Headers = [string, string][];

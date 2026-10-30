@@ -1,6 +1,6 @@
 import { Shell } from '@/packages/kernel/shell/Shell';
 import { ShellInterface } from '@/packages/kernel/shell/ShellType';
-import type { ShellCommand, ScriptModuleContext, ScriptModuleLoader } from '@/packages/kernel/shell/ScriptModule';
+import type { ShellCommand } from '@/packages/kernel/shell/ShellCommand';
 import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
 import { FileSystemOperations } from '@/packages/kernel/system/fileSystemOperations/FileSystemOperations';
 import {
@@ -45,7 +45,6 @@ export class System {
   /** 初始化时捕获的脚本请求能力，不受桌面持久化设置影响。 */
   readonly scriptRuntime: Readonly<{ fetch: typeof globalThis.fetch }>;
   private readonly shellCommands = new Map<string, ShellCommand>();
-  private scriptModuleLoader?: ScriptModuleLoader;
 
   private readonly _readyPromise: Promise<System>;
   private _resolveReady!: (value: System) => void;
@@ -212,13 +211,6 @@ export class System {
   }
   getShellCommand(name: string) { return this.shellCommands.get(name); }
   getShellCommands(): readonly ShellCommand[] { return [...this.shellCommands.values()]; }
-  registerScriptModuleLoader(loader: ScriptModuleLoader): () => void {
-    if (typeof loader !== 'function') throw new TypeError('Invalid script module loader');
-    if (this.scriptModuleLoader) throw new Error('A script module loader is already registered');
-    this.scriptModuleLoader = loader;
-    return () => { if (this.scriptModuleLoader === loader) this.scriptModuleLoader = undefined; };
-  }
-  prepareScriptModules(context: ScriptModuleContext) { return this.scriptModuleLoader?.(context); }
 
   createShell(): ShellInterface {
     if (this._options.shell) {

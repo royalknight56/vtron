@@ -41,12 +41,6 @@ importers:
 
   packages/vtron:
     dependencies:
-      '@noble/hashes':
-        specifier: 2.4.0
-        version: 2.4.0
-      buffer:
-        specifier: 6.0.3
-        version: 6.0.3
       vue:
         specifier: ^3.2.37
         version: 3.4.29(typescript@5.4.5)
@@ -286,6 +280,12 @@ importers:
 
   packages/vtron-plus:
     dependencies:
+      '@noble/hashes':
+        specifier: 2.4.0
+        version: 2.4.0
+      buffer:
+        specifier: 6.0.3
+        version: 6.0.3
       '@babel/standalone':
         specifier: 7.28.5
         version: 7.28.5

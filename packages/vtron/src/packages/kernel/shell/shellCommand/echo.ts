@@ -1,6 +1,6 @@
 import type { Shell } from '../Shell';
-import { scriptArguments } from '../scriptRuntime';
+import { parseShellArguments } from '../shellArguments';
 async function echo(input: string, output: (text: string) => void, shell: Shell) {
-  output(scriptArguments(input).slice(1).join(' ') + '\r\n');
+  output(parseShellArguments(input).slice(1).join(' ') + '\r\n');
 }
 export { echo };

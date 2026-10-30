@@ -6,7 +6,7 @@ const MAX_FILES = 6000;
 const textDecoder = new TextDecoder('utf-8', { fatal: true });
 const headerDecoder = new TextDecoder();
 
-export type PackageArchive = { files: Map<string, string>; bytes: number; skipped: number };
+export type PackageArchive = { files: Map<string, string | Uint8Array>; bytes: number; skipped: number };
 
 function headerText(bytes: Uint8Array) { return headerDecoder.decode(bytes).replace(/\0.*$/s, ''); }
 
@@ -58,7 +58,7 @@ export function unpackPackage(compressed: Uint8Array): PackageArchive {
   const tar = new Uint8Array(length);
   let position = 0;
   for (const chunk of chunks) { tar.set(chunk, position); position += chunk.length; }
-  const files = new Map<string, string>();
+  const files = new Map<string, string | Uint8Array>();
   let pendingPath: string | undefined;
   let pendingPax: Record<string, string> = {};
   let count = 0;
@@ -93,7 +93,7 @@ export function unpackPackage(compressed: Uint8Array): PackageArchive {
       files.set(path, text);
     } catch {
       if (/\.(?:[cm]?js|json)$/i.test(path)) throw new Error(`代码文件不是有效的 UTF-8 文本：${path}`);
-      skipped++;
+      files.set(path, data.slice());
     }
   }
   if (!files.has('package.json')) throw new Error('npm 压缩包缺少 package.json');

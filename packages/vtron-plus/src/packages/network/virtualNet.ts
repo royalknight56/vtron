@@ -1,4 +1,4 @@
-import { Buffer } from 'buffer/';
+import { Buffer } from '../node/scriptBuffer';
 import { ScriptEmitter } from '../node/scriptIO';
 import { ipFamily } from '../node/scriptDNS';
 
@@ -28,7 +28,13 @@ export interface ScriptNetModule {
   isIPv4: (value: unknown) => boolean;
   isIPv6: (value: unknown) => boolean;
 }
-type Binding = { host: string; accept: (client: VirtualSocket) => void };
+export type VirtualBinding = { host: string; accept: (client: VirtualSocket) => void };
+type Binding = VirtualBinding;
+export interface VirtualNetworkBackend {
+  bind(port: number, binding: VirtualBinding): number | Promise<number>;
+  unbind(port: number, binding: VirtualBinding): void | Promise<void>;
+  connect(port: number, client: VirtualSocket): void | Promise<void>;
+}
 
 function netError(code: string, message: string, port?: number) {
   return Object.assign(new Error(message), { code, port, syscall: 'virtual net' });
@@ -142,7 +148,7 @@ export class VirtualSocket extends ScriptEmitter {
   private timeout?: ReturnType<typeof globalThis.setTimeout>;
   private timeoutDelay = 0;
   private connected = false;
-  constructor(private network: VirtualNetwork, private hooks: Hooks, private done: (socket: VirtualSocket) => void, private allowHalfOpen = false) {
+  constructor(private network: VirtualNetworkBackend, private hooks: Hooks, private done: (socket: VirtualSocket) => void, private allowHalfOpen = false) {
     super(hooks.reportError);
     this.lifetime = new Lifetime(hooks);
   }
@@ -159,7 +165,10 @@ export class VirtualSocket extends ScriptEmitter {
     this.lifetime.start();
     queueMicrotask(() => {
       if (this.destroyed) return;
-      try { this.network.connect(port, this); }
+      try {
+        const connected = this.network.connect(port, this);
+        if (connected) void connected.catch(error => this.destroy(error));
+      }
       catch (error) { this.destroy(error); }
     });
     return this;
@@ -276,7 +285,7 @@ export class VirtualSocket extends ScriptEmitter {
   unref() { this.lifetime.unref(); return this; }
 }
 
-export function createScriptNet(network: VirtualNetwork, hooks: Hooks): { module: ScriptNetModule; dispose: () => void } {
+export function createScriptNet(network: VirtualNetworkBackend, hooks: Hooks): { module: ScriptNetModule; dispose: () => void } {
   let disposed = false;
   const sockets = new Set<VirtualSocket>();
   const servers = new Set<Server>();
@@ -290,6 +299,8 @@ export function createScriptNet(network: VirtualNetwork, hooks: Hooks): { module
   }
   class Server extends ScriptEmitter {
     listening = false;
+    pending = false;
+    private unbinding = false;
     private binding?: Binding;
     private boundAddress?: Address;
     private lifetime = new Lifetime(hooks);
@@ -309,7 +320,7 @@ export function createScriptNet(network: VirtualNetwork, hooks: Hooks): { module
     }
     listen(...args: any[]) {
       if (disposed) throw netError('ABORT_ERR', 'Virtual network runtime is disposed');
-      if (this.listening || this.closing) throw netError('ERR_SERVER_ALREADY_LISTEN', 'Virtual server is already listening or closing');
+      if (this.listening || this.pending || this.closing) throw netError('ERR_SERVER_ALREADY_LISTEN', 'Virtual server is already listening or closing');
       const { port, host, callback } = optionsFrom(args, true);
       if (callback) this.once('listening', callback);
       const binding: Binding = { host, accept: client => {
@@ -321,29 +332,50 @@ export function createScriptNet(network: VirtualNetwork, hooks: Hooks): { module
         this.emit('connection', socket);
         client.ready();
       } };
-      try {
-        const assigned = network.bind(port, binding);
+      const bound = (assigned: number) => {
+        this.pending = false;
         this.binding = binding; this.boundAddress = { address: host, family: host.includes(':') ? 'IPv6' : 'IPv4', port: assigned };
+        if (disposed || this.closing) { this.unbind(); return; }
         this.listening = true; this.lifetime.start();
         queueMicrotask(() => { if (this.listening) this.emit('listening'); });
-      } catch (error) { queueMicrotask(() => this.emit('error', error)); }
+      };
+      const failed = (error: unknown) => {
+        this.pending = false; this.lifetime.stop();
+        queueMicrotask(() => this.emit('error', error));
+        this.finishClose();
+      };
+      try {
+        const assigned = network.bind(port, binding);
+        if (typeof assigned === 'number') bound(assigned);
+        else { this.pending = true; this.lifetime.start(); void assigned.then(bound, failed); }
+      } catch (error) { failed(error); }
       return this;
     }
     address() { return this.listening ? this.boundAddress! : null; }
     close(callback?: Callback) {
-      if (!this.listening && !this.closing) {
+      if (!this.listening && !this.pending && !this.closing) {
         const error = netError('ERR_SERVER_NOT_RUNNING', 'Virtual server is not running');
         queueMicrotask(() => { if (callback) { try { callback(error); } catch (failure) { hooks.reportError(failure); } } else this.emit('error', error); });
         return this;
       }
       if (callback) this.once('close', callback);
-      if (this.binding) network.unbind(this.boundAddress!.port, this.binding);
       this.listening = false; this.closing = true;
+      if (this.binding) this.unbind();
       this.finishClose();
       return this;
     }
+    private unbind() {
+      if (!this.binding || this.unbinding) return;
+      this.unbinding = true;
+      const done = () => { this.unbinding = false; this.binding = undefined; this.finishClose(); };
+      try {
+        const result = network.unbind(this.boundAddress!.port, this.binding);
+        if (result) void result.then(done, error => { this.emit('error', error); done(); });
+        else done();
+      } catch (error) { this.emit('error', error); done(); }
+    }
     private finishClose() {
-      if (!this.closing || this.connections.size) return;
+      if (!this.closing || this.connections.size || this.pending || this.unbinding) return;
       this.closing = false; this.binding = undefined; this.boundAddress = undefined;
       this.lifetime.stop();
       queueMicrotask(() => this.emit('close'));
@@ -359,7 +391,7 @@ export function createScriptNet(network: VirtualNetwork, hooks: Hooks): { module
     dispose() {
       if (disposed) return;
       disposed = true;
-      for (const server of servers) if (server.listening) server.close();
+      for (const server of servers) if (server.listening || server.pending) server.close();
       for (const socket of sockets) socket.destroy();
       sockets.clear(); servers.clear();
     },

@@ -9,17 +9,41 @@
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import { readFileSync } from 'node:fs';
-import { defineConfig } from 'vite';
+import { build as viteBuild, defineConfig, transformWithEsbuild } from 'vite';
 import dts from 'vite-plugin-dts';
 // import { visualizer } from 'rollup-plugin-visualizer';
 // https://vitejs.dev/config/
+let nodeWorkerBuild: Promise<string> | undefined;
+function buildNodeWorker() {
+  return nodeWorkerBuild ??= (async () => {
+    const result = await viteBuild({
+      configFile: false,
+      logLevel: 'warn',
+      resolve: { alias: { vtron: path.resolve(__dirname, '../vtron/src/packages/runtime.ts') } },
+      build: {
+        write: false,
+        target: 'es2020',
+        lib: { entry: path.resolve(__dirname, 'src/packages/node/nodeWorkerEntry.ts'), formats: ['es'] },
+        rollupOptions: { output: { inlineDynamicImports: true } },
+      },
+    });
+    const output = Array.isArray(result) ? result[0].output : result.output;
+    const chunk = output.find(item => item.type === 'chunk');
+    if (!chunk || chunk.type !== 'chunk' || output.length !== 1) throw new Error('Expected a single self-contained Node Worker module');
+    return chunk.code;
+  })();
+}
 export default defineConfig({
   plugins: [vue(), dts(), {
     name: 'vtron-virtual-preview-worker',
-    generateBundle() {
+    async generateBundle() {
       for (const file of ['virtual-preview-sw.js', 'virtual-preview-bridge.html']) {
         this.emitFile({ type: 'asset', fileName: file, source: readFileSync(path.resolve(__dirname, 'src/packages/network/' + file), 'utf8') });
       }
+      const workerSource = readFileSync(path.resolve(__dirname, 'src/packages/node/syncFsBridge.ts'), 'utf8');
+      const workerModule = await transformWithEsbuild(workerSource, 'syncFsBridge.ts', { loader: 'ts', format: 'esm', target: 'es2019' });
+      this.emitFile({ type: 'asset', fileName: 'sync-fs-worker.mjs', source: workerModule.code });
+      this.emitFile({ type: 'asset', fileName: 'node-worker.mjs', source: await buildNodeWorker() });
     },
   }],
   optimizeDeps: {

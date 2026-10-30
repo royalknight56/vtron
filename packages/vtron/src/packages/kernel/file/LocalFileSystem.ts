@@ -1,3 +1,4 @@
+import { decodeFileText, readFileBytes, writeFileBytes } from './binary';
 import * as fspath from '@/packages/util/Path';
 import { VtronFileInterface } from './FIleInterface';
 import { VtronFile, VtronFileMode, VtronFileWithoutContent } from './FileSystem';
@@ -280,12 +281,37 @@ class VtronLocalFileSystem implements VtronFileInterface {
       birthtime: now,
       mode: mode as VtronFileMode,
     });
+    vtronFile.ctime = undefined;
     (vtronFile as any).id = this.nextId++;
-    const { content: _, ...rest } = vtronFile;
+    const { content: _, binary: _binary, ...rest } = vtronFile;
     return rest;
   }
 
   // ---- VtronFileInterface ----
+
+  async readBinaryFile(path: string): Promise<Uint8Array | null> {
+    const volume = this.checkVolumePath(path);
+    if (volume) return readFileBytes(volume, path);
+    const handle = await this.resolveFileHandle(path);
+    return handle ? new Uint8Array(await (await handle.getFile()).arrayBuffer()) : null;
+  }
+  async writeBinaryFile(path: string, data: Uint8Array, options: { flag?: 'w' | 'a' | 'wx' } = {}): Promise<void> {
+    if (!(data instanceof Uint8Array)) throw new TypeError('File bytes must be Uint8Array');
+    const volume = this.checkVolumePath(path);
+    if (volume) return writeFileBytes(volume, path, data, options);
+    const flag = options.flag ?? 'w', kind = await this.getEntryKind(path);
+    if (!['w', 'a', 'wx'].includes(flag)) throw fileSystemError('ERR_NOT_SUPPORTED', 'Unsupported binary write flag');
+    if (kind === 'directory') throw fileSystemError('EISDIR', 'Cannot write a directory');
+    if (kind && flag === 'wx') throw fileSystemError('EEXIST', 'File already exists');
+    if (await this.getEntryKind(fspath.dirname(path)) !== 'directory') throw fileSystemError('ENOENT', 'Destination parent is missing');
+    const handle = await this.resolveFileHandle(path, true);
+    if (!handle) throw fileSystemError('EIO', 'Cannot create file');
+    const writable = await (handle as any).createWritable({ keepExistingData: flag === 'a' });
+    try { if (flag === 'a') await writable.seek((await handle.getFile()).size); await writable.write(data.slice()); await writable.close(); }
+    catch (error) { try { await writable.abort(); } catch {} throw error; }
+    if (!kind) this.permissionMap.set(path, 0o666 as VtronFileMode);
+    this.commitWatch(path, '');
+  }
 
   async readFile(path: string): Promise<string | null> {
     try {
@@ -296,7 +322,7 @@ class VtronLocalFileSystem implements VtronFileInterface {
       const fileHandle = await this.resolveFileHandle(path);
       if (!fileHandle) return null;
       const file = await fileHandle.getFile();
-      return await file.text();
+      return decodeFileText(new Uint8Array(await file.arrayBuffer()));
     } catch (e: any) {
       this.onerror(e.toString());
       return Promise.reject(e);
@@ -331,13 +357,7 @@ class VtronLocalFileSystem implements VtronFileInterface {
       if (kind === 'file' && opt?.flag === 'wx') {
         return;
       }
-      if (kind === 'file' && opt?.flag === 'a') {
-        const handle = await this.resolveFileHandle(path);
-        if (handle) {
-          const file = await handle.getFile();
-          data = (await file.text()) + data;
-        }
-      }
+      if (kind === 'file' && opt?.flag === 'a') return this.writeBinaryFile(path, new TextEncoder().encode(data), { flag: 'a' });
 
       const fileHandle = await this.resolveFileHandle(path, true);
       if (!fileHandle) {
@@ -354,25 +374,7 @@ class VtronLocalFileSystem implements VtronFileInterface {
   }
 
   async appendFile(path: string, content: string): Promise<void> {
-    const volume = this.checkVolumePath(path);
-    if (volume) {
-      return this.beforeGuard(volume, 'appendFile', path, content);
-    }
-
-    const fileHandle = await this.resolveFileHandle(path);
-    if (!fileHandle) {
-      this.onerror('File not found');
-      return Promise.reject('File not found');
-    }
-
-    const file = await fileHandle.getFile();
-    const newContent = (await file.text()) + content;
-
-    const writable = await (fileHandle as any).createWritable();
-    await writable.write(newContent);
-    await writable.close();
-
-    this.commitWatch(path, newContent);
+    return this.writeBinaryFile(path, new TextEncoder().encode(content), { flag: 'a' });
   }
 
   async readdir(fpath: string): Promise<VtronFileWithoutContent[]> {
@@ -429,25 +431,37 @@ class VtronLocalFileSystem implements VtronFileInterface {
 
   async stat(path: string): Promise<VtronFileWithoutContent | null> {
     const volume = this.checkVolumePath(path);
-    if (volume) {
-      try {
-        return this.beforeGuard(volume, 'stat', path);
-      } catch {
-        this.onerror('Failed to read volume directory:' + path);
+    if (volume) return this.beforeGuard(volume, 'stat', path);
+    if (!this.rootHandle) throw fileSystemError('ERR_FS_NOT_READY', 'Local filesystem has no directory handle');
+
+    // Only a missing entry or a non-directory parent proves the path absent.
+    // Permission and I/O failures must propagate to synchronous bridge clients.
+    const segments = this.getRelativeSegments(path);
+    if (!segments.length) return this.createFileEntry(path, 'directory');
+    const nameOf = (error: unknown) => error && typeof error === 'object' && 'name' in error ? error.name : undefined;
+    let parent = this.rootHandle;
+    for (const segment of segments.slice(0, -1)) {
+      try { parent = await parent.getDirectoryHandle(segment); }
+      catch (error) {
+        if (nameOf(error) === 'NotFoundError' || nameOf(error) === 'TypeMismatchError') return null;
+        throw error;
       }
     }
-
-    const kind = await this.getEntryKind(path);
-    if (!kind) return null;
-
-    if (kind === 'file') {
-      const fileHandle = await this.resolveFileHandle(path);
-      if (fileHandle) {
-        const file = await fileHandle.getFile();
-        return this.createFileEntry(path, 'file', file);
-      }
+    const name = segments[segments.length - 1];
+    try {
+      await parent.getDirectoryHandle(name);
+      return this.createFileEntry(path, 'directory');
+    } catch (error) {
+      if (nameOf(error) === 'NotFoundError') return null;
+      if (nameOf(error) !== 'TypeMismatchError') throw error;
     }
-    return this.createFileEntry(path, 'directory');
+    try {
+      const file = await (await parent.getFileHandle(name)).getFile();
+      return this.createFileEntry(path, 'file', file);
+    } catch (error) {
+      if (nameOf(error) === 'NotFoundError') return null;
+      throw error;
+    }
   }
 
   async unlink(path: string): Promise<void> {

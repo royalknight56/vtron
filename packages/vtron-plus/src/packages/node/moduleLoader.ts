@@ -1,4 +1,5 @@
 import { basename, dirname, extname, join, resolve, type System } from 'vtron';
+import { compileScopedFunction } from './scriptScope';
 import type { ScriptModuleContext, ScriptModuleResolver } from './ScriptModule';
 import { scriptPathToFileURL, scriptFileURLToPath } from './scriptURL';
 
@@ -7,12 +8,12 @@ const MAX_BYTES = 32 * 1024 * 1024;
 const MAX_DEPTH = 64;
 const MAX_ENTRIES = 32768;
 const sourceExtensions = new Set(['.js', '.cjs', '.mjs', '.json']);
-const builtinNames = new Set(['fs', 'fs/promises', 'process', 'path', 'path/posix', 'path/win32', 'os', 'timers/promises', 'util', 'readline', 'readline/promises', 'url', 'module', 'perf_hooks', 'crypto', 'worker_threads', 'child_process', 'dns', 'dns/promises', 'net', 'http', 'tty', 'buffer', 'assert', 'assert/strict', 'events', 'querystring', 'v8', 'https', 'http2', 'tls', 'stream', 'stream/promises', 'zlib', 'inspector', 'vm']);
+const builtinNames = new Set(['fs', 'fs/promises', 'process', 'path', 'path/posix', 'path/win32', 'os', 'timers', 'timers/promises', 'util', 'readline', 'readline/promises', 'url', 'module', 'perf_hooks', 'crypto', 'worker_threads', 'wasi', 'child_process', 'dns', 'dns/promises', 'net', 'http', 'tty', 'buffer', 'assert', 'assert/strict', 'events', 'querystring', 'v8', 'https', 'http2', 'tls', 'stream', 'stream/promises', 'zlib', 'inspector', 'vm']);
 type EsmRuntime = Awaited<ReturnType<(typeof import('./esmRuntime'))['createEsmRuntime']>>;
 type TransformedModule = { ok: true; code: string } | { ok: false; error: unknown };
 type ResolveMode = 'require' | 'import';
 const dynamicImportCandidate = /\bimport(?:\s|\/\*[\s\S]*?\*\/|\/\/[^\n]*\n)*\(/;
-type PackageJson = { name?: string; type?: string; main?: string; exports?: unknown; imports?: unknown };
+type PackageJson = { name?: string; version?: string; type?: string; main?: string; exports?: unknown; imports?: unknown };
 type CommonJSRequire = ((request: string) => unknown) & {
   main: unknown;
   cache: Record<string, CommonJSModule>;
@@ -119,6 +120,8 @@ export function createNodeModuleLoader(system: System) {
     }
     abort(context.signal);
 
+    active();
+
     // Bin entries may have no suffix, and node -e has no physical source file.
     if (context.source !== undefined) {
       const previous = files.get(entry);
@@ -175,7 +178,7 @@ export function createNodeModuleLoader(system: System) {
       }
       if (value && typeof value === 'object') {
         for (const [condition, candidate] of Object.entries(value)) {
-          if (condition === mode || condition === 'node' || condition === 'default') {
+          if (condition === mode || condition === 'module-sync' || condition === 'node' || condition === 'default') {
             const result = exportTarget(candidate, mode, wildcard); if (result !== undefined) return result;
           }
         }
@@ -300,7 +303,9 @@ export function createNodeModuleLoader(system: System) {
             resolved = manifest?.exports !== undefined
               ? packageExport(root, manifest, parts.subpath, request, parent, mode)
               : asPath(parts.subpath === '.' ? root : resolve(root, parts.subpath));
-            if (resolved) break;
+            if (resolved) {
+              break;
+            }
           }
         }
       }
@@ -324,7 +329,8 @@ export function createNodeModuleLoader(system: System) {
       if (cache[filename]) return cache[filename].exports;
       const extension = extname(filename);
       if (isESM(filename)) {
-        throw moduleError('ERR_REQUIRE_ESM', `不能通过 require() 同步加载 ESM 模块，请使用 await import()：${filename}`, filename);
+        if (!esmRuntime) throw moduleError('ERR_REQUIRE_ESM', `ESM runtime has not been initialized: ${filename}`, filename);
+        return esmRuntime.requireModule(filename);
       }
       if (extension === '.node') throw moduleError('ERR_DLOPEN_FAILED', `浏览器不支持 Node 原生扩展：${filename}`, filename);
       const source = files.get(filename);
@@ -344,10 +350,10 @@ export function createNodeModuleLoader(system: System) {
           const sourceURL = 'vtron://module/' + filename.replace(/^\//, '').split('/').map(encodeURIComponent).join('/');
           let evaluate: (...args: unknown[]) => unknown;
           try {
-            // An outer binding lets local Buffer declarations shadow the global without
-            // moving a module's "use strict" directive out of its function prologue.
-            const factory = new Function('Buffer', 'return function(require, module, exports, __filename, __dirname, fs, process, console, fetch, setTimeout, setInterval, clearTimeout, clearInterval, __vtronImport, global, globalThis) {' + code + '\n}\n//# sourceURL=' + sourceURL);
-            evaluate = factory(globals.Buffer) as typeof evaluate;
+            // Node globals belong to the outer scope. Only the five CommonJS
+            // wrapper arguments may collide with a module's own declarations.
+            const factory = compileScopedFunction(globals.global, ['Buffer', 'fs', 'process', 'console', 'fetch', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', '__vtronImport', 'global', 'globalThis'], 'return function(require, module, exports, __filename, __dirname) {' + code + '\n}\n//# sourceURL=' + sourceURL);
+            evaluate = factory(globals.Buffer, globals.fs, globals.process, globals.console, globals.fetch, globals.setTimeout, globals.setInterval, globals.clearTimeout, globals.clearInterval, (request: string, options?: unknown) => importModule(request, filename, options), globals.global, globals.global) as typeof evaluate;
           } catch (error) {
             if (error instanceof SyntaxError) {
               if (/(?:^|[;\r\n])\s*(?:export\b|import\s*(?:['"{*]|[\w$]+\s+from\b))/.test(code)) {
@@ -357,7 +363,7 @@ export function createNodeModuleLoader(system: System) {
             }
             throw error;
           }
-          evaluate.call(module.exports, module.require, module, module.exports, filename, dirname(filename), globals.fs, globals.process, globals.console, globals.fetch, globals.setTimeout, globals.setInterval, globals.clearTimeout, globals.clearInterval, (request: string, options?: unknown) => importModule(request, filename, options), globals.global, globals.global);
+          evaluate.call(module.exports, module.require, module, module.exports, filename, dirname(filename));
         }
         module.loaded = true;
         return module.exports;
@@ -377,7 +383,10 @@ export function createNodeModuleLoader(system: System) {
           resolve: (request, parent) => resolveRequest(request, parent, 'import'),
           source: filename => { active(); return files.get(filename); },
           isESM,
-          loadCommonJS: filename => load(filename),
+          loadCommonJS: filename => {
+            if (cache[filename] && !cache[filename].loaded) throw moduleError('ERR_REQUIRE_CYCLE_MODULE', `Cannot import an evaluating CommonJS module from ESM: ${filename}`, filename);
+            return load(filename);
+          },
           builtin,
           toFileURL: path => scriptPathToFileURL(path).href,
           fromFileURL: scriptFileURLToPath,
@@ -426,12 +435,16 @@ export function createNodeModuleLoader(system: System) {
       // Synchronous require must have a compiler ready before executing dynamic imports.
       // A bad, unused candidate is retained as a per-file error until that file is loaded.
       const candidates: [string, string][] = [];
+      let hasESM = false;
       for (const [filename, source] of files) {
-        if (extname(filename) === '.json' || !dynamicImportCandidate.test(source)) continue;
-        try { if (!isESM(filename)) candidates.push([filename, source]); }
+        if (extname(filename) === '.json') continue;
+        try {
+          if (isESM(filename)) hasESM = true;
+          else if (dynamicImportCandidate.test(source)) candidates.push([filename, source]);
+        }
         catch (error) { transformed.set(filename, { ok: false, error }); }
       }
-      if (candidates.length) {
+      if (hasESM || candidates.length) {
         const runtime = await getEsmRuntime();
         for (const [filename, source] of candidates) {
           active();

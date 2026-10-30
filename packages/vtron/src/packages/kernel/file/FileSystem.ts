@@ -1,5 +1,6 @@
 import * as fspath from '@/packages/util/Path';
 import { VtronFileInterface } from './FIleInterface';
+import { decodeFileBytes, decodeFileText, encodeFileBytes, readFileBytes, writeFileBytes } from './binary';
 function fileSystemError(code: string, message: string) {
   return Object.assign(new Error(message), { code });
 }
@@ -21,6 +22,7 @@ class VtronFileInfo {
   isSymlink = false;
   size = 0;
 
+  ctime?: DateLike = new Date();
   mtime: DateLike = new Date(); //指示最后一次修改此文件的时间戳
   atime: DateLike = new Date(); //最后一次访问此文件的时间戳
   birthtime: DateLike = new Date(); //此文件创建时间的时间戳
@@ -69,6 +71,8 @@ class VtronFileInfo {
 }
 
 class VtronFile extends VtronFileInfo {
+  /** Base64 persisted alongside legacy text, including JSON import/export. */
+  binary?: string;
   name = '';
   path: string;
   parentPath: string;
@@ -99,6 +103,7 @@ class VtronFile extends VtronFileInfo {
     this.parentPath = fspath.dirname(path);
     this.name = fspath.basename(path);
     this.content = content;
+    if (info.ctime !== undefined || info.birthtime !== undefined) this.ctime = info.ctime;
     // this.icon = icon;
     // this.type = type;
 
@@ -109,7 +114,7 @@ class VtronFile extends VtronFileInfo {
     }
   }
 }
-export type VtronFileWithoutContent = Omit<VtronFile, 'content'>;
+export type VtronFileWithoutContent = Omit<VtronFile, 'content' | 'binary'>;
 class VtronFileSystem implements VtronFileInterface {
   private db!: IDBDatabase;
   private _ready: ((value: VtronFileSystem) => void) | null = null;
@@ -255,6 +260,49 @@ class VtronFileSystem implements VtronFileInterface {
    * @param path 文件路径
    * @returns 文件内容
    */
+  async readBinaryFile(path: string): Promise<Uint8Array | null> {
+    const volume = this.checkVolumePath(path);
+    if (volume) return readFileBytes(volume, path);
+    const file = await this.statBase(path) as VtronFile | null;
+    if (!file) return null;
+    if (!file.isFile) throw fileSystemError('EISDIR', 'Cannot read a directory');
+    return file.binary === undefined ? new TextEncoder().encode(file.content) : decodeFileBytes(file.binary);
+  }
+
+  async writeBinaryFile(path: string, data: Uint8Array, options: { flag?: 'w' | 'a' | 'wx' } = {}): Promise<void> {
+    if (!(data instanceof Uint8Array)) throw new TypeError('File bytes must be Uint8Array');
+    const volume = this.checkVolumePath(path);
+    if (volume) return writeFileBytes(volume, path, data, options);
+    const input = data.slice(), flag = options.flag ?? 'w';
+    if (!['w', 'a', 'wx'].includes(flag)) throw fileSystemError('ERR_NOT_SUPPORTED', 'Unsupported binary write flag');
+    const transaction = this.db.transaction('files', 'readwrite'), store = transaction.objectStore('files'), index = store.index('path');
+    return new Promise<void>((resolve, reject) => {
+      let failure: unknown;
+      const fail = (error: unknown) => { failure = error; transaction.abort(); };
+      transaction.onabort = () => reject(failure || transaction.error || fileSystemError('EIO', 'Binary write aborted'));
+      transaction.onerror = () => { failure ||= transaction.error; };
+      transaction.oncomplete = () => { resolve(); this.commitWatch(path, ''); };
+      index.get(IDBKeyRange.only(fspath.dirname(path))).onsuccess = event => {
+        try {
+          const parent = (event.target as IDBRequest).result as VtronFile | undefined;
+          if (!parent) return fail(fileSystemError('ENOENT', 'Destination parent does not exist'));
+          if (!parent.isDirectory) return fail(fileSystemError('ENOTDIR', 'Destination parent is not a directory'));
+          index.get(IDBKeyRange.only(path)).onsuccess = event => {
+            try {
+              const previous = (event.target as IDBRequest).result as VtronFile | undefined;
+              if (previous && !previous.isFile) return fail(fileSystemError('EISDIR', 'Cannot write a non-file'));
+              if (previous && flag === 'wx') return fail(fileSystemError('EEXIST', 'File already exists'));
+              let bytes = input;
+              if (previous && flag === 'a') { const old = previous.binary === undefined ? new TextEncoder().encode(previous.content) : decodeFileBytes(previous.binary); bytes = new Uint8Array(old.length + input.length); bytes.set(old); bytes.set(input, old.length); }
+              const file = previous ?? new VtronFile(path, '', { isFile: true });
+              store.put({ ...file, content: '', binary: encodeFileBytes(bytes), mode: previous?.mode ?? 0o666, size: bytes.length, mtime: new Date(), ctime: new Date() });
+            } catch (error) { fail(error); }
+          };
+        } catch (error) { fail(error); }
+      };
+    });
+  }
+
   async readFile(path: string): Promise<string | null> {
     try {
       const volume = this.checkVolumePath(path);
@@ -275,7 +323,8 @@ class VtronFileSystem implements VtronFileInterface {
         };
         request.onsuccess = () => {
           const file: VtronFile = request.result;
-          resolve(file ? file.content : null);
+          if (file?.binary !== undefined) { try { resolve(decodeFileText(decodeFileBytes(file.binary))); } catch (error) { reject(error); } }
+          else resolve(file ? file.content : null);
         };
       });
     } catch (e: any) {
@@ -303,6 +352,7 @@ class VtronFileSystem implements VtronFileInterface {
       return this.beforeGuard(volume, 'writeFile', path, data, opt);
     }
 
+    if ((await this.statBase(path) as VtronFile | null)?.binary !== undefined) return this.writeBinaryFile(path, new TextEncoder().encode(data), opt);
     const parentPath = fspath.dirname(path);
     // judge if file exists
     const exists = await this.exists(parentPath);
@@ -334,7 +384,7 @@ class VtronFileSystem implements VtronFileInterface {
       const request = objectStore.add(
         new VtronFile(path, data, {
           isFile: true,
-          size: data.length,
+          size: new TextEncoder().encode(data).byteLength,
         })
       );
       return new Promise((resolve, reject) => {
@@ -360,8 +410,8 @@ class VtronFileSystem implements VtronFileInterface {
       const request = objectStore.put({
         ...stats,
         content: data,
-        size: data.length,
-        mtime: new Date(),
+        size: new TextEncoder().encode(data).byteLength,
+        mtime: new Date(), ctime: new Date(),
       });
       return new Promise((resolve, reject) => {
         request.onerror = () => {
@@ -396,9 +446,12 @@ class VtronFileSystem implements VtronFileInterface {
       request.onsuccess = () => {
         const file: VtronFile = request.result;
         if (file) {
-          file.content += content;
-          file.size = file.content.length;
-          file.mtime = new Date();
+          if (file.binary !== undefined) {
+            const old = decodeFileBytes(file.binary), extra = new TextEncoder().encode(content), bytes = new Uint8Array(old.length + extra.length);
+            bytes.set(old); bytes.set(extra, old.length); file.binary = encodeFileBytes(bytes); file.size = bytes.length;
+          } else file.content += content;
+          if (file.binary === undefined) file.size = new TextEncoder().encode(file.content).byteLength;
+          file.mtime = file.ctime = new Date();
           const request = objectStore.put(file);
           request.onerror = () => {
             this.onerror('Failed to write file');
@@ -451,7 +504,7 @@ class VtronFileSystem implements VtronFileInterface {
       };
       request.onsuccess = () => {
         const files = request.result;
-        resolve([...files, ...vol]);
+        resolve([...files, ...vol].map((file: VtronFile) => { const { content, binary, ...metadata } = file; return metadata; }));
       };
     });
   }
@@ -511,15 +564,14 @@ class VtronFileSystem implements VtronFileInterface {
 
   async stat(path: string): Promise<VtronFileWithoutContent | null> {
     const volume = this.checkVolumePath(path);
-    if (volume) {
-      try {
-        return this.beforeGuard(volume, 'stat', path);
-      } catch {
-        this.onerror('Failed to read volume directory:' + path);
-      }
-    }
+    // A failed mounted-volume lookup must not fall back to unrelated local data.
+    if (volume) return this.beforeGuard(volume, 'stat', path);
 
-    return await this.statBase(path);
+    const raw = await this.statBase(path) as VtronFile | null;
+    if (!raw) return null;
+    const { binary, ...info } = raw;
+    if (info.isFile) info.size = binary === undefined ? new TextEncoder().encode(info.content).byteLength : decodeFileBytes(binary).length;
+    return info;
   }
 
   /**
@@ -587,7 +639,7 @@ class VtronFileSystem implements VtronFileInterface {
     }
     vfile.path = newPath;
     vfile.parentPath = fspath.dirname(newPath);
-    vfile.mtime = new Date();
+    vfile.mtime = vfile.ctime = new Date();
     vfile.name = fspath.basename(newPath);
     objectStore.put(vfile);
   }
@@ -825,7 +877,7 @@ class VtronFileSystem implements VtronFileInterface {
       ...vfile,
       path: newPath,
       parentPath: fspath.dirname(newPath),
-      mtime: new Date(),
+      mtime: new Date(), ctime: new Date(),
     };
     delete newFile.id;
     objectStore.put(newFile);
@@ -887,8 +939,8 @@ class VtronFileSystem implements VtronFileInterface {
       request.onsuccess = () => {
         const file: VtronFile = request.result;
         if (file) {
-          file.mode = mode;
-          file.mtime = new Date();
+          file.mode = mode; file.ctime = new Date();
+          file.mtime = file.ctime = new Date();
           objectStore.put(file);
         } else {
           reject('File not found');
@@ -912,7 +964,7 @@ class VtronFileSystem implements VtronFileInterface {
       };
       request.onsuccess = () => {
         const files = request.result;
-        resolve(files);
+        resolve(files.map((file: VtronFile) => { const { content, binary, ...metadata } = file; return metadata; }));
       };
     });
   }

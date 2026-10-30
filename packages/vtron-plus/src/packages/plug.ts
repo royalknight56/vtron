@@ -701,5 +701,10 @@ export type { VirtualPreview, VirtualPreviewOptions } from './network/virtualPre
 
 export type { ScriptModuleContext, ScriptModuleResolver, ScriptModuleLoader } from './node/ScriptModule';
 export { scriptPathToFileURL, scriptFileURLToPath } from './node/scriptURL';
+export { installNodeWorkerSupport } from './node/nodeWorker';
+export type { NodeWorkerOptions } from './node/nodeWorker';
+export { startSyncExistsHost } from './node/syncFsBridge';
+export { createVtronSyncExistsQuery } from './node/syncFsQuery';
+export type { SyncExistsQuery, SyncExistsHost, SyncMkdirQuery, SyncWriteQuery, SyncRenameQuery, SyncStatQuery, SyncRealpathQuery, SyncReadBytesQuery, SyncWriteBytesQuery, SyncReaddirQuery } from './node/syncFsBridge';
 export { getVirtualNetwork, VirtualNetwork } from './network/virtualNet';
 export { requestVirtualHTTP, type VirtualHTTPRequest, type VirtualHTTPResponse } from './network/virtualHTTP';

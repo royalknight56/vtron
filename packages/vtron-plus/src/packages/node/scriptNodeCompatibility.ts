@@ -1,3 +1,5 @@
+import streams from 'readable-stream';
+
 type UnsupportedOperation = (...args: unknown[]) => never;
 type UnsupportedConstructor = {
   new(...args: unknown[]): never;
@@ -15,8 +17,8 @@ function blockedConstructor(operation: string): UnsupportedConstructor {
   return function (..._args: unknown[]): never { return unsupported(operation); } as UnsupportedConstructor;
 }
 
-/** Import compatibility only; these modules do not create Node services or streams. */
-export function createScriptNodeCompatibility() {
+/** Browser-backed streams plus explicit guards for unavailable Node services. */
+export function createScriptNodeCompatibility(hooks: { track?: <T>(promise: Promise<T>) => Promise<T> } = {}) {
   const v8 = {
     startupSnapshot: {
       // This execution is not building a Node startup snapshot.
@@ -50,25 +52,19 @@ export function createScriptNodeCompatibility() {
     TLSSocket: blockedConstructor('tls.TLSSocket'),
   };
 
-  const Stream = blockedConstructor('stream.Stream');
-  const Readable = Object.assign(blockedConstructor('stream.Readable'), { from: blocked('stream.Readable.from') });
-  const Writable = blockedConstructor('stream.Writable');
-  const Duplex = blockedConstructor('stream.Duplex');
-  const Transform = blockedConstructor('stream.Transform');
-  const PassThrough = blockedConstructor('stream.PassThrough');
-  // follow-redirects reads this method during initialization. Calling it must fail.
-  for (const constructor of [Stream, Readable, Writable, Duplex, Transform, PassThrough]) {
-    constructor.prototype.destroy = blocked('stream.destroy');
-  }
+  const track = <T>(promise: Promise<T>) => hooks.track ? hooks.track(promise) : promise;
   const streamPromises = {
-    async pipeline(..._args: unknown[]): Promise<never> { return unsupported('stream/promises.pipeline'); },
-    async finished(..._args: unknown[]): Promise<never> { return unsupported('stream/promises.finished'); },
+    pipeline: (...args: unknown[]) => track((streams.Stream.promises.pipeline as (...args: unknown[]) => Promise<unknown>)(...args)),
+    finished: (...args: unknown[]) => track((streams.Stream.promises.finished as (...args: unknown[]) => Promise<unknown>)(...args)),
   };
-  const stream = Object.assign(Stream, {
-    Stream, Readable, Writable, Duplex, Transform, PassThrough,
-    pipeline: blocked('stream.pipeline'),
-    finished: blocked('stream.finished'),
-    promises: streamPromises,
+  // Keep Node's module shape (require('stream') === require('stream').Stream)
+  // while giving each execution its own tracked promise helpers.
+  const stream: typeof streams.Stream = new Proxy(streams.Stream, {
+    get(target, key, receiver) {
+      if (key === 'Stream') return stream;
+      if (key === 'promises') return streamPromises;
+      return Reflect.get(target, key, receiver);
+    },
   });
 
   const zlib = {

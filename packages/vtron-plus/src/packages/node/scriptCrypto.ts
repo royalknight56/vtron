@@ -1,7 +1,7 @@
 import { sha256, sha384, sha512 } from '@noble/hashes/sha2.js';
 import { sha1 } from '@noble/hashes/legacy.js';
 import { type CHash } from '@noble/hashes/utils.js';
-import { Buffer } from 'buffer/';
+import { Buffer } from './scriptBuffer';
 
 type HashInput = string | ArrayBufferView;
 type RandomCallback = (error: unknown, value?: Buffer) => unknown;

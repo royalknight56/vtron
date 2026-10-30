@@ -1,3 +1,4 @@
+import { writeFileBytes } from 'vtron';
 import { maxSatisfying, satisfies, valid, validRange } from 'semver';
 import { dirname, join, normalize, type System } from 'vtron';
 import { MAX_ARCHIVE_BYTES, unpackPackage, type PackageArchive } from './archive';
@@ -179,9 +180,11 @@ async function install(system: System, cwd: string, specs: string[], options: Np
         await verifyArchive(bytes, manifest.dist);
         abortIfNeeded(signal);
         const archive = unpackPackage(bytes);
-        const packaged = readManifest(archive.files.get('package.json')!, `${key} package.json`);
+        const manifestText = archive.files.get('package.json');
+        if (typeof manifestText !== 'string') throw new Error('package.json must be UTF-8 text');
+        const packaged = readManifest(manifestText, `${key} package.json`);
         if (packaged.name !== name || packaged.version !== version) throw new Error(`npm 包内容与元数据不一致：${key}`);
-        if (archive.skipped) output(`${key}：跳过 ${archive.skipped} 个二进制资源或链接\r\n`);
+        if (archive.skipped) output(`${key}：跳过 ${archive.skipped} 个链接\r\n`);
         if (manifest.scripts?.preinstall || manifest.scripts?.install || manifest.scripts?.postinstall) output(`${key}：跳过安装脚本\r\n`);
         return { manifest, archive };
       })();
@@ -202,7 +205,8 @@ async function install(system: System, cwd: string, specs: string[], options: Np
       abortIfNeeded(signal);
       const target = join(destination, path);
       await mkdirp(dirname(target));
-      await fs.writeFile(target, value, { flag: 'wx' });
+      if (typeof value === 'string') await fs.writeFile(target, value, { flag: 'wx' });
+      else await writeFileBytes(fs, target, value, { flag: 'wx' });
     }
     const dependencies = resolved.manifest.dependencies || {};
     if (!object(dependencies)) throw new Error(`无效 dependencies：${name}`);

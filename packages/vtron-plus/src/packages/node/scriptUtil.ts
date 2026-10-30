@@ -1,4 +1,9 @@
 import { createScriptUtilFormat } from './scriptUtilFormat';
+import type { StyleTextHooks } from './scriptStyleText';
+
+// The intrinsic getter checks the TypedArray internal slots across realms and
+// ignores a forged Symbol.toStringTag, unlike instanceof or Object#toString.
+const typedArrayTag = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Uint8Array.prototype), Symbol.toStringTag)!.get!;
 
 type ArgValue = string | boolean;
 type ArgOption = { type: 'string' | 'boolean'; short?: string; multiple?: boolean; default?: ArgValue | ArgValue[] };
@@ -57,7 +62,7 @@ function parseEnv(content: string) {
   return result;
 }
 
-export function createScriptUtil(defaultArgs: () => string[]) {
+export function createScriptUtil(defaultArgs: () => string[], hooks: StyleTextHooks & { nextTick?: (callback: (...args: any[]) => unknown, ...args: unknown[]) => void; track?: <T>(promise: Promise<T>) => Promise<T> } = {}) {
   const customPromisify = Symbol.for('nodejs.util.promisify.custom');
   function promisify(original: (...args: any[]) => any): (...args: any[]) => any {
     if (typeof original !== 'function') argumentError('ERR_INVALID_ARG_TYPE', 'original must be a function');
@@ -170,5 +175,35 @@ export function createScriptUtil(defaultArgs: () => string[]) {
     }
     return config.tokens ? { values, positionals, tokens } : { values, positionals };
   }
-  return { parseArgs, parseEnv, promisify: promisify as typeof promisify & { custom: symbol }, ...createScriptUtilFormat() };
+  const types = { isUint8Array: (value: unknown): boolean => typedArrayTag.call(value) === 'Uint8Array' };
+  function callbackify(original: (...args: any[]) => PromiseLike<unknown>) {
+    if (typeof original !== 'function') argumentError('ERR_INVALID_ARG_TYPE', 'original must be a function');
+    const nextTick = hooks.nextTick ?? ((callback: (...args: any[]) => unknown, ...args: unknown[]) => queueMicrotask(() => callback(...args)));
+    const wrapped = function (this: unknown, ...args: unknown[]) {
+      const callback = args.pop();
+      if (typeof callback !== 'function') argumentError('ERR_INVALID_ARG_TYPE', 'callback must be a function');
+      const value = original.apply(this, args);
+      if (!value || typeof value.then !== 'function') argumentError('ERR_INVALID_RETURN_VALUE', 'callbackified function must return a Promise or thenable');
+      const invoke = (...values: unknown[]) => Reflect.apply(callback, this, values);
+      const pending = Promise.resolve(value).then(result => nextTick(invoke, null, result), reason => {
+        const failure = reason || Object.assign(new Error('Promise was rejected with a falsy value'), { code: 'ERR_FALSY_VALUE_REJECTION', reason });
+        nextTick(invoke, failure);
+      });
+      hooks.track?.(pending);
+    };
+    Object.setPrototypeOf(wrapped, Object.getPrototypeOf(original));
+    const descriptors = Object.getOwnPropertyDescriptors(original);
+    if (descriptors.length) descriptors.length.value = original.length + 1;
+    if (descriptors.name) descriptors.name.value = original.name + 'Callbackified';
+    Object.defineProperties(wrapped, descriptors);
+    return wrapped;
+  }
+  function inherits(ctor: Function, superCtor: Function) {
+    if (typeof ctor !== 'function' || !ctor.prototype || typeof superCtor !== 'function' || !superCtor.prototype) argumentError('ERR_INVALID_ARG_TYPE', 'inherits requires constructors with prototypes');
+    Object.defineProperty(ctor, 'super_', { value: superCtor, writable: true, configurable: true });
+    Object.setPrototypeOf(ctor.prototype, superCtor.prototype);
+  }
+  return { types, parseArgs, parseEnv, promisify: promisify as typeof promisify & { custom: symbol }, ...createScriptUtilFormat(hooks), callbackify, inherits, TextEncoder: globalThis.TextEncoder, TextDecoder: globalThis.TextDecoder,
+    toUSVString(value: unknown) { return new TextDecoder('utf-8', { ignoreBOM: true }).decode(new TextEncoder().encode(`${value}`)); },
+  };
 }

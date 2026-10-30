@@ -1,3 +1,4 @@
+import { decodeFileBytes, decodeFileText, encodeFileBytes, readFileBytes, writeFileBytes } from './binary';
 import * as fspath from '@/packages/util/Path';
 import { VtronFileInterface } from './FIleInterface';
 import { VtronFile, VtronFileMode, VtronFileWithoutContent } from './FileSystem';
@@ -111,6 +112,33 @@ class VtronMemoryFileSystem implements VtronFileInterface {
     return result;
   }
 
+  async readBinaryFile(path: string): Promise<Uint8Array | null> {
+    const volume = this.checkVolumePath(path);
+    if (volume) return readFileBytes(volume, path);
+    const file = this.files.get(path);
+    if (!file) return null;
+    if (!file.isFile) throw fileSystemError('EISDIR', 'Cannot read a directory');
+    return file.binary === undefined ? new TextEncoder().encode(file.content) : decodeFileBytes(file.binary);
+  }
+  async writeBinaryFile(path: string, data: Uint8Array, options: { flag?: 'w' | 'a' | 'wx' } = {}): Promise<void> {
+    if (!(data instanceof Uint8Array)) throw new TypeError('File bytes must be Uint8Array');
+    const volume = this.checkVolumePath(path);
+    if (volume) return writeFileBytes(volume, path, data, options);
+    const parent = this.files.get(fspath.dirname(path));
+    if (!parent) throw fileSystemError('ENOENT', 'Destination parent does not exist');
+    if (!parent.isDirectory) throw fileSystemError('ENOTDIR', 'Destination parent is not a directory');
+    const previous = this.files.get(path), flag = options.flag ?? 'w';
+    if (!['w', 'a', 'wx'].includes(flag)) throw fileSystemError('ERR_NOT_SUPPORTED', 'Unsupported binary write flag');
+    if (previous && !previous.isFile) throw fileSystemError('EISDIR', 'Cannot write a non-file');
+    if (previous && flag === 'wx') throw fileSystemError('EEXIST', 'File already exists');
+    let bytes = data.slice();
+    if (previous && flag === 'a') { const old = previous.binary === undefined ? new TextEncoder().encode(previous.content) : decodeFileBytes(previous.binary); bytes = new Uint8Array(old.length + data.length); bytes.set(old); bytes.set(data, old.length); }
+    const file = previous ?? new VtronFile(path, '', { isFile: true });
+    if (!previous) { (file as any).id = this.nextId++; file.mode = 0o666; }
+    file.content = ''; file.binary = encodeFileBytes(bytes); file.size = bytes.length; file.mtime = file.ctime = new Date();
+    this.files.set(path, file); this.commitWatch(path, '');
+  }
+
   async readFile(path: string): Promise<string | null> {
     try {
       const volume = this.checkVolumePath(path);
@@ -118,7 +146,7 @@ class VtronMemoryFileSystem implements VtronFileInterface {
         return this.beforeGuard(volume, 'readFile', path);
       }
       const file = this.files.get(path);
-      return file ? file.content : null;
+      return file ? file.binary === undefined ? file.content : decodeFileText(decodeFileBytes(file.binary)) : null;
     } catch (e: any) {
       this.onerror(e.toString());
       return Promise.reject(e);
@@ -145,11 +173,12 @@ class VtronMemoryFileSystem implements VtronFileInterface {
     }
 
     const existing = this.files.get(path);
+    if (existing?.binary !== undefined) return this.writeBinaryFile(path, new TextEncoder().encode(data), opt);
 
     if (!existing) {
       const newFile = new VtronFile(path, data, {
         isFile: true,
-        size: data.length,
+        size: new TextEncoder().encode(data).byteLength,
       });
       (newFile as any).id = this.nextId++;
       this.files.set(path, newFile);
@@ -170,8 +199,8 @@ class VtronMemoryFileSystem implements VtronFileInterface {
     }
 
     existing.content = data;
-    existing.size = data.length;
-    existing.mtime = new Date();
+    existing.size = new TextEncoder().encode(data).byteLength;
+    existing.mtime = existing.ctime = new Date();
     this.commitWatch(path, data);
   }
 
@@ -187,9 +216,10 @@ class VtronMemoryFileSystem implements VtronFileInterface {
       return Promise.reject('File not found');
     }
 
+    if (file.binary !== undefined) return this.writeBinaryFile(path, new TextEncoder().encode(content), { flag: 'a' });
     file.content += content;
-    file.size = file.content.length;
-    file.mtime = new Date();
+    file.size = new TextEncoder().encode(file.content).byteLength;
+    file.mtime = file.ctime = new Date();
     this.commitWatch(path, file.content);
   }
 
@@ -212,7 +242,7 @@ class VtronMemoryFileSystem implements VtronFileInterface {
 
     const children = this.getFilesByParentPath(path);
     const result: VtronFileWithoutContent[] = children.map((f) => {
-      const { content: _, ...rest } = f;
+      const { content: _, binary: _binary, ...rest } = f;
       return rest;
     });
 
@@ -233,17 +263,12 @@ class VtronMemoryFileSystem implements VtronFileInterface {
 
   async stat(path: string): Promise<VtronFileWithoutContent | null> {
     const volume = this.checkVolumePath(path);
-    if (volume) {
-      try {
-        return this.beforeGuard(volume, 'stat', path);
-      } catch {
-        this.onerror('Failed to read volume directory:' + path);
-      }
-    }
+    if (volume) return this.beforeGuard(volume, 'stat', path);
 
     const file = this.files.get(path);
     if (!file) return null;
-    const { content: _, ...rest } = file;
+    const { content, binary, ...rest } = file;
+    if (rest.isFile) rest.size = binary === undefined ? new TextEncoder().encode(content).byteLength : decodeFileBytes(binary).length;
     return rest;
   }
 
@@ -285,7 +310,7 @@ class VtronMemoryFileSystem implements VtronFileInterface {
     file.path = newPath;
     file.parentPath = fspath.dirname(newPath);
     file.name = fspath.basename(newPath);
-    file.mtime = new Date();
+    file.mtime = file.ctime = new Date();
     this.files.set(newPath, file);
   }
 
@@ -412,6 +437,7 @@ class VtronMemoryFileSystem implements VtronFileInterface {
       size: file.size,
       mode: file.mode as VtronFileMode,
     });
+    if (file.binary !== undefined) newFile.binary = file.binary;
     (newFile as any).id = this.nextId++;
     this.files.set(destPath, newFile);
   }
@@ -443,8 +469,8 @@ class VtronMemoryFileSystem implements VtronFileInterface {
 
     const file = this.files.get(respath);
     if (file) {
-      file.mode = mode;
-      file.mtime = new Date();
+      file.mode = mode; file.ctime = new Date();
+      file.mtime = file.ctime = new Date();
     } else {
       return Promise.reject('File not found');
     }
@@ -454,7 +480,7 @@ class VtronMemoryFileSystem implements VtronFileInterface {
     const result: VtronFileWithoutContent[] = [];
     this.files.forEach((file) => {
       if (file.name.startsWith(keyword)) {
-        const { content: _, ...rest } = file;
+        const { content: _, binary: _binary, ...rest } = file;
         result.push(rest);
       }
     });

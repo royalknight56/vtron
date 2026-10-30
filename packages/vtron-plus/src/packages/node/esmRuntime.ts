@@ -1,20 +1,10 @@
 import { dirname } from 'vtron';
+import { compileScopedFunction } from './scriptScope';
 import type { ScriptModuleContext } from './ScriptModule';
 import { TraceMap, originalPositionFor, type SourceMapInput } from '@jridgewell/trace-mapping';
 
-type Namespace = Record<string, unknown>;
-type Export = (name: string | Namespace, value?: unknown) => unknown;
-type Declaration = { setters?: ((namespace: Namespace) => void)[]; execute?: () => unknown };
-type Registration = [string[], (publish: Export, context: unknown) => Declaration, unknown?];
-type ModuleSystem = {
-  import(request: string, parent?: string, meta?: unknown): Promise<Namespace>;
-  resolve(request: string, parent?: string, meta?: unknown): string;
-  instantiate(id: string, parent?: string, meta?: unknown): Registration | Promise<Registration>;
-  createContext(id: string): Record<string, unknown>;
-  prepareImport(): void;
-  entries(): IterableIterator<[string, Namespace]>;
-  delete(id: string): unknown;
-};
+import { createEsmModuleGraph, type Namespace, type Registration, type ModuleDefinition } from './esmModuleGraph';
+type Declaration = ReturnType<Registration[1]>;
 type ImportAttribute = { key: { name?: string; value?: string }; value: { value?: unknown } };
 type BabelNode = {
   type: string;
@@ -24,32 +14,23 @@ type BabelNode = {
   options?: unknown;
   attributes?: ImportAttribute[];
   assertions?: ImportAttribute[];
+  await?: boolean;
 };
-type BabelPath = { node: BabelNode; replaceWith(node: unknown): void };
+type BabelPath = { node: BabelNode; replaceWith(node: unknown): void; getFunctionParent(): unknown };
 type BabelTypes = { identifier(name: string): unknown; callExpression(callee: unknown, args: unknown[]): unknown };
 type BabelApi = {
   transform(source: string, options: Record<string, unknown>): { code?: string | null; map?: SourceMapInput | null };
 };
-type Tools = { babel: BabelApi; ModuleSystem: new () => ModuleSystem };
-let toolsPromise: Promise<Tools> | undefined;
+let toolsPromise: Promise<BabelApi> | undefined;
 const nativeImport = new Function('specifier', 'options', 'return import(specifier, options);') as (specifier: string, options?: unknown) => Promise<Namespace>;
 
-/** Keep the library's browser globals private; each script gets its own module registry. */
-async function tools(): Promise<Tools> {
-  if (!toolsPromise) toolsPromise = (async () => {
-    const [babelModule, runtimeModule] = await Promise.all([
-      import('@babel/standalone'),
-      import('systemjs/dist/system.min.js?raw'),
-    ]);
+async function tools(): Promise<BabelApi> {
+  if (!toolsPromise) toolsPromise = import('@babel/standalone').then(babelModule => {
     const exported = babelModule as unknown as Partial<BabelApi> & { default?: BabelApi };
     const babel = (typeof exported.transform === 'function' ? exported : exported.default) as BabelApi;
     if (typeof babel?.transform !== 'function') throw new Error('无法初始化 ESM 编译器');
-    const scope: Record<string, unknown> = {};
-    const load = new Function('self', 'window', 'global', 'globalThis', 'document', 'location', runtimeModule.default + '\n;return self.System;');
-    const system = load(scope, scope, scope, scope, undefined, undefined) as ModuleSystem;
-    if (!system || typeof system.import !== 'function') throw new Error('无法初始化 ESM 模块加载器');
-    return { babel, ModuleSystem: system.constructor as new () => ModuleSystem };
-  })().catch(error => { toolsPromise = undefined; throw error; });
+    return babel;
+  }).catch(error => { toolsPromise = undefined; throw error; });
   return toolsPromise;
 }
 
@@ -84,14 +65,13 @@ function importName(value: unknown) {
 }
 
 export async function createEsmRuntime(options: EsmRuntimeOptions) {
-  const { babel, ModuleSystem: System } = await tools();
+  const babel = await tools();
   const { context } = options;
   const entry = context.filename.startsWith('/') ? context.filename : context.cwd.replace(/\/$/, '') + '/[eval]';
-  const engine = new System();
   const overrides = new Map<string, string>();
-  const compiled = new Map<string, Registration>();
+  const compiled = new Map<string, ModuleDefinition>();
   const sourceMaps = new Map<string, { filename: string; source: string; map: TraceMap }>();
-  const loadedIds = new Set<string>();
+  const nativeMeta = new Map<string, unknown>();
   let disposed = false;
 
   function active() {
@@ -123,7 +103,8 @@ export async function createEsmRuntime(options: EsmRuntimeOptions) {
     if (request.startsWith('file:')) request = options.fromFileURL(request);
     else if (/^[A-Za-z][\w+.-]*:/.test(request) && !request.startsWith('node:')) throw moduleError('ERR_UNSUPPORTED_ESM_URL_SCHEME', `不支持此 ESM 模块地址：${request}`, parent);
     if (parent.startsWith('file:')) parent = options.fromFileURL(parent);
-    return options.resolve(request, parent);
+    const id = options.resolve(request, parent);
+    return id;
   }
   function publicURL(id: string) { return id.startsWith('/') ? options.toFileURL(id) : isNativeURL(id) || id.startsWith('node:') ? id : 'node:' + id; }
   function validateMeta(id: string, meta: unknown) {
@@ -135,6 +116,7 @@ export async function createEsmRuntime(options: EsmRuntimeOptions) {
     const type = attributes?.type;
     if (type !== undefined && type !== 'json') throw moduleError('ERR_IMPORT_ATTRIBUTE_UNSUPPORTED', `不支持 import 属性 type=${String(type)}`, id);
     if (type === 'json' && !isNativeURL(id) && !id.endsWith('.json')) throw moduleError('ERR_IMPORT_ATTRIBUTE_TYPE_INCOMPATIBLE', `JSON import 属性与文件类型不匹配：${id}`, id);
+    if (isNativeURL(id) && meta !== undefined) nativeMeta.set(id, meta);
   }
   // Preserve import options, which the SystemJS Babel transform otherwise drops.
   function dynamicImports({ types }: { types: BabelTypes }) {
@@ -193,17 +175,35 @@ export async function createEsmRuntime(options: EsmRuntimeOptions) {
       return declaration;
     }, registration[2]];
   }
-  function compile(source: string, filename: string): Registration {
+  function compile(source: string, filename: string): ModuleDefinition {
     active();
     const existing = compiled.get(filename); if (existing) return existing;
     const metadata = new Map<string, unknown>();
+    let asynchronous = false;
+    const detectAwait = () => ({ visitor: {
+      AwaitExpression(path: BabelPath) { if (!path.getFunctionParent()) asynchronous = true; },
+      ForOfStatement(path: BabelPath) { if (path.node.await && !path.getFunctionParent()) asynchronous = true; },
+    } });
+    // Babel's System.register transform recognizes AwaitExpression, but misses
+    // a module whose only async syntax is top-level `for await`. Mark the
+    // generated execute function in the AST, without rewriting source text.
+    const asyncExecute = () => ({ visitor: { Program: { exit(path: BabelPath) {
+      if (!asynchronous) return;
+      type Statement = { type: string; argument?: { properties: { key: { name: string }; value: { type: string; async: boolean } }[] }; expression?: { callee?: { object?: { name?: string }; property?: { name?: string } }; arguments?: [unknown, { body: { body: Statement[] } }] } };
+      const statements = (path.node as unknown as { body: Statement[] }).body;
+      const call = statements.find(item => item.expression?.callee?.object?.name === 'System' && item.expression.callee.property?.name === 'register')?.expression;
+      const body = call?.arguments?.[1].body.body;
+      const execute = body?.find(item => item.type === 'ReturnStatement')?.argument?.properties.find(item => item.key.name === 'execute')?.value;
+      if (!execute || execute.type !== 'FunctionExpression') throw moduleError('ERR_MODULE_COMPILE', `Cannot locate asynchronous module execution: ${filename}`, filename);
+      execute.async = true;
+    } } } });
     let result: ReturnType<BabelApi['transform']>;
     try {
       result = babel.transform(sourceBody(source), {
         filename, sourceType: 'module', babelrc: false, configFile: false, retainLines: true,
         sourceMaps: 'both', sourceFileName: options.toFileURL(filename),
         parserOpts: { plugins: ['deprecatedImportAssert'] },
-        plugins: [dynamicImports, staticAttributes(filename, metadata), 'transform-modules-systemjs'],
+        plugins: [detectAwait, dynamicImports, staticAttributes(filename, metadata), 'transform-modules-systemjs', asyncExecute],
       });
     } catch (error) { throw pathError(error, filename, source); }
     if (!result.code) throw moduleError('ERR_MODULE_COMPILE', `ESM 编译没有生成内容：${filename}`, filename);
@@ -212,61 +212,49 @@ export async function createEsmRuntime(options: EsmRuntimeOptions) {
     const registrar = { register(dependencies: string[], declare: Registration[1], metas?: unknown) { registration = [dependencies, declare, metas]; } };
     const globals = context.globals;
     try {
-      const evaluate = new Function('System', 'fs', 'process', 'console', 'fetch', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', '__vtronImport', 'global', 'globalThis', 'Buffer', result.code + '\n//# sourceURL=' + debugURL(filename));
+      const evaluate = compileScopedFunction(globals.global, ['System', 'fs', 'process', 'console', 'fetch', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', '__vtronImport', 'global', 'globalThis', 'Buffer'], result.code + '\n//# sourceURL=' + debugURL(filename));
       evaluate(registrar, globals.fs, globals.process, globals.console, globals.fetch, globals.setTimeout, globals.setInterval, globals.clearTimeout, globals.clearInterval, (request: string, meta?: unknown) => importModule(request, filename, meta), globals.global, globals.global, globals.Buffer);
     } catch (error) { throw sourceError(error, filename, source); }
     if (!registration) throw moduleError('ERR_MODULE_COMPILE', `ESM 模块未注册：${filename}`, filename);
     registration[2] = registration[0].map(request => metadata.get(request));
-    const guarded = guardRegistration(registration, filename, source);
+    const guarded = { registration: guardRegistration(registration, filename, source), async: asynchronous };
     compiled.set(filename, guarded);
     return guarded;
   }
 
-  // Nothing in this loader is fetched through SystemJS's document/import-map machinery.
-  engine.prepareImport = () => { active(); };
-  engine.resolve = resolved;
-  engine.createContext = id => ({
-    url: publicURL(id), filename: id, dirname: dirname(id), main: id === entry,
-    resolve: (request: string, parent?: string) => publicURL(resolved(request, parent || id)),
-  });
-  engine.instantiate = async (id, _parent, meta) => {
-    active(); validateMeta(id, meta);
-    loadedIds.add(id);
-    if (isNativeURL(id)) {
-      const namespace = await nativeImport(id, meta);
+  const graph = createEsmModuleGraph({
+    active, resolve: resolved, validate: validateMeta,
+    context: id => ({
+      url: publicURL(id), filename: id, dirname: dirname(id), main: id === entry,
+      resolve: (request: string, parent?: string) => publicURL(resolved(request, parent || id)),
+      import: (request: string, meta?: unknown) => importModule(request, id, meta),
+      meta: {
+        url: publicURL(id), filename: id, dirname: dirname(id), main: id === entry,
+        resolve: (request: string) => publicURL(resolved(request, id)),
+      },
+    }),
+    definition(id) {
       active();
-      return synthetic(() => namespace, false);
-    }
-    if (!id.startsWith('/')) return synthetic(() => options.builtin(id), true);
-    const source = overrides.get(id) ?? options.source(id);
-    if (source === undefined) throw moduleError('MODULE_NOT_FOUND', `找不到 ESM 模块：${id}`, id);
-    if (id.endsWith('.json')) {
-      return synthetic(() => {
-        try { return { default: JSON.parse(source.replace(/^\uFEFF/, '')) }; }
+      if (isNativeURL(id)) return { async: true, registration: [[], publish => ({ async execute() { const namespace = await nativeImport(id, nativeMeta.get(id)); active(); publish(namespace); } })] };
+      if (!id.startsWith('/')) return { async: false, registration: synthetic(() => options.builtin(id), true) };
+      const source = overrides.get(id) ?? options.source(id);
+      if (source === undefined) throw moduleError('MODULE_NOT_FOUND', `找不到 ESM 模块：${id}`, id);
+      if (id.endsWith('.json')) return { async: false, registration: synthetic(() => {
+        try { return { default: options.loadCommonJS(id) }; }
         catch (error) { throw pathError(error, id, source); }
-      }, false);
-    }
-    return options.isESM(id) || overrides.has(id) ? compile(source, id) : synthetic(() => options.loadCommonJS(id), true);
-  };
-  const systemImport = engine.import.bind(engine);
-  engine.import = (request, parent, meta) => {
-    const promise = (async () => {
+      }, false) };
+      return options.isESM(id) || overrides.has(id) ? compile(source, id) : { async: false, registration: synthetic(() => options.loadCommonJS(id), true) };
+    },
+  });
+  function importModule(request: string, parent = entry, meta?: unknown): Promise<Namespace> {
+    const promise = Promise.resolve().then(() => {
       active();
-      const id = resolved(request, parent);
+      const id = resolved(importName(request), parent);
       validateMeta(id, meta);
-      if (isNativeURL(id)) {
-        const namespace = await nativeImport(id, meta);
-        active();
-        return namespace;
-      }
-      const namespace = await systemImport(id, parent, meta);
-      active();
-      return namespace;
-    })();
-    const tracker = context as ScriptModuleContext & { track?: <T>(promise: Promise<T>) => Promise<T> };
-    return tracker.track ? tracker.track(promise) : promise;
-  };
-  function importModule(request: string, parent = entry, meta?: unknown): Promise<Namespace> { return engine.import(importName(request), parent, meta); }
+      return graph.import(id);
+    });
+    return context.track ? context.track(promise) : promise;
+  }
 
   function transformCommonJS(source: string, filename: string) {
     active();
@@ -282,14 +270,15 @@ export async function createEsmRuntime(options: EsmRuntimeOptions) {
 
   return {
     importModule, transformCommonJS,
+    requireModule(filename: string) { active(); return graph.require(filename); },
     async executeEntry(source: string) {
       active(); overrides.set(entry, source);
       await importModule(entry);
     },
     dispose() {
       disposed = true;
-      for (const id of loadedIds) engine.delete(id);
-      overrides.clear(); compiled.clear(); sourceMaps.clear(); loadedIds.clear();
+      graph.dispose();
+      overrides.clear(); compiled.clear(); sourceMaps.clear(); nativeMeta.clear();
     },
   };
 }

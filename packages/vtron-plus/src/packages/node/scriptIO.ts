@@ -1,34 +1,57 @@
 import type { ShellTerminal } from 'vtron';
 
 type Listener = (...args: any[]) => void;
+type EventName = string | symbol;
+type StoredListener = Listener & { listener?: Listener };
 
 export class ScriptEmitter {
-  private events = new Map<string, Listener[]>();
+  private events = new Map<EventName, StoredListener[]>();
   constructor(private reportError: (error: unknown) => void, private onChange?: () => void) {}
-  on(event: string, listener: Listener) {
+  private add(event: EventName, listener: StoredListener, prepend: boolean) {
+    if (typeof listener !== 'function') throw Object.assign(new TypeError('listener must be a function'), { code: 'ERR_INVALID_ARG_TYPE' });
     const listeners = this.events.get(event) || [];
-    listeners.push(listener);
+    if (prepend) listeners.unshift(listener); else listeners.push(listener);
     this.events.set(event, listeners);
     this.onChange?.();
     return this;
   }
-  addListener(event: string, listener: Listener) { return this.on(event, listener); }
-  once(event: string, listener: Listener) {
-    const once = Object.assign((...args: any[]) => { this.off(event, once); listener.apply(this, args); }, { listener });
-    return this.on(event, once);
+  on(event: EventName, listener: Listener) { return this.add(event, listener, false); }
+  addListener(event: EventName, listener: Listener) { return this.on(event, listener); }
+  prependListener(event: EventName, listener: Listener) { return this.add(event, listener, true); }
+  private addOnce(event: EventName, listener: Listener, prepend: boolean) {
+    if (typeof listener !== 'function') throw Object.assign(new TypeError('listener must be a function'), { code: 'ERR_INVALID_ARG_TYPE' });
+    let fired = false;
+    const once = Object.assign((...args: any[]) => {
+      if (fired) return;
+      fired = true; this.off(event, once); listener.apply(this, args);
+    }, { listener });
+    return this.add(event, once, prepend);
   }
-  off(event: string, listener: Listener) {
+  once(event: EventName, listener: Listener) { return this.addOnce(event, listener, false); }
+  prependOnceListener(event: EventName, listener: Listener) { return this.addOnce(event, listener, true); }
+  off(event: EventName, listener: Listener) {
+    if (typeof listener !== 'function') throw Object.assign(new TypeError('listener must be a function'), { code: 'ERR_INVALID_ARG_TYPE' });
     const listeners = this.events.get(event);
-    if (listeners) this.events.set(event, listeners.filter(item => item !== listener && (item as Listener & { listener?: Listener }).listener !== listener));
+    if (listeners) for (let index = listeners.length - 1; index >= 0; index--) {
+      if (listeners[index] !== listener && listeners[index].listener !== listener) continue;
+      listeners.splice(index, 1);
+      if (!listeners.length) this.events.delete(event);
+      break;
+    }
     this.onChange?.();
     return this;
   }
-  removeListener(event: string, listener: Listener) { return this.off(event, listener); }
-  removeAllListeners(event?: string) { if (event) this.events.delete(event); else this.events.clear(); this.onChange?.(); return this; }
-  listenerCount(event: string) { return this.events.get(event)?.length || 0; }
-  listeners(event: string) { return [...(this.events.get(event) || [])]; }
-  emit(event: string, ...args: any[]) {
-    const listeners = this.listeners(event);
+  removeListener(event: EventName, listener: Listener) { return this.off(event, listener); }
+  removeAllListeners(event?: EventName) { if (arguments.length) this.events.delete(event!); else this.events.clear(); this.onChange?.(); return this; }
+  listenerCount(event: EventName, listener?: Listener) {
+    const listeners = this.events.get(event) || [];
+    return listener ? listeners.filter(item => item === listener || item.listener === listener).length : listeners.length;
+  }
+  listeners(event: EventName) { return (this.events.get(event) || []).map(item => item.listener || item); }
+  rawListeners(event: EventName) { return [...(this.events.get(event) || [])]; }
+  eventNames() { return [...this.events.keys()]; }
+  emit(event: EventName, ...args: any[]) {
+    const listeners = this.rawListeners(event);
     if (!listeners.length && event === 'error') this.reportError(args[0]);
     for (const listener of listeners) {
       try { listener.apply(this, args); } catch (error) { this.reportError(error); }

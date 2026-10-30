@@ -14,6 +14,7 @@ export type { VtronFileInterface } from '@/packages/kernel/file/FIleInterface';
 export * from '@/packages/kernel/file/FileSystem';
 export * from '@/packages/kernel/file/MemoryFileSystem';
 export * from '@/packages/kernel/file/LocalFileSystem';
+export { realpath, mkdir, exists, writeFile, rename, stat } from '@/packages/kernel/file/operations';
 export * from '@/packages/kernel/shell/Shell';
 export type { ShellInterface, ShellTerminal } from '@/packages/kernel/shell/ShellType';
 export type { ShellCommand } from '@/packages/kernel/shell/ShellCommand';
@@ -35,3 +36,7 @@ export {
   WinSelect,
   WinUpButtonGroupVue,
 };
+
+export { watch, type VtronWatchEvent, type VtronWatchOptions, type VtronWatchHandle } from '@/packages/kernel/file/watch';
+
+export { readFileBytes, writeFileBytes } from '@/packages/kernel/file/binary';

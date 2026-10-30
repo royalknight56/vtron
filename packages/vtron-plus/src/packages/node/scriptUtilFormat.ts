@@ -1,4 +1,6 @@
-import { Buffer } from 'buffer/';
+import { Buffer } from './scriptBuffer';
+import { scriptIsDeepStrictEqual } from './scriptDeepEqual';
+import { createScriptStyleText, type StyleTextHooks } from './scriptStyleText';
 
 type InspectOptions = {
   depth?: number | null;
@@ -43,7 +45,8 @@ function quoted(value: string): string {
 }
 
 /** A bounded diagnostic formatter, not the full Node inspector or debugger. */
-export function createScriptUtilFormat() {
+export function createScriptUtilFormat(hooks: StyleTextHooks = {}) {
+  const styling = createScriptStyleText(hooks);
   function inspect(value: unknown, options?: InspectOptions): string {
     const opts = settings(options);
     const ancestors = new Map<object, { id?: number }>();
@@ -52,6 +55,23 @@ export function createScriptUtilFormat() {
     const keyText = (key: PropertyKey, hidden: boolean) => {
       const text = typeof key === 'symbol' ? `[${style(String(key), 32)}]` : hidden ? `[${key}]` : /^[\p{ID_Start}_$][\p{ID_Continue}$]*$/u.test(String(key)) ? String(key) : style(quoted(String(key)), 32);
       return text;
+    };
+    const errorText = (error: Error, stack: boolean) => {
+      const data = (key: string) => {
+        for (let current: object | null = error; current; current = Object.getPrototypeOf(current)) {
+          const descriptor = Object.getOwnPropertyDescriptor(current, key);
+          if (!descriptor) continue;
+          if ('value' in descriptor) return descriptor.value;
+          // V8 can expose its lazy Error stack through a native getter. Custom
+          // getters remain unexecuted, like ordinary inspected properties.
+          if (key === 'stack' && descriptor.get && Function.prototype.toString.call(descriptor.get).includes('[native code]')) return descriptor.get.call(error);
+          return;
+        }
+      };
+      const trace = stack ? data('stack') : undefined;
+      if (typeof trace === 'string' && trace) return trace;
+      const name = data('name'), message = data('message');
+      return `${typeof name === 'string' ? name : 'Error'}${typeof message === 'string' && message ? ': ' + message : ''}`;
     };
     const render = (item: unknown, depth: number | null): string => {
       if (item === null) return style('null', 1);
@@ -78,23 +98,21 @@ export function createScriptUtilFormat() {
         return `<Buffer${hex ? ' ' + hex : ''}${data.length > limit ? ` ... ${data.length - limit} more byte${data.length - limit === 1 ? '' : 's'}` : ''}>`;
       }
       if (opts.customInspect && custom in object) unsupported('util.inspect custom inspector callbacks');
-      if (object instanceof Error) {
-        if (opts.showHidden || Object.keys(object).length || Object.prototype.hasOwnProperty.call(object, 'cause')) unsupported('util.inspect Error properties');
-        return object.stack || `${object.name}: ${object.message}`;
-      }
+      const errorObject = object instanceof Error;
       if (object instanceof Date) return style(Number.isNaN(object.getTime()) ? 'Invalid Date' : object.toISOString(), 35);
       if (object instanceof RegExp) return style(String(object), 31);
       const array = Array.isArray(object);
       const map = object instanceof Map;
       const set = object instanceof Set;
       const prototype = Object.getPrototypeOf(object);
-      if (!array && !map && !set && prototype !== Object.prototype && prototype !== null) unsupported('util.inspect this object type');
+      if (!errorObject && !array && !map && !set && prototype !== Object.prototype && prototype !== null) unsupported('util.inspect this object type');
       const ancestor = ancestors.get(object);
       if (ancestor) {
         ancestor.id ??= nextId++;
         return style(`[Circular *${ancestor.id}]`, 36);
       }
       if (depth !== null && depth < 0) {
+        if (errorObject) return style(`[${errorText(object as Error, false)}]`, 36);
         const keys = Reflect.ownKeys(object).filter(key => opts.showHidden || Object.getOwnPropertyDescriptor(object, key)?.enumerable);
         if (array && object.length === 0 && !keys.length) return '[]';
         if (map && !object.size && !keys.length) return 'Map(0) {}';
@@ -107,7 +125,7 @@ export function createScriptUtilFormat() {
       const childDepth = depth === null ? null : depth - 1;
       let result: string;
       const properties = (skip: (key: PropertyKey) => boolean = () => false): string[] => {
-        let keys = Reflect.ownKeys(object).filter(key => !skip(key) && (opts.showHidden || Object.getOwnPropertyDescriptor(object, key)?.enumerable));
+        let keys = Reflect.ownKeys(object).filter(key => !skip(key) && (opts.showHidden || Object.getOwnPropertyDescriptor(object, key)?.enumerable || errorObject && (key === 'cause' || key === 'errors')));
         if (opts.sorted) keys = keys.sort((a, b) => String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0);
         return keys.map(key => {
           const descriptor = Object.getOwnPropertyDescriptor(object, key)!;
@@ -115,7 +133,10 @@ export function createScriptUtilFormat() {
           return keyText(key, !descriptor.enumerable) + ': ' + value;
         });
       };
-      if (array) {
+      if (errorObject) {
+        const values = properties(key => !opts.showHidden && (key === 'stack' || key === 'message' || key === 'name'));
+        result = errorText(object as Error, true) + (values.length ? ' { ' + values.join(', ') + ' }' : '');
+      } else if (array) {
         const values: string[] = [];
         const length = Math.min(object.length, opts.maxArrayLength);
         for (let index = 0; index < length;) {
@@ -188,10 +209,8 @@ export function createScriptUtilFormat() {
     return value.replace(/(?:\x1b\][\s\S]*?(?:\x07|\x1b\\)|[\x1b\x9b][[\]()#;?]*(?:(?:[a-zA-Z\d]*(?:;[-a-zA-Z\d/#&.:=?%@~_]*)*)?\x07|(?:\d{1,4}(?:[;:]\d{0,4})*)?[\dA-PR-TZcf-nq-uy=><~]))/g, '');
   };
   return {
-    inspect: inspect as typeof inspect & { custom: symbol }, format, formatWithOptions, stripVTControlCharacters,
-    isDeepStrictEqual: (..._args: unknown[]): never => unsupported('util.isDeepStrictEqual'),
-    callbackify: (..._args: unknown[]): never => unsupported('util.callbackify'),
-    inherits: (..._args: unknown[]): never => unsupported('util.inherits'),
+    inspect: Object.assign(inspect, { colors: styling.colors }) as typeof inspect & { custom: symbol; colors: typeof styling.colors }, styleText: styling.styleText, format, formatWithOptions, stripVTControlCharacters,
+    isDeepStrictEqual: scriptIsDeepStrictEqual,
     debuglog: (..._args: unknown[]): never => unsupported('util.debuglog'),
     deprecate: (..._args: unknown[]): never => unsupported('util.deprecate'),
   };

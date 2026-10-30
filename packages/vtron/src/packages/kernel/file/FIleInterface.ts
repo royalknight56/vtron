@@ -5,6 +5,8 @@ export interface VtronFileInterface {
   isFirstRun: boolean;
   whenReady: () => Promise<VtronFileInterface>;
   readFile: (path: string) => Promise<string | null>;
+  readBinaryFile?: (path: string) => Promise<Uint8Array | null>;
+  writeBinaryFile?: (path: string, data: Uint8Array, options?: { flag?: 'w' | 'a' | 'wx' }) => Promise<void>;
   writeFile: (
     path: string,
     data: string,

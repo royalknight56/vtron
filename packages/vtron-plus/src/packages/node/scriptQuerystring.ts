@@ -1,4 +1,4 @@
-import { Buffer } from 'buffer/';
+import { Buffer } from './scriptBuffer';
 
 type Encoder = (value: string) => string;
 type ParseOptions = { maxKeys?: number; decodeURIComponent?: Encoder };

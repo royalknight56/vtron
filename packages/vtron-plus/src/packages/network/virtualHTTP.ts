@@ -1,4 +1,4 @@
-import { Buffer } from 'buffer/';
+import { Buffer } from '../node/scriptBuffer';
 import { ScriptEmitter } from '../node/scriptIO';
 import { createScriptNet, type ScriptNetModule, type VirtualNetwork, type VirtualSocket, type VirtualServer } from './virtualNet';
 

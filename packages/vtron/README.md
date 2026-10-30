@@ -51,3 +51,42 @@ const system = new System({
 服务端必须独立校验目标来源、鉴权和重定向地址，前端的 `allowedOrigins` 只决定哪些请求走代理。服务端转发时应保留上游状态码、响应头和响应体，过滤逐跳请求头，并按宿主的登录机制处理 Cookie 和 Set-Cookie。代理服务自身也需要能访问目标网络。
 
 终端脚本继续使用原来的目标 URL，宿主通过初始化配置选择请求路径即可。
+
+## 可复用的文件系统操作
+
+core 导出基于 `VtronFileInterface` 的异步文件操作，函数名采用 Node fs 的命名风格。调用时第一个参数仍需传入存储实例，参数和返回值并非完整的 Node fs 兼容接口：
+
+```ts
+import { realpath, mkdir, exists, writeFile, watch, rename, stat } from 'vtron';
+
+const realPath = await realpath(system.fs, '/C/Users/Desktop');
+const firstCreated = await mkdir(system.fs, '/C/Users/Desktop/cache/deps', true);
+const existsResult = await exists(system.fs, '/C/Users/Desktop/cache/deps');
+await writeFile(system.fs, '/C/Users/Desktop/cache/deps/info.txt', 'ready');
+const watcher = await watch(system.fs, '/C/Users/Desktop/cache/deps',
+  event => console.log(event.type, event.path), console.error);
+// 不再使用时停止轮询。
+watcher.close();
+```
+
+路径解析逐段读取目录及元数据，支持普通路径的 `.`、`..`，对尚未支持的符号链接和无法确认的大小写转换明确报错。建目录和存在查询接收规范化的绝对路径；递归建目录返回本次操作中第一个创建的目录，已存在时返回 `undefined`。存在查询只在后端确定缺失时返回 `false`，权限或存储错误会向调用方传播。建目录和存在查询可传入可选 `AbortSignal`；后端已经提交的不可取消操作不会回滚。
+
+`writeFile(storage, path, text, flag?, signal?)` 校验真实父目录和文件类型，等待后端写入，支持 `w/a/wx`；它只处理文本，不提供跨后端原子事务。`watch` 使用真实 stat/readdir/readFile 快照轮询，默认间隔 250 ms，可配置 `recursive/intervalMs/signal`，返回 `close()`。快照最多 4096 项、文件内容总计 16 MiB，超限或存储错误会明确报错。监听不跟随符号链接；轮询之间的短暂变化可能合并或遗漏。
+
+`rename(storage, from, to, signal?)` 复用后端真实移动，校验父目录、文件类型及移动结果；支持普通文件覆盖和移动到新目录名，对已有目录覆盖、符号链接及跨卷等不支持场景明确报错。原子性取决于后端，不通过复制样例数据伪造成功。`stat(storage, path, signal?)` 严格查询真实元数据，不存在返回 `null`，路径中遇到符号链接或非目录祖先时报错，返回值剔除文件内容。内存和 IndexedDB 后端的文件大小按 UTF-8 字节计数。
+
+Node 的 `fs` 回调包装、Promise 模块、Buffer 编码及 Worker 同步桥继续由 plus 提供；core 不注册 Node 命令，也不阻塞主线程。
+
+## 二进制文件
+
+`VtronFileInterface` 新增可选的 `readBinaryFile(path)` 和 `writeBinaryFile(path, bytes, { flag? })`，数据为 Uint8Array。三个内置后端均提供实现；IndexedDB/内存使用 Base64 持久化字节，本地文件后端读写真实字节，不依赖包名或文件扩展名。
+
+```ts
+import { readFileBytes, writeFileBytes } from 'vtron';
+await writeFileBytes(system.fs, '/C/Users/Desktop/program.wasm', wasmBytes);
+const bytes = await readFileBytes(system.fs, '/C/Users/Desktop/program.wasm');
+```
+
+辅助写入校验父目录、类型和符号链接；不支持二进制的自定义后端只允许 UTF-8 无损回退。原来的字符串 API 保留，对无效 UTF-8 内容明确报错。复制、重命名和 JSON 导入导出保留二进制载荷，监听使用真实字节比较。二进制载荷不属于元数据。ctime 仅在后端能提供实际变化时间时返回，旧记录或本地文件 API 缺少此信息时不推测。
+
+二进制接口已通过 core 类型检查和构建，并在 Chrome 中验证 IndexedDB、内存及本地文件后端（OPFS 目录句柄）的原始字节读写。未验证用户授权的外部磁盘目录。

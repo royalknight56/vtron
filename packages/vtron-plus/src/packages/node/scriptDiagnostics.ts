@@ -1,3 +1,4 @@
+import { compileScopedFunction } from './scriptScope';
 export type ScriptPosition = { line: number; column?: number };
 const parameters = ['system', 'vue', 'fs', 'process', 'require', 'console', '__filename', '__dirname', 'module', 'exports', '__vtronRunMain', 'fetch', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', '__vtronImport', 'global', 'globalThis', 'Buffer'];
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor as new (...args: string[]) => (...values: unknown[]) => Promise<unknown>;
@@ -14,7 +15,7 @@ export function scriptBody(code: string, filename: string) {
   return '{\n' + source + '\n;if (typeof main === "function") await __vtronRunMain(main, system, vue);\n}\n//# sourceURL=' + scriptSourceURL(filename);
 }
 
-export function compileScript(body: string) { return new AsyncFunction(...parameters, body); }
+export function compileScript(body: string, scope?: object) { return scope ? compileScopedFunction(scope, parameters, body, true) as (...values: unknown[]) => Promise<unknown> : new AsyncFunction(...parameters, body); }
 
 function escaped(value: string) { return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 function sourceLines(code: string) { return code.split(/\r\n|[\n\r\u2028\u2029]/); }

@@ -23,10 +23,10 @@ export interface ScriptModuleContext {
     process: unknown;
     console: Console;
     fetch: typeof globalThis.fetch;
-    setTimeout: typeof globalThis.setTimeout;
-    setInterval: typeof globalThis.setInterval;
-    clearTimeout: typeof globalThis.clearTimeout;
-    clearInterval: typeof globalThis.clearInterval;
+    setTimeout: ReturnType<typeof import('./scriptTasks').createScriptTasks>['setTimeout'];
+    setInterval: ReturnType<typeof import('./scriptTasks').createScriptTasks>['setInterval'];
+    clearTimeout: ReturnType<typeof import('./scriptTasks').createScriptTasks>['clearTimeout'];
+    clearInterval: ReturnType<typeof import('./scriptTasks').createScriptTasks>['clearInterval'];
   };
 }
 

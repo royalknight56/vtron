@@ -359,7 +359,7 @@ const breadcrumbs = computed(() => {
     Videos: t('recycle.bin.videos'),
     Note: t('computer.notes'),
   };
-  return parts.map((part, index) => ({
+  return parts.map((part: string, index: number) => ({
     path: '/' + parts.slice(0, index + 1).join('/'),
     label: index === 0 ? `${t('local.disk')} (${part}:)` : labels[part] || part,
   }));

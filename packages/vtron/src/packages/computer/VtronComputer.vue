@@ -20,7 +20,7 @@ provide('system', props.system);
 <style>
 @font-face {
   font-family: 'SEGOEUIMDL';
-  src: url('SegMDL2.ttf') format('truetype');
+  src: url('../../../public/SegMDL2.ttf') format('truetype');
   /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
   /* url("LXGWWenKai-Bold.svg#LXGWWenKai-Bold") format("svg"); iOS 4.1- */
   font-style: normal;

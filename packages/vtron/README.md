@@ -87,6 +87,6 @@ await writeFileBytes(system.fs, '/C/Users/Desktop/program.wasm', wasmBytes);
 const bytes = await readFileBytes(system.fs, '/C/Users/Desktop/program.wasm');
 ```
 
-辅助写入校验父目录、类型和符号链接；不支持二进制的自定义后端只允许 UTF-8 无损回退。原来的字符串 API 保留，对无效 UTF-8 内容明确报错。复制、重命名和 JSON 导入导出保留二进制载荷，监听使用真实字节比较。二进制载荷不属于元数据。ctime 仅在后端能提供实际变化时间时返回，旧记录或本地文件 API 缺少此信息时不推测。
+辅助写入校验父目录、类型和符号链接；不支持二进制的自定义后端只允许 UTF-8 无损回退。原来的字符串 API 保留，对无效 UTF-8 内容明确报错。复制、重命名和 JSON 导入导出保留二进制载荷，监听使用真实字节比较。二进制载荷不属于元数据。IndexedDB 数据库升级至版本 2 时，会为缺少 ctime 的旧记录持久化本次迁移时间，保留已有 ctime、内容及其他时间字段；就绪通知在迁移事务提交后返回。IndexedDB 和内存后端导入旧记录时以导入时间补齐 ctime。本地文件 API 等无法提供该元数据的后端仍不推测历史变化时间。
 
 二进制接口已通过 core 类型检查和构建，并在 Chrome 中验证 IndexedDB、内存及本地文件后端（OPFS 目录句柄）的原始字节读写。未验证用户授权的外部磁盘目录。

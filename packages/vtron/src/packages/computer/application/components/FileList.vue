@@ -1,8 +1,14 @@
 <template>
   <template v-if="mode === 'detail'">
-    <div class="file-bar mode-detail">
+    <div v-if="explorerDetails" class="file-bar mode-detail native-detail">
+      <div class="file-item_title">{{ i18n('recycle.bin.name') }}</div>
+      <div class="file-item_type detail-modified">{{ i18n('recycle.bin.modified.at') }}</div>
+      <div class="file-item_type detail-kind">{{ i18n('recycle.bin.type') }}</div>
+      <div class="file-item_type detail-size">{{ i18n('size') }}</div>
+    </div>
+    <div v-else class="file-bar mode-detail">
       <div class="file-item_img"></div>
-      <div class="file-item_title"></div>
+      <div class="file-item_title">{{ i18n('recycle.bin.name') }}</div>
       <div class="file-item_type">
         <span>{{ i18n('size') }}</span>
       </div>
@@ -23,6 +29,7 @@
     :file="item"
     :theme="theme"
     :mode="mode"
+    :explorer-details="explorerDetails"
     :chosen-paths="chosenPaths"
     :hover-path="hoverPath"
     :edit-path="editPath"
@@ -87,6 +94,7 @@ const props = defineProps({
     type: String,
     default: 'icon',
   },
+  explorerDetails: { type: Boolean, default: false },
   // 显示隐藏文件
   showHidden: {
     type: Boolean,
@@ -163,29 +171,27 @@ function handleClick(file: VtronFileWithoutContent) {
 }
 onMounted(() => {
   chosenPaths.value = [];
-  props.onChosen(
-    (rect: Rect) => {
-      const tempChosen: string[] = [];
-      fileListFilter.value.forEach((item) => {
-        const el = fileElements.get(item.path);
-        if (!el?.isConnected) return;
-        const rect2 = el.getBoundingClientRect();
-        const rect2Center = {
-          x: rect2.left + rect2.width / 2,
-          y: rect2.top + rect2.height / 2,
-        };
-        if (
-          rect2Center.x > rect.left &&
-          rect2Center.x < rect.left + rect.width &&
-          rect2Center.y > rect.top &&
-          rect2Center.y < rect.top + rect.height
-        ) {
-          tempChosen.push(item.path);
-        }
-      });
-      chosenPaths.value = tempChosen;
-    }
-  );
+  props.onChosen((rect: Rect) => {
+    const tempChosen: string[] = [];
+    fileListFilter.value.forEach((item) => {
+      const el = fileElements.get(item.path);
+      if (!el?.isConnected) return;
+      const rect2 = el.getBoundingClientRect();
+      const rect2Center = {
+        x: rect2.left + rect2.width / 2,
+        y: rect2.top + rect2.height / 2,
+      };
+      if (
+        rect2Center.x > rect.left &&
+        rect2Center.x < rect.left + rect.width &&
+        rect2Center.y > rect.top &&
+        rect2Center.y < rect.top + rect.height
+      ) {
+        tempChosen.push(item.path);
+      }
+    });
+    chosenPaths.value = tempChosen;
+  });
 });
 
 function startDragApp(mouse: DragEvent, item: VtronFileWithoutContent) {
@@ -267,7 +273,10 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
           try {
             await moveToRecycleBin(sys, paths);
           } catch {
-            await Promise.allSettled(paths.map((p) => sys.fs.rm(p)));
+            sys.createNotify({
+              title: i18n('delete'),
+              content: i18n('recycle.bin.error'),
+            });
           }
           props.onRefresh();
           sys.refershApp();

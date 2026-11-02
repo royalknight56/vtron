@@ -1,535 +1,723 @@
 <template>
-  <div class="wrapper">
-    <div class="calculator">
-      <div class="calculator__result">
-        <input type="text" class="calculator__result-secondary" disabled />
-        <input type="text" class="calculator__result-primary" value="0" readonly />
+  <Win10Frame title="计算器" background="#e6e6e6">
+    <div ref="rootRef" class="calc-app" tabindex="0" @keydown="onKeydown">
+      <div class="calc-main">
+        <div class="calc-toolbar">
+          <button aria-label="打开导航" title="打开导航" @click="menuOpen = !menuOpen">
+            <span class="mdl" aria-hidden="true">&#xE700;</span>
+          </button>
+          <h1>标准</h1>
+          <button disabled aria-label="保持在最前面" title="保持在最前面">
+            <span class="mdl" aria-hidden="true">&#xE740;</span></button
+          ><span class="toolbar-space"></span
+          ><button
+            class="history-toggle"
+            aria-label="历史记录"
+            title="历史记录"
+            @click="showPanel('history')"
+          >
+            <span class="mdl" aria-hidden="true">&#xE81C;</span>
+          </button>
+        </div>
+        <div class="calc-display">
+          <div class="expression">{{ expression }}</div>
+          <output
+            aria-label="计算结果"
+            aria-live="polite"
+            :class="{ 'small-result': displayText.length > 12 }"
+            >{{ displayText }}</output
+          >
+        </div>
+        <div class="memory-bar">
+          <button :disabled="memory === null" @click="memory = null">MC</button
+          ><button :disabled="memory === null || !!error" @click="recallMemory">MR</button
+          ><button :disabled="!!error" @click="storeMemory('add')">M+</button
+          ><button :disabled="!!error" @click="storeMemory('subtract')">M−</button
+          ><button :disabled="!!error" @click="storeMemory('set')">MS</button
+          ><button
+            class="memory-toggle"
+            :disabled="memory === null"
+            aria-label="显示内存"
+            @click="showPanel('memory')"
+          >
+            M<span class="mdl tiny" aria-hidden="true">&#xE70D;</span>
+          </button>
+        </div>
+        <div class="keypad">
+          <button
+            v-for="key in keys"
+            :key="key.action"
+            :class="{ digit: key.digit, equals: key.action === 'equals' }"
+            :aria-label="key.label"
+            @click="activate(key.action)"
+          >
+            <span v-if="key.icon" class="mdl" aria-hidden="true">{{ key.icon }}</span
+            ><span v-else>{{ key.text }}</span>
+          </button>
+        </div>
       </div>
-      <div class="calculator__mem-buttons">
-        <button class="calculator__m-btn" disabled>MC</button>
-        <button class="calculator__m-btn" disabled>MR</button>
-        <button class="calculator__m-btn" disabled>M+</button>
-        <button class="calculator__m-btn" disabled>M-</button>
-        <button class="calculator__m-btn" disabled>MS</button>
-        <button class="calculator__m-btn" disabled>M</button>
-      </div>
-      <div class="calculator__buttons">
-        <button class="calculator__btn" data-operator="percent">%</button>
-        <button class="calculator__btn" data-option="clearEntry">CE</button>
-        <button class="calculator__btn" data-option="clear">C</button>
-        <button class="calculator__btn calculator__btn--backspace" data-option="undo"></button>
-
-        <button class="calculator__btn" data-operator="fraction">&sup1;/ ₓ</button>
-        <button class="calculator__btn" data-operator="pow">x&sup2;</button>
-        <button class="calculator__btn" data-operator="sqrt">&radic;</button>
-        <button class="calculator__btn" data-operator="divide">&divide;</button>
-
-        <button class="calculator__btn calculator__btn--number" data-number>7</button>
-        <button class="calculator__btn calculator__btn--number" data-number>8</button>
-        <button class="calculator__btn calculator__btn--number" data-number>9</button>
-        <button class="calculator__btn" data-operator="multiply">&times;</button>
-
-        <button class="calculator__btn calculator__btn--number" data-number>4</button>
-        <button class="calculator__btn calculator__btn--number" data-number>5</button>
-        <button class="calculator__btn calculator__btn--number" data-number>6</button>
-        <button class="calculator__btn" data-operator="minus">&minus;</button>
-
-        <button class="calculator__btn calculator__btn--number" data-number>1</button>
-        <button class="calculator__btn calculator__btn--number" data-number>2</button>
-        <button class="calculator__btn calculator__btn--number" data-number>3</button>
-        <button class="calculator__btn" data-operator="plus">+</button>
-
-        <button class="calculator__btn calculator__btn--number" data-option="reverse">+/-</button>
-        <button class="calculator__btn calculator__btn--number" data-number>0</button>
-        <button class="calculator__btn calculator__btn--number" data-option="dot">,</button>
-        <button class="calculator__btn calculator__btn--equals" data-operator="equal">=</button>
+      <aside class="history-panel" :class="{ 'panel-open': panelOpen }" aria-label="计算历史与内存">
+        <div class="panel-tabs">
+          <button :class="{ active: panel === 'history' }" @click="panel = 'history'">历史记录</button
+          ><button :class="{ active: panel === 'memory' }" @click="panel = 'memory'">内存</button
+          ><button class="panel-close" aria-label="关闭面板" @click="panelOpen = false">
+            <span class="mdl" aria-hidden="true">&#xE70D;</span>
+          </button>
+        </div>
+        <div class="panel-content">
+          <template v-if="panel === 'history'"
+            ><p v-if="!history.length" class="panel-empty">尚无历史记录</p>
+            <button
+              v-for="(item, index) in history"
+              :key="index"
+              class="history-item"
+              @click="useHistory(item.result)"
+            >
+              <span>{{ item.expression }}</span
+              ><strong>{{ format(item.result) }}</strong>
+            </button></template
+          ><template v-else
+            ><p v-if="memory === null" class="panel-empty">内存中未保存任何内容</p>
+            <div v-else class="memory-item">
+              <strong>{{ format(memory) }}</strong>
+              <div>
+                <button @click="memory = null">MC</button
+                ><button :disabled="!!error" @click="storeMemory('add')">M+</button
+                ><button :disabled="!!error" @click="storeMemory('subtract')">M−</button>
+              </div>
+            </div></template
+          >
+        </div>
+        <div class="panel-bottom">
+          <button
+            :disabled="panel === 'history' ? !history.length : memory === null"
+            :aria-label="panel === 'history' ? '清除历史记录' : '清除内存'"
+            @click="panel === 'history' ? (history = []) : (memory = null)"
+          >
+            <span class="mdl" aria-hidden="true">&#xE74D;</span>
+          </button>
+        </div>
+      </aside>
+      <div v-if="menuOpen" class="navigation-menu">
+        <button class="nav-heading" @click="menuOpen = false">
+          <span class="mdl" aria-hidden="true">&#xE700;</span>计算器</button
+        ><button class="nav-current" @click="menuOpen = false">
+          <span class="mdl" aria-hidden="true">&#xE8EF;</span>标准</button
+        ><button disabled>科学</button><button disabled>绘图</button><button disabled>程序员</button
+        ><button disabled>日期计算</button>
+        <div class="nav-separator"></div>
+        <div class="nav-label">转换器</div>
+        <button
+          v-for="name in [
+            '货币',
+            '体积',
+            '长度',
+            '重量和质量',
+            '温度',
+            '能量',
+            '面积',
+            '速度',
+            '时间',
+            '功率',
+            '数据',
+            '压力',
+            '角度',
+          ]"
+          :key="name"
+          disabled
+        >
+          {{ name }}
+        </button>
       </div>
     </div>
-  </div>
+  </Win10Frame>
 </template>
-<script setup>
-// @ts-nocheck
-import { onMounted } from 'vue';
-
-class Calculations {
-  static doMath = (currentResult = null, value = null, operator = null) => {
-    switch (operator) {
-      case 'plus':
-        return currentResult + value;
-
-      case 'minus':
-        return currentResult - value;
-
-      case 'multiply':
-        return currentResult * value;
-
-      case 'divide':
-        return currentResult / value;
-    }
-  };
-
-  static returnOperator = (operator = null) => {
-    switch (operator) {
-      case 'plus':
-        return '+';
-
-      case 'minus':
-        return '−';
-
-      case 'multiply':
-        return '×';
-
-      case 'divide':
-        return '÷';
-
-      case 'equal':
-        return '=';
-    }
-  };
+<script setup lang="ts">
+import { computed, nextTick, onMounted, ref } from 'vue';
+import Win10Frame from './daily/Win10Frame.vue';
+type Operator = 'add' | 'subtract' | 'multiply' | 'divide';
+const rootRef = ref<HTMLElement>();
+const input = ref('0');
+const error = ref('');
+const expression = ref('');
+const memory = ref<number | null>(null);
+const history = ref<{ expression: string; result: number }[]>([]);
+const menuOpen = ref(false);
+const panelOpen = ref(false);
+const panel = ref<'history' | 'memory'>('history');
+let accumulator: number | null = null;
+let operator: Operator | null = null;
+let overwrite = true;
+let awaitingOperand = false;
+let lastOperator: Operator | null = null;
+let lastOperand = 0;
+const symbols: Record<Operator, string> = { add: '+', subtract: '−', multiply: '×', divide: '÷' };
+function format(value: number) {
+  return Number.isFinite(value)
+    ? Number(value.toPrecision(15)).toLocaleString('en-US', { maximumSignificantDigits: 15 })
+    : String(value);
 }
-class Calculator {
-  constructor() {
-    this.result = document.querySelector('.calculator__result-primary');
-    this.subRes = document.querySelector('.calculator__result-secondary');
-    this.numbers = [...document.querySelectorAll('[data-number]')];
-    this.options = [...document.querySelectorAll('[data-option]')];
-    this.operators = [...document.querySelectorAll('[data-operator]')];
-
-    this.numbers.forEach((number) => number.addEventListener('click', this.addNumber));
-    this.options.forEach((option) => option.addEventListener('click', this.addOption));
-    this.operators.forEach((operator) => operator.addEventListener('click', this.calculate));
-
-    this.calculations = [];
-    this.newNumber = false;
-    this.reset = false;
-    this.lastOperator = null;
-    this.currentResult = 0;
-
-    this.clear();
+const displayText = computed(() => {
+  if (error.value) return error.value;
+  if (input.value.includes('.') && !/[eE]/.test(input.value)) {
+    const [whole, decimal] = input.value.split('.');
+    return `${Number(whole).toLocaleString('en-US')}.${decimal}`;
   }
+  return format(Number(input.value));
+});
 
-  addNumber = (e) => {
-    if (this.reset) this.clear();
-
-    this.number = e.target.textContent;
-
-    if (this.result.value === '0') this.result.value = this.number;
-    else if (this.newNumber) this.result.value = this.number;
-    else this.result.value += this.number;
-
-    this.newNumber = false;
-  };
-
-  addOption = (e) => {
-    this.option = e.target.dataset.option;
-    this.lastChar = this.result.value[this.result.value.length - 1];
-
-    if (this.option === 'dot') {
-      this.lastChar === '.' || this.result.value.indexOf('.') !== -1
-        ? this.result.value
-        : (this.result.value += '.');
-    } else if (this.option === 'clearEntry') this.result.value = '0';
-    else if (this.option === 'clear') this.clear();
-    else if (this.option === 'reverse') this.result.value = this.result.value * -1;
-    else if (this.option === 'undo') {
-      this.result.value.length === 1
-        ? (this.result.value = '0')
-        : (this.result.value = this.result.value.substring(0, this.result.value.length - 1));
-    }
-  };
-
-  calculate = (e) => {
-    this.operator = e.target.dataset.operator;
-    this.value = Number(this.result.value);
-    this.subRes.style.visibility = 'visible';
-
-    if (this.operator === 'pow') {
-      this.subRes.value = ` sqr(${this.result.value})`;
-      this.result.value = Math.pow(this.result.value, 2);
-    } else if (this.operator === 'sqrt') {
-      this.subRes.value = ` ${e.target.textContent}(${this.result.value})`;
-      this.result.value = Math.sqrt(this.result.value);
-    } else if (this.operator === 'fraction') {
-      this.subRes.value = ` 1/(${this.result.value})`;
-      this.result.value = 1 / this.result.value;
-    } else if (this.operator === 'percent')
-      this.result.value = parseFloat(((this.currentResult * this.value) / 100).toPrecision(14));
-    else {
-      if (
-        this.operator === 'equal' &&
-        this.newNumber &&
-        this.lastOperator !== null &&
-        this.lastOperator !== 'equal'
-      ) {
-        if (this.calculations.length > 2)
-          this.value = this.calculations
-            .map((item) => item)
-            .reverse()
-            .find((item) => typeof item === 'number');
-
-        this.calculations = [
-          this.currentResult,
-          Calculations.returnOperator(this.lastOperator),
-          this.value,
-          Calculations.returnOperator(this.operator),
-        ];
-
-        this.currentResult = Calculations.doMath(this.currentResult, this.value, this.lastOperator);
-        this.currentResult = parseFloat(this.currentResult.toPrecision(14));
-
-        this.result.value = this.currentResult;
-        this.subRes.value = this.calculations.join(' ');
-      } else {
-        if (this.newNumber) {
-          this.lastOperator = this.operator;
-          this.calculations[this.calculations.length - 1] = Calculations.returnOperator(this.operator);
-          this.subRes.value = this.calculations.join(' ');
-          this.reset = false;
-          return;
-        }
-
-        this.lastOperator === null
-          ? (this.currentResult = this.value)
-          : (this.currentResult = Calculations.doMath(this.currentResult, this.value, this.lastOperator));
-
-        this.operator !== 'equal' ? (this.lastOperator = this.operator) : (this.reset = true);
-
-        this.newNumber = true;
-        this.calculations.push(this.value);
-        this.calculations.push(Calculations.returnOperator(this.operator));
-
-        this.currentResult = parseFloat(this.currentResult.toPrecision(14));
-        this.result.value = this.currentResult;
-
-        this.subRes.value = this.calculations.join(' ');
-      }
-    }
-  };
-
-  clear = () => {
-    this.subRes.style.visibility = 'hidden';
-    this.result.value = '0';
-    this.subRes.value = '';
-    this.calculations = [];
-    this.newNumber = false;
-    this.reset = false;
-    this.lastOperator = null;
-    this.currentResult = 0;
-  };
+const keys = [
+  { icon: '\uE94C', label: '百分比', action: 'percent' },
+  { text: 'CE', label: '清除当前输入', action: 'clearEntry' },
+  { text: 'C', label: '全部清除', action: 'clear' },
+  { icon: '\uE94F', label: '退格', action: 'backspace' },
+  { text: '¹/ₓ', label: '倒数', action: 'reciprocal' },
+  { text: 'x²', label: '平方', action: 'square' },
+  { icon: '\uE94B', label: '平方根', action: 'sqrt' },
+  { icon: '\uE94A', label: '除', action: 'divide' },
+  ...['7', '8', '9'].map((text) => ({ text, label: text, action: text, digit: true })),
+  { icon: '\uE947', label: '乘', action: 'multiply' },
+  ...['4', '5', '6'].map((text) => ({ text, label: text, action: text, digit: true })),
+  { icon: '\uE949', label: '减', action: 'subtract' },
+  ...['1', '2', '3'].map((text) => ({ text, label: text, action: text, digit: true })),
+  { icon: '\uE948', label: '加', action: 'add' },
+  { icon: '\uE94D', label: '正负号', action: 'negate', digit: true },
+  { text: '0', label: '0', action: '0', digit: true },
+  { text: '.', label: '小数点', action: 'decimal', digit: true },
+  { icon: '\uE94E', label: '等于', action: 'equals' },
+] as { text?: string; icon?: string; label: string; action: string; digit?: boolean }[];
+function clear() {
+  input.value = '0';
+  error.value = '';
+  expression.value = '';
+  accumulator = null;
+  operator = null;
+  overwrite = true;
+  lastOperator = null;
+  lastOperand = 0;
+  awaitingOperand = false;
 }
-onMounted(() => {
-  new Calculator();
+function result(value: number) {
+  if (!Number.isFinite(value)) {
+    error.value = Number.isNaN(value) ? '无效输入' : '结果溢出';
+    operator = null;
+    accumulator = null;
+    overwrite = true;
+    return false;
+  }
+  input.value = String(Number(value.toPrecision(15)));
+  return true;
+}
+function calculate(left: number, right: number, op: Operator) {
+  if (op === 'divide' && right === 0) {
+    error.value = left === 0 ? '结果未定义' : '除数不能为零';
+    accumulator = null;
+    operator = null;
+    overwrite = true;
+    return null;
+  }
+  const value =
+    op === 'add'
+      ? left + right
+      : op === 'subtract'
+        ? left - right
+        : op === 'multiply'
+          ? left * right
+          : left / right;
+  return result(value) ? value : null;
+}
+function enterDigit(digit: string) {
+  awaitingOperand = false;
+  if (error.value) clear();
+  if (overwrite) {
+    input.value = digit;
+    overwrite = false;
+    if (!operator) {
+      expression.value = '';
+      lastOperator = null;
+    }
+  } else if (input.value.replace(/[-.]/g, '').length < 16)
+    input.value = input.value === '0' ? digit : input.value + digit;
+}
+function chooseOperator(next: Operator) {
+  if (error.value) return;
+  const current = Number(input.value);
+  if (operator && accumulator !== null && !awaitingOperand) {
+    const value = calculate(accumulator, current, operator);
+    if (value === null) return;
+    accumulator = value;
+  } else accumulator = current;
+  operator = next;
+  awaitingOperand = true;
+  lastOperator = null;
+  overwrite = true;
+  expression.value = `${format(accumulator)} ${symbols[next]}`;
+}
+function equals() {
+  if (error.value) return;
+  const op = operator || lastOperator;
+  if (!op) {
+    expression.value = `${format(Number(input.value))} =`;
+    overwrite = true;
+    return;
+  }
+  const left = operator && accumulator !== null ? accumulator : Number(input.value);
+  const right = operator ? Number(input.value) : lastOperand;
+  const value = calculate(left, right, op);
+  if (value === null) return;
+  expression.value = `${format(left)} ${symbols[op]} ${format(right)} =`;
+  history.value.unshift({ expression: expression.value, result: value });
+  if (history.value.length > 100) history.value.pop();
+  lastOperator = op;
+  lastOperand = right;
+  accumulator = null;
+  operator = null;
+  overwrite = true;
+}
+function activate(action: string) {
+  if (/^\d$/.test(action)) {
+    enterDigit(action);
+    return;
+  }
+  if (action === 'clear') {
+    clear();
+    return;
+  }
+  if (action === 'clearEntry') {
+    awaitingOperand = false;
+    if (error.value) clear();
+    else {
+      input.value = '0';
+      overwrite = true;
+    }
+    return;
+  }
+  if (error.value) return;
+  if (action in symbols) {
+    chooseOperator(action as Operator);
+    return;
+  }
+  if (action === 'equals') {
+    equals();
+    return;
+  }
+  if (action === 'backspace') {
+    if (!overwrite) input.value = input.value.length > 1 ? input.value.slice(0, -1) : '0';
+    if (input.value === '-') input.value = '0';
+    return;
+  }
+  if (action === 'decimal') {
+    awaitingOperand = false;
+    if (overwrite) {
+      input.value = '0.';
+      overwrite = false;
+      if (!operator) expression.value = '';
+    } else if (!input.value.includes('.')) input.value += '.';
+    return;
+  }
+  if (action === 'negate') {
+    awaitingOperand = false;
+    if (Number(input.value) !== 0)
+      input.value = input.value.startsWith('-') ? input.value.slice(1) : '-' + input.value;
+    return;
+  }
+  const value = Number(input.value);
+  if (action === 'percent') {
+    awaitingOperand = false;
+    result(
+      (operator === 'add' || operator === 'subtract') && accumulator !== null
+        ? (accumulator * value) / 100
+        : value / 100
+    );
+    overwrite = true;
+    return;
+  }
+  if (action === 'reciprocal' && value === 0) {
+    error.value = '除数不能为零';
+    overwrite = true;
+    return;
+  }
+  if (action === 'sqrt' && value < 0) {
+    error.value = '无效输入';
+    overwrite = true;
+    return;
+  }
+  const next = action === 'reciprocal' ? 1 / value : action === 'square' ? value * value : Math.sqrt(value);
+  if (result(next)) {
+    awaitingOperand = false;
+    expression.value =
+      action === 'reciprocal'
+        ? `1/(${format(value)})`
+        : action === 'square'
+          ? `sqr(${format(value)})`
+          : `√(${format(value)})`;
+    overwrite = true;
+  }
+}
+function storeMemory(mode: 'set' | 'add' | 'subtract') {
+  if (error.value) return;
+  const value = Number(input.value);
+  const next = mode === 'set' ? value : (memory.value ?? 0) + value * (mode === 'add' ? 1 : -1);
+  if (Number.isFinite(next)) memory.value = next;
+  overwrite = true;
+}
+function recallMemory() {
+  if (memory.value !== null) {
+    awaitingOperand = false;
+    input.value = String(memory.value);
+    overwrite = true;
+    error.value = '';
+  }
+}
+function useHistory(value: number) {
+  awaitingOperand = false;
+  input.value = String(value);
+  expression.value = '';
+  operator = null;
+  accumulator = null;
+  lastOperator = null;
+  error.value = '';
+  overwrite = true;
+  panelOpen.value = false;
+}
+function showPanel(next: 'history' | 'memory') {
+  const same = panel.value === next;
+  panel.value = next;
+  panelOpen.value = !panelOpen.value || !same;
+}
+function onKeydown(event: KeyboardEvent) {
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+  const actions: Record<string, string> = {
+    '+': 'add',
+    '-': 'subtract',
+    '*': 'multiply',
+    '/': 'divide',
+    '=': 'equals',
+    Enter: 'equals',
+    Escape: 'clear',
+    Delete: 'clearEntry',
+    Backspace: 'backspace',
+    '.': 'decimal',
+    ',': 'decimal',
+    '%': 'percent',
+    F9: 'negate',
+  };
+  const action = /^\d$/.test(event.key) ? event.key : actions[event.key];
+  if (!action) return;
+  event.preventDefault();
+  activate(action);
+}
+onMounted(async () => {
+  await nextTick();
+  rootRef.value?.focus({ preventScroll: true });
 });
 </script>
 <style scoped>
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
-
-/* HTML5 display-role reset for older browsers */
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
-}
-
-body {
-  line-height: 1;
-}
-
-ol,
-ul {
-  list-style: none;
-}
-
-blockquote,
-q {
-  quotes: none;
-}
-
-blockquote:before,
-blockquote:after {
-  content: '';
-  content: none;
-}
-
-q:before,
-q:after {
-  content: '';
-  content: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type='number'] {
-  -moz-appearance: textfield;
-}
-
-* {
-  -webkit-box-sizing: border-box;
+.calc-app,
+.calc-app *,
+.calc-app *::before,
+.calc-app *::after {
   box-sizing: border-box;
 }
-
-html,
-body {
-  background-color: #252525;
-  font-family: 'Noto Sans JP', sans-serif;
-  color: #111111;
-}
-
-.wrapper {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  display: -webkit-box;
-  display: -ms-flexbox;
+.calc-app {
+  container-type: inline-size;
+  position: relative;
   display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
-.calculator {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  min-width: 320px;
-  padding: 4px;
-  background-color: #bcbcbc;
-  -webkit-box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.75);
-}
-
-.calculator__result {
-  -ms-flex-preferred-size: 100%;
-  flex-basis: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-box-align: end;
-  -ms-flex-align: end;
-  align-items: flex-end;
-  -webkit-box-pack: end;
-  -ms-flex-pack: end;
-  justify-content: flex-end;
-  padding: 20px;
-  background-color: #bcbcbc;
-}
-
-.calculator__result-primary,
-.calculator__result-secondary {
-  background-color: transparent;
-  border: none;
-  text-align: right;
-  font-weight: 700;
-  font-size: 2.6rem;
-  padding-left: 30px;
-  font-family: 'Noto Sans JP', sans-serif;
-  color: #111111;
-}
-
-.calculator__result-secondary {
-  visibility: hidden;
-  width: 100%;
-  font-weight: 400;
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-  color: #4b4b4b;
-}
-
-.calculator__mem-buttons {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-.calculator__m-btn {
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
   flex: 1;
-  border: none;
-  background-color: #bcbcbc;
-  font-family: 'Noto Sans JP', sans-serif;
-  padding: 15px;
+  min-height: 0;
+  outline: none;
+  overflow: hidden;
+  user-select: none;
 }
-
-.calculator__buttons {
-  display: -ms-grid;
-  display: grid;
-  -ms-grid-columns: (1fr) [4];
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2px;
-  background-color: #bcbcbc;
-}
-
-.calculator__btn {
-  display: -webkit-box;
-  display: -ms-flexbox;
+.calc-main {
   display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+button {
+  font: inherit;
+  color: inherit;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  cursor: default;
+}
+button:disabled {
+  color: #aaa;
+}
+button:hover:enabled {
+  border-color: #bfbfbf;
+  background: #d5d5d5;
+}
+button:focus-visible {
+  outline: 1px dotted #333;
+  outline-offset: -3px;
+}
+.mdl {
+  font: 18px/1 'SEGOEUIMDL';
+}
+.mdl.tiny {
+  font-size: 8px;
+}
+.calc-toolbar {
+  height: 40px;
+  display: flex;
   align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
+  gap: 2px;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+.calc-toolbar button {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  border: none;
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 100;
-  padding: 10px 0;
-  background-color: #d9d9d9;
-  color: #111111;
-  -webkit-transition: 0.25s;
-  transition: 0.25s;
 }
-
-.calculator__btn:hover {
-  background-color: #e6e6e6;
+h1 {
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 600;
+  margin: 0 10px 0 6px;
 }
-
-.calculator__btn:active {
-  background-color: white;
+.toolbar-space {
+  flex: 1;
 }
-
-.calculator__btn--number {
-  font-weight: 500;
-  background-color: #f2f2f2;
+.calc-display {
+  height: 96px;
+  flex-shrink: 0;
+  padding: 8px 14px 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
-
-.calculator__btn--equals {
-  background-color: #73a5c0;
+.expression {
+  min-height: 24px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #666;
+  font-size: 14px;
 }
-
-.calculator__btn--equals:hover {
-  background-color: #48809f;
+output {
+  font-size: 46px;
+  line-height: 58px;
+  font-weight: 600;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
 }
-
-.calculator__btn--backspace {
-  /* background: url("../public/backspace.svg") center no-repeat; */
-  background-color: #d9d9d9 !important;
+output.small-result {
+  font-size: 31px;
 }
-
-.calculator__btn--backspace:hover {
-  background-color: #ebebeb !important;
+.memory-bar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  height: 38px;
+  padding: 0 3px;
+  flex-shrink: 0;
 }
-
-.calculator__btn--backspace:active {
-  background-color: white !important;
+.memory-bar button {
+  font-size: 12px;
+  font-weight: 600;
+}
+.memory-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+.keypad {
+  display: grid;
+  flex: 1;
+  min-height: 246px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(6, 1fr);
+  gap: 2px;
+  padding: 0 4px 4px;
+}
+.keypad button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: #f0f0f0;
+}
+.keypad button:nth-child(-n + 7) {
+  font-size: 15px;
+}
+.keypad .mdl {
+  font-size: 16px;
+}
+.keypad button.digit {
+  background: #fafafa;
+  font-weight: 600;
+}
+.keypad button.equals {
+  background: #8abce1;
+}
+.keypad button.equals:hover {
+  background: #4599d5;
+}
+.keypad button:hover {
+  background: #d9d9d9;
+}
+.keypad button:active {
+  background: #bfbfbf;
+}
+.history-panel {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  padding: 0 7px;
+}
+.panel-tabs {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  height: 43px;
+  flex-shrink: 0;
+}
+.panel-tabs > button {
+  position: relative;
+  height: 37px;
+  padding: 0 0 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.panel-tabs > button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #0078d7;
+}
+.panel-content {
+  overflow: auto;
+  flex: 1;
+  padding-top: 8px;
+}
+.panel-empty {
+  margin: 14px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.history-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 100%;
+  gap: 6px;
+  padding: 12px 5px;
+  text-align: right;
+}
+.history-item > span {
+  color: #666;
+  font-size: 13px;
+}
+.history-item strong,
+.memory-item strong {
+  font-size: 22px;
+  font-weight: 600;
+}
+.panel-bottom {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.panel-bottom button {
+  width: 34px;
+  height: 34px;
+}
+.memory-item {
+  text-align: right;
+  padding: 12px 5px;
+}
+.memory-item button {
+  padding: 5px 8px;
+}
+.panel-close {
+  display: none;
+}
+.navigation-menu {
+  position: absolute;
+  z-index: 3;
+  inset: 0 auto 0 0;
+  width: 260px;
+  overflow: auto;
+  background: #e6e6e6;
+  box-shadow: 2px 0 5px #0002;
+}
+.navigation-menu > button {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  height: 36px;
+  padding: 0 20px;
+  text-align: left;
+}
+.navigation-menu .nav-heading {
+  height: 44px;
+  font-weight: 600;
+  padding-left: 14px;
+}
+.navigation-menu .nav-current {
+  background: #ccc;
+  border-left: 3px solid #0078d7;
+  padding-left: 17px;
+}
+.nav-label {
+  padding: 9px 20px;
+  font-weight: 600;
+}
+.nav-separator {
+  margin: 8px 12px;
+  height: 1px;
+  background: #bbb;
+}
+@container (min-width: 520px) {
+  .calc-main {
+    width: calc(100% - 260px);
+  }
+  .history-toggle {
+    visibility: hidden;
+  }
+  .memory-bar {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .memory-toggle {
+    display: none;
+  }
+}
+@container (max-width: 519px) {
+  .history-panel {
+    display: none;
+  }
+  .history-panel.panel-open {
+    display: flex;
+    position: absolute;
+    z-index: 2;
+    inset: auto 0 0;
+    width: auto;
+    height: 67%;
+    padding: 8px 14px;
+    background: #e6e6e6;
+    box-shadow: 0 -2px 6px #0002;
+  }
+  .panel-tabs {
+    gap: 24px;
+  }
+  .panel-tabs .panel-close {
+    display: block;
+    margin-left: auto;
+    width: 32px;
+  }
 }
 </style>

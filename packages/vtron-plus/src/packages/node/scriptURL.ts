@@ -2,7 +2,8 @@ import { resolve } from 'vtron';
 
 /** Convert between virtual POSIX paths and file: URLs; never access the host filesystem. */
 export function scriptPathToFileURL(path: string, cwd = '/'): URL {
-  if (typeof path !== 'string' || path.includes('\0')) throw new TypeError('Path must be a string without null bytes');
+  if (typeof path !== 'string') throw new TypeError('Path must be a string');
+  // URL conversion encodes control characters; filesystem operations validate paths separately.
   return new URL('file://' + resolve(cwd, path).split('/').map(segment => encodeURIComponent(segment)).join('/'));
 }
 
@@ -12,6 +13,5 @@ export function scriptFileURLToPath(input: string | URL): string {
   if (url.hostname && url.hostname !== 'localhost' || url.username || url.password) throw Object.assign(new TypeError('Virtual file URLs cannot reference a remote host'), { code: 'ERR_INVALID_FILE_URL_HOST' });
   if (/%(?:2f|5c)/i.test(url.pathname)) throw Object.assign(new TypeError('File URL path cannot include encoded path separators'), { code: 'ERR_INVALID_FILE_URL_PATH' });
   const path = decodeURIComponent(url.pathname);
-  if (path.includes('\0')) throw new TypeError('File URL path cannot include null bytes');
   return resolve('/', path);
 }

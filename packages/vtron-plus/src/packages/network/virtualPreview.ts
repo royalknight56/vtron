@@ -3,7 +3,7 @@ import { getVirtualNetwork } from './virtualNet';
 import { requestVirtualHTTP } from './virtualHTTP';
 
 export interface VirtualPreviewOptions {
-  /** Dedicated same-site preview origin, different from the desktop origin. */
+  /** Defaults to the desktop origin. Use a separate same-site origin to isolate untrusted previews. */
   previewOrigin?: string;
   /** Directory containing the static bridge.html and worker.js, relative to the host page by default. */
   scope?: string;
@@ -15,13 +15,13 @@ export interface VirtualPreview {
 }
 const previews = new WeakMap<object, VirtualPreview>();
 
-/** Bridge this System's virtual HTTP ports to a separate browser origin. */
+/** Bridge this System's virtual HTTP ports to static preview assets. */
 export function enableVirtualPreview(system: System, options: VirtualPreviewOptions = {}): VirtualPreview {
   const existing = previews.get(system);
   if (existing) return existing;
   const hostBase = new URL(options.scope || '__vtron_preview__/', document.baseURI);
-  const origin = options.previewOrigin || '';
-  const base = new URL(hostBase.pathname.endsWith('/') ? hostBase.pathname : hostBase.pathname + '/', origin || location.origin);
+  const origin = options.previewOrigin || location.origin;
+  const base = new URL(hostBase.pathname.endsWith('/') ? hostBase.pathname : hostBase.pathname + '/', origin);
   const session = crypto.randomUUID();
   const requests = new Set<AbortController>();
   const frame = document.createElement('iframe');
@@ -68,7 +68,7 @@ export function enableVirtualPreview(system: System, options: VirtualPreviewOpti
   };
   previews.set(system, preview);
   if (!isSecureContext || !('serviceWorker' in navigator)) failReady(new Error('Virtual preview requires HTTPS or localhost with Service Worker support'));
-  else if (!origin || base.origin === location.origin || !['http:', 'https:'].includes(base.protocol)) failReady(new Error('Configure a separate previewOrigin to isolate preview scripts from the desktop'));
+  else if (!['http:', 'https:'].includes(base.protocol)) failReady(new Error('Virtual preview assets require an HTTP(S) origin'));
   else {
     const bridge = new URL('bridge.html', base);
     bridge.hash = new URLSearchParams({ session, owner: location.origin }).toString();

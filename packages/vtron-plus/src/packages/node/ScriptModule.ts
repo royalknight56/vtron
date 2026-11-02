@@ -16,6 +16,10 @@ export interface ScriptModuleContext {
   main: unknown;
   signal?: AbortSignal;
   track?: <T>(promise: Promise<T>) => Promise<T>;
+  syncFileSystem?: {
+    stat(path: string): { isFile: boolean; isDirectory: boolean; isSymlink: boolean } | null;
+    readFile(path: string): Uint8Array | null;
+  };
   globals: {
     global: Record<string, unknown>;
     Buffer: typeof import('buffer/').Buffer;

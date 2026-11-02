@@ -1,198 +1,336 @@
-<!--
- * @Author: Royal
- * @LastEditTime: 2022-01-27 15:13:59
- * @Description: 
- * @FilePath: /publishTest/src/components/apps/MyComputer.vue
--->
 <template>
-  <div class="computer-container">
-  <div class="uper">
-    <div class="group">
-      <!-- <div class="button">文件</div> -->
-      <!-- <div class="button">计算机</div> -->
-      <div class="button" @click="backFolder()">{{ i18n('back') }}</div>
-      <!-- 查看 -->
-      <div class="button" @click="popoverChange()">{{ i18n('view') }}</div>
-      <div class="button" :class="{ 'button-active': showFilterBar }" @click="showFilterBar = !showFilterBar">{{ i18n('filter.type') }}</div>
-      <div class="button" :class="{ 'button-active': showPreview }" @click="togglePreview()">{{ i18n('preview') }}</div>
-    </div>
-    <div v-if="isPopoverView" class="up-pop">
-      <UpPopover v-model="chosenView"></UpPopover>
-    </div>
-    <NavBar
-      v-model="router_url"
-      @backFolder="backFolder()"
-      @refresh="handleNavRefresh"
+  <div class="computer-container" @keydown="onWindowKey">
+    <ComputerChrome
+      :path="router_url"
+      :title="windowTitle"
+      :root="isRootView"
+      :can-back="router_url_history_index > 0"
+      :can-forward="router_url_history_index < router_url_history.length - 1"
+      :has-selection="!!selectedFile"
+      :can-create="canCreateHere"
+      :view="chosenView"
+      :show-preview="showPreview"
+      :show-navigation="showNavigation"
+      :show-filters="showFilterBar"
+      @back="handleHistoryChange(-1)"
+      @forward="handleHistoryChange(1)"
+      @up="goUp"
+      @refresh="onListRefresh"
+      @navigate="handleNavRefresh"
       @search="handleNavSearch"
-      @searchInput="handleSearchInput"
-      @changeHistory="handleHistoryChange"
-    ></NavBar>
+      @search-input="handleSearchInput"
+      @view="chosenView = $event"
+      @toggle-preview="togglePreview"
+      @toggle-navigation="showNavigation = !showNavigation"
+      @toggle-filters="showFilterBar = !showFilterBar"
+      @open-selected="openSelected"
+      @properties="showSelectedProperties"
+      @create-folder="startCreatingFolder"
+    />
     <div v-if="showFilterBar" class="filter-bar">
-      <div
+      <span>{{ i18n('computer.filter') }}：</span
+      ><button
         v-for="filter in typeFilterOptions"
         :key="filter.key"
-        class="filter-chip"
         :class="{ active: activeFilter === filter.key }"
+        :aria-pressed="activeFilter === filter.key"
         @click="setFilter(filter.key)"
       >
         {{ filter.label }}
-      </div>
-      <span v-if="activeFilter !== 'all' || searchKeyword" class="filter-result-count">
-        {{ filteredList.length }} {{ i18n('filter.all') === '全部' ? '项' : 'items' }}
-      </span>
+      </button>
     </div>
-  </div>
-  <div class="main" @click="handleOuterClick">
-    <div
-      class="left-tree"
-      :style="{
-        width: leftWidth + 'px',
-      }"
-    >
-      <QuickLink :on-open="onTreeOpen"></QuickLink>
-      <FileTree
-        :chosen-path="chosenTreePath"
-        mode="list"
-        :on-open="onTreeOpen"
-        :on-refresh="onListRefresh"
-        :file-list="rootFileList"
-        :key="random"
+    <div class="main" @click="handleOuterClick">
+      <aside
+        v-if="showNavigation"
+        class="left-tree"
+        :style="{ width: leftWidth + 'px' }"
+        :aria-label="i18n('recycle.bin.navigation.pane')"
       >
-      </FileTree>
-      <div class="left-handle" @mousedown="leftHandleDown"></div>
-    </div>
-    <div
-      class="desk-outer"
-      @contextmenu.self="showOuterMenu($event)"
-      @dragenter.prevent
-      @dragover.prevent
-      @drop.stop="dragFileToDrop($event, router_url)"
-      @click.self="onBackClick"
-      @mousedown="backgroundDown"
-    >
-      <template v-if="isRootView">
-        <div class="volume-view">
-          <div class="volume-section-title">{{ i18n('devices.and.drives') }}</div>
-          <div class="volume-grid">
-            <div
+        <button class="nav-heading" :aria-expanded="quickExpanded" @click="quickExpanded = !quickExpanded">
+          <span class="mdl tree-chevron" aria-hidden="true">{{ quickExpanded ? '\uE70D' : '\uE76C' }}</span
+          ><img :src="quickAccessIcon" alt="" /><span>{{ i18n('recycle.bin.quick.access') }}</span>
+        </button>
+        <template v-if="quickExpanded"
+          ><button
+            v-for="item in quickFolders"
+            :key="item.key"
+            class="nav-item quick-child"
+            :class="{ current: router_url === item.path }"
+            :disabled="!item.available"
+            @click="onTreeOpen(item.path)"
+          >
+            <img :src="item.navIcon" alt="" /><span>{{ item.label }}</span
+            ><span class="mdl pin" aria-hidden="true">&#xE718;</span>
+          </button></template
+        >
+        <button class="nav-item section-start" disabled>
+          <span class="tree-indent"></span><img :src="oneDriveIcon" alt="" /><span>OneDrive</span>
+        </button>
+        <div class="nav-computer" :class="{ current: isRootView }">
+          <button
+            class="tree-toggle"
+            :aria-label="i18n('computer')"
+            :aria-expanded="computerExpanded"
+            @click="computerExpanded = !computerExpanded"
+          >
+            <span class="mdl tree-chevron" aria-hidden="true">{{
+              computerExpanded ? '\uE70D' : '\uE76C'
+            }}</span></button
+          ><button class="nav-main" @click="onTreeOpen('/')">
+            <img :src="computerIcon" alt="" /><span>{{ i18n('computer') }}</span>
+          </button>
+        </div>
+        <template v-if="computerExpanded"
+          ><button
+            v-for="item in standardFolders"
+            :key="item.key"
+            class="nav-item computer-child"
+            :class="{ current: router_url === item.path }"
+            :disabled="!item.available"
+            @click="onTreeOpen(item.path)"
+          >
+            <span class="mdl tree-chevron" aria-hidden="true">&#xE76C;</span
+            ><img :src="item.navIcon" alt="" /><span>{{ item.label }}</span></button
+          ><button
+            v-for="vol in rootFileList"
+            :key="vol.path"
+            class="nav-item computer-child"
+            :class="{ current: router_url === vol.path }"
+            @click="onTreeOpen(vol.path)"
+          >
+            <span class="mdl tree-chevron" aria-hidden="true">&#xE76C;</span
+            ><img :src="getDriveIcon(vol)" alt="" /><span>{{ driveName(vol) }}</span>
+          </button></template
+        >
+        <button class="nav-item section-start" disabled>
+          <span class="mdl tree-chevron" aria-hidden="true">&#xE76C;</span
+          ><img :src="networkIcon" alt="" /><span>{{ i18n('recycle.bin.network') }}</span>
+        </button>
+        <button
+          v-if="notesAvailable"
+          class="nav-item section-start"
+          :class="{ current: router_url === userPath + 'Note' }"
+          @click="onTreeOpen(userPath + 'Note')"
+        >
+          <span class="tree-indent"></span><img :src="foldericon" alt="" /><span>{{
+            i18n('computer.notes')
+          }}</span>
+        </button>
+        <div class="left-handle" @mousedown="leftHandleDown"></div>
+      </aside>
+      <div
+        class="desk-outer"
+        :class="{ 'root-view': isRootView, 'details-view': !isRootView && chosenView === 'detail' }"
+        @contextmenu.self="showOuterMenu($event)"
+        @dragenter.prevent
+        @dragover.prevent
+        @drop.stop.prevent="canCreateHere && dragFileToDrop($event, router_url)"
+        @click.self="onBackClick"
+        @mousedown="backgroundDown"
+      >
+        <div
+          v-if="isRootView"
+          class="volume-view"
+          :class="{ 'compact-view': chosenView === 'list' || chosenView === 'detail' }"
+          @mousedown.stop
+          @contextmenu.self.prevent="showRootMenu"
+        >
+          <button
+            class="section-heading"
+            :aria-expanded="foldersExpanded"
+            @click="foldersExpanded = !foldersExpanded"
+          >
+            <span class="mdl" aria-hidden="true">{{ foldersExpanded ? '\uE70D' : '\uE76C' }}</span
+            ><span>{{ i18n('computer.folders') }} ({{ visibleFolders.length }})</span
+            ><span class="section-line"></span>
+          </button>
+          <div v-if="foldersExpanded" class="folder-grid">
+            <button
+              v-for="item in visibleFolders"
+              :key="item.key"
+              class="folder-card"
+              :class="{ selected: selectedFile?.path === item.path }"
+              :disabled="!item.available"
+              @click="selectShortcut(item)"
+              @dblclick="onTreeOpen(item.path)"
+              @keydown.enter.prevent="onTreeOpen(item.path)"
+            >
+              <img :src="item.icon" alt="" /><span>{{ item.label }}</span>
+            </button>
+          </div>
+          <button
+            class="section-heading"
+            :aria-expanded="drivesExpanded"
+            @click="drivesExpanded = !drivesExpanded"
+          >
+            <span class="mdl" aria-hidden="true">{{ drivesExpanded ? '\uE70D' : '\uE76C' }}</span
+            ><span>{{ i18n('devices.and.drives') }} ({{ filteredList.length }})</span
+            ><span class="section-line"></span>
+          </button>
+          <div v-if="drivesExpanded" class="volume-grid">
+            <button
               v-for="vol in filteredList"
               :key="vol.path"
               class="volume-card"
-              :class="{ 'volume-card-selected': selectedFile?.path === vol.path }"
+              :class="{ selected: selectedFile?.path === vol.path }"
               @dblclick="openFolder(vol)"
+              @keydown.enter.prevent="openFolder(vol)"
               @click="onFileSelect(vol)"
               @contextmenu.stop.prevent="handleVolumeRightClick($event, vol)"
             >
-              <div class="volume-card-icon">
-                <img :src="volumeicon" />
-              </div>
+              <img :src="getDriveIcon(vol)" alt="" />
               <div class="volume-card-info">
-                <div class="volume-card-name">{{ i18n('local.disk') }} ({{ getVolumeLetter(vol) }}:)</div>
-                <div class="volume-card-bar">
-                  <div class="volume-card-bar-fill" :style="{ width: getVolumeUsage(vol) + '%' }"></div>
-                </div>
-                <div class="volume-card-space">{{ getVolumeLetter(vol) }}:</div>
+                <span class="volume-card-name">{{ driveName(vol) }}</span
+                ><span class="volume-card-bar" :aria-label="i18n('computer.capacity.unavailable')"></span
+                ><span class="volume-card-space">{{ i18n('computer.capacity.unavailable') }}</span>
               </div>
+            </button>
+          </div>
+          <p v-if="!visibleFolders.length && !filteredList.length" class="empty-message">
+            {{ i18n('computer.no.results') }}
+          </p>
+        </div>
+        <template v-else
+          ><FileList
+            explorer-details
+            :on-chosen="onChosen"
+            :on-refresh="onListRefresh"
+            :on-open="openFolder"
+            :on-select="onFileSelect"
+            :file-list="filteredList"
+            theme="blue"
+            :mode="chosenView === 'tiles' ? 'icon' : chosenView"
+          />
+          <div v-if="creating" class="new-folder-item">
+            <img :src="foldericon" alt="" /><input
+              ref="newFolderInput"
+              class="item_input"
+              v-model="createInput"
+              :aria-label="i18n('new.folder')"
+              @keydown.enter.prevent="creatingEditEnd"
+              @keydown.esc="creating = false"
+              @blur="creatingEditEnd"
+            />
+          </div>
+          <p v-if="!filteredList.length && !creating" class="empty-message">
+            {{
+              searchKeyword || router_url.startsWith('search:')
+                ? i18n('computer.no.results')
+                : i18n('computer.empty')
+            }}
+          </p>
+        </template>
+        <Chosen />
+      </div>
+      <div v-if="showPreview" class="preview-panel">
+        <div v-if="previewInfo" class="preview-content">
+          <div class="preview-header">
+            <img
+              v-if="previewInfo.isImage && previewInfo.content"
+              :src="previewInfo.content"
+              class="preview-thumbnail"
+            />
+            <img
+              v-else
+              :src="previewInfo.isVolume ? volumeicon : previewInfo.isDir ? foldericon : fileicon"
+              class="preview-icon"
+            />
+            <div class="preview-name">{{ previewInfo.name }}</div>
+          </div>
+          <div class="preview-details">
+            <div class="preview-row">
+              <span class="preview-label">{{ i18n('preview.type') }}</span>
+              <span class="preview-value">{{
+                previewInfo.isDir ? i18n('preview.folder') : previewInfo.ext || i18n('preview.file')
+              }}</span>
+            </div>
+            <div v-if="!previewInfo.isDir && previewInfo.size !== undefined" class="preview-row">
+              <span class="preview-label">{{ i18n('preview.size') }}</span>
+              <span class="preview-value">{{ formatSize(previewInfo.size) }}</span>
+            </div>
+            <div v-if="previewInfo.mtime" class="preview-row">
+              <span class="preview-label">{{ i18n('preview.modified') }}</span>
+              <span class="preview-value">{{ previewInfo.mtime }}</span>
+            </div>
+            <div v-if="previewInfo.birthtime" class="preview-row">
+              <span class="preview-label">{{ i18n('preview.created') }}</span>
+              <span class="preview-value">{{ previewInfo.birthtime }}</span>
+            </div>
+            <div class="preview-row">
+              <span class="preview-label">{{ i18n('preview.path') }}</span>
+              <span class="preview-value preview-path">{{ previewInfo.path }}</span>
             </div>
           </div>
-        </div>
-      </template>
-      <template v-else>
-        <FileList
-          :on-chosen="onChosen"
-          :on-refresh="onListRefresh"
-          :on-open="openFolder"
-          :on-select="onFileSelect"
-          :file-list="filteredList"
-          theme="blue"
-          :mode="chosenView"
-        >
-        </FileList>
-
-        <div draggable="true" class="desk-item" v-if="creating">
-          <div class="item_img">
-            <img draggable="false" width="50" :src="foldericon" />
-          </div>
-          <input class="item_input" v-model="createInput" @blur="creatingEditEnd" />
-        </div>
-      </template>
-      <Chosen></Chosen>
-    </div>
-    <div v-if="showPreview" class="preview-panel">
-      <div v-if="previewInfo" class="preview-content">
-        <div class="preview-header">
-          <img
-            v-if="previewInfo.isImage && previewInfo.content"
-            :src="previewInfo.content"
-            class="preview-thumbnail"
-          />
-          <img v-else :src="previewInfo.isVolume ? volumeicon : previewInfo.isDir ? foldericon : fileicon" class="preview-icon" />
-          <div class="preview-name">{{ previewInfo.name }}</div>
-        </div>
-        <div class="preview-details">
-          <div class="preview-row">
-            <span class="preview-label">{{ i18n('preview.type') }}</span>
-            <span class="preview-value">{{ previewInfo.isDir ? i18n('preview.folder') : previewInfo.ext || i18n('preview.file') }}</span>
-          </div>
-          <div v-if="!previewInfo.isDir && previewInfo.size !== undefined" class="preview-row">
-            <span class="preview-label">{{ i18n('preview.size') }}</span>
-            <span class="preview-value">{{ formatSize(previewInfo.size) }}</span>
-          </div>
-          <div v-if="previewInfo.mtime" class="preview-row">
-            <span class="preview-label">{{ i18n('preview.modified') }}</span>
-            <span class="preview-value">{{ previewInfo.mtime }}</span>
-          </div>
-          <div v-if="previewInfo.birthtime" class="preview-row">
-            <span class="preview-label">{{ i18n('preview.created') }}</span>
-            <span class="preview-value">{{ previewInfo.birthtime }}</span>
-          </div>
-          <div class="preview-row">
-            <span class="preview-label">{{ i18n('preview.path') }}</span>
-            <span class="preview-value preview-path">{{ previewInfo.path }}</span>
+          <div v-if="previewInfo.content && !previewInfo.isImage" class="preview-text">
+            <pre>{{ previewInfo.content }}</pre>
           </div>
         </div>
-        <div v-if="previewInfo.content && !previewInfo.isImage" class="preview-text">
-          <pre>{{ previewInfo.content }}</pre>
+        <div v-else class="preview-empty">
+          {{ i18n('preview.select') }}
         </div>
       </div>
-      <div v-else class="preview-empty">
-        {{ i18n('preview.select') }}
-      </div>
     </div>
-  </div>
-  <div class="status-bar">
-    <span class="status-left">
-      {{ statusInfo.total }} {{ i18n('status.items') }}
-      <template v-if="activeFilter !== 'all' || searchKeyword">
-        ({{ currentList.length }} {{ i18n('status.items') }})
-      </template>
-    </span>
-    <span class="status-right">
-      <span v-if="statusInfo.folders > 0">{{ statusInfo.folders }} {{ i18n('status.folders') }}</span>
-      <span v-if="statusInfo.folders > 0 && statusInfo.files > 0" class="status-sep">|</span>
-      <span v-if="statusInfo.files > 0">{{ statusInfo.files }} {{ i18n('status.files') }}</span>
-    </span>
-  </div>
+    <footer class="status-bar">
+      <span
+        >{{ isRootView ? visibleFolders.length + filteredList.length : statusInfo.total }}
+        {{ i18n('status.items') }}</span
+      ><span v-if="selectedFile">{{ i18n('recycle.bin.selected.items').replace('{count}', '1') }}</span
+      ><span class="status-spacer"></span
+      ><button
+        :class="{ checked: chosenView === 'detail' }"
+        :aria-label="i18n('detail.info')"
+        :title="i18n('detail.info')"
+        @click="chosenView = 'detail'"
+      >
+        <span class="mdl" aria-hidden="true">&#xE8FD;</span></button
+      ><button
+        :class="{ checked: chosenView !== 'detail' }"
+        :aria-label="i18n('large.icon')"
+        :title="i18n('large.icon')"
+        @click="chosenView = 'icon'"
+      >
+        <span class="mdl" aria-hidden="true">&#xE8A9;</span>
+      </button>
+    </footer>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted, inject, computed } from 'vue';
+import { ref, onMounted, onUnmounted, inject, computed, nextTick, watch } from 'vue';
 import foldericon from '@packages/assets/folder.png';
 import fileicon from '@packages/assets/unknown.png';
 import volumeicon from '@packages/assets/volume-local.png';
 import FileList from '@/packages/computer/application/components/FileList.vue';
-import FileTree from '@/packages/computer/application/components/FileTree.vue';
-import UpPopover from './components/UpPopover.vue';
-import { System, VtronFileWithoutContent, dirname } from '@packages/kernel';
+import { System, VtronFileWithoutContent, dirname, normalize } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { useComputer } from './hooks/useComputer';
 import { Rect, useRectChosen } from '@/packages/computer/hook/useRectChosen';
 import { BrowserWindow } from '@/packages/services';
-import NavBar from './components/NavBar.vue';
-import QuickLink from './components/QuickLink.vue';
+import ComputerChrome from './components/ComputerChrome.vue';
+import { openPropsWindow } from '../components/fileOpt';
 import VolumeProps from './components/VolumeProps.vue';
 import { createDesktopContextMenu } from '@/packages/computer/utils/createContextMenu';
+
+import computerIcon from '@packages/assets/recycle-bin/this-pc.png';
+import quickAccessIcon from '@packages/assets/recycle-bin/quick-access.png';
+import oneDriveIcon from '@packages/assets/recycle-bin/onedrive.png';
+import networkIcon from '@packages/assets/recycle-bin/network.png';
+import desktopIcon from '@packages/assets/my-computer/desktop.png';
+import documentsIcon from '@packages/assets/my-computer/documents.png';
+import downloadsIcon from '@packages/assets/my-computer/downloads.png';
+import picturesIcon from '@packages/assets/my-computer/pictures.png';
+import musicIcon from '@packages/assets/my-computer/music.png';
+import videosIcon from '@packages/assets/my-computer/videos.png';
+import objectsIcon from '@packages/assets/my-computer/objects-3d.png';
+import localDriveIcon from '@packages/assets/my-computer/local-disk.png';
+import systemDriveIcon from '@packages/assets/my-computer/system-disk.png';
+import networkDriveIcon from '@packages/assets/my-computer/network-drive.png';
+import desktopNav from '@packages/assets/recycle-bin/desktop.png';
+import documentsNav from '@packages/assets/recycle-bin/documents.png';
+import downloadsNav from '@packages/assets/recycle-bin/downloads.png';
+import picturesNav from '@packages/assets/recycle-bin/pictures.png';
+import musicNav from '@packages/assets/recycle-bin/music.png';
+import videosNav from '@packages/assets/recycle-bin/videos.png';
 
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
 
@@ -206,9 +344,172 @@ const currentList = ref<Array<VtronFileWithoutContent>>([]);
 
 const system = inject<System>('system')!;
 const { dragFileToDrop } = useFileDrag(system);
+const userPath = system._options.userLocation || '/C/Users/';
+const showNavigation = ref(true);
+const quickExpanded = ref(true);
+const computerExpanded = ref(true);
+const foldersExpanded = ref(true);
+const drivesExpanded = ref(true);
+const notesAvailable = ref(false);
+interface StandardFolder {
+  key: string;
+  label: string;
+  path: string;
+  icon: string;
+  navIcon: string;
+  available: boolean;
+}
+const standardFolders = ref<StandardFolder[]>([
+  {
+    key: 'objects',
+    label: i18n('computer.objects3d'),
+    path: userPath + '3D Objects',
+    icon: objectsIcon,
+    navIcon: objectsIcon,
+    available: false,
+  },
+  {
+    key: 'desktop',
+    label: i18n('recycle.bin.desktop'),
+    path: userPath + 'Desktop',
+    icon: desktopIcon,
+    navIcon: desktopNav,
+    available: false,
+  },
+  {
+    key: 'documents',
+    label: i18n('recycle.bin.documents'),
+    path: userPath + 'Documents',
+    icon: documentsIcon,
+    navIcon: documentsNav,
+    available: false,
+  },
+  {
+    key: 'downloads',
+    label: i18n('recycle.bin.downloads'),
+    path: userPath + 'Downloads',
+    icon: downloadsIcon,
+    navIcon: downloadsNav,
+    available: false,
+  },
+  {
+    key: 'music',
+    label: i18n('recycle.bin.music'),
+    path: userPath + 'Music',
+    icon: musicIcon,
+    navIcon: musicNav,
+    available: false,
+  },
+  {
+    key: 'pictures',
+    label: i18n('recycle.bin.pictures'),
+    path: userPath + 'Photo',
+    icon: picturesIcon,
+    navIcon: picturesNav,
+    available: false,
+  },
+  {
+    key: 'videos',
+    label: i18n('recycle.bin.videos'),
+    path: userPath + 'Videos',
+    icon: videosIcon,
+    navIcon: videosNav,
+    available: false,
+  },
+]);
+const quickFolders = computed(() =>
+  ['desktop', 'downloads', 'documents', 'pictures'].map(
+    (key) => standardFolders.value.find((item) => item.key === key)!
+  )
+);
+const visibleFolders = computed(() =>
+  standardFolders.value.filter(
+    (item) =>
+      (!searchKeyword.value ||
+        item.label.toLocaleLowerCase().includes(searchKeyword.value.toLocaleLowerCase())) &&
+      (activeFilter.value === 'all' || activeFilter.value === 'folders')
+  )
+);
+const windowTitle = computed(() => {
+  if (isRootView.value) return i18n('computer');
+  if (router_url.value.startsWith('search:')) return i18n('computer.search.results');
+  return (
+    standardFolders.value.find((item) => item.path === router_url.value)?.label ||
+    router_url.value.split('/').filter(Boolean).pop() ||
+    i18n('computer')
+  );
+});
+async function selectShortcut(item: StandardFolder) {
+  const file = await system.fs.stat(item.path);
+  if (file) onFileSelect(file);
+}
+function openSelected() {
+  if (selectedFile.value) openFolder(selectedFile.value);
+}
+function showSelectedProperties() {
+  const file = selectedFile.value;
+  if (!file) return;
+  if (file.path.split('/').filter(Boolean).length === 1) openVolumeProps(file);
+  else openPropsWindow(system, file.path);
+}
+function getDriveIcon(file: VtronFileWithoutContent) {
+  return file.path === '/C'
+    ? systemDriveIcon
+    : getVolumeLetter(file).length === 1
+      ? localDriveIcon
+      : networkDriveIcon;
+}
+function driveName(file: VtronFileWithoutContent) {
+  const name = getVolumeLetter(file);
+  return name.length === 1 ? `${i18n('local.disk')} (${name}:)` : name;
+}
+function showRootMenu(event: MouseEvent) {
+  system.buildFromTemplate([{ label: i18n('refresh'), click: onListRefresh }]).popup(event);
+}
+function goUp() {
+  if (router_url.value.startsWith('search:')) handleHistoryChange(-1);
+  else backFolder();
+}
+function onWindowKey(event: KeyboardEvent) {
+  if ((event.target as HTMLElement).closest('input, textarea')) return;
+  if (event.key === 'F5') {
+    event.preventDefault();
+    onListRefresh();
+  }
+  if (event.altKey && event.key === 'ArrowLeft') {
+    event.preventDefault();
+    handleHistoryChange(-1);
+  }
+  if (event.altKey && event.key === 'ArrowRight') {
+    event.preventDefault();
+    handleHistoryChange(1);
+  }
+  if (event.altKey && event.key === 'ArrowUp') {
+    event.preventDefault();
+    goUp();
+  }
+}
 
 const EXT_MAP: Record<string, string[]> = {
-  documents: ['.txt', '.doc', '.docx', '.pdf', '.json', '.md', '.csv', '.xml', '.html', '.htm', '.rtf', '.log', '.ini', '.cfg', '.yaml', '.yml', '.toml'],
+  documents: [
+    '.txt',
+    '.doc',
+    '.docx',
+    '.pdf',
+    '.json',
+    '.md',
+    '.csv',
+    '.xml',
+    '.html',
+    '.htm',
+    '.rtf',
+    '.log',
+    '.ini',
+    '.cfg',
+    '.yaml',
+    '.yml',
+    '.toml',
+  ],
   images: ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.bmp', '.webp', '.ico', '.tiff', '.tif'],
   audio: ['.mp3', '.wav', '.ogg', '.flac', '.aac', '.wma', '.m4a'],
   video: ['.mp4', '.avi', '.mkv', '.mov', '.wmv', '.flv', '.webm', '.m4v'],
@@ -261,9 +562,15 @@ const statusInfo = computed(() => {
 });
 
 function setFilter(key: string) {
+  selectedFile.value = null;
+  previewInfo.value = null;
+  ++previewVersion;
   activeFilter.value = key;
 }
 function handleSearchInput(keyword: string) {
+  selectedFile.value = null;
+  previewInfo.value = null;
+  ++previewVersion;
   searchKeyword.value = keyword;
 }
 
@@ -299,8 +606,11 @@ function onFileSelect(file: VtronFileWithoutContent) {
   }
 }
 
+let previewVersion = 0;
 async function loadPreview(file: VtronFileWithoutContent) {
+  const version = ++previewVersion;
   const stat = await system.fs.stat(file.path);
+  if (version !== previewVersion) return;
   if (!stat) {
     previewInfo.value = null;
     return;
@@ -341,20 +651,17 @@ async function loadPreview(file: VtronFileWithoutContent) {
     }
   }
 
-  previewInfo.value = info;
+  if (version === previewVersion) previewInfo.value = info;
 }
 
 const isRootView = computed(() => {
   const url = router_url.value;
-  return url === '/' || url === '';
+  return !url || (!url.startsWith('search:') && normalize(url.replaceAll('\\', '/')) === '/');
 });
+const canCreateHere = computed(() => !isRootView.value && !router_url.value.startsWith('search:'));
 
 function getVolumeLetter(file: VtronFileWithoutContent): string {
   return file.path.split('/').filter(Boolean)[0] || '';
-}
-
-function getVolumeUsage(_file: VtronFileWithoutContent): number {
-  return 30 + Math.abs(((_file.path.charCodeAt(1) || 0) * 17) % 50);
 }
 
 function formatSize(bytes: number): string {
@@ -365,6 +672,10 @@ function formatSize(bytes: number): string {
 }
 
 const setRouter = function (path: string) {
+  searchKeyword.value = '';
+  selectedFile.value = null;
+  previewInfo.value = null;
+  ++previewVersion;
   router_url.value = path;
   if (router_url_history_index.value <= router_url_history.value.length - 1) {
     router_url_history.value = router_url_history.value.slice(0, router_url_history_index.value + 1);
@@ -378,6 +689,7 @@ const { refersh, createFolder, backFolder, openFolder, onComputerMount } = useCo
     return router_url.value;
   },
   setFileList(list) {
+    ++previewVersion;
     currentList.value = list;
     previewInfo.value = null;
     selectedFile.value = null;
@@ -411,6 +723,10 @@ const { refersh, createFolder, backFolder, openFolder, onComputerMount } = useCo
   },
 });
 function handleHistoryChange(offset: number) {
+  searchKeyword.value = '';
+  selectedFile.value = null;
+  previewInfo.value = null;
+  ++previewVersion;
   if (router_url_history_index.value + offset < 0) return;
   if (router_url_history_index.value + offset > router_url_history.value.length - 1) return;
   router_url_history_index.value = router_url_history_index.value + offset;
@@ -418,12 +734,15 @@ function handleHistoryChange(offset: number) {
 
   refersh();
 }
-const leftWidth = ref(200);
+const leftWidth = ref(156);
+let stopSidebarResize: (() => void) | undefined;
 function leftHandleDown(e: MouseEvent) {
+  stopSidebarResize?.();
   const startX = e.clientX;
   const startWidth = leftWidth.value;
   addEventListener('mousemove', leftHandleMove);
   addEventListener('mouseup', leftHandleUp);
+  stopSidebarResize = leftHandleUp;
   function leftHandleMove(e: MouseEvent) {
     const moveX = e.clientX - startX;
     if (startWidth + moveX < 100) return;
@@ -433,51 +752,43 @@ function leftHandleDown(e: MouseEvent) {
   function leftHandleUp() {
     removeEventListener('mousemove', leftHandleMove);
     removeEventListener('mouseup', leftHandleUp);
+    stopSidebarResize = undefined;
   }
 }
 
 const rootFileList = ref<Array<VtronFileWithoutContent>>([]);
-const random = ref(0);
+function refreshAfterProps() {
+  void refersh();
+}
 onMounted(() => {
-  if (config) {
-    router_url.value = config.path;
-  } else {
-    router_url.value = '/';
-  }
-  onComputerMount();
-  system.mountEvent('file.props.edit', async () => {
-    refersh();
-  });
-  system.mountEvent('computerpop.hidden', () => {
-    isPopoverView.value = false;
-  });
-  system.fs.readdir('/').then((file) => {
-    if (file) {
-      rootFileList.value = [...file];
-      random.value = random.value + 1;
-    }
-  });
+  setRouter(config?.path || '/');
+  void onComputerMount();
+  system.mountEvent('file.props.edit', refreshAfterProps);
+  void refreshNavigation();
 });
+onUnmounted(() => {
+  system.offEvent('file.props.edit', refreshAfterProps);
+  removeEventListener('mousemove', backgroundMove);
+  removeEventListener('mouseup', backgroundUp);
+  stopSidebarResize?.();
+  ++previewVersion;
+});
+async function refreshNavigation() {
+  rootFileList.value = await system.fs.readdir('/');
+  for (const item of standardFolders.value) item.available = await system.fs.exists(item.path);
+  notesAvailable.value = await system.fs.exists(userPath + 'Note');
+}
 
 function handleOuterClick() {
   system.emitEvent('mycomputer.click');
 }
 
 function onListRefresh() {
-  refersh();
-  system.fs.readdir('/').then((file) => {
-    if (file) {
-      rootFileList.value = [...file];
-    }
-  });
+  void refersh();
+  void refreshNavigation();
 }
 
 /**------视图切换------ */
-const isPopoverView = ref(false);
-function popoverChange() {
-  isPopoverView.value = !isPopoverView.value;
-}
-
 const chosenView = ref('icon');
 
 /**------树状列表打开------ */
@@ -524,9 +835,19 @@ function backgroundUp(e: MouseEvent) {
 /* ------------ 新建文件夹 ------------*/
 const createInput = ref(i18n('new.folder'));
 const creating = ref(false);
+const newFolderInput = ref<HTMLInputElement>();
+async function startCreatingFolder() {
+  if (!canCreateHere.value) return;
+  creating.value = true;
+  await nextTick();
+  newFolderInput.value?.focus();
+  newFolderInput.value?.select();
+}
 function creatingEditEnd() {
   if (creating.value) {
-    createFolder(createInput.value);
+    const name = createInput.value.trim();
+    if (canCreateHere.value && name && name !== '.' && name !== '..' && !/[\\/:*?"<>|]/.test(name))
+      createFolder(name);
     creating.value = false;
     createInput.value = i18n('new.folder');
   }
@@ -538,29 +859,32 @@ function onBackClick() {
 
 function showOuterMenu(e: MouseEvent) {
   e.preventDefault();
+  if (!canCreateHere.value) {
+    showRootMenu(e);
+    return;
+  }
   createDesktopContextMenu(system, e, router_url.value, () => {
     refersh();
   });
 }
 /* ------------ 路径输入框 ------------*/
 async function handleNavRefresh(path: string) {
-  if (path == '') return;
+  if (!path) return;
   if (path.startsWith('search:')) {
     setRouter(path);
-    refersh();
+    await refersh();
     return;
   }
-
-  const res = await system.fs.stat(path);
-  if (res) {
+  const target = await system.fs.stat(path);
+  if (target?.isDirectory) {
     setRouter(path);
-    refersh();
-  } else {
-    setRouter(dirname(path));
-    refersh();
-  }
+    await refersh();
+  } else if (target) system.openFile(path);
+  else system.createNotify({ title: i18n('tips'), content: i18n('path.not.exist') });
 }
+
 async function handleNavSearch(path: string) {
+  if (!path.trim()) return;
   searchKeyword.value = '';
   setRouter('search:' + path);
   refersh();
@@ -600,409 +924,536 @@ function openVolumeProps(vol: VtronFileWithoutContent) {
     .show();
 }
 /* ------------ 卷右键菜单end --------- */
+watch(windowTitle, (title) => browserWindow?.setTitle(title));
 </script>
-<style lang="scss" scoped>
+<style scoped>
 .computer-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100%;
+  min-height: 0;
   overflow: hidden;
+  color: #000;
+  background: #fff;
+  font:
+    12px/1.35 'Segoe UI',
+    'Microsoft YaHei UI',
+    'Microsoft YaHei',
+    sans-serif;
+  outline: 1px solid #a6a6a6;
+  outline-offset: -1px;
+  user-select: none;
 }
-
-.uper {
-  background-color: rgba(255, 235, 205, 0);
-  font-size: 12px;
-  font-weight: 300;
-  --button-item-height: 30px;
+.computer-container *,
+.computer-container *::before,
+.computer-container *::after {
+  box-sizing: border-box;
+}
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+button {
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  cursor: default;
+}
+button:disabled {
+  color: #929292;
+}
+button:disabled img {
+  opacity: 0.45;
+}
+button:hover:enabled {
+  border-color: #a4cef9;
+  background: #e5f3ff;
+}
+button:focus-visible {
+  outline: 1px dotted #555;
+  outline-offset: -3px;
+}
+.mdl {
   flex-shrink: 0;
+  font-family: 'SEGOEUIMDL';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
 }
-
 .main {
   display: flex;
   flex: 1;
   min-height: 0;
-  position: relative;
-
-  .left-tree {
-    position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
-    width: var(--menulist-width);
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-right: 1px solid rgba(134, 134, 134, 0.267);
-  }
-
-  .left-handle {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 4px;
-    height: 100%;
-    background: rgba(0, 0, 0, 0);
-    cursor: ew-resize;
-  }
-
-  .desk-outer {
-    flex: 1;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    align-content: flex-start;
-    flex-wrap: wrap;
-    position: relative;
-    overflow-x: hidden;
-  }
-}
-
-.desk-item {
-  position: relative;
-  cursor: default;
-  box-sizing: border-box;
-  width: 70px;
-  height: 100px;
-  background-color: rgba(119, 119, 119, 0);
-  color: white;
-  border: 1px solid rgba(0, 0, 0, 0);
-}
-
-.chosen {
-  border: 1px dashed #3bdbff3d;
-  background-color: #b9e3fd90;
-}
-
-.desk-item:hover {
-  border: 1px solid rgba(149, 149, 149, 0.233);
-  background-color: #b9e3fd5a;
-}
-
-.item_img {
-  width: 50px;
-  height: 40px;
   overflow: hidden;
-  padding: 10px;
-  text-align: center;
 }
-
-.item_img img {
-  user-select: none;
+.left-tree {
+  position: relative;
+  flex-shrink: 0;
+  min-width: 100px;
+  height: 100%;
+  overflow: hidden auto;
+  border-right: 1px solid #e5e5e5;
+  padding: 8px 0;
 }
-
-.item_name {
-  overflow: hidden;
-  max-width: 200px;
-  color: rgba(0, 0, 0, 0.664);
-  text-align: center;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  user-select: none;
+.nav-heading,
+.nav-item,
+.nav-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  width: 100%;
+  padding: 0 6px;
+  text-align: left;
+  white-space: nowrap;
+}
+.nav-heading img,
+.nav-item img,
+.nav-main img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.nav-item > span:not(.mdl):not(.tree-indent),
+.nav-main > span {
   overflow: hidden;
   text-overflow: ellipsis;
-  word-break: break-all;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
 }
-
-.item_input {
-  width: 100%;
+.tree-chevron {
+  width: 10px;
+  font-size: 8px;
+  color: #777;
 }
-
-.group {
+.tree-indent {
+  width: 10px;
+  flex-shrink: 0;
+}
+.nav-item.quick-child {
+  padding-left: 30px;
+  gap: 7px;
+}
+.nav-item.computer-child {
+  padding-left: 12px;
+  gap: 5px;
+}
+.pin {
+  font-size: 10px;
+  color: #999;
+  margin-left: auto;
+  margin-right: 6px;
+}
+.section-start {
+  margin-top: 12px;
+}
+.nav-computer {
   display: flex;
-  border-bottom: 1px solid rgba(134, 134, 134, 0.267);
-
-  user-select: none;
+  align-items: center;
+  height: 24px;
+  margin-top: 8px;
 }
-
-.button {
-  cursor: pointer;
-  text-align: center;
-  width: 50px;
-  transition: all 0.1s;
-  background: #ffffff;
-  font-family: sans-serif;
-  font-size: 12px;
-  padding: 0px 4px;
-  height: 20px;
+.nav-computer.current,
+.nav-item.current {
+  background: #cce8ff;
+}
+.tree-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: 0.1s;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.nav-main {
+  padding-left: 4px;
+  min-width: 0;
+}
+.left-handle {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  cursor: ew-resize;
+}
+.desk-outer {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: auto;
+}
+.desk-outer.root-view {
+  display: block;
+}
+.volume-view {
+  min-width: 285px;
+  padding: 0 8px 16px 10px;
+}
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 30px;
+  border: 0;
+  color: #1f4e79;
+  font-size: 15px;
+  text-align: left;
   white-space: nowrap;
-  user-select: none;
 }
-
-.button:hover {
-  background-color: #1b6bad;
-  color: white;
+.section-heading .mdl {
+  font-size: 10px;
+  color: #666;
 }
-
-.button-active {
-  background-color: #0f5a96;
-  color: white;
+.section-heading:hover:enabled {
+  background: transparent;
 }
-
+.section-line {
+  height: 1px;
+  background: #ddd;
+  flex: 1;
+  margin-left: 3px;
+}
+.folder-grid,
+.volume-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 254px);
+  grid-auto-rows: 60px;
+  padding-left: 40px;
+}
+.folder-card,
+.volume-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  width: 254px;
+  height: 60px;
+  padding: 5px 6px;
+  text-align: left;
+}
+.folder-card img,
+.volume-card > img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.folder-card > span {
+  align-self: flex-start;
+  padding-top: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.folder-card.selected,
+.volume-card.selected {
+  border-color: #99d1ff;
+  background: #cce8ff;
+}
+.volume-card {
+  width: 222px;
+  height: 70px;
+}
+.volume-grid {
+  grid-auto-rows: 70px;
+}
+.volume-card-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.volume-card-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.volume-card-bar {
+  display: block;
+  width: 100%;
+  height: 13px;
+  border: 1px solid #bcbcbc;
+  background: #e6e6e6;
+}
+.volume-card-space {
+  color: #777;
+  font-size: 11px;
+}
+.compact-view .folder-grid,
+.compact-view .volume-grid {
+  grid-template-columns: minmax(250px, 1fr);
+  padding-left: 16px;
+  grid-auto-rows: 30px;
+}
+.compact-view .folder-card,
+.compact-view .volume-card {
+  width: 100%;
+  height: 30px;
+}
+.compact-view .folder-card img,
+.compact-view .volume-card > img {
+  width: 20px;
+  height: 20px;
+}
+.compact-view .folder-card > span {
+  padding-top: 0;
+  align-self: center;
+}
+.compact-view .volume-card-info {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+}
+.compact-view .volume-card-bar {
+  display: none;
+}
+.empty-message {
+  width: 100%;
+  margin: 18px 0;
+  text-align: center;
+  color: #666;
+}
 .filter-bar {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 8px;
-  border-bottom: 1px solid rgba(134, 134, 134, 0.267);
-  background-color: #fafbfc;
-  user-select: none;
-  flex-wrap: wrap;
-}
-
-.filter-chip {
-  padding: 1px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  cursor: pointer;
-  border: 1px solid #dcdcdc;
-  background: #fff;
-  color: #444;
-  transition: all 0.15s;
-  white-space: nowrap;
-
-  &:hover {
-    background-color: #e8f4fd;
-    border-color: #6ca9e7;
-  }
-
-  &.active {
-    background-color: #0078d7;
-    color: #fff;
-    border-color: #0078d7;
-  }
-}
-
-.filter-result-count {
-  font-size: 11px;
-  color: #666;
-  margin-left: auto;
-}
-
-.status-bar {
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 22px;
-  padding: 0 10px;
-  font-size: 11px;
-  color: #444;
-  background-color: #f0f0f0;
-  border-top: 1px solid rgba(134, 134, 134, 0.267);
-  user-select: none;
-}
-
-.status-left {
-  white-space: nowrap;
-}
-
-.status-right {
-  white-space: nowrap;
-}
-
-.status-sep {
-  margin: 0 6px;
-  color: #bbb;
-}
-
-.volume-view {
-  width: 100%;
   padding: 4px 12px;
-  user-select: none;
+  border-bottom: 1px solid #ddd;
+  background: #f5f6f7;
 }
-
-.volume-section-title {
-  font-size: 12px;
-  color: #555;
-  padding: 8px 0 6px;
-  border-bottom: 1px solid #e0e0e0;
-  margin-bottom: 8px;
+.filter-bar button {
+  padding: 2px 8px;
 }
-
-.volume-grid {
+.filter-bar button.active {
+  border-color: #99d1ff;
+  background: #cce8ff;
+}
+.new-folder-item {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.volume-card {
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  width: 220px;
-  height: 70px;
-  padding: 8px 10px;
-  border: 1px solid transparent;
-  border-radius: 2px;
-  cursor: default;
-  transition: all 0.1s;
-  box-sizing: border-box;
-
-  &:hover {
-    background-color: #e5f3ff;
-    border-color: #cce4f7;
-  }
-
-  &.volume-card-selected {
-    background-color: #cce8ff;
-    border-color: #99d1ff;
-  }
+  width: 90px;
+  min-height: 90px;
+  margin: 6px;
+  padding-top: 4px;
 }
-
-.volume-card-icon {
+.new-folder-item img {
   width: 48px;
   height: 48px;
-  flex-shrink: 0;
-  margin-right: 10px;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
 }
-
-.volume-card-info {
+.item_input {
+  width: 90px;
+  margin-top: 3px;
+  padding: 1px 3px;
+  border: 1px solid #0078d7;
+  outline: 0;
+}
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 23px;
+  flex-shrink: 0;
+  padding-left: 12px;
+  border-top: 1px solid #f0f0f0;
+  background: #fff;
+  color: #555;
+}
+.status-spacer {
   flex: 1;
-  min-width: 0;
+}
+.status-bar button {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 3px;
+  width: 24px;
+  height: 22px;
 }
-
-.volume-card-name {
-  font-size: 12px;
-  color: #222;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.status-bar button.checked {
+  border-color: #99d1ff;
+  background: #cce8ff;
 }
-
-.volume-card-bar {
-  width: 100%;
-  height: 14px;
-  background-color: #e6e6e6;
-  border-radius: 0;
-  overflow: hidden;
+.status-bar .mdl {
+  font-size: 16px;
 }
-
-.volume-card-bar-fill {
-  height: 100%;
-  background-color: #26a0da;
-  transition: width 0.3s;
-}
-
-.volume-card-space {
-  font-size: 11px;
-  color: #666;
-}
-
 .preview-panel {
-  width: 220px;
   flex-shrink: 0;
+  width: 220px;
   height: 100%;
-  border-left: 1px solid rgba(134, 134, 134, 0.267);
-  background-color: #fafbfc;
-  overflow-y: auto;
-  overflow-x: hidden;
-  font-size: 12px;
+  border-left: 1px solid #ddd;
+  overflow: auto;
+  background: #fff;
 }
-
-.preview-content {
-  display: flex;
-  flex-direction: column;
-}
-
 .preview-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px 12px 10px;
-  border-bottom: 1px solid rgba(134, 134, 134, 0.2);
+  gap: 8px;
+  padding: 16px 12px;
+  border-bottom: 1px solid #eee;
 }
-
 .preview-thumbnail {
   max-width: 180px;
   max-height: 140px;
   object-fit: contain;
-  border-radius: 4px;
-  margin-bottom: 8px;
 }
-
 .preview-icon {
   width: 48px;
   height: 48px;
   object-fit: contain;
-  margin-bottom: 8px;
 }
-
 .preview-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: #222;
   text-align: center;
-  word-break: break-all;
-  line-height: 1.3;
+  overflow-wrap: anywhere;
 }
-
 .preview-details {
-  padding: 8px 12px;
+  padding: 10px 12px;
 }
-
 .preview-row {
   display: flex;
   flex-direction: column;
-  margin-bottom: 6px;
+  gap: 2px;
+  margin-bottom: 8px;
 }
-
 .preview-label {
-  font-size: 11px;
-  color: #888;
-  margin-bottom: 1px;
+  color: #777;
 }
-
 .preview-value {
-  font-size: 12px;
-  color: #333;
-  word-break: break-all;
+  overflow-wrap: anywhere;
 }
-
-.preview-path {
-  font-size: 11px;
-  color: #555;
-}
-
 .preview-text {
-  border-top: 1px solid rgba(134, 134, 134, 0.2);
   padding: 8px 12px;
-
-  pre {
-    margin: 0;
-    font-size: 11px;
-    font-family: 'Consolas', 'Monaco', monospace;
-    white-space: pre-wrap;
-    word-break: break-all;
-    color: #333;
-    line-height: 1.4;
-    max-height: 200px;
-    overflow-y: auto;
-  }
+  border-top: 1px solid #eee;
 }
-
+.preview-text pre {
+  margin: 0;
+  max-height: 220px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow: auto;
+  font:
+    11px/1.4 Consolas,
+    Monaco,
+    monospace;
+}
 .preview-empty {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #999;
-  font-size: 12px;
+  color: #777;
+}
+.desk-outer::-webkit-scrollbar,
+.left-tree::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+.desk-outer::-webkit-scrollbar-track,
+.left-tree::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.desk-outer::-webkit-scrollbar-thumb,
+.left-tree::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border: 2px solid #f1f1f1;
+}
+.desk-outer :deep(.file-item) {
+  color: #000;
+  font: inherit;
+  border-radius: 0;
+}
+.desk-outer :deep(.file-item:hover) {
+  background: #e5f3ff;
+  border-color: #e5f3ff;
+}
+.desk-outer :deep(.file-item.chosen) {
+  background: #cce8ff;
+  border-color: #99d1ff;
+}
+.desk-outer :deep(.mode-detail) {
+  height: 25px;
+  margin: 0;
+  padding: 0 7px;
+}
+.desk-outer :deep(.mode-detail .file-item_img) {
+  width: 20px;
+  height: 18px;
+  margin: 0 5px 0 0;
+}
+.desk-outer :deep(.file-bar) {
+  height: 26px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+@media (max-width: 600px) {
+  .folder-grid,
+  .volume-grid {
+    padding-left: 12px;
+  }
+  .preview-panel {
+    width: 190px;
+  }
+}
+.desk-outer.details-view {
+  padding-left: 14px;
+}
+.desk-outer :deep(.native-detail) {
+  min-width: 650px;
+  flex-shrink: 0;
+}
+.desk-outer :deep(.native-detail .file-item_title) {
+  flex: 1;
+  min-width: 200px;
+  width: auto;
+}
+.desk-outer :deep(.native-detail .file-item_type) {
+  flex-shrink: 0;
+  color: #666;
+}
+.desk-outer :deep(.native-detail .detail-modified) {
+  width: 160px;
+}
+.desk-outer :deep(.native-detail .detail-kind) {
+  width: 140px;
+}
+.desk-outer :deep(.native-detail .detail-size) {
+  width: 90px;
+  text-align: right;
+  padding-right: 10px;
+}
+.desk-outer :deep(.file-bar.native-detail > div) {
+  height: 25px;
+  padding: 4px 7px;
+  border-right: 1px solid #e5e5e5;
+}
+</style>
+<style>
+.wintmp_outer.max:has(> .wintmp_main > .computer-container) > .win_drag_border,
+.wintmp_outer.fullscreen:has(> .wintmp_main > .computer-container) > .win_drag_border {
+  display: none;
+}
+.wintmp_outer.max:has(> .wintmp_main > .computer-container),
+.wintmp_outer.fullscreen:has(> .wintmp_main > .computer-container) {
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 </style>

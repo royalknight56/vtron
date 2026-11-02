@@ -46,12 +46,14 @@ function parseJson(source: string, filename: string): unknown {
   catch (error) { throw moduleError('ERR_INVALID_PACKAGE_CONFIG', `Invalid JSON in ${filename}: ${String(error)}`, filename); }
 }
 
-/** Read text modules once, then provide Node-style synchronous require over that snapshot. */
+/** Workers load modules on demand through the real synchronous filesystem bridge.
+ * Hosts without synchronous storage retain the bounded startup snapshot. */
 export function createNodeModuleLoader(system: System) {
   return async (context: ScriptModuleContext): Promise<ScriptModuleResolver> => {
     const isEvalEntry = !context.filename.startsWith('/');
     const entry = isEvalEntry ? join(context.cwd, '[eval]') : resolve(context.filename);
     const entryDirectory = dirname(entry);
+    const syncFileSystem = context.syncFileSystem;
     const files = new Map<string, string>();
     const knownFiles = new Set<string>();
     const directories = new Set<string>();
@@ -70,6 +72,39 @@ export function createNodeModuleLoader(system: System) {
     function active() {
       if (disposed) throw Object.assign(new Error('模块运行时已释放'), { name: 'AbortError', code: 'ABORT_ERR' });
       abort(context.signal);
+    }
+
+    function hasFile(path: string): boolean {
+      if (!syncFileSystem) return knownFiles.has(path);
+      active();
+      const info = syncFileSystem.stat(path);
+      if (info?.isSymlink) throw moduleError('ERR_NOT_SUPPORTED', `Symbolic-link modules are unsupported: ${path}`, path);
+      return !!info?.isFile;
+    }
+    function hasDirectory(path: string): boolean {
+      if (!syncFileSystem) return directories.has(path);
+      active();
+      const info = syncFileSystem.stat(path);
+      if (info?.isSymlink) throw moduleError('ERR_NOT_SUPPORTED', `Symbolic-link modules are unsupported: ${path}`, path);
+      return !!info?.isDirectory;
+    }
+    function readSource(path: string, refresh = false): string | undefined {
+      active();
+      if (!syncFileSystem || (!refresh && files.has(path))) return files.get(path);
+      if (!hasFile(path)) return undefined;
+      const data = syncFileSystem.readFile(path);
+      if (data === null) return undefined;
+      const previous = files.get(path);
+      const size = data.byteLength;
+      if (previous === undefined && fileCount >= MAX_FILES) throw moduleError('ERR_MODULE_SNAPSHOT_LIMIT', `Module loading exceeds ${MAX_FILES} files`);
+      const total = bytes + size - (previous === undefined ? 0 : new TextEncoder().encode(previous).byteLength);
+      if (total > MAX_BYTES) throw moduleError('ERR_MODULE_SNAPSHOT_LIMIT', 'Module sources exceed 32 MB');
+      const source = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(data);
+      if (previous === undefined) fileCount++;
+      if (source !== previous) transformed.delete(path);
+      bytes = total;
+      files.set(path, source); knownFiles.add(path);
+      return source;
     }
 
     async function rememberFile(path: string) {
@@ -105,7 +140,7 @@ export function createNodeModuleLoader(system: System) {
     // Read package scopes without reading user configuration or arbitrary files on the way up.
     let projectRoot = entryDirectory;
     let foundProject = false;
-    for (const path of ancestors(entryDirectory)) {
+    for (const path of syncFileSystem ? [] : ancestors(entryDirectory)) {
       abort(context.signal); directories.add(path);
       const manifestPath = join(path, 'package.json');
       if ((await system.fs.stat(manifestPath))?.isFile) {
@@ -113,8 +148,8 @@ export function createNodeModuleLoader(system: System) {
         if (!foundProject) { projectRoot = path; foundProject = true; }
       }
     }
-    await walk(projectRoot, false);
-    for (const path of nodeModulePaths(entryDirectory)) {
+    if (!syncFileSystem) await walk(projectRoot, false);
+    for (const path of syncFileSystem ? [] : nodeModulePaths(entryDirectory)) {
       abort(context.signal);
       if ((await system.fs.stat(path))?.isDirectory) await walk(path, true);
     }
@@ -132,8 +167,9 @@ export function createNodeModuleLoader(system: System) {
     }
 
     function packageAt(path: string): PackageJson | undefined {
+      if (packages.has(path)) return packages.get(path);
       const filename = join(path, 'package.json');
-      const source = files.get(filename);
+      const source = readSource(filename);
       if (source === undefined) return undefined;
       if (!packages.has(path)) {
         const value = parseJson(source, filename);
@@ -151,12 +187,12 @@ export function createNodeModuleLoader(system: System) {
       return undefined;
     }
     function asFile(path: string): string | undefined {
-      if (knownFiles.has(path)) return path;
-      return ['.js', '.cjs', '.json', '.mjs', '.node'].map(extension => path + extension).find(candidate => knownFiles.has(candidate));
+      if (hasFile(path)) return path;
+      return ['.js', '.cjs', '.json', '.mjs', '.node'].map(extension => path + extension).find(hasFile);
     }
     function asPath(path: string, seen = new Set<string>()): string | undefined {
       const file = asFile(path); if (file) return file;
-      if (!directories.has(path) || seen.has(path)) return undefined;
+      if (!hasDirectory(path) || seen.has(path)) return undefined;
       seen.add(path);
       const manifest = packageAt(path);
       if (typeof manifest?.main === 'string' && manifest.main) {
@@ -167,7 +203,7 @@ export function createNodeModuleLoader(system: System) {
       return asFile(join(path, 'index'));
     }
     function missing(request: string, parent: string): never {
-      throw moduleError('MODULE_NOT_FOUND', `Cannot find module '${request}' from '${parent}'。请先在项目目录运行 npm install；运行期间新建的模块需重新执行脚本后加载。`, parent);
+      throw moduleError('MODULE_NOT_FOUND', `Cannot find module '${request}' from '${parent}'` + (syncFileSystem ? '' : '。请先在项目目录运行 npm install；主线程快照不包含运行期间新建的模块。'), parent);
     }
     function exportTarget(value: unknown, mode: ResolveMode, wildcard?: string): string | null | undefined {
       if (value === null) return null;
@@ -205,7 +241,7 @@ export function createNodeModuleLoader(system: System) {
         throw moduleError('ERR_INVALID_PACKAGE_TARGET', `Invalid package exports target '${target}' in ${root}`, root);
       }
       const path = resolve(root, target);
-      if (!inside(root, path) || !knownFiles.has(path)) return missing(request, parent);
+      if (!inside(root, path) || !hasFile(path)) return missing(request, parent);
       return path;
     }
     function packageImport(request: string, parent: string, mode: ResolveMode): string {
@@ -234,7 +270,7 @@ export function createNodeModuleLoader(system: System) {
       if (/[?#%]/.test(target)) throw moduleError('ERR_NOT_SUPPORTED', `Package imports targets with URL query, fragment or percent encoding are not supported: '${target}'`, scope!.root);
       const path = resolve(scope!.root, target);
       if (!inside(scope!.root, path)) throw moduleError('ERR_INVALID_PACKAGE_TARGET', `Package imports target escapes its package: '${target}'`, scope!.root);
-      if (!knownFiles.has(path)) throw moduleError('MODULE_NOT_FOUND', `Cannot find target '${target}' for package import '${request}' in ${scope!.root}`, path);
+      if (!hasFile(path)) throw moduleError('MODULE_NOT_FOUND', `Cannot find target '${target}' for package import '${request}' in ${scope!.root}`, path);
       return path;
     }
     function packageParts(request: string) {
@@ -298,7 +334,7 @@ export function createNodeModuleLoader(system: System) {
         else {
           for (const directory of nodeModulePaths(dirname(parent))) {
             const root = join(directory, parts.name);
-            if (!directories.has(root)) continue;
+            if (!hasDirectory(root)) continue;
             const manifest = packageAt(root);
             resolved = manifest?.exports !== undefined
               ? packageExport(root, manifest, parts.subpath, request, parent, mode)
@@ -333,7 +369,7 @@ export function createNodeModuleLoader(system: System) {
         return esmRuntime.requireModule(filename);
       }
       if (extension === '.node') throw moduleError('ERR_DLOPEN_FAILED', `浏览器不支持 Node 原生扩展：${filename}`, filename);
-      const source = files.get(filename);
+      const source = readSource(filename, true);
       if (source === undefined) throw moduleError('ERR_UNKNOWN_FILE_EXTENSION', `当前仅支持 .js、.cjs 和 .json 模块：${filename}`, filename);
       const parent = cache[parentPath(parentFilename)] || null;
       const module: CommonJSModule = { id: filename, filename, path: dirname(filename), exports: {}, loaded: false, parent, children: [], paths: nodeModulePaths(dirname(filename)) };
@@ -343,7 +379,11 @@ export function createNodeModuleLoader(system: System) {
       try {
         if (extension === '.json') module.exports = parseJson(source, filename);
         else {
-          const result = transformed.get(filename);
+          let result = transformed.get(filename);
+          if (!result && dynamicImportCandidate.test(source) && esmRuntime) {
+            result = { ok: true, code: esmRuntime.transformCommonJS(source, filename) };
+            transformed.set(filename, result);
+          }
           if (result && !result.ok) throw result.error;
           const code = (result?.code ?? source).replace(/^\uFEFF/, '').replace(/^#![^\r\n]*/, line => ' '.repeat(line.length));
           const globals = context.globals;
@@ -381,7 +421,7 @@ export function createNodeModuleLoader(system: System) {
         return createEsmRuntime({
           context,
           resolve: (request, parent) => resolveRequest(request, parent, 'import'),
-          source: filename => { active(); return files.get(filename); },
+          source: filename => readSource(filename),
           isESM,
           loadCommonJS: filename => {
             if (cache[filename] && !cache[filename].loaded) throw moduleError('ERR_REQUIRE_CYCLE_MODULE', `Cannot import an evaluating CommonJS module from ESM: ${filename}`, filename);
@@ -444,7 +484,7 @@ export function createNodeModuleLoader(system: System) {
         }
         catch (error) { transformed.set(filename, { ok: false, error }); }
       }
-      if (hasESM || candidates.length) {
+      if (syncFileSystem || hasESM || candidates.length) {
         const runtime = await getEsmRuntime();
         for (const [filename, source] of candidates) {
           active();

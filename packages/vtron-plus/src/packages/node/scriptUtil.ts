@@ -62,7 +62,28 @@ function parseEnv(content: string) {
   return result;
 }
 
-export function createScriptUtil(defaultArgs: () => string[], hooks: StyleTextHooks & { nextTick?: (callback: (...args: any[]) => unknown, ...args: unknown[]) => void; track?: <T>(promise: Promise<T>) => Promise<T> } = {}) {
+export function createScriptUtil(defaultArgs: () => string[], hooks: StyleTextHooks & { nextTick?: (callback: (...args: any[]) => unknown, ...args: unknown[]) => void; track?: <T>(promise: Promise<T>) => Promise<T>; process?: { noDeprecation?: boolean; emitWarning(message: string, type: string, code?: string, ctor?: Function): void } } = {}) {
+  const warnedCodes = new Set<string>();
+  function deprecate(fn: (...args: any[]) => any, message: string, code?: string) {
+    if (typeof fn !== 'function') argumentError('ERR_INVALID_ARG_TYPE', 'fn must be a function');
+    if (typeof message !== 'string') argumentError('ERR_INVALID_ARG_TYPE', 'message must be a string');
+    if (code !== undefined && typeof code !== 'string') argumentError('ERR_INVALID_ARG_TYPE', 'code must be a string');
+    let warned = false;
+    function wrapped(this: unknown, ...args: unknown[]): unknown {
+      if (!warned && !hooks.process?.noDeprecation) {
+        warned = true;
+        if (code === undefined || !warnedCodes.has(code)) {
+          if (code !== undefined) warnedCodes.add(code);
+          if (hooks.process) hooks.process.emitWarning(message, 'DeprecationWarning', code, wrapped);
+          else console.warn(`${code ? '[' + code + '] ' : ''}DeprecationWarning: ${message}`);
+        }
+      }
+      return new.target ? Reflect.construct(fn, args, new.target) : Reflect.apply(fn, this, args);
+    }
+    Object.setPrototypeOf(wrapped, fn);
+    if (fn.prototype) wrapped.prototype = fn.prototype;
+    return wrapped;
+  }
   const customPromisify = Symbol.for('nodejs.util.promisify.custom');
   function promisify(original: (...args: any[]) => any): (...args: any[]) => any {
     if (typeof original !== 'function') argumentError('ERR_INVALID_ARG_TYPE', 'original must be a function');
@@ -203,7 +224,7 @@ export function createScriptUtil(defaultArgs: () => string[], hooks: StyleTextHo
     Object.defineProperty(ctor, 'super_', { value: superCtor, writable: true, configurable: true });
     Object.setPrototypeOf(ctor.prototype, superCtor.prototype);
   }
-  return { types, parseArgs, parseEnv, promisify: promisify as typeof promisify & { custom: symbol }, ...createScriptUtilFormat(hooks), callbackify, inherits, TextEncoder: globalThis.TextEncoder, TextDecoder: globalThis.TextDecoder,
+  return { types, parseArgs, parseEnv, promisify: promisify as typeof promisify & { custom: symbol }, ...createScriptUtilFormat(hooks), deprecate, callbackify, inherits, TextEncoder: globalThis.TextEncoder, TextDecoder: globalThis.TextDecoder,
     toUSVString(value: unknown) { return new TextDecoder('utf-8', { ignoreBOM: true }).decode(new TextEncoder().encode(`${value}`)); },
   };
 }

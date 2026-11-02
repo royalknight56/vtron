@@ -6,14 +6,11 @@ import PdfViewer from './apps/PdfViewer.vue';
 import UrlBrowser from './apps/UrlBrowser.vue';
 
 import Version from './apps/Version.vue';
-// @ts-ignore
-import Calculator from './apps/Calculator.vue';
 import mycomicon from './assets/computer.ico';
 import helpicon from './assets/help.ico';
 import termIcon from './assets/term.png';
 // import markdownicon from "./assets/markdown.png";
 import pythonIcon from './assets/Python.png';
-import calcicon from './assets/calcicon.png';
 import chromeicon from './assets/chromeicon.png';
 import docxIcon from './assets/office-word.svg';
 import backupIcon from './assets/e895.png';
@@ -53,6 +50,8 @@ import { codeFileIcon } from './apps/code/fileIcons';
 import vscodeIcon from './assets/vscode.svg';
 import { installNpmSupport, type NpmOptions } from './npm';
 import { installNodeSupport } from './node';
+import { registerDailyApps } from './apps/daily/registerDailyApps';
+import { registerWindowsApps } from './apps/win10/registerWindowsApps';
 type VtronFeature =
   | 'doc'
   | 'xls'
@@ -64,6 +63,12 @@ type VtronFeature =
   | 'term'
   | 'chrome'
   | 'calc'
+  | 'notepad'
+  | 'snip'
+  | 'sticky'
+  | 'recorder'
+  | 'clock'
+  | 'windows'
   | 'help'
   | 'music'
   | 'gallery'
@@ -91,6 +96,12 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
       'term',
       'chrome',
       'calc',
+      'notepad',
+      'snip',
+      'sticky',
+      'recorder',
+      'clock',
+      'windows',
       'help',
       'music',
       'gallery',
@@ -423,19 +434,8 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
           backgroundColor: '#ffffff00',
         },
       });
-    config.features.includes('calc') &&
-      system.addMagnet({
-        name: '计算器',
-        icon: calcicon,
-        window: {
-          width: 400,
-          height: 520,
-          content: Calculator,
-          resizable: false,
-          title: '计算器',
-          icon: calcicon,
-        },
-      });
+    registerDailyApps(system, config.features);
+
     config.features.includes('help') &&
       system.addMagnet({
         name: '版本信息',
@@ -679,6 +679,8 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
       });
 
     //#endregion
+
+    if (config.features.includes('windows')) registerWindowsApps(system);
 
     /**------------------ 设置面板 ------------ */
     //#region

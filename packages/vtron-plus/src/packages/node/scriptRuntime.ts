@@ -9,6 +9,7 @@ import { createScriptIO, ScriptEmitter, scriptAbortError } from './scriptIO';
 import { createScriptTasks } from './scriptTasks';
 import type { ScriptModuleContext, ScriptModuleResolver } from './ScriptModule';
 import { createNodeModuleLoader } from './moduleLoader';
+import { createScriptWarnings } from './scriptWarnings';
 import { scriptFileURLToPath, scriptPathToFileURL } from './scriptURL';
 import { createScriptPerformance } from './scriptPerformance';
 import { createScriptCrypto } from './scriptCrypto';
@@ -366,6 +367,10 @@ export function createScriptRuntime(shell: Shell, output: (text: string) => void
     platform: options.target?.platform ?? 'browser',
     versions: Object.freeze(Object.assign(Object.create(null), options.target?.nodeVersion ? { node: options.target.nodeVersion } : {})) as Readonly<Record<string, string | undefined>>,
     nextTick: tasks.nextTick,
+    noDeprecation: undefined as boolean | undefined,
+    throwDeprecation: undefined as boolean | undefined,
+    traceDeprecation: undefined as boolean | undefined,
+    emitWarning(...args: Parameters<ReturnType<typeof createScriptWarnings>['emitWarning']>): void { warnings.emitWarning(...args); },
     getBuiltinModule(name: string): unknown {
       if (typeof name !== 'string') throw new TypeError('getBuiltinModule requires a string');
       try {
@@ -385,6 +390,7 @@ export function createScriptRuntime(shell: Shell, output: (text: string) => void
     stdout: io.stdout,
     stderr: io.stderr,
   });
+  const warnings = createScriptWarnings(process, tasks.nextTick);
   // This Worker belongs to one execution. Surface detached async failures
   // through its process events/failure channel instead of silently hanging.
   const unhandled = (event: PromiseRejectionEvent) => {
@@ -413,7 +419,7 @@ export function createScriptRuntime(shell: Shell, output: (text: string) => void
   };
   const url = { URL: globalThis.URL, URLSearchParams: globalThis.URLSearchParams, fileURLToPath: scriptFileURLToPath, pathToFileURL: (file: string) => scriptPathToFileURL(file, cwd) };
   const pathModule = createScriptPath(() => cwd);
-  const util = createScriptUtil(() => process.argv.slice(2), { stdout: () => process.stdout, env: () => process.env, nextTick: tasks.nextTick, track: tasks.track });
+  const util = createScriptUtil(() => process.argv.slice(2), { stdout: () => process.stdout, env: () => process.env, nextTick: tasks.nextTick, track: tasks.track, process });
   const performanceHooks = createScriptPerformance(reportFailure);
   const workerThreads = createScriptWorkerThreads({ backend: options.startWorker, thread: options.thread, execArgv, env: () => process.env, resolve, track: tasks.track, reportError: reportFailure });
   const wasi = createScriptWasi(fs, code => process.exit(code), text => io.stdout.write(text), text => io.stderr.write(text));
@@ -576,7 +582,9 @@ export async function executeScript(code: string, shell: Shell, output: (text: s
   let finished = false;
   try {
     await Promise.race([(async () => {
-      const prepared = await createNodeModuleLoader(shell.system)({ filename, source: code, cwd: shell.router, requireBuiltin: runtime.requireBuiltin, main: runtime.module, globals: runtime.globals, signal: shell.executionSignal, track: runtime.tasks.track });
+      const syncFileSystem = options.statSync && options.readFileSync
+        ? { stat: options.statSync, readFile: options.readFileSync } : undefined;
+      const prepared = await createNodeModuleLoader(shell.system)({ filename, source: code, cwd: shell.router, requireBuiltin: runtime.requireBuiltin, main: runtime.module, globals: runtime.globals, signal: shell.executionSignal, track: runtime.tasks.track, syncFileSystem });
       if (finished || shell.executionSignal?.aborted) { prepared?.dispose?.(); throw scriptAbortError(); }
       resolver = prepared;
       runtime.setModuleResolver(resolver);

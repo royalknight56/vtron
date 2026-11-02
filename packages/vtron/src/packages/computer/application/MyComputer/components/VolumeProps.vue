@@ -11,20 +11,17 @@
       <div class="split-line"></div>
 
       <div class="chart-area">
-        <div
-          class="pie-chart"
-          :style="{ background: `conic-gradient(#4393d0 0% ${usagePercent}%, #e6e6e6 ${usagePercent}% 100%)` }"
-        >
-          <div class="pie-hole"></div>
+        <div class="pie-chart" aria-hidden="true">
+          <div class="pie-hole">—</div>
         </div>
         <div class="chart-legend">
           <div class="legend-item">
             <span class="legend-color legend-used"></span>
-            <span>{{ i18n('volume.used.space') }}</span>
+            <span>{{ i18n('computer.capacity') }}：—</span>
           </div>
           <div class="legend-item">
             <span class="legend-color legend-free"></span>
-            <span>{{ i18n('volume.free.space') }}</span>
+            <span>{{ i18n('volume.free.space') }}：—</span>
           </div>
         </div>
       </div>
@@ -43,10 +40,9 @@
       <div class="split-line"></div>
 
       <div class="propitem">
-        <div class="propname">{{ i18n('volume.used.space') }}：</div>
+        <div class="propname">{{ i18n('size') }}：</div>
         <div class="propvalue">
-          <span class="legend-color legend-used"></span>
-          {{ usedSizeStr }}
+          {{ totalFileSizeStr }}
         </div>
       </div>
       <div class="propitem">
@@ -57,9 +53,7 @@
       <div class="split-line"></div>
 
       <div class="capacity-section">
-        <div class="capacity-bar">
-          <div class="capacity-fill" :style="{ width: usagePercent + '%' }"></div>
-        </div>
+        <div class="capacity-bar">—</div>
       </div>
     </div>
     <div class="button-group">
@@ -81,9 +75,8 @@ const browserWindow: BrowserWindow | undefined = inject('browserWindow');
 
 const letter = ref('');
 const fsName = ref('');
-const usedSizeStr = ref('0 B');
+const totalFileSizeStr = ref('0 B');
 const totalItems = ref(0);
-const usagePercent = ref(0);
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return bytes + ' B';
@@ -122,8 +115,7 @@ onMounted(async () => {
 
   const stats = await scanDir(volPath);
   totalItems.value = stats.count;
-  usedSizeStr.value = formatSize(stats.size);
-  usagePercent.value = Math.min(95, Math.max(5, Math.round((stats.size / (stats.size + 1024 * 1024)) * 100)));
+  totalFileSizeStr.value = formatSize(stats.size);
 });
 
 function confirm() {
@@ -211,6 +203,7 @@ function confirm() {
 }
 
 .pie-chart {
+  background: #e6e6e6;
   width: 90px;
   height: 90px;
   border-radius: 50%;
@@ -219,6 +212,10 @@ function confirm() {
 }
 
 .pie-hole {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -251,7 +248,7 @@ function confirm() {
 }
 
 .legend-used {
-  background-color: #4393d0;
+  background-color: #e6e6e6;
 }
 
 .legend-free {
@@ -291,11 +288,8 @@ function confirm() {
   height: 16px;
   background-color: #e6e6e6;
   overflow: hidden;
-}
-
-.capacity-fill {
-  height: 100%;
-  background-color: #4393d0;
-  transition: width 0.3s;
+  color: #888;
+  text-align: center;
+  line-height: 16px;
 }
 </style>

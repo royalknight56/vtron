@@ -1,4 +1,6 @@
 import { join, type System } from 'vtron';
+import { dailyAppIcons } from '../../vtron-plus/src/packages/apps/daily/icons';
+import { windowsAppIcons } from '../../vtron-plus/src/packages/apps/win10/icons';
 import networkSvg from './assets/network.svg?raw';
 import backgroundStoreSvg from './assets/background-store.svg?raw';
 import gallerySvg from '../../vtron-plus/src/packages/assets/gallery.svg?raw';
@@ -11,14 +13,16 @@ import powerpointSvg from '../../vtron-plus/src/packages/assets/office-powerpoin
 import vscodeSvg from '../../vtron-plus/src/packages/assets/vscode.svg?raw';
 
 const svgIcon = (svg: string) => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+const toolIcons = { ...dailyAppIcons, ...windowsAppIcons };
 
 export const desktopIcons = {
-  '创建网络链接': svgIcon(networkSvg),
-  '背景Store': svgIcon(backgroundStoreSvg),
-  '图库': svgIcon(gallerySvg),
-  '画板': svgIcon(paintSvg),
-  '任务管理器': svgIcon(taskManagerSvg),
-  '相机': svgIcon(cameraSvg),
+  ...toolIcons,
+  创建网络链接: svgIcon(networkSvg),
+  背景Store: svgIcon(backgroundStoreSvg),
+  图库: svgIcon(gallerySvg),
+  画板: svgIcon(paintSvg),
+  任务管理器: svgIcon(taskManagerSvg),
+  相机: svgIcon(cameraSvg),
   Word: svgIcon(wordSvg),
   Excel: svgIcon(excelSvg),
   PPT: svgIcon(powerpointSvg),
@@ -37,12 +41,26 @@ export async function applyDesktopIcons(system: System) {
 
   const userLocation = system.getConfig('userLocation') || '/C/Users/';
   let changed = false;
+  // Add the new built-in tools to existing desktops without replacing user files.
+  for (const [name, icon] of Object.entries(toolIcons)) {
+    for (const location of ['Desktop', 'Menulist'] as const) {
+      const app = system.stateManager.windowMap.get(location, name);
+      const path = join(userLocation, location, name + '.exe');
+      if (app && app.type !== 'group' && !(await system.fs.stat(path))) {
+        await system.fs.writeFile(path, `link::${location}::${name}::${icon}`, { flag: 'wx' });
+        changed = true;
+      }
+    }
+  }
+
   const codeApp = system.stateManager.windowMap.get('Desktop', 'VS Code');
   if (codeApp && codeApp.type !== 'group') {
     try {
       const codePath = join(userLocation, 'Desktop', 'VS Code.exe');
       if (!(await system.fs.stat(codePath))) {
-        await system.fs.writeFile(codePath, 'link::Desktop::VS Code::' + desktopIcons['VS Code'], { flag: 'wx' });
+        await system.fs.writeFile(codePath, 'link::Desktop::VS Code::' + desktopIcons['VS Code'], {
+          flag: 'wx',
+        });
         changed = true;
       }
       // 仅移除旧版内置入口，用户创建的同名文件保持原样。

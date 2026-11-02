@@ -26,22 +26,31 @@ export const useComputer = (adpater: {
     }
     return true;
   };
+  let refreshVersion = 0;
   const refersh = async () => {
+    const version = ++refreshVersion;
     const currentPath = adpater.getRouter();
     if (!currentPath) return;
     if (currentPath.startsWith('search:')) {
       const keyword = currentPath.substr(7);
       const result = await adpater.search(keyword);
-      adpater.setFileList(result);
+      if (version === refreshVersion && adpater.getRouter() === currentPath) adpater.setFileList(result);
       return;
     }
 
     if (!(await isVia(currentPath))) return;
     const result = await adpater.readdir(currentPath);
-    if (result) adpater.setFileList(result);
+    if (result && version === refreshVersion && adpater.getRouter() === currentPath)
+      adpater.setFileList(result);
   };
   const createFolder = (path: RouterPath) => {
     const currentPath = adpater.getRouter();
+    if (
+      !currentPath ||
+      currentPath.startsWith('search:') ||
+      fspath.normalize(currentPath.replaceAll('\\', '/')) === '/'
+    )
+      return;
     adpater.mkdir(fspath.join(currentPath, path)).then(
       () => {
         refersh();

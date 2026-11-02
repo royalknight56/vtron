@@ -212,6 +212,5 @@ export function createScriptUtilFormat(hooks: StyleTextHooks = {}) {
     inspect: Object.assign(inspect, { colors: styling.colors }) as typeof inspect & { custom: symbol; colors: typeof styling.colors }, styleText: styling.styleText, format, formatWithOptions, stripVTControlCharacters,
     isDeepStrictEqual: scriptIsDeepStrictEqual,
     debuglog: (..._args: unknown[]): never => unsupported('util.debuglog'),
-    deprecate: (..._args: unknown[]): never => unsupported('util.deprecate'),
   };
 }

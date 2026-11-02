@@ -55,9 +55,9 @@ class VtronMemoryFileSystem implements VtronFileInterface {
   async deserializeFileSystem(files: VtronFile[]): Promise<void> {
     this.files.clear();
     this.nextId = 1;
+    const importedAt = new Date();
     for (const file of files) {
-      (file as any).id = this.nextId++;
-      this.files.set(file.path, file);
+      this.files.set(file.path, { ...file, id: this.nextId++, ctime: file.ctime ?? importedAt });
     }
   }
 

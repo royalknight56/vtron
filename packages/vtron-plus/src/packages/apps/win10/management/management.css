@@ -1,0 +1,908 @@
+.win-management {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  color: #111;
+  background: #f0f0f0;
+  font:
+    12px/1.35 'Segoe UI',
+    'Microsoft YaHei UI',
+    'Microsoft YaHei',
+    sans-serif;
+  user-select: none;
+}
+.win-management * {
+  box-sizing: border-box;
+}
+.win-management button,
+.win-management input,
+.win-management select {
+  font: inherit;
+}
+.win-management button {
+  color: inherit;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  cursor: default;
+}
+.win-management button:hover:enabled {
+  border-color: #99d1ff;
+  background: #e5f3ff;
+}
+.win-management button:disabled {
+  color: #929292;
+}
+.win-management button:focus-visible {
+  outline: 1px dotted #111;
+  outline-offset: -3px;
+}
+.win-management input[type='checkbox'] {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  vertical-align: middle;
+  accent-color: #0078d7;
+}
+.win-management .management-glyph {
+  font: 16px/1 'SEGOEUIMDL';
+  flex-shrink: 0;
+}
+.win-management .management-menu {
+  display: flex;
+  flex-shrink: 0;
+  height: 22px;
+  padding: 0 2px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+  z-index: 3;
+}
+.win-management .management-menu-item {
+  position: relative;
+}
+.win-management .management-menu-item > button {
+  height: 21px;
+  padding: 1px 8px;
+}
+.win-management .management-menu-item > button.active {
+  border-color: #99d1ff;
+  background: #cce8ff;
+}
+.win-management .management-popup {
+  position: absolute;
+  top: 21px;
+  left: 0;
+  min-width: 220px;
+  padding: 3px;
+  border: 1px solid #aaa;
+  box-shadow: 2px 3px 4px #0003;
+  background: #f2f2f2;
+}
+.win-management .management-popup button {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  height: 27px;
+  padding: 3px 16px 3px 26px;
+  white-space: nowrap;
+  text-align: left;
+}
+.win-management .management-toolbar {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 29px;
+  padding: 2px 4px;
+  gap: 2px;
+  border-bottom: 1px solid #aaa;
+  background: #f4f4f4;
+}
+.win-management .management-toolbar button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+.win-management .management-toolbar button:disabled .management-glyph {
+  opacity: 0.55;
+}
+.win-management .management-toolbar .help-glyph {
+  color: #1470b9;
+}
+.win-management .toolbar-separator {
+  height: 20px;
+  width: 1px;
+  background: #c8c8c8;
+  margin: 0 3px;
+}
+.win-management .management-toolbar .pressed {
+  border-color: #8eb9e0;
+  background: #dce9f6;
+}
+.win-management .classic-console,
+.win-management .resource-monitor {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+.win-management .management-workspace {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  background: #fff;
+}
+.win-management .management-tree {
+  width: 205px;
+  min-width: 110px;
+  flex-shrink: 0;
+  overflow: auto;
+  padding: 3px 1px;
+  border-right: 3px solid #d5d5d5;
+  background: #fff;
+}
+.win-management .registry-tree {
+  width: 245px;
+}
+.win-management.management-services .management-tree {
+  width: 170px;
+}
+.win-management .tree-row {
+  display: flex;
+  align-items: center;
+  min-width: 100%;
+  height: 22px;
+  white-space: nowrap;
+  text-align: left;
+  padding: 1px 3px;
+  gap: 3px;
+}
+.win-management .tree-row.selected {
+  border-color: #99d1ff;
+  background: #cce8ff;
+}
+.win-management .tree-row > img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.win-management .tree-expander {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  font:
+    16px/1 'Segoe UI',
+    sans-serif;
+  flex-shrink: 0;
+}
+.win-management .tree-folder {
+  color: #c6a244;
+  font-size: 15px;
+}
+.win-management .management-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.win-management .management-pane-heading {
+  flex-shrink: 0;
+  height: 26px;
+  padding: 4px 7px;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #a9bbcc;
+  background: linear-gradient(#e7eff7, #cfddea);
+  color: #192e43;
+  font-weight: 600;
+}
+.win-management .management-detail-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.win-management .management-table-scroll {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  background: #fff;
+}
+.win-management .management-table {
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+  white-space: nowrap;
+  background: #fff;
+}
+.win-management .management-table th {
+  height: 24px;
+  padding: 3px 7px;
+  font-weight: 400;
+  text-align: left;
+  border-right: 1px solid #dedede;
+  border-bottom: 1px solid #ddd;
+  background: #fafafa;
+}
+.win-management .management-table td {
+  height: 23px;
+  padding: 3px 7px;
+  font-weight: 400;
+  vertical-align: top;
+}
+.win-management .management-table tbody tr:hover {
+  background: #e5f3ff;
+}
+.win-management .system-information-table th:first-child,
+.win-management .system-information-table td:first-child {
+  width: 235px;
+  min-width: 190px;
+}
+.win-management .system-information-table td:last-child {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.win-management .table-unavailable {
+  margin: 12px;
+  color: #666;
+  line-height: 1.6;
+  white-space: normal;
+}
+.win-management .management-status {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+  min-height: 22px;
+  padding: 3px 8px;
+  border-top: 1px solid #ccc;
+  background: #f0f0f0;
+  color: #555;
+  font-size: 11px;
+}
+.win-management .device-tree {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 3px 2px;
+  background: #fff;
+}
+.win-management .device-tree .tree-row {
+  min-width: 0;
+  width: fit-content;
+}
+.win-management .device-unavailable {
+  margin: 9px 24px;
+  color: #666;
+}
+.win-management .registry-address {
+  flex-shrink: 0;
+  height: 24px;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #aaa;
+  padding: 3px 5px;
+  color: #111;
+  outline-offset: -2px;
+  background: #fff;
+}
+.win-management .service-description {
+  width: 180px;
+  flex-shrink: 0;
+  padding: 8px 10px;
+  color: #333;
+}
+.win-management .service-description p {
+  margin-top: 16px;
+  color: #666;
+  line-height: 1.6;
+}
+.win-management .service-tabs {
+  height: 25px;
+  flex-shrink: 0;
+  padding-left: 4px;
+  border-top: 1px solid #aaa;
+  background: #eee;
+}
+.win-management .service-tabs button {
+  min-width: 46px;
+  height: 23px;
+  border: 1px solid #aaa;
+  border-top: 0;
+  transform: skew(-12deg);
+  margin-right: 1px;
+}
+.win-management .service-tabs button.selected {
+  background: #fff;
+  border-bottom-color: #fff;
+}
+.win-management .management-actions {
+  width: 196px;
+  flex-shrink: 0;
+  border-left: 3px solid #d5d5d5;
+  background: #f5f5f5;
+  overflow: auto;
+}
+.win-management .management-actions h2 {
+  font: inherit;
+  font-weight: 600;
+  margin: 0;
+  padding: 6px 8px;
+  background: #e9eff5;
+  border-bottom: 1px solid #ccc;
+}
+.win-management .management-actions button {
+  display: block;
+  width: 100%;
+  padding: 7px 10px 7px 18px;
+  text-align: left;
+}
+.win-management .system-find {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  padding: 5px 8px;
+  border-top: 1px solid #bbb;
+  background: #f0f0f0;
+}
+.win-management .system-find > input {
+  flex: 1;
+  min-width: 60px;
+  height: 23px;
+  border: 1px solid #aaa;
+  padding: 2px 4px;
+}
+.win-management .system-find > button,
+.win-management .cleanup-buttons button,
+.win-management .cleanup-description button {
+  min-width: 76px;
+  height: 25px;
+  border: 1px solid #adadad;
+  background: #e1e1e1;
+  padding: 2px 9px;
+}
+.win-management .system-find > div {
+  display: flex;
+  gap: 26px;
+  width: 100%;
+}
+.win-management .system-find label input {
+  margin-right: 5px;
+}
+.win-management .disk-console {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.win-management .disk-volumes {
+  height: 47%;
+  min-height: 130px;
+  overflow: auto;
+  background: #fff;
+  border-bottom: 5px solid #d1d1d1;
+}
+.win-management .disk-partitions {
+  flex: 1;
+  min-height: 80px;
+  overflow: auto;
+  background: #f0f0f0;
+}
+.win-management .disk-legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  height: 24px;
+  padding: 2px 8px;
+  border-top: 1px solid #fff;
+}
+.win-management .disk-legend span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.win-management .disk-legend i {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border: 1px solid #888;
+}
+.win-management .disk-legend .unallocated {
+  background: #000;
+}
+.win-management .disk-legend .primary-partition {
+  background: #000080;
+}
+.win-management .control-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  background: #fff;
+}
+.win-management .control-navigation {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 4px;
+  height: 39px;
+  padding: 5px 8px;
+  border-bottom: 1px solid #ddd;
+}
+.win-management .control-navigation > button {
+  width: 25px;
+  height: 25px;
+}
+.win-management .control-navigation > button .management-glyph {
+  font-size: 12px;
+}
+.win-management .control-address {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
+  height: 25px;
+  border: 1px solid #c8c8c8;
+  padding: 2px 5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.win-management .control-address img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+.win-management .control-address button {
+  flex-shrink: 0;
+}
+.win-management .control-address .management-glyph {
+  font-size: 8px;
+}
+.win-management .control-navigation > input {
+  width: 190px;
+  height: 25px;
+  margin-left: 8px;
+  padding: 2px 7px;
+  border: 1px solid #c8c8c8;
+}
+.win-management .control-categories {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px 64px;
+}
+.win-management .control-categories > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.win-management .control-categories h1 {
+  color: #003399;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+}
+.win-management .control-categories > header label {
+  white-space: nowrap;
+}
+.win-management .control-categories select {
+  color: #0066cc;
+  border: 0;
+  background: #fff;
+}
+.win-management .control-category-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 44px;
+}
+.win-management .control-category {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 60px;
+  margin-bottom: 17px;
+}
+.win-management .control-category > img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.win-management .control-category > div {
+  min-width: 0;
+}
+.win-management .control-category-heading {
+  display: block;
+  padding: 0;
+  text-align: left;
+  color: #006600;
+  font-size: 16px;
+  line-height: 22px;
+}
+.win-management .control-link {
+  display: block;
+  padding: 0;
+  text-align: left;
+  color: #0066cc;
+  line-height: 19px;
+}
+.win-management .control-link:hover:enabled,
+.win-management .control-category-heading:hover:enabled {
+  border-color: transparent;
+  background: transparent;
+  text-decoration: underline;
+}
+.win-management .control-category-page {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.win-management .control-category-page > aside {
+  width: 185px;
+  flex-shrink: 0;
+  padding: 17px 18px;
+  background: #f5faff;
+  border-right: 1px solid #d5e1ec;
+}
+.win-management .control-category-page > aside .control-link {
+  margin-bottom: 14px;
+}
+.win-management .control-category-page > main {
+  flex: 1;
+  overflow: auto;
+  padding: 23px 30px;
+}
+.win-management .control-setting {
+  display: flex;
+  gap: 13px;
+  margin-bottom: 22px;
+}
+.win-management .control-setting > img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.win-management .control-setting p {
+  margin: 2px 0 0;
+  color: #555;
+}
+.win-management .control-unavailable {
+  color: #555;
+}
+.win-management .disk-cleanup {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding: 12px 12px 9px;
+}
+.win-management .cleanup-tab {
+  width: fit-content;
+  flex-shrink: 0;
+  height: 23px;
+  padding: 3px 8px;
+  border: 1px solid #aaa;
+  border-bottom-color: #fff;
+  background: #fff;
+  position: relative;
+  z-index: 1;
+}
+.win-management .cleanup-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  margin-top: -1px;
+  padding: 12px 11px 8px;
+  border: 1px solid #aaa;
+  background: #fff;
+}
+.win-management .cleanup-summary {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.win-management .cleanup-summary img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.win-management .cleanup-summary p {
+  margin: 0;
+}
+.win-management .cleanup-list-label {
+  display: block;
+  margin-bottom: 5px;
+}
+.win-management .cleanup-files {
+  height: 144px;
+  min-height: 80px;
+  overflow: auto;
+  flex-shrink: 1;
+  border: 1px solid #999;
+  background: #fff;
+}
+.win-management .cleanup-files button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 21px;
+  padding: 1px 3px;
+  text-align: left;
+  white-space: nowrap;
+}
+.win-management .cleanup-files button.selected {
+  border-color: transparent;
+  background: #e5f3ff;
+}
+.win-management .cleanup-files .management-glyph {
+  font-size: 14px;
+  color: #777;
+}
+.win-management .cleanup-file-size {
+  margin-left: auto;
+  padding-left: 8px;
+}
+.win-management .cleanup-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+  margin: 8px 0;
+}
+.win-management .cleanup-description {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 120px;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid #b5b5b5;
+}
+.win-management .cleanup-description p {
+  flex: 1;
+  margin: 0;
+  line-height: 1.5;
+}
+.win-management .cleanup-description > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+.win-management .cleanup-description button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 2px 5px;
+}
+.win-management .cleanup-description button:disabled {
+  background: #f0f0f0;
+  border-color: #ccc;
+}
+.win-management .cleanup-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  height: 36px;
+  flex-shrink: 0;
+  padding-top: 10px;
+}
+.win-management .resource-tabs {
+  display: flex;
+  flex-shrink: 0;
+  height: 28px;
+  padding: 3px 6px 0;
+  border-bottom: 1px solid #999;
+}
+.win-management .resource-tabs button {
+  min-width: 50px;
+  height: 25px;
+  border: 1px solid #aaa;
+  border-bottom: 0;
+  padding: 2px 9px;
+  background: #e7e7e7;
+}
+.win-management .resource-tabs button + button {
+  border-left: 0;
+}
+.win-management .resource-tabs button.selected {
+  height: 26px;
+  background: #fff;
+  border-top-color: #aaa;
+}
+.win-management .resource-workspace {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  padding: 6px;
+  gap: 6px;
+  background: #f0f0f0;
+}
+.win-management .resource-panels {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  gap: 6px;
+}
+.win-management .resource-section {
+  flex-shrink: 0;
+  min-height: 27px;
+  border: 1px solid #aaa;
+  background: #fff;
+}
+.win-management .resource-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 27px;
+  flex-shrink: 0;
+  gap: 10px;
+  padding: 4px 7px;
+  border: 0;
+  background: linear-gradient(#f8f8f8, #d8d8d8);
+  color: #111;
+}
+.win-management .resource-section-heading strong {
+  margin-right: auto;
+  white-space: nowrap;
+}
+.win-management button.resource-section-heading:disabled {
+  color: #555;
+}
+.win-management .resource-section-heading > .management-glyph {
+  font-size: 12px;
+  border: 1px solid #aaa;
+  border-radius: 50%;
+  padding: 2px;
+}
+.win-management .window-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 160px;
+}
+.win-management .window-section.collapsed {
+  flex: 0;
+  min-height: 27px;
+}
+.win-management .resource-window-table {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+.win-management .resource-window-table th:first-child,
+.win-management .resource-window-table td:first-child {
+  width: 24px;
+  padding: 3px 4px;
+}
+.win-management .resource-window-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.win-management .resource-window-name img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+.win-management .resource-memory-values {
+  margin: 0;
+  padding: 8px 12px;
+}
+.win-management .resource-memory-values > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+.win-management .resource-memory-values dd {
+  margin: 0;
+}
+.win-management .resource-memory-note {
+  margin: 14px 10px;
+  color: #666;
+}
+.win-management .resource-memory-section {
+  flex: 1;
+}
+.win-management .resource-graphs {
+  width: 260px;
+  min-width: 190px;
+  flex-shrink: 0;
+  overflow: auto;
+  padding: 0 8px;
+  border-left: 3px solid #ccc;
+  background: #eee;
+}
+.win-management .resource-graph-heading {
+  height: 27px;
+  padding: 5px;
+  border: 1px solid #aaa;
+  background: linear-gradient(#fff, #ddd);
+  text-align: center;
+}
+.win-management .resource-chart {
+  margin: 8px 0 12px;
+}
+.win-management .resource-chart > header,
+.win-management .resource-chart > footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 19px;
+  font-size: 11px;
+}
+.win-management .resource-chart-grid {
+  position: relative;
+  height: 100px;
+  border: 1px solid #333;
+  background-color: #000;
+  background-image: linear-gradient(#004015 1px, transparent 1px),
+    linear-gradient(90deg, #004015 1px, transparent 1px);
+  background-size: 15px 15px;
+}
+.win-management .resource-chart-grid svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.win-management .resource-chart-unavailable {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #b8c8b8;
+  font-size: 12px;
+}
+@media (max-width: 700px) {
+  .win-management .control-categories {
+    padding: 20px 25px;
+  }
+  .win-management .control-category-columns {
+    column-gap: 20px;
+  }
+  .win-management .control-navigation > input {
+    width: 140px;
+  }
+  .win-management .management-actions {
+    width: 155px;
+  }
+  .win-management .management-tree {
+    width: 170px;
+  }
+  .win-management .service-description {
+    display: none;
+  }
+  .win-management .resource-graphs {
+    width: 205px;
+  }
+}

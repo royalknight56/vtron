@@ -23,7 +23,7 @@ function route(url) {
   return { session: match[1], port: Number(match[2]), path: (match[3] || '/') + url.search };
 }
 function problem(status, text) {
-  return new Response(text, { status, headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' } });
+  return new Response(text, { status, headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store', 'cross-origin-embedder-policy': 'require-corp', 'cross-origin-resource-policy': 'cross-origin' } });
 }
 async function forward(event, target) {
   let owner = await self.clients.get(sessions.get(target.session) || '');
@@ -60,7 +60,11 @@ async function forward(event, target) {
         resultHeaders.set('cache-control', 'no-store');
         resultHeaders.set('access-control-allow-origin', '*');
         resultHeaders.set('cross-origin-resource-policy', 'cross-origin');
-        // A dedicated preview origin isolates desktop storage and DOM; previews cannot install workers.
+        // The desktop is cross-origin isolated for Node Workers. Its preview
+        // frames need COEP on the synthetic navigation response as well.
+        resultHeaders.set('cross-origin-embedder-policy', 'require-corp');
+        // Same-origin previews are trusted host code. A separate preview origin
+        // provides storage/DOM isolation; nested frames and workers stay disabled.
         resultHeaders.set('content-security-policy', `default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' ${scope.origin}; style-src 'unsafe-inline' ${scope.origin}; img-src data: blob: ${scope.origin}; font-src data: ${scope.origin}; connect-src ${scope.origin}; worker-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'`);
         const empty = request.method === 'HEAD' || [204, 205, 304].includes(response.status);
         resolve(new Response(empty ? null : response.body, { status: response.status, statusText: response.statusText, headers: resultHeaders }));

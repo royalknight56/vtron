@@ -155,9 +155,10 @@ export function initBuiltinFileOpener(system: System) {
     func: async (path) => {
       const content = (await system.fs.readFile(path)) || '';
       const tempwindow = system.createWindow({
-        width: 800,
-        height: 600,
+        width: 1000,
+        height: 640,
         center: true,
+        frame: false,
         title: i18n('computer'),
         content: MyComputerVue,
         icon: myComputerLogoIcon,

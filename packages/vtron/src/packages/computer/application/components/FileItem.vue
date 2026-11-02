@@ -10,6 +10,7 @@
       'mode-big': mode === 'big',
       'mode-middle': mode === 'middle',
       'mode-detail': mode === 'detail',
+      'native-detail': mode === 'detail' && explorerDetails,
       'drag-over': hoverPath === file.path,
     }"
     :style="{
@@ -41,7 +42,24 @@
       class="file-item_title file-item_editing"
       v-model="editName"
     />
-    <template v-if="mode === 'detail'">
+    <template v-if="mode === 'detail' && explorerDetails">
+      <div class="file-item_type detail-modified">
+        <span>{{ formatDate(file.mtime) }}</span>
+      </div>
+      <div class="file-item_type detail-kind">
+        <span>{{
+          file.isDirectory
+            ? i18n('recycle.bin.folder')
+            : i18n('recycle.bin.file.type')
+                .replace('{ext}', basename(file.path).split('.').slice(1).pop()?.toUpperCase() || '')
+                .trim()
+        }}</span>
+      </div>
+      <div class="file-item_type detail-size">
+        <span>{{ file.isDirectory ? '' : `${Math.ceil(file.size / 1024).toLocaleString()} KB` }}</span>
+      </div>
+    </template>
+    <template v-else-if="mode === 'detail'">
       <div class="file-item_type">
         <span>{{ file.isDirectory ? '-' : dealSize(file.size) }}</span>
       </div>
@@ -61,6 +79,7 @@
 import { onMounted, ref, markRaw, inject } from 'vue';
 import { VtronFileWithoutContent, basename, System } from '@packages/kernel';
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
+import { i18n } from '@/packages/computer/i18n';
 import { dealSize } from '@/packages/util/fileUtils';
 
 const sys = inject<System>('system')!;
@@ -69,6 +88,7 @@ const props = withDefaults(
     file: VtronFileWithoutContent;
     theme: string;
     mode: string;
+    explorerDetails?: boolean;
 
     chosenPaths: string[];
     hoverPath: string;
@@ -94,6 +114,10 @@ onMounted(() => {
   editName.value = basename(props.file.path);
 });
 
+function formatDate(value: Date | string | number) {
+  const date = new Date(value);
+  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
 function dealI18nName(name: string) {
   return name.replace(/.exe$/, '');
 }

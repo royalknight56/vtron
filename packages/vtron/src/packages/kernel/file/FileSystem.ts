@@ -117,7 +117,7 @@ class VtronFile extends VtronFileInfo {
 export type VtronFileWithoutContent = Omit<VtronFile, 'content' | 'binary'>;
 class VtronFileSystem implements VtronFileInterface {
   private db!: IDBDatabase;
-  private _ready: ((value: VtronFileSystem) => void) | null = null;
+  private ready: Promise<VtronFileSystem>;
   private _watchMap: Map<RegExp, (path: string, content: string) => void> = new Map();
 
   private volumeMap: Map<string, VtronFileInterface> = new Map();
@@ -129,20 +129,36 @@ class VtronFileSystem implements VtronFileInterface {
   };
   constructor(rootPath = '/', id = 0) {
     this.id = id;
-    const request = window.indexedDB.open('FileSystemDB' + this.id, 1);
-    request.onerror = () => {
-      console.error('Failed to open database');
-    };
+    const request = window.indexedDB.open('FileSystemDB' + this.id, 2);
+    this.ready = new Promise((resolve, reject) => {
+      request.onerror = () => {
+        this.onerror(request.error);
+        reject(request.error);
+      };
 
-    request.onsuccess = () => {
-      this.db = request.result;
-      this._ready?.(this);
-    };
+      request.onsuccess = () => {
+        this.db = request.result;
+        this.db.onversionchange = () => this.db.close();
+        resolve(this);
+      };
+    });
 
-    request.onupgradeneeded = () => {
+    request.onupgradeneeded = (event) => {
+      const db = request.result;
+      if (event.oldVersion > 0) {
+        // This persisted metadata update establishes ctime now; historical ctime is unknown.
+        const changedAt = new Date();
+        const cursorRequest = request.transaction!.objectStore('files').openCursor();
+        cursorRequest.onsuccess = () => {
+          const cursor = cursorRequest.result;
+          if (!cursor) return;
+          if (cursor.value.ctime === undefined) cursor.update({ ...cursor.value, ctime: changedAt });
+          cursor.continue();
+        };
+        return;
+      }
       this.isFirstRun = true;
-      this.db = request.result;
-      const objectStore = this.db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+      const objectStore = db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
       objectStore.createIndex('parentPath', 'parentPath');
       objectStore.createIndex('path', 'path', { unique: true });
       objectStore.createIndex('name', 'name');
@@ -176,26 +192,23 @@ class VtronFileSystem implements VtronFileInterface {
   deserializeFileSystem(files: VtronFile[]) {
     return new Promise((resolve, reject) => {
       const transaction = this.db.transaction('files', 'readwrite');
+      transaction.oncomplete = () => resolve(void 0);
+      transaction.onabort = () => reject(transaction.error);
       const objectStore = transaction.objectStore('files');
       const request = objectStore.clear();
       request.onerror = () => {
         reject('Failed to clear file');
       };
       request.onsuccess = () => {
+        const importedAt = new Date();
         files.forEach((file) => {
-          objectStore.add(file);
+          objectStore.add({ ...file, ctime: file.ctime ?? importedAt });
         });
-        resolve(void 0);
       };
     });
   }
   whenReady(): Promise<VtronFileSystem> {
-    if (this.db) {
-      return Promise.resolve(this);
-    }
-    return new Promise<VtronFileSystem>((resolve) => {
-      this._ready = resolve;
-    });
+    return this.ready;
   }
   registerWatcher(path: RegExp, callback: (path: string, content: string) => void) {
     this._watchMap.set(path, callback);

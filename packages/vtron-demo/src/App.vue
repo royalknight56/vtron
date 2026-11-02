@@ -84,12 +84,10 @@ const system = new System({
   lang: 'zh-CN',
 });
 
-const localPreviewOrigin = ['127.0.0.1', 'localhost', '[::1]'].includes(location.hostname) && location.port && Number(location.port) < 65535
-  ? `${location.protocol}//${location.hostname}:${Number(location.port) + 1}`
-  : undefined;
-if (import.meta.env.VITE_PREVIEW_ORIGIN || localPreviewOrigin) {
-  enableVirtualPreview(system, { previewOrigin: import.meta.env.VITE_PREVIEW_ORIGIN || localPreviewOrigin });
-}
+enableVirtualPreview(system, {
+  scope: `${import.meta.env.BASE_URL}__vtron_preview__/`,
+  previewOrigin: import.meta.env.VITE_PREVIEW_ORIGIN || undefined,
+});
 
 system.whenReady().then(async (readySystem) => {
   // if (readySystem.version !== "0.4.4") {

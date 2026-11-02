@@ -107,7 +107,7 @@ Worker 模式暂不支持旧式 `main(system, vue)` 及自定义宿主 fetch；�
 
 隔离测试中，Worker 已通过宿主的共享虚拟网络创建 HTTP 服务，Chrome 可加载页面、执行 JS 并应用 CSS。通用 Node 文件系统和网络能力保留。运行时已移除专用构建器后端，第三方包按自身入口和依赖正常加载；需要尚未支持的原生扩展、WASI 或操作系统能力时仍会失败，不能据之前的专用后端测试推断当前 Vite 可用。
 
-Worker 网络桥接随 `installNodeWorkerSupport` 启用，无需额外的网络配置。Worker 的监听端口由原 System 的 `VirtualNetwork` 实际注册，宿主与 Worker 可双向连接并传递字节；Chrome 预览继续使用 `enableVirtualPreview` 的独立来源。监听和连接成功事件要等宿主确认，冲突、拒绝连接、EOF、关闭和错误均跨线程传递。脚本终止时释放该 Worker 的端口和连接。
+Worker 网络桥接随 `installNodeWorkerSupport` 启用，无需额外的网络配置。Worker 的监听端口由原 System 的 `VirtualNetwork` 实际注册，宿主与 Worker 可双向连接并传递字节；Chrome 预览通过 `enableVirtualPreview` 初始化，默认使用同域静态文件，也可配置独立来源。监听和连接成功事件要等宿主确认，冲突、拒绝连接、EOF、关闭和错误均跨线程传递。脚本终止时释放该 Worker 的端口和连接。
 
 桥接仅提供已有虚拟 loopback 网络子集，不创建操作系统 TCP 端口，也不提供 WebSocket 升级或完整 Node 网络功能。绑定、解绑、连接请求等待宿主确认的超时为 10 秒；待确认数据最多单连接 32 MiB、单桥接 64 MiB，超过限制会明确报错。数据确认表示进入目标 socket 队列，不能作为应用请求完成的证明。
 
@@ -165,8 +165,32 @@ const code = wasi.start(instance);
 
 Worker 的 `env` 选项使用独立环境快照：省略或传入 null 时，复制创建 Worker 那一刻的 `process.env`；显式对象完整替换子线程环境，`env: {}` 保持为空，不自动补 HOME、USER 等值。只复制自身可枚举的字符串键，值按 Node 行为转成字符串；父子线程的修改互不影响，孙线程从其直接父线程的当前环境复制。传输的是 Vtron 脚本环境，不读取宿主机器的环境变量。数组环境和 `SHARE_ENV` 共享写入尚不支持，调用时明确报错。
 
-`readlink`（回调/Promise）和 Worker 的 `readlinkSync` 会查询真实文件状态：普通文件及目录返回 EINVAL，不存在返回 ENOENT；链接目标读取仍明确不支持。WASI 的内存绑定覆盖公开初始化及 Node WASI 的 kSetMemory 通道，随机数与标准输出使用同一块实际内存。缺少 ctime 的旧记录或后端仍会使 WASI stat 返回 ENOSYS，不用 mtime 冒充 ctime。验证时，仅对隔离测试副本执行了真实的元数据更新，没有迁移用户桌面的旧记录。
+`readlink`（回调/Promise）和 Worker 的 `readlinkSync` 会查询真实文件状态：普通文件及目录返回 EINVAL，不存在返回 ENOENT；链接目标读取仍明确不支持。WASI 的内存绑定覆盖公开初始化及 Node WASI 的 kSetMemory 通道，随机数与标准输出使用同一块实际内存。core 会在 IndexedDB 版本 2 升级事务中为旧记录持久化迁移时间作为 ctime，导入旧记录时以导入时间补齐；已有 ctime、文件内容和其他时间字段保留。实际桌面项目的配置文件已验证可读取 ctimeMs，WASI stat 返回 0。其他后端若仍缺少 ctime，WASI stat 继续返回 ENOSYS，不用 mtime 冒充。
 
 同步 `require(ESM)` 支持无顶层 await 的本地依赖图，与 `import()` 共用求值记录和 live bindings；重复或并发加载不会重复执行正文。支持具名/默认导出、重导出、`module.exports` 互操作导出、`import.meta`、CommonJS 缓存以及 `module-sync` 条件。含顶层 await（含 `for await`）或远程模块的图会在同步执行前报 `ERR_REQUIRE_ASYNC_MODULE`，仍可异步 import。ESM 循环依赖明确报 `ERR_MODULE_CYCLE_UNSUPPORTED`，跨 CommonJS 的求值重入报 `ERR_REQUIRE_CYCLE_MODULE`；不宣称完整原生 Node ESM 语义。ESM 记录独立于公开的 `require.cache`，修改后者不会清除 ESM 实例。转换仍使用 Babel，求值不再依赖 SystemJS。
 
-Vite 8.3.5 / Rolldown 1.2.15 在隔离项目中使用官方 `@rolldown/binding-wasm32-wasi@1.2.15`，并将其测试依赖切换为 `@napi-rs/wasm-runtime@1.2.5` 与 `@emnapi/core` / `@emnapi/runtime@2.0.0-alpha.5`。这组版本已通过原生 Node 24.18.0 的绑定加载。Chrome 中已实际执行 `npm run dev`，CLI 输出 `VITE v8.3.5 ready` 并持续监听虚拟端口 5173；隔离预览可打开 HTML，执行测试 JS 修改页面，并应用 CSS（绿色、24px）。这验证了基础开发服务和资源转换，不代表完整 Vue 工程、依赖预构建或 HMR 已可用。测试副本的旧元数据通过真实更新补上 ctime；缺失该字段的旧数据及后端仍有上述限制。未修改第三方包源码或加入包专用加载逻辑。
+Vite 8.3.5 / Rolldown 1.2.15 在隔离项目中使用官方 `@rolldown/binding-wasm32-wasi@1.2.15`，并将其测试依赖切换为 `@napi-rs/wasm-runtime@1.2.5` 与 `@emnapi/core` / `@emnapi/runtime@2.0.0-alpha.5`。这组版本已通过原生 Node 24.18.0 的绑定加载。Chrome 中已实际执行 `npm run dev`，CLI 输出 `VITE v8.3.5 ready` 并持续监听虚拟端口 5173；隔离预览可打开 HTML，执行测试 JS 修改页面，并应用 CSS（绿色、24px）。这验证了基础开发服务和资源转换，不代表完整 Vue 工程、依赖预构建或 HMR 已可用。IndexedDB 旧记录现通过上述迁移补齐 ctime；其他缺失该字段的后端仍有上述限制。未修改第三方包源码或加入包专用加载逻辑。
+
+Worker 的模块加载器通过同步文件系统桥按需查询和读取源码，不再预读整个项目，因此可以加载本次执行中新建的 CJS、ESM、JSON 及其依赖。已求值模块继续使用执行内缓存；删除 CommonJS 的 `require.cache` 条目后会重新读取源码。没有同步存储的主线程仍使用启动快照。每次执行保留 8192 个源码文件、32 MiB 源码的限制，符号链接模块仍明确不支持。
+
+`url.pathToFileURL()` 将空字符编码为 `%00`，`fileURLToPath()` 可解码还原；实际 `fs` 操作仍拒绝含空字符的路径。`util.deprecate()` 保留函数的 this、返回值和构造调用，首次调用发出警告，相同代码在本次执行内去重。`process.emitWarning()` 将实际警告写入终端并异步触发 warning 事件，支持消息/Error、类型、代码、detail 及弃用警告的 noDeprecation/throwDeprecation/traceDeprecation 属性；尚未开放对应的 Node CLI 标志。
+
+实际桌面的 Vue 项目已运行 `npm run dev`，Vite 8.3.5 持续监听虚拟端口 5173，Vue 3.5.44 编译器完成加载。独立 Chrome 和桌面内嵌浏览器均能打开页面并执行按钮交互。预览 Service Worker 的成功及错误响应均带 COEP/CORP，兼容启用跨源隔离的桌面。此次验证覆盖启动和初次页面加载，不代表 HMR、生产构建或全部 Node 能力已经支持。
+
+## 同域虚拟 HTTP 预览
+
+把包中的 `vtron-plus/virtual-preview-sw.js` 复制为网站的 `public/__vtron_preview__/worker.js`，把 `vtron-plus/virtual-preview-bridge.html` 复制为同目录的 `bridge.html`。升级包时同步更新这两份文件。网站原有的静态服务即可提供预览入口，无需另启 4183 或其他代理服务；项目响应仍由 Vtron 虚拟 HTTP 处理。
+
+```ts
+import { enableVirtualPreview } from 'vtron-plus';
+
+const preview = enableVirtualPreview(system, {
+  scope: `${import.meta.env.BASE_URL}__vtron_preview__/`,
+});
+await preview.ready;
+console.log(preview.url(5173));
+```
+
+上例用于 Vite 宿主，部署在 `/` 或 `/win/` 时会分别访问对应路径下的预览文件。其他宿主可直接配置 `scope`；省略时相对于 `document.baseURI` 使用 `__vtron_preview__/`。Demo 已把文件放进 public，由 Vite 原生静态资源处理，无专用中间件。浏览器要求 HTTPS 或本地 loopback 地址；Node Worker 所需的跨源隔离配置仍需由宿主提供。
+
+同域预览适合可信项目，与宿主共享同源权限。需要隔离桌面 DOM 和存储时，仍可通过 `previewOrigin` 配置独立、同站的预览来源，并在该来源提供相同路径的静态文件。开发环境可用 `VITE_PREVIEW_ORIGIN` 覆盖 Demo 默认值。

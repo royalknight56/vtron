@@ -26,6 +26,9 @@ import onetocicon from './assets/onetoc.png';
 import OpenSource from './components/apps/OpenSource.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
 import BackgroundStore from './components/apps/BackgroundStore.vue';
+import OnlineAccount from './components/OnlineAccount.vue';
+import accountIcon from '@/assets/icon/e77b.png';
+import { account, updateAccount } from './onlineAccount';
 
 import { mountWebdav } from './hook/mountWebdav';
 // import { mountOpener } from './hook/mountOpener';
@@ -35,9 +38,14 @@ import { mountWebdav } from './hook/mountWebdav';
 const iconsReady = ref(false);
 const signalicon = desktopIcons['创建网络链接'];
 const backgroundstoreicon = desktopIcons['背景Store'];
+let accountWindow: BrowserWindow | undefined;
 
 const system = new System({
   id: 0,
+  startMenuAccount: {
+    label: () => account.value?.username ?? '在线账户',
+    open: openOnlineAccount,
+  },
   desktop: [
     ...addListToDesktop(desktopConfig),
     {
@@ -84,6 +92,22 @@ const system = new System({
   lang: 'zh-CN',
 });
 
+function openOnlineAccount() {
+  if (!accountWindow) {
+    const settings = system.stateManager.windowMap.get('Builtin', '设置');
+    if (!settings || settings.type === 'group') return;
+    accountWindow = system.createWindow({
+      ...settings.window,
+      config: { ...settings.window.config, router: 'online-account' },
+    });
+    accountWindow.on('close', () => { accountWindow = undefined; });
+  }
+  if (accountWindow.isMinimized()) accountWindow.restore();
+  accountWindow.show();
+}
+
+void updateAccount();
+
 enableVirtualPreview(system, {
   scope: `${import.meta.env.BASE_URL}__vtron_preview__/`,
   previewOrigin: import.meta.env.VITE_PREVIEW_ORIGIN || undefined,
@@ -95,6 +119,13 @@ system.whenReady().then(async (readySystem) => {
   // }
 
   readySystem.use(vtronPlus());
+  readySystem.registerSettingPanel({
+    key: 'online-account',
+    title: '在线账户',
+    desc: '登录或创建 Vtron 账户',
+    icon: accountIcon,
+    content: OnlineAccount,
+  });
   try {
     const keyboard = menuConfig[0];
     const userLocation = readySystem.getConfig('userLocation') || '/C/Users/';

@@ -77,6 +77,10 @@ export interface SystemOptionsCertainly {
   contextMenus?: Array<MenuItemConstructorOptions | MenuItem>;
   noPassword?: boolean;
   loginCallback?: (username: string, password: string) => Promise<boolean>;
+  startMenuAccount?: {
+    label: () => string;
+    open: () => void;
+  };
   /**
    * 不立即挂载系统，默认为false
    */

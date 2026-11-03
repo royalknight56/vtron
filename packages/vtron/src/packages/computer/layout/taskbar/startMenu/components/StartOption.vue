@@ -25,6 +25,24 @@
           {{ i18n('setting') }}
         </div>
       </div>
+      <button
+        v-if="account"
+        type="button"
+        class="s-option-button account-button"
+        :aria-label="account.label()"
+        :title="account.label()"
+        @click.stop="openAccount"
+        v-glowing
+      >
+        <span class="s-option-button_img">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <circle cx="12" cy="9" r="3" />
+            <path d="M5.5 18a7 7 0 0 1 13 0" />
+          </svg>
+        </span>
+        <span class="s-option-button_title">{{ account.label() }}</span>
+      </button>
     </div>
   </div>
 </template>
@@ -39,6 +57,13 @@ const sys = inject<System>('system')!;
 const feature = sys._options.builtinFeature;
 const showPower = feature?.includes('Power');
 const showSetting = feature?.includes('Setting');
+const account = sys._options.startMenuAccount;
+
+function openAccount() {
+  sys.emitEvent('startmenu.hidden');
+  account?.open();
+}
+
 function handleClick(key: number, ev: MouseEvent) {
   switch (key) {
     case 0:
@@ -157,13 +182,43 @@ function handleClick(key: number, ev: MouseEvent) {
       }
     }
 
+    .account-button {
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+
+      .s-option-button_img {
+        flex-shrink: 0;
+      }
+
+      .s-option-button_title {
+        display: block;
+        line-height: var(--start-option-size);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding-right: 8px;
+      }
+    }
+
+    .account-button:focus-visible {
+      outline: 1px solid currentColor;
+      outline-offset: -2px;
+    }
+
     .s-option-button:hover {
       // background-color: var(--color-gray-hover);
     }
   }
 }
 
-.s-option:hover {
+.s-option:hover,
+.s-option:focus-within {
   .s-option-inner {
     transition-delay: 0.5s;
     width: var(--startmenu-icon-size-hover);

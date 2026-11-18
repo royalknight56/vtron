@@ -34,7 +34,7 @@
       <span class="save-state">{{
         busy ? '正在保存…' : dirty ? '未保存' : filePath ? '已保存' : '新建演示文稿'
       }}</span>
-      <button class="title-play" @click="startPresentation(0)"><Icon name="play" />放映</button>
+      <button class="title-play" @click="startPresentation()"><Icon name="play" />放映</button>
     </OfficeTitlebar>
 
     <nav class="ribbon-tabs" role="tablist" aria-label="功能区">
@@ -58,7 +58,7 @@
               icon="folder"
               label="打开"
               @click="openFileDialog"
-            /><Tool icon="import" label="从电脑导入" @click="importRef?.click()" />
+            /><Tool v-if="!office.standalone" icon="import" label="从电脑导入" @click="importRef?.click()" />
           </div>
           <span class="group-caption">演示文稿</span>
         </div>
@@ -68,8 +68,9 @@
               icon="save"
               label="另存为"
               @click="showSaveAs"
-            /><Tool icon="download" label="导出 PPTX" @click="download('pptx')" /><Tool
+            /><Tool v-if="!office.standalone" icon="download" label="导出 PPTX" @click="download('pptx')" /><Tool
               icon="download"
+              v-if="!office.standalone"
               label="导出 VTPPT"
               @click="download('vtppt')"
             />
@@ -299,7 +300,7 @@
       <template v-else-if="activeTab === '放映'">
         <div class="ribbon-group">
           <div class="ribbon-row">
-            <Tool icon="play" label="从头开始" title="F5" @click="startPresentation(0)" /><Tool
+            <Tool icon="play" label="从头开始" title="F5" @click="startPresentation()" /><Tool
               icon="play"
               label="从当前页开始"
               title="Shift+F5"
@@ -310,6 +311,14 @@
         </div>
         <div class="ribbon-group">
           <div class="ribbon-row">
+            <label class="setting-label">
+              <input
+                type="checkbox"
+                :checked="currentSlide.hidden"
+                @change="change(() => (currentSlide.hidden = !currentSlide.hidden))"
+              />
+              隐藏当前幻灯片
+            </label>
             <label class="setting-label"
               ><input v-model="presenterNotes" type="checkbox" /> 显示演讲备注</label
             ><label class="setting-label"><input v-model="autoAdvance" type="checkbox" /> 自动换页</label
@@ -374,10 +383,10 @@
           @dragover.prevent
           @drop.prevent="dropSlide(index)"
         >
-          <span class="thumb-number">{{ index + 1 }}</span>
+          <span class="thumb-number" :class="{ 'hidden-number': slide.hidden }">{{ index + 1 }}</span>
           <button
             class="thumb-button"
-            :aria-label="`幻灯片 ${index + 1}，${slideTitle(slide)}`"
+            :aria-label="`幻灯片 ${index + 1}${slide.hidden ? '（已隐藏）' : ''}，${slideTitle(slide)}`"
             :aria-current="curIdx === index ? 'true' : undefined"
             @click="selectSlide(index)"
           >
@@ -453,7 +462,7 @@
                 </div>
               </div>
             </div></button
-          ><span>{{ index + 1 }} · {{ slideTitle(slide) }}</span>
+          ><span>{{ index + 1 }} · {{ slideTitle(slide) }}{{ slide.hidden ? '（已隐藏）' : '' }}</span>
         </div>
       </div>
       <section v-else class="workspace">
@@ -610,7 +619,7 @@
     <input
       ref="importRef"
       type="file"
-      accept=".vtppt,.pptx,application/json"
+      :accept="office.standalone ? '.pptx' : '.vtppt,.pptx,application/json'"
       hidden
       @change="importLocalFile"
     /><input
@@ -702,8 +711,8 @@
         >
       </div>
       <div class="presentation-controls" @click.stop>
-        <button aria-label="上一张" :disabled="presentationIndex === 0" @click="presentationIndex--">‹</button
-        ><span>{{ presentationIndex + 1 }} / {{ pres.slides.length }}</span
+        <button aria-label="上一张" :disabled="previousVisible === undefined" @click="previousSlide">‹</button
+        ><span>{{ slideNumber ? `转到第 ${slideNumber} 张` : `${presentationIndex + 1} / ${pres.slides.length}` }}</span
         ><button aria-label="下一张" @click="nextSlide">›</button
         ><button @click="stopPresentation">结束放映</button>
       </div>
@@ -719,7 +728,6 @@ import {
   computed,
   defineComponent,
   h,
-  inject,
   nextTick,
   onMounted,
   onUnmounted,
@@ -727,8 +735,8 @@ import {
   ref,
   watch,
 } from 'vue';
-import { BrowserWindow, System, join } from 'vtron';
 import OfficeTitlebar from './office/OfficeTitlebar.vue';
+import { saveOfficeDownload, useOfficeFiles } from './office/officeFiles';
 import { downloadPptFile, exportPptx, importPptx, normalizePresentation, pptId } from './office/pptFile';
 import type { Presentation, Slide, SlideElement } from './office/pptFile';
 
@@ -795,8 +803,6 @@ const Tool = defineComponent({
         [h(Icon, { name: props.icon || 'slides' }), h('span', props.label)]
       ),
 });
-const sys = inject<System>('system')!;
-const win = inject<BrowserWindow>('browserWindow');
 const appRef = ref<HTMLElement | null>(null);
 const canvasRef = ref<HTMLElement | null>(null);
 const editorAreaRef = ref<HTMLElement | null>(null);
@@ -879,7 +885,7 @@ function makeSlide(kind = layout.value): Slide {
     elements.push(textElement('单击此处添加内容', 64, 155, kind === 'two' ? 395 : 832, 300, 26));
     if (kind === 'two') elements.push(textElement('单击此处添加内容', 500, 155, 395, 300, 26));
   }
-  return { id: pptId(), backgroundColor: '#ffffff', elements, notes: '', transition: 'none' };
+  return { id: pptId(), hidden: false, backgroundColor: '#ffffff', elements, notes: '', transition: 'none' };
 }
 const pres = reactive<Presentation>({
   title: '演示文稿',
@@ -901,6 +907,8 @@ const filePath = ref(''),
   busy = ref(false),
   loading = ref(false),
   notice = ref('');
+const office = useOfficeFiles();
+const { win } = office;
 const dirty = computed(() => JSON.stringify(pres) !== savedSnapshot.value);
 const undoStack = ref<string[]>([]),
   redoStack = ref<string[]>([]);
@@ -1394,7 +1402,7 @@ const fileDialog = ref<'open' | 'save' | null>(null),
   dialogPath = ref(''),
   dialogError = ref(''),
   availableFiles = ref<string[]>([]);
-const desktop = () => join(sys._options.userLocation || '/C/Users', 'Desktop');
+const desktop = office.desktop;
 const cleanName = () => (pres.title || '演示文稿').replace(/[\\/:*?"<>|]/g, '').trim() || '演示文稿';
 const confirmAction = ref<null | (() => void | Promise<void>)>(null);
 function guarded(action: () => void | Promise<void>) {
@@ -1438,20 +1446,22 @@ function createNew() {
   });
 }
 async function openFileDialog() {
+  if (office.standalone) return importRef.value?.click();
   dialogPath.value = filePath.value || desktop() + '/';
   dialogError.value = '';
   fileDialog.value = 'open';
   try {
-    availableFiles.value = (await sys.fs.readdir(desktop()))
+    availableFiles.value = (await office.fs.readdir(desktop()))
       .filter((f) => !f.isDirectory && /\.(vtppt|pptx)$/i.test(f.name))
-      .map((f) => join(desktop(), f.name));
+      .map((f) => desktop(f.name));
   } catch {
     availableFiles.value = [];
   }
 }
 function showSaveAs() {
+  if (office.standalone) return void saveFile(undefined, true);
   finishEditing();
-  dialogPath.value = filePath.value || join(desktop(), cleanName() + '.vtppt');
+  dialogPath.value = filePath.value || desktop(cleanName() + '.vtppt');
   dialogError.value = '';
   fileDialog.value = 'save';
 }
@@ -1474,32 +1484,44 @@ async function submitFileDialog() {
       dialogError.value = '保存路径需要以 .vtppt 结尾';
       return;
     }
-    if (path !== filePath.value && (await sys.fs.exists(path)) && !window.confirm('文件已存在，是否替换？'))
+    const replace = path !== filePath.value && (await office.fs.exists(path));
+    if (replace && !window.confirm('文件已存在，是否替换？'))
       return;
     if (await saveFile(path)) fileDialog.value = null;
+    else dialogError.value = notice.value;
   }
 }
-async function saveFile(pathOverride?: string): Promise<boolean> {
+async function saveFile(pathOverride?: string, saveAs = false): Promise<boolean> {
   finishEditing();
   if (busy.value) return false;
   busy.value = true;
   try {
+    if (office.standalone) {
+      const data: Presentation = JSON.parse(snapshot());
+      const name = await saveOfficeDownload(cleanName(), 'pptx', saveAs, title => exportPptx({ ...data, title }));
+      if (!name) return false;
+      if (pres.title === data.title) pres.title = name;
+      filePath.value = name + '.pptx';
+      savedSnapshot.value = JSON.stringify({ ...data, title: name });
+      tell(`已发起下载 ${filePath.value}`);
+      return true;
+    }
     let path = pathOverride || filePath.value;
     if (!path) {
-      path = join(desktop(), cleanName() + '.vtppt');
+      path = desktop(cleanName() + '.vtppt');
       let i = 1;
-      while (await sys.fs.exists(path)) path = join(desktop(), `${cleanName()} (${i++}).vtppt`);
+      while (await office.fs.exists(path)) path = desktop(`${cleanName()} (${i++}).vtppt`);
     }
     const saved = snapshot();
-    await sys.fs.writeFile(path, saved, { flag: pathOverride || filePath.value ? 'w' : 'wx' });
+    await office.fs.writeFile(path, saved, { flag: pathOverride || filePath.value ? 'w' : 'wx' });
     filePath.value = path;
     savedSnapshot.value = saved;
     if (dirty.value) saveDraft();
     else discardDraft();
     tell(`已保存到 ${path}`);
     return true;
-  } catch {
-    tell('保存失败，请检查路径和剩余空间');
+  } catch (error) {
+    tell(error instanceof Error ? error.message : '保存失败，请检查路径和剩余空间');
     return false;
   } finally {
     busy.value = false;
@@ -1532,7 +1554,7 @@ async function loadFile(path: string) {
   loading.value = true;
   appRef.value?.focus();
   try {
-    const source = await sys.fs.readFile(path);
+    const source = await office.fs.readFile(path);
     if (!source) throw new Error('文件不存在或内容为空');
     const result = await decodeSource(source, path);
     if (!result.data.title || result.data.title === '导入的演示文稿')
@@ -1570,7 +1592,7 @@ async function importLocalFile(event: Event) {
         ? await importPptx(await file.arrayBuffer())
         : { data: normalizePresentation(JSON.parse(await file.text())), simplified: false };
       result.data.title = file.name.replace(/\.[^.]+$/, '');
-      usePresentation(result.data, '', true);
+      usePresentation(result.data, file.name, !office.standalone);
       tell(isPptx ? '已导入 PPTX。复杂母版、图表和动画可能简化。' : '已从电脑导入');
     } catch (error) {
       tell(error instanceof Error ? error.message : '文件格式无效');
@@ -1650,6 +1672,10 @@ const presenting = ref(false),
   advanceSeconds = ref(5),
   viewport = ref({ width: window.innerWidth, height: window.innerHeight });
 const presentationSlide = computed(() => pres.slides[presentationIndex.value] || pres.slides[0]);
+const visibleSlides = computed(() => pres.slides.flatMap((slide, index) => (slide.hidden ? [] : [index])));
+const previousVisible = computed(() =>
+  visibleSlides.value.filter((index) => index < presentationIndex.value).pop()
+);
 const presentationScale = computed(() =>
   Math.min(
     viewport.value.width / pres.width,
@@ -1666,10 +1692,13 @@ const presentationTransition = computed(() =>
 let advanceTimer: ReturnType<typeof setInterval> | undefined;
 let ownedFullscreen = false;
 let presentationSession = 0;
-async function startPresentation(index: number) {
+const slideNumber = ref('');
+async function startPresentation(index = visibleSlides.value[0]) {
+  if (index === undefined) return tell('所有幻灯片均已隐藏');
   const session = ++presentationSession;
   clearInterval(advanceTimer);
   finishEditing();
+  slideNumber.value = '';
   presentationIndex.value = index;
   presenting.value = true;
   await nextTick();
@@ -1694,8 +1723,14 @@ async function startPresentation(index: number) {
     advanceTimer = setInterval(nextSlide, Math.max(2, Math.min(120, advanceSeconds.value || 5)) * 1000);
 }
 function nextSlide() {
-  if (presentationIndex.value < pres.slides.length - 1) presentationIndex.value++;
+  slideNumber.value = '';
+  const next = visibleSlides.value.find((index) => index > presentationIndex.value);
+  if (next !== undefined) presentationIndex.value = next;
   else stopPresentation();
+}
+function previousSlide() {
+  slideNumber.value = '';
+  if (previousVisible.value !== undefined) presentationIndex.value = previousVisible.value;
 }
 function stopPresentation() {
   presentationSession++;
@@ -1716,11 +1751,27 @@ function onFullscreenChange() {
 }
 function onPresentationKey(event: KeyboardEvent) {
   event.preventDefault();
-  if (['ArrowRight', 'ArrowDown', ' ', 'PageDown', 'Enter'].includes(event.key)) nextSlide();
-  else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(event.key))
-    presentationIndex.value = Math.max(0, presentationIndex.value - 1);
-  else if (event.key === 'Home') presentationIndex.value = 0;
-  else if (event.key === 'End') presentationIndex.value = pres.slides.length - 1;
+  if (/^\d$/.test(event.key)) {
+    slideNumber.value = (slideNumber.value + event.key).slice(0, 4);
+    return;
+  }
+  if (slideNumber.value && event.key === 'Backspace') {
+    slideNumber.value = slideNumber.value.slice(0, -1);
+    return;
+  }
+  if (slideNumber.value && event.key === 'Enter') {
+    const index = Number(slideNumber.value) - 1;
+    slideNumber.value = '';
+    if (index >= 0 && index < pres.slides.length) presentationIndex.value = index;
+    return;
+  }
+  slideNumber.value = '';
+  if (['ArrowRight', 'ArrowDown', ' ', 'PageDown', 'Enter', 'n', 'N'].includes(event.key)) nextSlide();
+  else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace', 'p', 'P'].includes(event.key)) previousSlide();
+  else if (event.key === 'Home' && visibleSlides.value.length)
+    presentationIndex.value = visibleSlides.value[0];
+  else if (event.key === 'End' && visibleSlides.value.length)
+    presentationIndex.value = visibleSlides.value[visibleSlides.value.length - 1];
   else if (event.key === 'Escape') stopPresentation();
 }
 function onKeyDown(event: KeyboardEvent) {
@@ -1744,9 +1795,14 @@ function onKeyDown(event: KeyboardEvent) {
     event.shiftKey ? showSaveAs() : void saveFile();
     return;
   }
+  if (mod && key === 'o' && office.standalone) {
+    event.preventDefault();
+    void openFileDialog();
+    return;
+  }
   if (event.key === 'F5') {
     event.preventDefault();
-    void startPresentation(event.shiftKey ? curIdx.value : 0);
+    void startPresentation(event.shiftKey ? curIdx.value : undefined);
     return;
   }
   const target = event.target as HTMLElement;
@@ -1804,12 +1860,12 @@ function onKeyDown(event: KeyboardEvent) {
 }
 
 const draft = ref<Presentation | null>(null);
-const draftKey = `vtron-ppt-draft:${win?.config?.path || 'new'}`;
+const draftKey = `vtron-ppt-draft:${office.initialPath || 'new'}`;
 let draftTimer: ReturnType<typeof setTimeout> | undefined;
 function saveDraft() {
   if (!dirty.value) return;
   try {
-    localStorage.setItem(draftKey, snapshot());
+    office.drafts?.setItem(draftKey, snapshot());
   } catch {
     /* Large embedded images may exceed local draft storage. */
   }
@@ -1817,7 +1873,7 @@ function saveDraft() {
 function discardDraft() {
   draft.value = null;
   try {
-    localStorage.removeItem(draftKey);
+    office.drafts?.removeItem(draftKey);
   } catch {
     /* Storage may be unavailable. */
   }
@@ -1849,9 +1905,9 @@ function beforeUnload(event: BeforeUnloadEvent) {
 let resizeObserver: ResizeObserver | null = null;
 onMounted(async () => {
   appRef.value?.focus();
-  if (win?.config?.path) await loadFile(win.config.path);
+  if (office.initialPath) await loadFile(office.initialPath);
   try {
-    const stored = localStorage.getItem(draftKey);
+    const stored = office.drafts?.getItem(draftKey);
     if (stored) draft.value = normalizePresentation(JSON.parse(stored));
   } catch {
     /* Ignore invalid old drafts. */
@@ -2279,6 +2335,9 @@ onUnmounted(() => {
   display: flex;
   gap: 5px;
   align-items: flex-start;
+}
+.hidden-number {
+  text-decoration: line-through;
 }
 .thumb-number {
   width: 22px;

@@ -7,6 +7,7 @@
       <span class="detail-date-text">{{ dateStr }}</span>
       <span class="detail-time-text">{{ timeStr }}</span>
     </div>
+    <div v-if="entry.location" class="detail-location">{{ entry.location }}</div>
     <div class="detail-body">
       <label class="detail-content-label">{{ i18n('schedule.content') }}</label>
       <textarea
@@ -27,80 +28,35 @@
 import { inject, ref, computed } from 'vue';
 import { BrowserWindow } from '@/packages/services';
 import { System } from '@packages/kernel';
-import { join } from '@/packages/plug';
+import { changeSchedule, type StoredEntry } from '../utils/schedule';
+import { formatDesktopClock } from '../utils/desktopClock';
 import { i18n } from '@/packages/computer/i18n';
 
 const win = inject<BrowserWindow>('browserWindow')!;
 const sys = inject<System>('system')!;
 
-const noteTime = computed(() => new Date(win.config.time as number));
-const originalText = ref(win.config.text as string);
+const entry: StoredEntry = win.config;
+const originalText = ref(entry.text);
 const editText = ref(originalText.value);
-
-function pad(n: number) {
-  return n.toString().padStart(2, '0');
-}
-
-const dateStr = computed(() => {
-  const d = noteTime.value;
-  return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
-});
-
-const timeStr = computed(() => {
-  const d = noteTime.value;
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-});
-
-function schedulePath(d: Date) {
-  return join(
-    sys.stateManager.options.getOptions('userLocation') || '',
-    '/Schedule',
-    `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}.json`
-  );
-}
-
+const preferences = computed(() => sys.getConfig('desktopPreferences'));
+const display = computed(() => formatDesktopClock(new Date(entry.time), preferences.value));
+const dateStr = computed(() => display.value.date);
+const timeStr = computed(() => entry.endTime
+  ? display.value.time + ' – ' + formatDesktopClock(new Date(entry.endTime), preferences.value).time
+  : display.value.time);
 async function handleSave() {
-  const newText = editText.value.trim();
-  if (!newText || newText === originalText.value) return;
-
-  const d = noteTime.value;
-  const filePath = schedulePath(d);
+  const text = editText.value.trim();
+  if (!text || text === originalText.value) return;
   try {
-    const content = await sys.fs.readFile(filePath);
-    if (content) {
-      const notes: Array<{ text: string; time: number }> = JSON.parse(content);
-      const idx = notes.findIndex((n) => n.time === win.config.time && n.text === originalText.value);
-      if (idx !== -1) {
-        notes[idx].text = newText;
-        await sys.fs.writeFile(filePath, JSON.stringify(notes));
-        originalText.value = newText;
-        sys.emitEvent('schedule.change');
-      }
-    }
-  } catch {
-    // ignore
-  }
+    await changeSchedule(sys, { ...entry, text: originalText.value }, text);
+    originalText.value = text;
+  } catch { sys.createNotify({title: i18n('schedule'), content: i18n('schedule.failed')}); }
 }
-
 async function handleDelete() {
-  const d = noteTime.value;
-  const filePath = schedulePath(d);
   try {
-    const content = await sys.fs.readFile(filePath);
-    if (content) {
-      let notes: Array<{ text: string; time: number }> = JSON.parse(content);
-      notes = notes.filter((n) => !(n.time === win.config.time && n.text === originalText.value));
-      if (notes.length === 0) {
-        await sys.fs.unlink(filePath);
-      } else {
-        await sys.fs.writeFile(filePath, JSON.stringify(notes));
-      }
-    }
-  } catch {
-    // ignore
-  }
-  sys.emitEvent('schedule.change');
-  win.close();
+    await changeSchedule(sys, { ...entry, text: originalText.value });
+    win.close();
+  } catch { sys.createNotify({title: i18n('schedule'), content: i18n('schedule.failed')}); }
 }
 </script>
 <style lang="scss" scoped>
@@ -141,6 +97,7 @@ async function handleDelete() {
   }
 }
 
+.detail-location { padding: 4px 16px; }
 .detail-body {
   flex: 1;
   display: flex;

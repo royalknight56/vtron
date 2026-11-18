@@ -23,6 +23,7 @@ export interface SlideElement {
 }
 export interface Slide {
   id: string;
+  hidden?: boolean;
   backgroundColor: string;
   elements: SlideElement[];
   notes?: string;
@@ -52,6 +53,7 @@ export function normalizePresentation(value: unknown): Presentation {
       if (!s || !Array.isArray(s.elements) || s.elements.length > 500) throw new Error('幻灯片内容无效');
       return {
         id: pptId(),
+        hidden: s.hidden === true,
         backgroundColor: safeColor(s.backgroundColor, '#ffffff'),
         notes: typeof s.notes === 'string' ? s.notes.slice(0, 50000) : '',
         transition: s.transition === 'fade' || s.transition === 'push' ? s.transition : 'none',
@@ -206,7 +208,7 @@ export async function exportPptx(data: Presentation): Promise<Blob> {
     zip.file(
       `ppt/slides/slide${n}.xml`,
       prefix +
-        `<p:sld xmlns:p="${pns}" xmlns:a="${ans}" xmlns:r="${rns}"><p:cSld><p:bg><p:bgPr>${fill(slide.backgroundColor)}<a:effectLst/></p:bgPr></p:bg><p:spTree>${group}${shapes}</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>${transition}</p:sld>`
+        `<p:sld xmlns:p="${pns}" xmlns:a="${ans}" xmlns:r="${rns}"${slide.hidden ? ' show="0"' : ''}><p:cSld><p:bg><p:bgPr>${fill(slide.backgroundColor)}<a:effectLst/></p:bgPr></p:bg><p:spTree>${group}${shapes}</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>${transition}</p:sld>`
     );
     zip.file(`ppt/slides/_rels/slide${n}.xml.rels`, rels(relationships));
     const note: SlideElement = {
@@ -325,6 +327,7 @@ export async function importPptx(input: ArrayBuffer): Promise<{ data: Presentati
     const bg = first(slideDoc, 'bgPr');
     const slide: Slide = {
       id: pptId(),
+      hidden: ['0', 'false'].includes(slideDoc.documentElement.getAttribute('show') || ''),
       backgroundColor: safeColor('#' + (bg && first(bg, 'srgbClr')?.getAttribute('val')), '#ffffff'),
       elements: [],
       notes: '',

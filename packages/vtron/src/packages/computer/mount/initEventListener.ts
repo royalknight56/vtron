@@ -1,6 +1,5 @@
 import { System } from '@/packages/kernel';
 import { throttle } from '@/packages/util/debounce';
-import { join } from '../../util/Path';
 
 function initSizeEvent(system: System) {
   const rootState = system.stateManager;
@@ -62,42 +61,10 @@ function initNetworkEvent(system: System) {
     rootState.navigator.setConnection(connection);
   });
 }
-function setAlertTask(time: number, callback: any) {
-  const date = new Date(); //现在时刻
-  const dateIntegralPoint = new Date(time);
-
-  setTimeout(() => {
-    callback();
-  }, dateIntegralPoint.getTime() - date.getTime()); //用户登录后的下一个整点执行。
-}
-export async function initAlertEvent(system: System) {
-  const sys = system;
-
-  const chosenDay = new Date();
-  const fileName = `${chosenDay.getFullYear()}-${chosenDay.getMonth() + 1}-${chosenDay.getDate()}.json`;
-  const alredyNotes = await sys.fs.readFile(
-    join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName)
-  );
-  if (alredyNotes) {
-    const alertList = JSON.parse(alredyNotes);
-    alertList.forEach((item: any) => {
-      if (item.time < Date.now()) return;
-      setAlertTask(item.time, () => {
-        sys.createNotify({
-          title: '日程提醒',
-          content: `今日${new Date(item.time).getHours()}时${new Date(item.time).getMinutes()}分 的提醒： ${
-            item.text
-          }`,
-        });
-      });
-    });
-  }
-}
-
 const eventTranslateMap: {
   [key: string]: string[];
 } = {
-  'taskbar.startmenu.leftClick': ['startmenu.changeVisible', 'contextMenu.hidden'],
+  'taskbar.startmenu.leftClick': ['startmenu.changeVisible', 'contextMenu.hidden', 'tray.hidden', 'messagecenter.hidden'],
   'desktop.background.leftClick': ['uipop.hidden'],
   'desktop.background.rightClick': ['contextMenu.show', 'startmenu.hidden'],
   'desktop.app.open': ['uipop.hidden'],
@@ -119,8 +86,8 @@ const eventTranslateMap: {
     'computerpop.hidden',
     'tray.hidden',
   ],
-  'tray.show': ['messagecenter.hidden'],
-  'messagecenter.show': ['tray.hidden'],
+  'tray.show': ['messagecenter.hidden', 'startmenu.hidden', 'contextMenu.hidden'],
+  'messagecenter.show': ['tray.hidden', 'startmenu.hidden', 'contextMenu.hidden'],
 };
 
 function redirectEvent(system: System, source: string, target: string) {
@@ -141,7 +108,6 @@ export function initEventListener(system: System) {
   initBatteryEvent(system);
   initSizeEvent(system);
   initNetworkEvent(system);
-  initAlertEvent(system);
   system.mountEvent('system.shutdown', () => {
     system?.shutdown();
   });

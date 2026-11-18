@@ -14,7 +14,7 @@ const now = ref(new Date());
 const display = computed(() => formatDesktopClock(now.value, system.getConfig('desktopPreferences')));
 let timer: ReturnType<typeof setInterval>;
 onMounted(() => {
-  timer = setInterval(() => { now.value = new Date(); }, 5000);
+  timer = setInterval(() => { now.value = new Date(); }, 1000);
 });
 onUnmounted(() => clearInterval(timer));
 </script>
@@ -25,6 +25,9 @@ onUnmounted(() => clearInterval(timer));
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  line-height: 16px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 
   .time {
     font-size: 12px;

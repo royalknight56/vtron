@@ -1,6 +1,6 @@
 <template>
   <header
-    v-dragable
+    v-dragable="!!win"
     class="office-titlebar"
     @mousedown.capture="win?.moveTop()"
     @touchstart.capture.passive="win?.moveTop()"
@@ -16,7 +16,7 @@
     >
       <slot />
     </div>
-    <div class="office-window-controls" @mousedown.stop @touchstart.stop.passive @dblclick.stop>
+    <div v-if="win" class="office-window-controls" @mousedown.stop @touchstart.stop.passive @dblclick.stop>
       <button
         type="button"
         class="office-window-button"
@@ -53,10 +53,12 @@
 
 <script setup lang="ts">
 import { computed, inject } from 'vue';
-import { BrowserWindow, vDragable } from 'vtron';
+import type { BrowserWindow } from 'vtron';
+import { desktopOffice } from './officeFiles';
+const vDragable = inject(desktopOffice, null)?.dragable ?? {};
 
 defineEmits<{ (event: 'close'): void }>();
-const win = inject<BrowserWindow>('browserWindow');
+const win = inject<BrowserWindow | null>('browserWindow', null);
 const maximized = computed(() => win?.isMaximized() ?? false);
 
 function toggleMaximize() {

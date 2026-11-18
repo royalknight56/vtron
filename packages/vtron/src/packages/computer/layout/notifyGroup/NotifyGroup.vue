@@ -1,101 +1,115 @@
 <template>
-  <div v-if="sys.getConfig('desktopPreferences')?.showNotifications !== false" class="notify">
-    <TransitionGroup name="list" tag="div">
-      <div class="notify-item" v-for="notify in notifyGroup.current" :key="notify.id" v-glowing @click="notify._onClickFn">
-        <div class="notify-item-title">
-          <span> {{ notify.title }}</span>
-        </div>
-        <div class="notify-item-body">
-          <span>{{ notify.content }}</span>
-        </div>
-        <div class="notify-close" @click="closeNotify(notify)">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              stroke="#000"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </div>
-      </div>
+  <div v-if="preferences?.showNotifications !== false" class="notify" @mousedown.stop>
+    <TransitionGroup name="toast" tag="div">
+      <article class="notify-item" v-for="note in banners" :key="note.id">
+        <component :is="note._onClickFn ? 'button' : 'div'" class="body" @click="activate(note)">
+          <small>{{ note.source }}</small>
+          <strong>{{ note.title }}</strong>
+          <span>{{ note.content }}</span>
+        </component>
+        <button
+          type="button"
+          class="dismiss SEGOEUIMDL"
+          :aria-label="i18n('center.dismiss')"
+          @click="state.hideBanner(note)"
+        >
+          &#xE72A;
+        </button>
+      </article>
     </TransitionGroup>
   </div>
 </template>
 <script setup lang="ts">
-import { vGlowing } from '@/packages/computer/utils/glowingBorder';
-import { Notify } from '@/packages/services';
-import { System } from '@packages/kernel';
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
+import type { Notify } from '@/packages/services';
+import type { System } from '@packages/kernel';
+import { i18n } from '../../i18n';
 const sys = inject<System>('system')!;
-const notifyGroup = sys.stateManager.notify;
-function closeNotify(notify: Notify) {
-  notify.close();
+const state = sys.stateManager.notify;
+const preferences = computed(() => sys.getConfig('desktopPreferences'));
+const banners = computed(() =>
+  preferences.value?.alarmsOnly ? state.current.filter((note) => note.alarm) : state.current
+);
+function activate(note: Notify) {
+  if (!note._onClickFn) return;
+  note.close();
+  note._onClickFn();
 }
 </script>
-<style lang="scss" scoped>
+<style scoped>
 .notify {
   position: absolute;
   bottom: 0;
   right: 0;
-  // height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  user-select: none;
-  color: rgba(255, 255, 255, 0.845);
   z-index: 100;
-  .notify-item {
-    width: var(--notify-width);
-    height: var(--notify-height);
-    position: relative;
-    padding: 18px;
-    margin-bottom: 10px;
-    background-color: var(--theme-main-color-opacity);
-    transition: all 0.3s ease;
-    .notify-item-title {
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: black;
-    }
-
-    .notify-item-body {
-      font-size: 14px;
-      color: black;
-    }
-    .notify-close {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-      padding: 5px;
-    }
-  }
-  .notify-item:hover {
-    // transform: scale(1.05);
-  }
-
-  .list-move,
-    /* apply transition to moving elements */
-    .list-enter-active,
-    .list-leave-active {
-    transition: all 0.5s ease;
-  }
-
-  .list-enter-from,
-  .list-leave-to {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-
-  /* ensure leaving items are taken out of layout flow so that moving
-   animations can be calculated correctly. */
-  .list-leave-active {
-    position: absolute;
+  width: min(360px, 100%);
+  pointer-events: none;
+}
+.notify-item {
+  position: relative;
+  margin: 0 6px 6px;
+  background: #f5f5f5;
+  color: #171717;
+  box-shadow: 0 3px 12px #0003;
+  border: 1px solid #0003;
+  pointer-events: auto;
+  font:
+    14px/1.4 'Segoe UI',
+    'Microsoft YaHei UI',
+    sans-serif;
+}
+button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.body {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 11px 32px 13px 15px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  text-align: left;
+  font: inherit;
+}
+small {
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: #555;
+}
+.body span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.dismiss {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 5px;
+}
+.dismiss:hover {
+  background: #0001;
+}
+.toast-enter-active,
+.toast-leave-active {
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+}
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translateX(16px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast-enter-active,
+  .toast-leave-active {
+    transition: none;
   }
 }
 </style>

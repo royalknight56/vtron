@@ -4,9 +4,17 @@
       <Error></Error>
     </div>
     <CustomIcon></CustomIcon>
-    <div @click="handleNotifyClick" v-if="showMessageCenter" class="state-item">
-      <MessageIcon></MessageIcon>
-    </div>
+    <button
+      v-if="showMessageCenter"
+      type="button"
+      class="state-item action-center-button"
+      :aria-expanded="notifications.center.open"
+      :aria-label="buttonLabel"
+      :title="buttonLabel"
+      @click="handleNotifyClick"
+    >
+      <MessageIcon :unread="notifications.unread" />
+    </button>
     <div @click="showDesk" class="showdesk"></div>
   </div>
 </template>
@@ -17,9 +25,19 @@ import MessageIcon from './MessageIcon.vue';
 import Error from './Error.vue';
 
 import CustomIcon from './CustomIcon.vue';
-import { inject } from 'vue';
+import { i18n } from '../../../i18n';
+import { computed, inject } from 'vue';
 
 const sys = inject<System>('system')!;
+const notifications = sys.stateManager.notify;
+const buttonLabel = computed(
+  () =>
+    i18n('center.title') +
+    ' · ' +
+    (notifications.unread
+      ? i18n('center.unread').replace('{n}', String(notifications.unread))
+      : i18n('no.message'))
+);
 const feature = sys._options.builtinFeature;
 const showMessageCenter = feature?.includes('MessageCenter');
 function handleNotifyClick() {
@@ -42,6 +60,13 @@ function showDesk() {
     display: flex;
     align-items: center;
   }
+  button.state-item {
+    position: relative;
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
+  .state-item[aria-expanded='true'],
   .state-item:hover {
     background-color: rgba(255, 255, 255, 0.519);
   }
@@ -63,4 +88,3 @@ function showDesk() {
   box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0.222);
 }
 </style>
-@/packages/kernel/event

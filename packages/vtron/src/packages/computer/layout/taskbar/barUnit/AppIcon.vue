@@ -1,43 +1,66 @@
 <template>
-  <div
+  <button
+    type="button"
     class="appicon"
+    :title="label"
+    :aria-label="label"
     :class="{
-      'appicon-top': windowNode.windowInfo.istop,
-      'appicon-minimize': windowNode.windowInfo.state === WindowStateEnum.minimize,
+      running: windows.length,
+      'appicon-top': windows.some((win) => win.windowInfo.istop && !win.isMinimized()),
     }"
     @contextmenu.prevent="handleRightClick"
     @click="handleClick"
   >
-    <div class="appicon-img">
-      <FileIcon :icon="windowNode.windowInfo.icon" />
-    </div>
-  </div>
+    <span class="appicon-img"><FileIcon :icon="app?.icon || windows[0]?.windowInfo.icon" /></span>
+  </button>
 </template>
 <script lang="ts" setup>
-import { UnwrapNestedRefs } from 'vue';
-import { BrowserWindow, WindowStateEnum } from '@/packages/services';
+import { computed, inject } from 'vue';
+import type { System } from '@packages/kernel';
+import type { WinAppOptionsApp } from '@/packages/type/type';
 import FileIcon from '@/packages/computer/application/FileIcon.vue';
-import { createTaskbarIconContextMenu } from '@/packages/computer/utils/createTaskbarContextMenu';
+import { openRegisteredApp } from '../../../utils/openRegisteredApp';
+import { pinAction, type TaskWindow } from '../../../utils/taskbarPins';
+import { taskbarWindowActions } from '../../../utils/createTaskbarContextMenu';
 
-const props = defineProps<{
-  windowNode: UnwrapNestedRefs<BrowserWindow>;
-}>();
-function handleRightClick(e: MouseEvent) {
-  createTaskbarIconContextMenu(e, props.windowNode);
+const props = defineProps<{ app?: WinAppOptionsApp; windows: TaskWindow[] }>();
+const sys = inject<System>('system')!;
+const label = computed(() => props.app?.name || props.windows[0]?.windowInfo.title);
+function activate(win: TaskWindow) {
+  if (win.isMinimized()) win.restore();
+  win.moveTop();
 }
-function handleClick() {
-  if (props.windowNode.windowInfo.state === 'minimize') {
-    props.windowNode.restore();
-    props.windowNode.moveTop();
-  } else if (props.windowNode.windowInfo.istop) {
-    props.windowNode.minimize();
-  } else {
-    props.windowNode.moveTop();
-  }
+function handleRightClick(event: MouseEvent) {
+  sys.emitEvent('uipop.hidden');
+  const win = props.windows.find((item) => item.windowInfo.istop) ?? props.windows[0];
+  const items = win ? taskbarWindowActions(win) : [];
+  if (props.app?.window.appId) items.unshift(pinAction(sys, props.app.window.appId));
+  sys.buildFromTemplate(items).popup(event);
+}
+function handleClick(event: MouseEvent) {
+  sys.emitEvent('uipop.hidden');
+  const [win] = props.windows;
+  if (!win) openRegisteredApp(sys, props.app);
+  else if (props.windows.length > 1) {
+    sys
+      .buildFromTemplate(
+        props.windows.map((item, index) => {
+          const title = item.windowInfo.title;
+          const repeated = props.windows.some(other => other.id !== item.id && other.windowInfo.title === title);
+          return { label: repeated ? title + ' (' + (index + 1) + ')' : title, click: () => activate(item) };
+        })
+      )
+      .popup(event);
+  } else if (win.windowInfo.istop && !win.isMinimized()) win.minimize();
+  else activate(win);
 }
 </script>
 <style lang="scss" scoped>
 .appicon {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  flex: 0 0 var(--task-bar-height);
   width: var(--task-bar-height);
   height: var(--task-bar-height);
   display: flex;
@@ -52,7 +75,7 @@ function handleClick() {
     height: 60%;
   }
 }
-.appicon::after {
+.appicon.running::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -60,7 +83,7 @@ function handleClick() {
   height: 4px;
   box-sizing: border-box;
   transition: all 0.1s;
-  background-color: var(--color-dark);
+  background-color: #368aca;
 }
 .appicon-top {
   // background-color: var(--color-gray-active);
@@ -76,17 +99,6 @@ function handleClick() {
   box-sizing: border-box;
   transition: all 0.1s;
 }
-.appicon-minimize::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  width: 100%;
-  height: 4px;
-  box-sizing: border-box;
-  transition: all 0.1s;
-  background-color: var(--color-dark);
-}
-
 .appicon:hover {
   background-color: var(--color-gray-hover-op);
 }

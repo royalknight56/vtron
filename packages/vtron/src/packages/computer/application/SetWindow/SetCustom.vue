@@ -101,14 +101,16 @@ import { computed, ref } from 'vue';
 import WinButton from '@packages/components/WinButton.vue';
 import WinInput from '@packages/components/WinInput.vue';
 import ColorPicker from './components/ColorPicker.vue';
+import { settingPages } from './settingPages';
 import SettingsPanel from './SettingsPanel.vue';
 import { useDesktopPreferences } from './preferences';
 import { i18n } from '@/packages/computer/i18n';
 import { formatDesktopClock } from '@/packages/computer/utils/desktopClock';
 
 const { system, preferences, save } = useDesktopPreferences();
-const pages = [i18n('background'), '锁屏界面', '主题', '开始菜单', '任务栏'];
-const page = ref(0);
+const pages = settingPages('custom');
+const props = defineProps<{ initialPage?: number }>();
+const page = ref(props.initialPage ?? 0);
 const applyingTheme = ref(false);
 const lockPreviewStyle = computed(() => {
   const desktop = system.getConfig('background');

@@ -476,10 +476,10 @@ class VtronMemoryFileSystem implements VtronFileInterface {
     }
   }
 
-  async search(keyword: string): Promise<VtronFileWithoutContent[]> {
+  async search(keyword: string, mode?: 'contains'): Promise<VtronFileWithoutContent[]> {
     const result: VtronFileWithoutContent[] = [];
     this.files.forEach((file) => {
-      if (file.name.startsWith(keyword)) {
+      if (mode === 'contains' ? file.name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()) : file.name.startsWith(keyword)) {
         const { content: _, binary: _binary, ...rest } = file;
         result.push(rest);
       }

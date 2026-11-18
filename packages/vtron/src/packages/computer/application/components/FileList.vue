@@ -49,6 +49,7 @@
   </FileItem>
 </template>
 <script lang="ts" setup>
+import { shortcutPinAction } from '../../utils/taskbarPins';
 import { onMounted, ref, inject, computed } from 'vue';
 import { VtronFileWithoutContent, basename, dirname, join, System, VtronFile } from '@packages/kernel';
 import { i18n } from '@/packages/computer/i18n';
@@ -206,7 +207,7 @@ function startDragApp(mouse: DragEvent, item: VtronFileWithoutContent) {
   }
 }
 
-function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, index: number) {
+async function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, index: number) {
   if (chosenPaths.value.length <= 1) {
     chosenPaths.value = [item.path];
   }
@@ -285,6 +286,10 @@ function handleRightClick(mouse: MouseEvent, item: VtronFileWithoutContent, inde
     );
   }
 
+  if (chosenPaths.value.length === 1 && item.name.endsWith('.exe')) {
+    const action = await shortcutPinAction(sys, item);
+    if (action) menu.splice(1, 0, action);
+  }
   sys.buildFromTemplate(menu).popup(mouse);
 }
 

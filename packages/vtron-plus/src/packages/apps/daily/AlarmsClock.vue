@@ -586,7 +586,8 @@ function lap() {
 }
 function notify(kind: 'alarm' | 'timer', id: string, title: string) {
   alert.value = { kind, id, title };
-  system.createNotify({ title: kind === 'alarm' ? '闹钟' : '计时器', content: title });
+  const notification = { source: '闹钟和时钟', alarm: true, title: kind === 'alarm' ? '闹钟' : '计时器', content: title };
+  system.createNotify(notification);
 }
 function snooze() {
   if (!alert.value) return;

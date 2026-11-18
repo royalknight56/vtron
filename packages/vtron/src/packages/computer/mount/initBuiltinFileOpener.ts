@@ -204,7 +204,7 @@ export function initBuiltinFileOpener(system: System) {
     const dateTimeT = system.createTray({
       image: DateTimeVue,
     });
-    dateTimeT.setContextMenu(DateTimePopVue, 320, 700);
+    dateTimeT.setContextMenu(DateTimePopVue, 360, 640);
   }
   if (system._options.builtinFeature?.includes('NetworkTray')) {
     const networkT = system.createTray({

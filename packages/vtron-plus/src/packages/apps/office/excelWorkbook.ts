@@ -2,9 +2,12 @@ import JSZip from 'jszip';
 import {
   address,
   cellKey,
+  cellErrorCode,
   CellData,
   makeEvaluator,
   parseAddress,
+  numericInput,
+  shiftFormula,
   Sheet,
   validateWorkbook,
   Workbook,
@@ -132,22 +135,49 @@ export async function importXlsx(input: ArrayBuffer | string): Promise<Workbook>
       heights: {},
       merges: [],
     };
+    const view = first(doc, 'sheetViews')?.firstElementChild;
+    if (view) {
+      sheet.showGridLines = !['false', '0'].includes(view.getAttribute('showGridLines') || '');
+      sheet.showFormulas = ['true', '1'].includes(view.getAttribute('showFormulas') || '');
+      sheet.zoom = Number(view.getAttribute('zoomScale') || 100);
+      const pane = first(view, 'pane');
+      if (pane && ['frozen', 'frozenSplit'].includes(pane.getAttribute('state') || '')) {
+        sheet.frozenRows = Number(pane.getAttribute('ySplit'));
+        sheet.frozenCols = Number(pane.getAttribute('xSplit'));
+      }
+    }
+    const shared = new Map<string, { r: number; c: number; formula: string }>();
+    const followers: { r: number; c: number; id: string }[] = [];
     for (const item of tags(doc, 'c')) {
       const coord = parseAddress(item.getAttribute('r') || '');
       if (!coord) continue;
       const t = item.getAttribute('t'),
         value = first(item, 'v')?.textContent || '',
-        formula = first(item, 'f')?.textContent;
+        formula = first(item, 'f');
       let text = value;
-      if (formula) text = `=${formula}`;
-      else if (t === 's') text = strings[+value] || '';
+      if (formula && (formula.textContent || formula.getAttribute('t') === 'shared')) {
+        text = '=' + (formula.textContent || '');
+        if (formula.getAttribute('t') === 'shared') {
+          const id = formula.getAttribute('si');
+          if (id === null) throw new Error('共享公式缺少编号');
+          if (formula.textContent) shared.set(id, { ...coord, formula: text });
+          else followers.push({ ...coord, id });
+        }
+      } else if (t === 's') text = strings[+value] || '';
       else if (t === 'inlineStr')
         text = tags(item, 't')
           .map((el) => el.textContent || '')
           .join('');
       else if (t === 'b') text = value === '1' ? '=TRUE' : '=FALSE';
       else if (t === 'd') text = String((new Date(value).getTime() - Date.UTC(1899, 11, 30)) / 86400000);
+      if (!formula && (t === 's' || t === 'inlineStr' || t === 'str') &&
+          (text.startsWith('=') || text.startsWith("'") || numericInput.test(text) || cellErrorCode.test(text))) text = "'" + text;
       sheet.cells[cellKey(coord.r, coord.c)] = { v: text, ...styles[+(item.getAttribute('s') || 0)] };
+    }
+    for (const { r, c, id } of followers) {
+      const master = shared.get(id);
+      if (!master) throw new Error(`单元格 ${address(r, c)} 缺少共享公式的主单元格`);
+      sheet.cells[cellKey(r, c)].v = shiftFormula(master.formula, r - master.r, c - master.c);
     }
     for (const item of tags(doc, 'col'))
       for (
@@ -167,6 +197,21 @@ export async function importXlsx(input: ArrayBuffer | string): Promise<Workbook>
   }
   return validateWorkbook({ sheets });
 }
+function sheetViewXml(sheet: Sheet) {
+  const rows = sheet.frozenRows || 0, cols = sheet.frozenCols || 0;
+  const attributes = ['workbookViewId="0"'];
+  if (sheet.showGridLines === false) attributes.push('showGridLines="0"');
+  if (sheet.showFormulas) attributes.push('showFormulas="1"');
+  if (sheet.zoom && sheet.zoom !== 100) attributes.push(`zoomScale="${sheet.zoom}"`);
+  let pane = '';
+  if (rows || cols) {
+    const activePane = rows && cols ? 'bottomRight' : rows ? 'bottomLeft' : 'topRight';
+    const firstCell = address(rows, cols);
+    pane = `<pane${cols ? ` xSplit="${cols}"` : ''}${rows ? ` ySplit="${rows}"` : ''} topLeftCell="${firstCell}" activePane="${activePane}" state="frozen"/><selection pane="${activePane}" activeCell="${firstCell}" sqref="${firstCell}"/>`;
+  }
+  return `<sheetViews><sheetView ${attributes.join(' ')}>${pane}</sheetView></sheetViews>`;
+}
+
 export async function exportXlsx(workbook: Workbook): Promise<Blob> {
   const zip = new JSZip(),
     read = makeEvaluator(workbook);
@@ -217,17 +262,21 @@ export async function exportXlsx(workbook: Workbook): Promise<Blob> {
         type = '';
       if (cell.v.startsWith('=')) {
         const result = read(index, r, c);
-        const value = result === '#CYCLE!' ? '#REF!' : result;
+        const error = read.isError(index, r, c);
+        const value = error && result === '#CYCLE!' ? '#REF!' : result;
         type =
           typeof value === 'boolean'
             ? ' t="b"'
             : typeof value === 'string'
-              ? value.startsWith('#')
+              ? error
                 ? ' t="e"'
                 : ' t="str"'
               : '';
         content = `<f>${xml(cell.v.slice(1))}</f><v>${xml(typeof value === 'boolean' ? +value : value)}</v>`;
-      } else if (cell.v !== '' && /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(cell.v))
+      } else if (cellErrorCode.test(cell.v)) {
+        type = ' t="e"';
+        content = `<v>${xml(cell.v.toUpperCase() === '#CYCLE!' ? '#REF!' : cell.v.toUpperCase())}</v>`;
+      } else if (cell.v !== '' && numericInput.test(cell.v))
         content = `<v>${xml(cell.v)}</v>`;
       else {
         type = ' t="inlineStr"';
@@ -235,6 +284,15 @@ export async function exportXlsx(workbook: Workbook): Promise<Blob> {
       }
       if (!rows.has(r)) rows.set(r, []);
       rows.get(r)!.push(`<c r="${address(r, c)}" s="${s}"${type}>${content}</c>`);
+    }
+    for (const key of Object.keys(sheet.heights || {})) {
+      const row = Number(key);
+      if (!rows.has(row)) rows.set(row, []);
+      maxR = Math.max(maxR, row);
+    }
+    for (const merge of sheet.merges || []) {
+      maxR = Math.max(maxR, merge.er);
+      maxC = Math.max(maxC, merge.ec);
     }
     const cols = Object.entries(sheet.widths || {})
       .map(
@@ -248,7 +306,7 @@ export async function exportXlsx(workbook: Workbook): Promise<Blob> {
     zip.file(
       `xl/worksheets/sheet${index + 1}.xml`,
       header +
-        `<worksheet xmlns="${NS}"><dimension ref="A1:${address(maxR, maxC)}"/><sheetViews><sheetView workbookViewId="0"/></sheetViews><sheetFormatPr defaultRowHeight="18"/>${cols ? `<cols>${cols}</cols>` : ''}<sheetData>${[...rows].map(([r, cells]) => `<row r="${r + 1}"${sheet.heights?.[r] ? ` ht="${sheet.heights[r] * 0.75}" customHeight="1"` : ''}>${cells.join('')}</row>`).join('')}</sheetData>${merges ? `<mergeCells count="${sheet.merges!.length}">${merges}</mergeCells>` : ''}<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>`
+        `<worksheet xmlns="${NS}"><dimension ref="A1:${address(maxR, maxC)}"/>${sheetViewXml(sheet)}<sheetFormatPr defaultRowHeight="18"/>${cols ? `<cols>${cols}</cols>` : ''}<sheetData>${[...rows].sort(([a], [b]) => a - b).map(([r, cells]) => `<row r="${r + 1}"${sheet.heights?.[r] ? ` ht="${sheet.heights[r] * 0.75}" customHeight="1"` : ''}>${cells.join('')}</row>`).join('')}</sheetData>${merges ? `<mergeCells count="${sheet.merges!.length}">${merges}</mergeCells>` : ''}<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>`
     );
   });
   const formats: Record<string, number> = { general: 0, number: 4, currency: 164, percent: 10, date: 14 };

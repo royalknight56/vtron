@@ -12,6 +12,8 @@ export enum WindowStateEnum {
 }
 export type BrowserWindowContent = ReturnType<typeof defineComponent> | string;
 export interface BrowserWindowConstructorOptions {
+  /** Registry key shared by the launcher and its windows. */
+  appId?: string;
   title: string;
   content: BrowserWindowContent;
   config?: any;

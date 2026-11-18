@@ -162,6 +162,13 @@
           </div>
           <small>编辑</small>
         </div>
+        <div class="ribbon-group">
+          <div class="group-controls stack">
+            <button title="向下填充 Ctrl+D" @click="fillSelection('down')">向下填充</button>
+            <button title="向右填充 Ctrl+R" @click="fillSelection('right')">向右填充</button>
+          </div>
+          <small>填充</small>
+        </div>
       </template>
       <template v-else-if="tab === 'insert'">
         <div class="ribbon-group">
@@ -226,7 +233,7 @@
         </div>
         <p v-if="formulaHelp" class="function-help">
           支持
-          SUM、AVERAGE、MIN、MAX、COUNT、COUNTA、IF、IFERROR、ROUND、ABS、AND、OR、NOT、LEN、CONCAT、UPPER、LOWER。<br />示例：=SUM(A1:A5)　=IF(B2&gt;=60,"及格","待改进")　='Sheet
+          SUM、AVERAGE、MIN、MAX、COUNT、COUNTA、COUNTIF、SUMIF、AVERAGEIF、COUNTIFS、SUMIFS、AVERAGEIFS、VLOOKUP、HLOOKUP、INDEX、MATCH、IF、IFERROR、ROUND、ABS、AND、OR、NOT、LEN、CONCAT、UPPER、LOWER。<br />示例：=SUMIF(A1:A5,"华东",B1:B5)　=IF(B2&gt;=60,"及格","待改进")　='Sheet
           2'!A1
         </p>
       </template>
@@ -305,15 +312,15 @@
     <section v-if="tab === 'file'" class="file-panel">
       <div class="file-actions">
         <h2>工作簿</h2>
-        <button @click="createNew">新建</button><button @click="openVirtual">从桌面打开</button
-        ><button @click="importRef?.click()">从本机导入</button><button @click="saveFile()">保存</button
-        ><button @click="saveFile(true)">另存为</button><button @click="download('xlsx')">下载 .xlsx</button
+        <button @click="createNew">新建</button><button @click="openVirtual">{{ office.standalone ? '打开文件' : '从桌面打开' }}</button
+        ><button v-if="!office.standalone" @click="importRef?.click()">从本机导入</button><button @click="saveFile()">保存</button
+        ><button @click="saveFile(true)">另存为</button><button v-if="!office.standalone" @click="download('xlsx')">下载 .xlsx</button
         ><button @click="download('csv')">下载 .csv</button
-        ><button @click="download('vtxls')">下载 .vtxls</button><button @click="printSheet">打印</button>
+        ><button v-if="!office.standalone" @click="download('vtxls')">下载 .vtxls</button><button @click="printSheet">打印</button>
       </div>
       <div class="file-details">
         <h1>{{ documentName || '新建工作簿' }}</h1>
-        <p>{{ filePath || '尚未保存到桌面' }}</p>
+        <p>{{ filePath || (office.standalone ? '尚未保存为文件' : '尚未保存到桌面') }}</p>
         <p>{{ wb.sheets.length }} 张工作表 · {{ populatedCells }} 个单元格</p>
         <p v-if="importWarning" class="import-warning">{{ importWarning }}</p>
         <button class="primary" @click="tab = 'home'">返回编辑</button>
@@ -499,7 +506,7 @@
     <input
       ref="importRef"
       type="file"
-      accept=".vtxls,.json,.xlsx,.csv,.tsv,.txt"
+      :accept="office.standalone ? '.xlsx,.csv,.tsv,.txt' : '.vtxls,.json,.xlsx,.csv,.tsv,.txt'"
       hidden
       @change="importFile"
     />
@@ -557,9 +564,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
-import { BrowserWindow, join, System } from 'vtron';
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import OfficeTitlebar from './office/OfficeTitlebar.vue';
+import { saveOfficeDownload, useOfficeFiles } from './office/officeFiles';
 import {
   address,
   cellKey,
@@ -569,15 +576,15 @@ import {
   makeEvaluator,
   parseAddress,
   parseDelimited,
+  shiftFormula,
   Sheet,
   toDelimited,
   validateWorkbook,
   Workbook,
 } from './office/excelModel';
+import { adjustFormulaForEdit, resizeSpan } from './office/excelStructure';
 import { decodeDataText, exportXlsx, importXlsx } from './office/excelWorkbook';
 
-const sys = inject<System>('system')!;
-const win = inject<BrowserWindow>('browserWindow');
 const appRef = ref<HTMLElement>(),
   gridContainer = ref<HTMLElement>(),
   formulaRef = ref<HTMLInputElement>(),
@@ -606,6 +613,8 @@ const documentName = ref('新建工作簿'),
   savedSnapshot = ref(''),
   notice = ref(''),
   importWarning = ref('');
+const office = useOfficeFiles();
+const { win } = office;
 const selectedRow = ref(0),
   selectedCol = ref(0),
   endRow = ref(0),
@@ -695,7 +704,7 @@ const hiddenMerged = (r: number, c: number) =>
   (activeSheet.value.merges || []).some(
     (m) => r >= m.r && r <= m.er && c >= m.c && c <= m.ec && (r !== m.r || c !== m.c)
   );
-const isError = (r: number, c: number) => String(evaluator.value(sheetIdx.value, r, c)).startsWith('#');
+const isError = (r: number, c: number) => evaluator.value.isError(sheetIdx.value, r, c);
 function displayValue(r: number, c: number) {
   const cell = activeSheet.value.cells[cellKey(r, c)];
   return showFormulas.value ? cell?.v || '' : formatValue(evaluator.value(sheetIdx.value, r, c), cell?.fmt);
@@ -821,6 +830,9 @@ function selectAll() {
 function move(dr: number, dc: number, extend = false) {
   const row = Math.min(9999, Math.max(0, (extend ? endRow.value : selectedRow.value) + dr)),
     col = Math.min(255, Math.max(0, (extend ? endCol.value : selectedCol.value) + dc));
+  moveTo(row, col, extend);
+}
+function moveTo(row: number, col: number, extend: boolean) {
   rowCount.value = Math.max(rowCount.value, row + 1);
   colCount.value = Math.max(colCount.value, col + 1);
   if (!extend) {
@@ -834,6 +846,25 @@ function move(dr: number, dc: number, extend = false) {
       ?.querySelector(`[data-address="${address(row, col)}"]`)
       ?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
   );
+}
+function moveToDataEdge(dr: number, dc: number, extend: boolean) {
+  // Search the displayed grid so filtered-out rows are never a navigation target.
+  const rows = rowList.value;
+  let ri = rows.indexOf(extend ? endRow.value : selectedRow.value);
+  let col = extend ? endCol.value : selectedCol.value;
+  if (ri < 0) return;
+  const inside = (r: number, c: number) => r >= 0 && r < rows.length && c >= 0 && c < colCount.value;
+  const filled = (r: number, c: number) => !!activeSheet.value.cells[cellKey(rows[r], c)]?.v;
+  if (!inside(ri + dr, col + dc)) return;
+  const contiguous = filled(ri, col) && filled(ri + dr, col + dc);
+  ri += dr;
+  col += dc;
+  while (inside(ri + dr, col + dc)) {
+    if (contiguous ? !filled(ri + dr, col + dc) : filled(ri, col)) break;
+    ri += dr;
+    col += dc;
+  }
+  moveTo(rows[ri], col, extend);
 }
 function goToAddress() {
   const refs = nameBox.value.split(':').map(parseAddress);
@@ -971,16 +1002,33 @@ async function pasteClipboard() {
   }
   focusGrid();
 }
-function shiftFormula(value: string, dr: number, dc: number) {
-  if (!value.startsWith('=')) return value;
-  return rewriteRefs(value, (ref) => {
-    const match = /^(\$?)([A-Z]+)(\$?)([1-9]\d*)$/i.exec(ref);
-    const coord = parseAddress(ref);
-    if (!match || !coord) return ref;
-    const r = coord.r + (match[3] ? 0 : dr),
-      c = coord.c + (match[1] ? 0 : dc);
-    return r < 0 || c < 0 || r > 9999 || c > 255 ? '#REF!' : `${match[1]}${colName(c)}${match[3]}${r + 1}`;
-  });
+function fillSelection(direction: 'down' | 'right') {
+  const { r, c, er, ec } = range.value;
+  const down = direction === 'down';
+  // A one-row or one-column selection takes its source from just outside the selection.
+  const sourceRow = down && r === er ? r - 1 : r;
+  const sourceCol = !down && c === ec ? c - 1 : c;
+  if (sourceRow < 0 || sourceCol < 0) {
+    notice.value = down ? '上方没有可填充的单元格' : '左侧没有可填充的单元格';
+    return;
+  }
+  const sheet = activeSheet.value;
+  if (sheet.merges?.some((m) => m.r <= er && m.er >= sourceRow && m.c <= ec && m.ec >= sourceCol)) {
+    notice.value = '请先取消填充区域中的合并单元格';
+    return;
+  }
+  mutate(() =>
+    eachSelected((row, col) => {
+      const fromRow = down ? sourceRow : row;
+      const fromCol = down ? col : sourceCol;
+      if (row === fromRow && col === fromCol) return;
+      const source = sheet.cells[cellKey(fromRow, fromCol)];
+      const key = cellKey(row, col);
+      if (source) sheet.cells[key] = { ...source, v: shiftFormula(source.v, row - fromRow, col - fromCol) };
+      else delete sheet.cells[key];
+    })
+  );
+  focusGrid();
 }
 function pasteText(text: string) {
   if (!text) return;
@@ -1008,19 +1056,6 @@ function pasteText(text: string) {
   rowCount.value = Math.max(rowCount.value, endRow.value + 1);
   colCount.value = Math.max(colCount.value, endCol.value + 1);
   focusGrid();
-}
-function rewriteRefs(formula: string, fn: (ref: string, qualifier: string) => string) {
-  return formula
-    .split(/("(?:[^"]|"")*")/g)
-    .map((part, i) =>
-      i % 2
-        ? part
-        : part.replace(
-            /((?:'(?:[^']|'')+'|[A-Za-z_\u4e00-\u9fff][\w.\u4e00-\u9fff]*)!)?(\$?[A-Za-z]{1,3}\$?[1-9]\d*)(?![\w.])/g,
-            (_, qualifier: string | undefined, ref: string) => (qualifier || '') + fn(ref, qualifier || '')
-          )
-    )
-    .join('');
 }
 async function mergeSelection() {
   const { r, c, er, ec } = range.value;
@@ -1211,13 +1246,16 @@ function insertDimension(axis: 'row' | 'col', remove: boolean) {
     end = axis === 'row' ? range.value.er : range.value.ec,
     count = end - start + 1,
     limit = axis === 'row' ? 10000 : 256;
-  const affected = activeSheet.value.name;
-  if (
-    !remove &&
-    Object.keys(activeSheet.value.cells).some(
-      (key) => +key.split(',')[axis === 'row' ? 0 : 1] >= limit - count
-    )
-  ) {
+  const sheet = activeSheet.value;
+  const edit = { axis, start, end, remove };
+  const lo = axis === 'row' ? 'r' : 'c';
+  const hi = axis === 'row' ? 'er' : 'ec';
+  const sizes = axis === 'row' ? sheet.heights : sheet.widths;
+  if (!remove && (
+    Object.keys(sheet.cells).some(key => +key.split(',')[axis === 'row' ? 0 : 1] >= limit - count) ||
+    sheet.merges?.some(merge => merge[hi] >= limit - count) ||
+    Object.keys(sizes || {}).some(key => +key >= limit - count)
+  )) {
     notice.value = '插入后将超出工作表范围';
     return;
   }
@@ -1232,9 +1270,13 @@ function insertDimension(axis: 'row' | 'col', remove: boolean) {
       else c = next;
       cells[cellKey(r, c)] = { ...cell };
     }
-    activeSheet.value.cells = cells;
-    activeSheet.value.merges = [];
-    const sizes = axis === 'row' ? activeSheet.value.heights : activeSheet.value.widths;
+    sheet.cells = cells;
+    sheet.merges = (sheet.merges || []).flatMap(merge => {
+      const span = resizeSpan(merge[lo], merge[hi], edit);
+      if (!span) return [];
+      const resized = { ...merge, [lo]: span[0], [hi]: span[1] };
+      return resized.r === resized.er && resized.c === resized.ec ? [] : [resized];
+    });
     if (sizes) {
       const mapped: Record<number, number> = {};
       for (const [key, size] of Object.entries(sizes)) {
@@ -1245,24 +1287,9 @@ function insertDimension(axis: 'row' | 'col', remove: boolean) {
       if (axis === 'row') activeSheet.value.heights = mapped;
       else activeSheet.value.widths = mapped;
     }
-    for (const sheet of wb.sheets)
-      for (const cell of Object.values(sheet.cells))
-        if (cell.v.startsWith('='))
-          cell.v = rewriteRefs(cell.v, (ref, qualifier) => {
-            const name = qualifier
-              ? qualifier.slice(0, -1).replace(/^'|'$/g, '').replace(/''/g, "'")
-              : sheet.name;
-            if (name.toLowerCase() !== affected.toLowerCase()) return ref;
-            const match = /^(\$?)([A-Z]+)(\$?)([1-9]\d*)$/i.exec(ref),
-              coord = parseAddress(ref);
-            if (!match || !coord) return ref;
-            let value = axis === 'row' ? coord.r : coord.c;
-            if (remove && value >= start && value <= end) return '#REF!';
-            if (value >= start) value += remove ? -count : count;
-            return value < 0 || value >= limit
-              ? '#REF!'
-              : `${match[1]}${colName(axis === 'col' ? value : coord.c)}${match[3]}${(axis === 'row' ? value : coord.r) + 1}`;
-          });
+    for (const owner of wb.sheets)
+      for (const cell of Object.values(owner.cells))
+        if (cell.v.startsWith('=')) cell.v = adjustFormulaForEdit(cell.v, owner.name, sheet.name, edit);
   });
   notice.value = `已${remove ? '删除' : '插入'} ${count} ${axis === 'row' ? '行' : '列'}`;
 }
@@ -1342,7 +1369,7 @@ function renameDocument() {
     filePath.value
       .split('/')
       .pop()!
-      .replace(/\.vtxls$/i, '') !== documentName.value
+      .replace(/\.(vtxls|xlsx|csv|tsv|txt)$/i, '') !== documentName.value
   ) {
     filePath.value = '';
     savedSnapshot.value = '';
@@ -1397,7 +1424,7 @@ async function mayReplace() {
   commitFormula();
   if (!dirty.value) return true;
   const result = await confirmAction('保存工作簿', '当前工作簿有未保存的更改。');
-  return result === 'discard' || (result === 'save' && (await saveFile()));
+  return result === 'discard' || (result === 'save' && (await saveFile()) && !dirty.value);
 }
 async function closeWindow() {
   if (await mayReplace()) win?.close();
@@ -1417,16 +1444,17 @@ async function createNew() {
   tab.value = 'home';
 }
 async function openVirtual() {
+  if (office.standalone) return importRef.value?.click();
   if (!(await mayReplace())) return;
   openFiles.value = [];
   openDialog({
     kind: 'open',
     title: '打开工作簿',
     label: '文件路径',
-    value: join(sys._options.userLocation || '/C/Users', 'Desktop') + '/',
+    value: office.desktop() + '/',
   });
   try {
-    const results = await Promise.all(['.vtxls', '.xlsx', '.csv', '.tsv'].map((ext) => sys.fs.search(ext)));
+    const results = await Promise.all(['.vtxls', '.xlsx', '.csv', '.tsv'].map((ext) => office.fs.search(ext)));
     openFiles.value = results
       .flat()
       .filter((item) => item.isFile)
@@ -1470,7 +1498,7 @@ async function submitDialog() {
       dialogError.value = '请输入以 / 开头的有效桌面路径';
       return;
     }
-    if ((await sys.fs.exists(path)) && path !== filePath.value) {
+    if ((await office.fs.exists(path)) && path !== filePath.value) {
       dialogError.value = '该文件已存在，请修改文件名';
       return;
     }
@@ -1481,7 +1509,7 @@ async function submitDialog() {
       saveResolve = null;
       resolve?.(true);
       tab.value = 'home';
-    } else dialogError.value = '保存失败，请检查路径';
+    } else dialogError.value = notice.value;
     return;
   }
   if (d.kind === 'rename') {
@@ -1576,17 +1604,18 @@ function replaceAll() {
   dialogError.value = `已替换 ${count} 处`;
 }
 function desktopPath(name = documentName.value) {
-  return join(sys._options.userLocation || '/C/Users', 'Desktop', name + '.vtxls');
+  return office.desktop(name + '.vtxls');
 }
 async function nextAvailablePath() {
   let index = 1,
     path = desktopPath();
-  while (await sys.fs.exists(path)) path = desktopPath(`${documentName.value} (${index++})`);
+  while (await office.fs.exists(path)) path = desktopPath(`${documentName.value} (${index++})`);
   return path;
 }
 async function writeNative(path: string) {
   try {
-    await sys.fs.writeFile(path, snapshot.value);
+    const saved = snapshot.value;
+    await office.fs.writeFile(path, saved);
     removeDraft();
     filePath.value = path;
     draftScope.value = path;
@@ -1594,12 +1623,13 @@ async function writeNative(path: string) {
       .split('/')
       .pop()!
       .replace(/\.vtxls$/i, '');
-    savedSnapshot.value = snapshot.value;
-    removeDraft();
+    savedSnapshot.value = saved;
+    if (dirty.value) persistDraft();
+    else removeDraft();
     notice.value = `已保存到 ${path}`;
     return true;
-  } catch {
-    notice.value = '保存失败，请检查文件路径';
+  } catch (error) {
+    notice.value = error instanceof Error ? error.message : '保存失败，请检查文件路径';
     return false;
   }
 }
@@ -1607,6 +1637,21 @@ async function saveFile(as = false): Promise<boolean> {
   commitEdit();
   commitFormula();
   renameDocument();
+  if (office.standalone) {
+    try {
+      const saved = snapshot.value;
+      const name = await saveOfficeDownload(documentName.value, 'xlsx', as, () => exportXlsx(JSON.parse(saved)));
+      if (!name) return false;
+      documentName.value = name;
+      filePath.value = name + '.xlsx';
+      savedSnapshot.value = saved;
+      notice.value = `已发起下载 ${filePath.value}`;
+      return true;
+    } catch (error) {
+      notice.value = error instanceof Error ? error.message : '保存失败';
+      return false;
+    }
+  }
   if (as) {
     const path = await nextAvailablePath();
     return new Promise((resolve) => {
@@ -1663,7 +1708,7 @@ function fromText(text: string, name: string) {
 }
 async function loadFile(path: string) {
   try {
-    const raw = await sys.fs.readFile(path);
+    const raw = await office.fs.readFile(path);
     if (raw === null) throw new Error('文件不存在');
     const xlsx = /\.xlsx$/i.test(path),
       data = xlsx ? await importXlsx(raw) : fromText(decodeText(raw), path);
@@ -1690,11 +1735,11 @@ async function importFile(e: Event) {
   try {
     const xlsx = /\.xlsx$/i.test(file.name),
       data = xlsx ? await importXlsx(await file.arrayBuffer()) : fromText(await file.text(), file.name);
-    applyWorkbook(data, file.name);
+    applyWorkbook(data, file.name, office.standalone ? file.name : '');
     importWarning.value = xlsx
       ? '已读取单元格、公式、常见格式和合并区域；图表、宏及其他高级对象不会导入。'
       : '';
-    notice.value = xlsx ? importWarning.value : '已导入，保存后会在桌面创建 .vtxls 副本';
+    notice.value = xlsx ? importWarning.value : office.standalone ? `已打开 ${file.name}` : '已导入，保存后会在桌面创建 .vtxls 副本';
   } catch (error) {
     notice.value = error instanceof Error ? error.message : '文件无法读取';
   }
@@ -1777,6 +1822,11 @@ function onKeyDown(e: KeyboardEvent) {
     saveFile(e.shiftKey);
     return;
   }
+  if (mod && key === 'o' && office.standalone && !dialog.value) {
+    e.preventDefault();
+    void openVirtual();
+    return;
+  }
   if (isTextTarget(e.target) || dialog.value) return;
   if (e.key === 'Process' || e.keyCode === 229) {
     startEdit(selectedRow.value, selectedCol.value, '');
@@ -1798,6 +1848,11 @@ function onKeyDown(e: KeyboardEvent) {
     format({ [prop]: !currentCell.value[prop] });
     return;
   }
+  if (mod && !e.shiftKey && !e.altKey && (key === 'd' || key === 'r')) {
+    e.preventDefault();
+    fillSelection(key === 'd' ? 'down' : 'right');
+    return;
+  }
   if (mod && key === 'a') {
     e.preventDefault();
     selectAll();
@@ -1816,7 +1871,16 @@ function onKeyDown(e: KeyboardEvent) {
   };
   if (directions[e.key]) {
     e.preventDefault();
-    move(...directions[e.key], e.shiftKey);
+    if (mod) moveToDataEdge(...directions[e.key], e.shiftKey);
+    else move(...directions[e.key], e.shiftKey);
+    return;
+  }
+  if (e.key === 'Home' || (mod && e.key === 'End')) {
+    e.preventDefault();
+    if (e.key === 'End') {
+      const { er, ec } = usedBounds();
+      moveTo(er, ec, e.shiftKey);
+    } else moveTo(mod ? 0 : e.shiftKey ? endRow.value : selectedRow.value, 0, e.shiftKey);
     return;
   }
   if (e.key === 'Tab') {
@@ -1836,17 +1900,17 @@ function onKeyDown(e: KeyboardEvent) {
     startEdit(selectedRow.value, selectedCol.value, e.key);
   }
 }
-const draftScope = ref(win?.config?.path || 'new');
+const draftScope = ref(office.initialPath || 'new');
 const draftKey = () => `vtron-excel-draft:${draftScope.value}`;
 function removeDraft() {
   try {
-    localStorage.removeItem(draftKey());
+    office.drafts?.removeItem(draftKey());
   } catch {}
 }
 function persistDraft() {
   try {
     if (dirty.value)
-      localStorage.setItem(
+      office.drafts?.setItem(
         draftKey(),
         JSON.stringify({ workbook: wb, name: documentName.value, path: filePath.value, time: Date.now() })
       );
@@ -1872,9 +1936,9 @@ onMounted(async () => {
   savedSnapshot.value = snapshot.value;
   let draft: string | null = null;
   try {
-    draft = localStorage.getItem(draftKey());
+    draft = office.drafts?.getItem(draftKey()) ?? null;
   } catch {}
-  if (win?.config?.path) await loadFile(win.config.path);
+  if (office.initialPath) await loadFile(office.initialPath);
   if (draft) {
     try {
       const data = JSON.parse(draft),

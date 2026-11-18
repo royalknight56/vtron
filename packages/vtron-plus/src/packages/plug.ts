@@ -1,4 +1,6 @@
-import { BrowserWindow, System } from 'vtron';
+import { BrowserWindow, System, join, vDragable } from 'vtron';
+import { defineComponent, h, provide, type Component } from 'vue';
+import { desktopOffice } from './apps/office/officeFiles';
 import Browser from './apps/Browser.vue';
 // import ImageViewer from "./apps/ImageViewer.vue";
 import PdfViewer from './apps/PdfViewer.vue';
@@ -50,6 +52,18 @@ import { installNpmSupport, type NpmOptions } from './npm';
 import { installNodeSupport } from './node';
 import { registerDailyApps } from './apps/daily/registerDailyApps';
 import { registerWindowsApps } from './apps/win10/registerWindowsApps';
+function desktopEditor(editor: Component) {
+  return defineComponent({
+    setup() {
+      provide(desktopOffice, { join, dragable: vDragable });
+      return () => h(editor);
+    },
+  });
+}
+const desktopWord = desktopEditor(WordEditorVue);
+const desktopExcel = desktopEditor(ExcelEditorVue);
+const desktopPpt = desktopEditor(PPTEditorVue);
+
 type VtronFeature =
   | 'doc'
   | 'xls'
@@ -492,7 +506,7 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
             ...officeWindowSize(1120, 760),
             resizable: true,
             center: true,
-            content: WordEditorVue,
+            content: desktopWord,
             config: { path },
           }).show();
         },
@@ -507,7 +521,7 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
           ...officeWindowSize(1120, 760),
           icon: docxIcon,
           center: true,
-          content: WordEditorVue,
+          content: desktopWord,
           resizable: true,
         },
       });
@@ -522,7 +536,7 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
             ...officeWindowSize(1180, 760),
             resizable: true,
             center: true,
-            content: PPTEditorVue,
+            content: desktopPpt,
             config: { path },
           }).show();
         },
@@ -537,7 +551,7 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
           ...officeWindowSize(1180, 760),
           icon: pptxIcon,
           center: true,
-          content: PPTEditorVue,
+          content: desktopPpt,
           resizable: true,
         },
       });
@@ -552,7 +566,7 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
             ...officeWindowSize(1120, 740),
             resizable: true,
             center: true,
-            content: ExcelEditorVue,
+            content: desktopExcel,
             config: { path },
           }).show();
         },
@@ -567,7 +581,7 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
           ...officeWindowSize(1120, 740),
           icon: xlsxIcon,
           center: true,
-          content: ExcelEditorVue,
+          content: desktopExcel,
           resizable: true,
         },
       });

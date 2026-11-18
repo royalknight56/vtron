@@ -676,23 +676,24 @@ class VtronLocalFileSystem implements VtronFileInterface {
     this.permissionMap.set(respath, mode);
   }
 
-  async search(keyword: string): Promise<VtronFileWithoutContent[]> {
+  async search(keyword: string, mode?: 'contains'): Promise<VtronFileWithoutContent[]> {
     const result: VtronFileWithoutContent[] = [];
-    await this.dfsSearch(this.rootPath, keyword, result);
+    await this.dfsSearch(this.rootPath, keyword, result, mode);
     return result;
   }
 
   private async dfsSearch(
     dirPath: string,
     keyword: string,
-    result: VtronFileWithoutContent[]
+    result: VtronFileWithoutContent[],
+    mode?: 'contains'
   ): Promise<void> {
     const dirHandle = await this.resolveDirectoryHandle(dirPath);
     if (!dirHandle) return;
 
     for await (const [name, handle] of (dirHandle as any).entries()) {
       const entryPath = fspath.join(dirPath, name);
-      if (name.startsWith(keyword)) {
+      if (mode === 'contains' ? name.toLocaleLowerCase().includes(keyword.toLocaleLowerCase()) : name.startsWith(keyword)) {
         if (handle.kind === 'file') {
           try {
             const file = await (handle as FileSystemFileHandle).getFile();
@@ -705,7 +706,7 @@ class VtronLocalFileSystem implements VtronFileInterface {
         }
       }
       if (handle.kind === 'directory') {
-        await this.dfsSearch(entryPath, keyword, result);
+        await this.dfsSearch(entryPath, keyword, result, mode);
       }
     }
   }

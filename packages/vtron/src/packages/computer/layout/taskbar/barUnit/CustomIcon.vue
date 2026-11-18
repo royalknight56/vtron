@@ -1,17 +1,21 @@
 <template>
   <div class="custom-outer">
-    <div class="state-item" v-for="item in visibleTrays" :key="item._id">
-      <div class="state-icon" @click="($event) => handleClick(item, $event)">
+    <div class="state-item" v-for="item in visibleTrays" :key="item._id" :class="{ 'clock-tray': item.image === DateTime }" @keydown.esc="closeCalendar(item, $event)">
+      <component :is="item.image === DateTime ? 'button' : 'div'" class="state-icon"
+        :aria-label="item.image === DateTime ? i18n('calendar.title') : undefined"
+        :aria-expanded="item.image === DateTime ? item._contextMenuShow : undefined"
+        @click="handleClick(item, $event)">
         <div class="inner">
           <VtronImage v-if="typeof item.image === 'string'" :path="item.image"></VtronImage>
           <component v-else :is="item.image"></component>
         </div>
-      </div>
+      </component>
       <Transition name="fade">
         <div
           class="context-menu"
           v-if="item._contextMenuShow"
-          :style="{
+          :class="{ 'calendar-flyout': item.image === DateTime }"
+          :style="item.image === DateTime ? undefined : {
             width: item._contextMenuWidth + 'px',
             height: item._contextMenuHeight + 'px',
           }"
@@ -29,6 +33,8 @@ import { Tray, Menu } from '@/packages/services';
 import { computed, inject } from 'vue';
 import DateTime from '@/packages/computer/application/trayItems/DateTime.vue';
 
+import { i18n } from '../../../i18n';
+
 const sys = inject<System>('system')!;
 
 const traylst = sys.stateManager.trayState.current;
@@ -36,6 +42,12 @@ const visibleTrays = computed(() => sys.getConfig('desktopPreferences')?.showTas
   ? traylst.filter((tray) => tray.image !== DateTime)
   : traylst
 );
+function closeCalendar(item: Tray, event: KeyboardEvent) {
+  if (item.image !== DateTime || !item._contextMenuShow) return;
+  event.stopPropagation();
+  item._contextMenuShow = false;
+  (event.currentTarget as HTMLElement).querySelector('button')?.focus();
+}
 function handleClick(item: Tray, ev: MouseEvent) {
   if (item._contextMenu instanceof Menu) {
     item._contextMenu.popup(ev);
@@ -74,6 +86,9 @@ sys.mountEvent('tray.hidden', () => {
   display: flex;
   align-items: center;
 }
+.state-item.clock-tray { position: static; }
+.clock-tray > button { padding: 0; border: none; background: transparent; color: inherit; font: inherit; }
+.context-menu.calendar-flyout { width: min(360px, 100%); height: auto; overflow: visible; contain: none; }
 .state-item:hover {
   background-color: rgba(255, 255, 255, 0.519);
 }

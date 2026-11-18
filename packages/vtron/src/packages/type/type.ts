@@ -44,12 +44,23 @@ export const Saveablekey = [
 ] as const;
 export type SystemOptionsSaveable = Pick<SystemOptionsCertainly, (typeof Saveablekey)[number]>;
 
+export type StartTileSize = 'small' | 'medium' | 'wide' | 'large';
+export interface StartTilePlacement {
+  column: number;
+  row: number;
+  size: StartTileSize;
+}
+
 export interface DesktopPreferences {
+  startTiles?: Record<string, StartTilePlacement>;
   mediaVolume?: number;
   showNotifications?: boolean;
+  alarmsOnly?: boolean;
   lockScreenColor?: string;
+  pinnedTaskbarApps?: string[];
   showStartTiles?: boolean;
   showTaskbarClock?: boolean;
+  showCalendarAgenda?: boolean;
   timeZone?: string;
   region?: string;
   dateFormat?: 'short' | 'long';

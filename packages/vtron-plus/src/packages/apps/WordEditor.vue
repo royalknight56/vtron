@@ -31,18 +31,18 @@
     <div v-if="activeTab === '文件'" class="file-panel">
       <div class="file-actions">
         <button @click="createNew"><span>＋</span>新建空白文档</button>
-        <button @click="showOpen"><span>▱</span>打开桌面文档</button>
-        <button @click="importRef?.click()"><span>↥</span>从电脑导入</button>
+        <button @click="showOpen"><span>▱</span>{{ office.standalone ? '打开文件' : '打开桌面文档' }}</button>
+        <button v-if="!office.standalone" @click="importRef?.click()"><span>↥</span>从电脑导入</button>
         <button :disabled="busy" @click="saveFile()"><span>▣</span>保存</button>
-        <button :disabled="busy" @click="openModal('save')"><span>▣</span>另存为</button>
-        <button @click="exportDocument('docx')"><span>W</span>下载 DOCX</button>
+        <button :disabled="busy" @click="showSaveAs()"><span>▣</span>另存为</button>
+        <button v-if="!office.standalone" @click="exportDocument('docx')"><span>W</span>下载 DOCX</button>
         <button @click="exportDocument('html')"><span>⤓</span>下载 HTML</button>
         <button @click="exportDocument('txt')"><span>⤓</span>下载纯文本</button>
         <button @click="printDocument"><span>▤</span>打印 / 保存 PDF</button>
       </div>
       <div class="file-info">
         <h2>{{ documentName }}</h2>
-        <p>{{ filePath || '尚未保存到桌面' }}</p>
+        <p>{{ filePath || (office.standalone ? '尚未保存为文件' : '尚未保存到桌面') }}</p>
         <p>{{ charCount }} 字 · {{ paragraphCount }} 段</p>
       </div>
     </div>
@@ -188,15 +188,9 @@
         </div>
         <div class="ribbon-group">
           <div class="stack">
-            <button @click="findOpen = true">⌕ 查找</button
-            ><button
-              @click="
-                findOpen = true;
-                replaceOpen = true;
-              "
-            >
-              替换</button
-            ><button @mousedown.prevent @click="selectAll">全选</button>
+            <button @click="openSearch(false)">⌕ 查找</button>
+            <button @click="openSearch(true)">替换</button>
+            <button @mousedown.prevent @click="selectAll">全选</button>
           </div>
           <span class="group-label">编辑</span>
         </div>
@@ -206,10 +200,9 @@
           <div class="ribbon-controls">
             <button
               class="large-tool"
+              title="分页符 Ctrl+Enter"
               @mousedown.prevent
-              @click="
-                insertHtml('<div style=&quot;break-before:page;page-break-before:always&quot;><br></div>')
-              "
+              @click="insertPageBreak"
             >
               <b>▤</b>分页符</button
             ><button class="large-tool" @click="openModal('table')"><b>▦</b>表格</button>
@@ -242,20 +235,54 @@
       <template v-else-if="activeTab === '布局'">
         <div class="ribbon-group">
           <div class="ribbon-controls">
-            <label class="layout-field"
-              >页边距<select v-model.number="pageMargin" @change="markDirty">
-                <option :value="12.7">窄 · 12.7 毫米</option>
-                <option :value="25.4">普通 · 25.4 毫米</option>
-                <option :value="38.1">宽 · 38.1 毫米</option>
-              </select></label
-            ><label class="layout-field"
-              >纸张方向<select v-model="orientation" @change="markDirty">
-                <option value="portrait">纵向</option>
-                <option value="landscape">横向</option>
-              </select></label
-            >
+            <label class="layout-field">
+              页边距
+              <select v-model="marginPreset" aria-label="页边距" :disabled="readOnly">
+                <option
+                  v-for="preset in marginPresets"
+                  :key="preset.name"
+                  :value="preset.name"
+                  :disabled="!marginsFit(layout.width, layout.height, preset.margins)"
+                >
+                  {{ preset.name }}
+                </option>
+                <option value="" disabled>自定义</option>
+              </select>
+            </label>
+            <label class="layout-field">
+              纸张方向
+              <select v-model="orientation" aria-label="纸张方向" :disabled="readOnly">
+                <option
+                  value="portrait"
+                  :disabled="orientation !== 'portrait' && !marginsFit(layout.height, layout.width)"
+                >
+                  纵向
+                </option>
+                <option
+                  value="landscape"
+                  :disabled="orientation !== 'landscape' && !marginsFit(layout.height, layout.width)"
+                >
+                  横向
+                </option>
+              </select>
+            </label>
+            <label class="layout-field">
+              纸张大小
+              <select v-model="paperSize" aria-label="纸张大小" :disabled="readOnly">
+                <option
+                  v-for="paper in paperSizes"
+                  :key="paper.name"
+                  :value="paper.name"
+                  :disabled="!marginsFit(...orientedSize(paper.width, paper.height))"
+                >
+                  {{ paper.name }}
+                </option>
+                <option value="" disabled>自定义</option>
+              </select>
+            </label>
+            <button :disabled="readOnly" @click="openModal('margins')">自定义页边距</button>
           </div>
-          <span class="group-label">页面设置 · A4</span>
+          <span class="group-label">页面设置</span>
         </div>
         <div class="ribbon-group">
           <div class="ribbon-controls">
@@ -283,6 +310,7 @@
               ><span><input v-model="showRuler" type="checkbox" />标尺</span></label
             ><label class="layout-field"
               ><span><input v-model="readOnly" type="checkbox" />阅读模式</span></label
+            ><label class="layout-field"><span><input v-model="navigationOpen" type="checkbox" />导航窗格</span></label
             >
           </div>
           <span class="group-label">显示</span>
@@ -297,28 +325,18 @@
         </div>
       </template>
     </div>
-    <div v-if="findOpen" class="find-bar">
-      <input
-        v-model="findText"
-        placeholder="查找文档"
-        aria-label="查找内容"
-        @keydown.enter.prevent="findNext"
-      /><span>{{ matchCount }} 处</span><button @click="findNext">下一个</button
-      ><button @click="replaceOpen = !replaceOpen">替换</button
-      ><template v-if="replaceOpen"
-        ><input v-model="replacement" placeholder="替换为" aria-label="替换内容" /><button
-          @click="replaceOne"
-        >
-          替换当前</button
-        ><button @click="replaceAll">全部替换</button></template
-      ><button class="find-close" aria-label="关闭查找" @click="findOpen = false">×</button>
-    </div>
+    <div class="word-body">
+      <WordNavigation v-if="navigationOpen" ref="navigationRef" :editor="editorRef" :workspace="workspaceRef"
+        :revision="revision" :read-only="readOnly" @close="closeNavigation" @replace="replaceMatches" @report="report" />
     <main ref="workspaceRef" class="word-workspace">
       <div class="document-spread" :style="{ width: `${(pageWidth * zoom) / 100}px` }">
         <div
           v-if="showRuler"
           class="word-ruler"
-          :style="{ paddingInline: `${(pageMargin * 3.78 * zoom) / 100}px` }"
+          :style="{
+            paddingLeft: `${(pagePadding.left * zoom) / 100}px`,
+            paddingRight: `${(pagePadding.right * zoom) / 100}px`,
+          }"
         >
           <span v-for="n in 16" :key="n">{{ n - 1 }}</span>
         </div>
@@ -332,7 +350,7 @@
             :style="{
               width: `${pageWidth}px`,
               minHeight: `${pageHeight}px`,
-              padding: `${pageMargin}mm`,
+              padding: pagePaddingCss,
               zoom: `${zoom}%`,
             }"
           >
@@ -342,7 +360,7 @@
               role="textbox"
               aria-label="文档正文"
               aria-multiline="true"
-              :style="{ minHeight: `${pageHeight - pageMargin * 3.78 * 2}px` }"
+              :style="{ minHeight: `${Math.max(0, pageHeight - pagePadding.top - pagePadding.bottom)}px` }"
               :contenteditable="!readOnly"
               spellcheck="false"
               @input="onInput"
@@ -354,6 +372,7 @@
         </div>
       </div>
     </main>
+    </div>
     <footer class="word-status">
       <span>{{ charCount }} 字</span><span>{{ paragraphCount }} 段</span
       ><span class="status-message" role="status">{{
@@ -372,7 +391,7 @@
       ref="importRef"
       class="hidden-input"
       type="file"
-      accept=".vtdoc,.html,.htm,.txt,.docx"
+      :accept="office.standalone ? '.docx,.html,.htm,.txt' : '.vtdoc,.html,.htm,.txt,.docx'"
       @change="importDocument"
     />
     <input
@@ -434,6 +453,18 @@
           ><label>显示文本<input v-model="linkText" /></label
           ><label>链接地址<input v-model="modalValue" placeholder="https://" required /></label
         ></template>
+        <div v-else-if="modal === 'margins'" class="margin-fields">
+          <label v-for="side in wordMarginSides" :key="side">
+            {{ marginLabels[side] }}（毫米）
+            <input
+              v-model.number="marginInputs[side]"
+              type="number"
+              :min="side === 'top' || side === 'bottom' ? undefined : 0"
+              step="any"
+              required
+            />
+          </label>
+        </div>
         <template v-else-if="modal === 'symbol'"
           ><div class="symbol-grid">
             <button
@@ -470,13 +501,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
-import { BrowserWindow, Notify, System, join } from 'vtron';
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import OfficeTitlebar from './office/OfficeTitlebar.vue';
-import { wordEscape, wordReadDocx, wordSafeUrl, wordSanitize, wordWriteDocx } from './office/wordFormats';
+import { saveOfficeDownload, useOfficeFiles } from './office/officeFiles';
+import WordNavigation from './office/WordNavigation.vue';
+import {
+  wordDefaultLayout,
+  wordEscape,
+  wordMarginSides,
+  wordMmToTwips,
+  wordPageBreak,
+  wordPageLayout,
+  wordReadDocx,
+  wordSafeUrl,
+  wordSanitize,
+  wordTwipsToMm,
+  wordWriteDocx,
+  type WordDocument,
+  type WordMargins,
+  type WordPageLayout,
+} from './office/wordFormats';
 
-const sys = inject<System>('system')!;
-const win = inject<BrowserWindow>('browserWindow');
 const appRef = ref<HTMLElement>();
 const editorRef = ref<HTMLElement>();
 const pageRef = ref<HTMLElement>();
@@ -487,6 +532,8 @@ const tabs = ['文件', '开始', '插入', '布局', '视图'];
 const activeTab = ref('开始');
 const documentName = ref('新建文档');
 const filePath = ref('');
+const office = useOfficeFiles();
+const { win } = office;
 const dirty = ref(false);
 const busy = ref(false);
 const statusMessage = ref('');
@@ -496,8 +543,53 @@ const textColor = ref('#18212f');
 const highlightColor = ref('#fff29a');
 const lineHeight = ref('1.5');
 const paragraphSpacing = ref('8pt');
-const pageMargin = ref(25.4);
-const orientation = ref('portrait');
+const layout = ref(wordPageLayout());
+const marginPresets = [
+  { name: '普通', margins: wordDefaultLayout.margins },
+  { name: '窄', margins: { top: 720, right: 720, bottom: 720, left: 720 } },
+  { name: '适中', margins: { top: 1440, right: 1080, bottom: 1440, left: 1080 } },
+  { name: '宽', margins: { top: 1440, right: 2880, bottom: 1440, left: 2880 } },
+];
+const paperSizes = [
+  { name: 'A4', width: wordDefaultLayout.width, height: wordDefaultLayout.height },
+  { name: 'A5', width: 8391, height: 11906 },
+  { name: 'Letter', width: 12240, height: 15840 },
+  { name: 'Legal', width: 12240, height: 20160 },
+];
+const marginLabels = { top: '上', right: '右', bottom: '下', left: '左' };
+const marginInputs = reactive({ top: 0, right: 0, bottom: 0, left: 0 });
+const marginPreset = computed({
+  get: () =>
+    marginPresets.find((preset) =>
+      wordMarginSides.every((side) => preset.margins[side] === layout.value.margins[side])
+    )?.name || '',
+  set: (name) => {
+    const preset = marginPresets.find((item) => item.name === name);
+    if (preset) applyLayout({ ...layout.value, margins: preset.margins });
+  },
+});
+const orientation = computed({
+  get: () => layout.value.orientation,
+  set: (value: WordPageLayout['orientation']) => {
+    if (value === layout.value.orientation) return;
+    const { width, height } = layout.value;
+    applyLayout({ ...layout.value, orientation: value, width: height, height: width });
+  },
+});
+const paperSize = computed({
+  get: () =>
+    paperSizes.find(({ width, height }) => {
+      const [w, h] = orientedSize(width, height);
+      // Word producers round ISO paper sizes slightly differently.
+      return Math.abs(w - layout.value.width) <= 2 && Math.abs(h - layout.value.height) <= 2;
+    })?.name || '',
+  set: (name) => {
+    const paper = paperSizes.find((item) => item.name === name);
+    if (!paper) return;
+    const [width, height] = orientedSize(paper.width, paper.height);
+    applyLayout({ ...layout.value, width, height });
+  },
+});
 const zoom = ref(90);
 const showRuler = ref(true);
 const readOnly = ref(false);
@@ -506,8 +598,15 @@ const charCount = computed(() => plainText.value.replace(/\s+/g, '').length);
 const paragraphCount = computed(() =>
   plainText.value.trim() ? plainText.value.trim().split(/\n+/).length : 0
 );
-const pageWidth = computed(() => (orientation.value === 'portrait' ? 794 : 1123));
-const pageHeight = computed(() => (orientation.value === 'portrait' ? 1123 : 794));
+const pageWidth = computed(() => layout.value.width / 15);
+const pageHeight = computed(() => layout.value.height / 15);
+const pagePadding = computed(() => {
+  const { top, right, bottom, left } = layout.value.margins;
+  return { top: Math.abs(top) / 15, right: right / 15, bottom: Math.abs(bottom) / 15, left: left / 15 };
+});
+const pagePaddingCss = computed(() =>
+  wordMarginSides.map((side) => `${pagePadding.value[side]}px`).join(' ')
+);
 const formats = reactive({ bold: false, italic: false, underline: false });
 const alignments = {
   justifyLeft: '左对齐',
@@ -520,23 +619,15 @@ const styles = [
   { tag: 'h1', name: '标题 1', sample: '标题' },
   { tag: 'h2', name: '标题 2', sample: '标题' },
 ];
-const findOpen = ref(false);
-const replaceOpen = ref(false);
-const findText = ref('');
-const replacement = ref('');
-const matchCount = computed(() =>
-  findText.value
-    ? plainText.value.toLocaleLowerCase().split(findText.value.toLocaleLowerCase()).length - 1
-    : 0
-);
+const navigationOpen = ref(false);
+const navigationRef = ref<InstanceType<typeof WordNavigation>>();
+const revision = ref(0);
 let savedRange: Range | null = null;
-let foundRange: Range | null = null;
-let findOffset = 0;
-let lastFind = '';
+let replacing = false;
 let draftTimer: ReturnType<typeof setTimeout> | undefined;
 let messageTimer: ReturnType<typeof setTimeout> | undefined;
 const draftKey = `vtron-word-draft:${Date.now()}:${Math.random().toString(36).slice(2)}`;
-type Modal = '' | 'rename' | 'save' | 'open' | 'table' | 'link' | 'symbol';
+type Modal = '' | 'rename' | 'save' | 'open' | 'table' | 'link' | 'symbol' | 'margins';
 const modal = ref<Modal>('');
 const modalValue = ref('');
 const modalError = ref('');
@@ -553,13 +644,14 @@ const modalTitle = computed(
       table: '插入表格',
       link: '插入链接',
       symbol: '插入符号',
+      margins: '自定义页边距',
       '': '',
     })[modal.value]
 );
-const desktop = () => join(sys._options.userLocation || '/C/Users', 'Desktop');
+const desktop = office.desktop;
 function removeDraft(key = draftKey) {
   try {
-    localStorage.removeItem(key);
+    office.drafts?.removeItem(key);
   } catch {
     /* unavailable storage */
   }
@@ -576,18 +668,18 @@ function currentText() {
 }
 function updateStats() {
   plainText.value = currentText();
+  revision.value++;
 }
 function persistDraft() {
   if (!dirty.value) return;
   try {
-    localStorage.setItem(
+    office.drafts?.setItem(
       draftKey,
       JSON.stringify({
         path: filePath.value,
         name: documentName.value,
         html: editorRef.value?.innerHTML || '',
-        margin: pageMargin.value,
-        orientation: orientation.value,
+        layout: layout.value,
         time: Date.now(),
       })
     );
@@ -600,7 +692,18 @@ function markDirty() {
   clearTimeout(draftTimer);
   draftTimer = setTimeout(persistDraft, 500);
 }
+function orientedSize(width: number, height: number): [number, number] {
+  return orientation.value === 'landscape' ? [height, width] : [width, height];
+}
+function marginsFit(width: number, height: number, margins = layout.value.margins) {
+  return margins.left + margins.right < width && Math.abs(margins.top) + Math.abs(margins.bottom) < height;
+}
+function applyLayout(value: WordPageLayout) {
+  layout.value = value;
+  markDirty();
+}
 function onInput() {
+  if (replacing) return;
   updateStats();
   markDirty();
 }
@@ -678,6 +781,20 @@ function applyParagraphStyle(property: 'lineHeight' | 'marginBottom', value: str
 function insertHtml(html: string) {
   exec('insertHTML', wordSanitize(html));
 }
+function insertPageBreak() {
+  if (readOnly.value) return;
+  restoreSelection();
+  const selection = window.getSelection();
+  if (
+    [selection?.anchorNode, selection?.focusNode].some((node) =>
+      (node instanceof Element ? node : node?.parentElement)?.closest('table')
+    )
+  ) {
+    report('请在表格外插入分页符');
+    return;
+  }
+  insertHtml(wordPageBreak);
+}
 function selectAll() {
   restoreSelection();
   const range = document.createRange();
@@ -706,7 +823,7 @@ function onPaste(event: ClipboardEvent) {
 }
 function onDrop(event: DragEvent) {
   event.preventDefault();
-  report('请通过“插入 → 图片”或“文件 → 从电脑导入”添加文件');
+  report(office.standalone ? '请通过“插入 → 图片”或“文件 → 打开文件”添加文件' : '请通过“插入 → 图片”或“文件 → 从电脑导入”添加文件');
 }
 function onEditorClick(event: MouseEvent) {
   const anchor = (event.target as HTMLElement).closest('a');
@@ -733,7 +850,7 @@ function deleteTable() {
 }
 async function confirmDiscard() {
   if (!dirty.value) return true;
-  const result = await sys.createDialog().showMessageBox({
+  const result = await office.showMessageBox({
     title: '文档尚未保存',
     message: '保存当前文档后再继续？',
     type: 'question',
@@ -754,8 +871,7 @@ async function createNew() {
   removeDraft();
   filePath.value = '';
   documentName.value = '新建文档';
-  pageMargin.value = 25.4;
-  orientation.value = 'portrait';
+  layout.value = wordPageLayout();
   setContent('<p><br></p>');
   dirty.value = false;
   activeTab.value = '开始';
@@ -763,8 +879,11 @@ async function createNew() {
 function setContent(html: string) {
   if (editorRef.value) editorRef.value.innerHTML = wordSanitize(html) || '<p><br></p>';
   savedRange = null;
-  foundRange = null;
   updateStats();
+}
+function setDocument(doc: WordDocument) {
+  layout.value = doc.layout;
+  setContent(doc.html);
 }
 function openModal(type: Modal) {
   rememberSelection();
@@ -772,6 +891,10 @@ function openModal(type: Modal) {
   modalError.value = '';
   modalValue.value = type === 'rename' || type === 'save' ? documentName.value : '';
   linkText.value = window.getSelection()?.toString() || '';
+  if (type === 'margins') {
+    for (const side of wordMarginSides)
+      marginInputs[side] = wordTwipsToMm(layout.value.margins[side]);
+  }
   nextTick(() => appRef.value?.querySelector<HTMLInputElement>('.word-modal input')?.focus());
 }
 function closeModal() {
@@ -779,9 +902,10 @@ function closeModal() {
   modalError.value = '';
 }
 async function showOpen() {
+  if (office.standalone) return importRef.value?.click();
   openModal('open');
   try {
-    const files = await sys.fs.readdir(desktop());
+    const files = await office.fs.readdir(desktop());
     desktopFiles.value = files
       .filter((file) => /\.(vtdoc|html?|txt|docx)$/i.test(file.name))
       .map((file) => ({ name: file.name, path: file.path }));
@@ -805,9 +929,10 @@ async function submitModal() {
     if (modal.value === 'save') {
       const name = cleanName(modalValue.value);
       if (!name) throw new Error('请输入有效的文件名');
-      const path = join(desktop(), `${name}.vtdoc`);
-      if (path !== filePath.value && (await sys.fs.exists(path))) {
-        const answer = await sys.createDialog().showMessageBox({
+      const path = desktop(`${name}.vtdoc`);
+      const replace = path !== filePath.value && (await office.fs.exists(path));
+      if (replace) {
+        const answer = await office.showMessageBox({
           title: '替换文件',
           message: `${name}.vtdoc 已存在，是否替换？`,
           buttons: ['替换', '取消'],
@@ -835,6 +960,14 @@ async function submitModal() {
       if (!wordSafeUrl(url)) throw new Error('请输入 http、https、mailto 或 tel 链接');
       insertHtml(`<a href="${wordEscape(url)}">${wordEscape(linkText.value || url)}</a>`);
     }
+    if (modal.value === 'margins') {
+      const margins = Object.fromEntries(
+        wordMarginSides.map((side) => [side, wordMmToTwips(marginInputs[side])])
+      ) as WordMargins;
+      if (!marginsFit(layout.value.width, layout.value.height, margins))
+        throw new Error('页边距之和必须小于纸张对应的尺寸');
+      applyLayout({ ...layout.value, margins });
+    }
     closeModal();
     if (activeTab.value === '文件') activeTab.value = '开始';
   } catch (error) {
@@ -842,31 +975,51 @@ async function submitModal() {
   }
 }
 function serializeHtml() {
-  return `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><title>${wordEscape(documentName.value)}</title><meta name="vtron-word-margin" content="${pageMargin.value}"><meta name="vtron-word-orientation" content="${orientation.value}"></head><body>${wordSanitize(editorRef.value?.innerHTML || '')}</body></html>`;
+  return `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><title>${wordEscape(documentName.value)}</title><meta name="vtron-word-layout" content="${wordEscape(JSON.stringify(layout.value))}"><style>${printLayoutCss()}</style></head><body>${wordSanitize(editorRef.value?.innerHTML || '')}</body></html>`;
 }
 async function writeFile(path: string, name: string) {
   busy.value = true;
   try {
-    await sys.fs.writeFile(path, serializeHtml());
+    const snapshot = serializeHtml();
+    await office.fs.writeFile(path, snapshot);
+    const editedDuringSave = snapshot !== serializeHtml();
     filePath.value = path;
     documentName.value = name;
-    dirty.value = false;
+    dirty.value = editedDuringSave;
     clearTimeout(draftTimer);
-    removeDraft();
+    if (editedDuringSave) persistDraft();
+    else removeDraft();
     report('已保存到桌面');
     win?.setTitle(`${name} - Word`);
   } finally {
     busy.value = false;
   }
 }
-async function saveFile() {
+function showSaveAs() {
+  if (office.standalone) void saveFile(true);
+  else openModal('save');
+}
+async function saveFile(saveAs = false) {
   if (busy.value) return;
   try {
+    if (office.standalone) {
+      busy.value = true;
+      const html = editorRef.value?.innerHTML || '';
+      const snapshotLayout = layout.value;
+      const name = await saveOfficeDownload(documentName.value, 'docx', saveAs,
+        () => wordWriteDocx(html, snapshotLayout));
+      if (!name) return;
+      documentName.value = name;
+      filePath.value = name + '.docx';
+      dirty.value = html !== editorRef.value?.innerHTML || snapshotLayout !== layout.value;
+      report(`已发起下载 ${filePath.value}`);
+      return;
+    }
     let path = filePath.value;
     if (!path || !/\.vtdoc$/i.test(path)) {
-      path = join(desktop(), `${documentName.value}.vtdoc`);
+      path = desktop(`${documentName.value}.vtdoc`);
       let count = 1;
-      while (await sys.fs.exists(path)) path = join(desktop(), `${documentName.value} (${count++}).vtdoc`);
+      while (await office.fs.exists(path)) path = desktop(`${documentName.value} (${count++}).vtdoc`);
     }
     await writeFile(
       path,
@@ -875,9 +1028,12 @@ async function saveFile() {
         .pop()!
         .replace(/\.vtdoc$/i, '')
     );
-  } catch {
-    report('保存失败，请重试');
-    new Notify({ title: '保存失败', content: '无法写入文档，请检查桌面空间。' });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '保存失败，请检查文件路径';
+    report(message);
+    office.notifySaveError(message);
+  } finally {
+    busy.value = false;
   }
 }
 function decodeText(content: string) {
@@ -891,26 +1047,40 @@ function decodeText(content: string) {
   }
   return content;
 }
-async function readContent(content: string, name: string) {
+function legacyLayout(margin: number, orientation: string | null | undefined) {
+  const twips = [12.7, 25.4, 38.1].includes(margin) ? wordMmToTwips(margin) : 1440;
+  return wordPageLayout({
+    orientation: orientation === 'landscape' ? 'landscape' : 'portrait',
+    margins: { top: twips, right: twips, bottom: twips, left: twips },
+  });
+}
+async function readContent(content: string, name: string): Promise<WordDocument> {
   if (/\.docx$/i.test(name))
     return wordReadDocx(content.startsWith('data:') ? content.slice(content.indexOf(',') + 1) : content);
   const text = decodeText(content);
-  if (/\.txt$/i.test(name)) return `<p>${wordEscape(text).replace(/\r?\n/g, '<br>')}</p>`;
+  if (/\.txt$/i.test(name))
+    return { html: `<p>${wordEscape(text).replace(/\r?\n/g, '<br>')}</p>`, layout: wordPageLayout() };
   const doc = new DOMParser().parseFromString(text, 'text/html');
   const margin = Number(doc.querySelector('meta[name="vtron-word-margin"]')?.getAttribute('content'));
-  if ([12.7, 25.4, 38.1].includes(margin)) pageMargin.value = margin;
   const dir = doc.querySelector('meta[name="vtron-word-orientation"]')?.getAttribute('content');
-  if (dir === 'portrait' || dir === 'landscape') orientation.value = dir;
-  return wordSanitize(text);
+  const metadata = doc.querySelector('meta[name="vtron-word-layout"]')?.getAttribute('content');
+  let page = legacyLayout(margin, dir);
+  if (metadata) {
+    try {
+      page = wordPageLayout(JSON.parse(metadata) || undefined);
+    } catch {
+      // Keep the legacy layout when the new metadata cannot be read.
+    }
+  }
+  return { html: doc.body.innerHTML, layout: page };
 }
 async function loadFile(path: string) {
   if (!/\.(vtdoc|html?|txt|docx)$/i.test(path)) throw new Error('支持 VTDOC、DOCX、HTML 和 TXT 文档');
   busy.value = true;
   try {
-    const content = await sys.fs.readFile(path);
+    const content = await office.fs.readFile(path);
     if (content === null || content === undefined) throw new Error('文件不存在');
-    const html = await readContent(content, path);
-    setContent(html);
+    setDocument(await readContent(content, path));
     filePath.value = /\.vtdoc$/i.test(path) ? path : '';
     documentName.value = path
       .split('/')
@@ -927,19 +1097,20 @@ async function importDocument(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   input.value = '';
-  if (!file || !(await confirmDiscard())) return;
+  if (!file || busy.value || !(await confirmDiscard())) return;
   if (file.size > 20 * 1024 * 1024) return report('请选择小于 20 MB 的文档');
   busy.value = true;
   try {
-    const html = /\.docx$/i.test(file.name)
+    const doc = /\.docx$/i.test(file.name)
       ? await wordReadDocx(await file.arrayBuffer())
       : await readContent(await file.text(), file.name);
-    setContent(html);
+    setDocument(doc);
     documentName.value = file.name.replace(/\.[^.]+$/, '');
-    filePath.value = '';
-    markDirty();
+    filePath.value = office.standalone ? file.name : '';
+    if (office.standalone) dirty.value = false;
+    else markDirty();
     activeTab.value = '开始';
-    report('已导入，保存后可在桌面打开');
+    report(office.standalone ? `已打开 ${file.name}` : '已导入，保存后可在桌面打开');
   } catch (error) {
     report(error instanceof Error ? error.message : '导入失败');
   } finally {
@@ -964,11 +1135,7 @@ async function exportDocument(type: 'docx' | 'html' | 'txt') {
   try {
     const blob =
       type === 'docx'
-        ? await wordWriteDocx(
-            editorRef.value?.innerHTML || '',
-            orientation.value === 'landscape',
-            pageMargin.value
-          )
+        ? await wordWriteDocx(editorRef.value?.innerHTML || '', layout.value)
         : new Blob([type === 'txt' ? currentText() : serializeHtml()], {
             type: type === 'txt' ? 'text/plain;charset=utf-8' : 'text/html;charset=utf-8',
           });
@@ -983,6 +1150,11 @@ async function exportDocument(type: 'docx' | 'html' | 'txt') {
     report('导出失败，请重试');
   }
 }
+function printLayoutCss() {
+  // The final empty block keeps a page break at the end of the document printable.
+  return `@page{size:${pageWidth.value}px ${pageHeight.value}px;margin:${pagePaddingCss.value}}
+    @media print{body{margin:0}body::after{content:"";display:block}[data-word-page-break]{display:block;break-after:page}}`;
+}
 function printDocument() {
   const iframe = document.createElement('iframe');
   iframe.style.cssText = 'position:fixed;width:0;height:0;opacity:0;pointer-events:none';
@@ -994,7 +1166,7 @@ function printDocument() {
   }
   doc.open();
   doc.write(
-    `<!DOCTYPE html><html><head><title>${wordEscape(documentName.value)}</title><style>@page{size:A4 ${orientation.value};margin:${pageMargin.value}mm}body{font:12pt/1.5 Calibri,"等线",sans-serif;color:#18212f}img{max-width:100%}table{border-collapse:collapse;width:100%}td,th{border:1px solid #aaa;padding:6px}p{margin:0 0 8pt}</style></head><body>${wordSanitize(editorRef.value?.innerHTML || '')}</body></html>`
+    `<!DOCTYPE html><html><head><title>${wordEscape(documentName.value)}</title><style>${printLayoutCss()}body{margin:0;font:12pt/1.5 Calibri,"等线",sans-serif;color:#18212f}img{max-width:100%}table{border-collapse:collapse;width:100%}td,th{border:1px solid #aaa;padding:6px}p{margin:0 0 8pt}</style></head><body>${wordSanitize(editorRef.value?.innerHTML || '')}</body></html>`
   );
   doc.close();
   setTimeout(() => {
@@ -1009,101 +1181,103 @@ function fitWidth() {
     Math.min(160, Math.floor((((workspaceRef.value?.clientWidth || 800) - 56) / pageWidth.value) * 100))
   );
 }
-function textRange(start: number, end: number) {
-  const editor = editorRef.value;
-  if (!editor) return null;
-  const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
-  let offset = 0;
-  const range = document.createRange();
-  let found = false;
-  let node: Node | null;
-  while ((node = walker.nextNode())) {
-    const length = node.textContent?.length || 0;
-    if (!found && start < offset + length) {
-      range.setStart(node, start - offset);
-      found = true;
-    }
-    if (found && end <= offset + length) {
-      range.setEnd(node, end - offset);
-      return range;
-    }
-    offset += length;
-  }
-  return null;
+function openSearch(replace: boolean) {
+  if (activeTab.value === '文件') activeTab.value = '开始';
+  navigationOpen.value = true;
+  nextTick(() => navigationRef.value?.openSearch(replace));
 }
-function findNext() {
-  if (!findText.value || !editorRef.value) return;
-  if (lastFind !== findText.value) {
-    findOffset = 0;
-    lastFind = findText.value;
-  }
-  const text = editorRef.value.textContent || '';
-  const query = findText.value.toLocaleLowerCase();
-  let index = text.toLocaleLowerCase().indexOf(query, findOffset);
-  if (index < 0) index = text.toLocaleLowerCase().indexOf(query);
-  if (index < 0) {
-    foundRange = null;
-    return report('未找到匹配内容');
-  }
-  const range = textRange(index, index + findText.value.length);
-  if (!range) return;
-  const sel = window.getSelection();
-  sel?.removeAllRanges();
-  sel?.addRange(range);
-  foundRange = range;
-  savedRange = range.cloneRange();
-  findOffset = index + findText.value.length;
-  range.startContainer.parentElement?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+function closeNavigation() {
+  navigationOpen.value = false;
+  editorRef.value?.focus({ preventScroll: true });
 }
-function replaceOne() {
-  if (readOnly.value) return;
-  if (!foundRange || foundRange.toString().toLocaleLowerCase() !== findText.value.toLocaleLowerCase()) {
-    findNext();
-    return;
-  }
-  savedRange = foundRange.cloneRange();
-  exec('insertText', replacement.value);
-  foundRange = null;
-  findNext();
-}
-function replaceAll() {
-  if (readOnly.value || !findText.value || !editorRef.value) return;
-  const text = editorRef.value.textContent || '';
-  const query = findText.value.toLocaleLowerCase();
-  const indices: number[] = [];
-  let start = 0;
-  for (;;) {
-    const index = text.toLocaleLowerCase().indexOf(query, start);
-    if (index < 0) break;
-    indices.push(index);
-    start = index + query.length;
-  }
-  for (const index of indices.reverse()) {
-    const range = textRange(index, index + findText.value.length);
-    if (range) {
+function replaceMatches(ranges: Range[], text: string) {
+  if (readOnly.value || !ranges.length) return;
+  replacing = true;
+  try {
+    for (const range of ranges) {
       savedRange = range;
-      exec('insertText', replacement.value);
+      restoreSelection();
+      document.execCommand(text ? 'insertText' : 'delete', false, text);
     }
+  } finally {
+    replacing = false;
+    onInput();
+    rememberSelection();
   }
-  foundRange = null;
-  findOffset = 0;
-  updateStats();
-  report(`已替换 ${indices.length} 处`);
+}
+function moveInTable(backward: boolean) {
+  const selection = window.getSelection();
+  const node = selection?.focusNode;
+  const parent = node instanceof Element ? node : node?.parentElement;
+  const cell = parent?.closest<HTMLTableCellElement>('td,th');
+  const table = cell?.closest('table');
+  if (!cell || !table || !selection || !editorRef.value?.contains(table)) return false;
+  const cells = Array.from(table.rows).flatMap((row) => Array.from(row.cells));
+  const index = cells.indexOf(cell);
+  let target = cells[index + (backward ? -1 : 1)];
+  if (!target && !backward) {
+    // Replace the table through the native editing command so adding a row is undoable.
+    const copy = table.cloneNode(true) as HTMLTableElement;
+    // Carry the last row's column layout across both horizontal and vertical merges.
+    const last = copy.rows.length - 1;
+    const occupiedUntil: number[] = [];
+    const templates: HTMLTableCellElement[] = [];
+    Array.from(copy.rows).forEach((row, r) => {
+      let c = 0;
+      for (const td of Array.from(row.cells)) {
+        while (occupiedUntil[c] > r) c++;
+        const end = Math.min(copy.rows.length, r + (td.rowSpan || copy.rows.length));
+        for (let n = 0; n < td.colSpan; n++) occupiedUntil[c + n] = end;
+        if (end > last) templates[c] = td;
+        c += td.colSpan;
+      }
+    });
+    const added = copy.insertRow();
+    for (const template of templates.filter(Boolean)) {
+      const td = added.insertCell();
+      td.style.cssText = template.style.cssText;
+      td.colSpan = template.colSpan;
+      td.innerHTML = '<p><br></p>';
+    }
+    const tables = Array.from(editorRef.value.querySelectorAll('table'));
+    const position = tables.indexOf(table);
+    const range = document.createRange();
+    range.selectNode(table);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    if (!document.execCommand('insertHTML', false, copy.outerHTML)) return true;
+    const updated = editorRef.value.querySelectorAll('table')[position];
+    target = updated?.rows[last + 1]?.cells[0];
+    onInput();
+  }
+  if (target) {
+    const range = document.createRange();
+    range.selectNodeContents(target);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    rememberSelection();
+    target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+  return true;
 }
 function onKeyDown(event: KeyboardEvent) {
   const mod = event.ctrlKey || event.metaKey;
   const key = event.key.toLowerCase();
-  if (mod && key === 's') {
+  if (
+    mod && key === 'enter' && !event.shiftKey && !event.altKey && !event.isComposing &&
+    !readOnly.value && editorRef.value?.contains(event.target as Node)
+  ) {
     event.preventDefault();
-    event.shiftKey ? openModal('save') : saveFile();
+    insertPageBreak();
+  } else if (mod && key === 's') {
+    event.preventDefault();
+    event.shiftKey ? showSaveAs() : saveFile();
   } else if (mod && key === 'f') {
     event.preventDefault();
-    findOpen.value = true;
-    nextTick(() => appRef.value?.querySelector<HTMLInputElement>('.find-bar input')?.focus());
+    openSearch(false);
   } else if (mod && key === 'h') {
     event.preventDefault();
-    findOpen.value = true;
-    replaceOpen.value = true;
+    openSearch(true);
   } else if (mod && key === 'p') {
     event.preventDefault();
     printDocument();
@@ -1111,11 +1285,11 @@ function onKeyDown(event: KeyboardEvent) {
     event.preventDefault();
     showOpen();
   } else if (event.key === 'Escape') {
-    closeModal();
-    findOpen.value = false;
-  } else if (event.key === 'Tab' && editorRef.value?.contains(event.target as Node)) {
+    if (modal.value) closeModal();
+    else if (navigationOpen.value) closeNavigation();
+  } else if (event.key === 'Tab' && !mod && !event.altKey && !readOnly.value && editorRef.value?.contains(event.target as Node)) {
     event.preventDefault();
-    exec(event.shiftKey ? 'outdent' : 'indent');
+    if (!moveInTable(event.shiftKey)) exec(event.shiftKey ? 'outdent' : 'indent');
   }
 }
 function beforeUnload(event: BeforeUnloadEvent) {
@@ -1130,7 +1304,7 @@ onMounted(async () => {
   window.addEventListener('beforeunload', beforeUnload);
   await nextTick();
   setContent('<p><br></p>');
-  const initialPath = win?.config?.path || '';
+  const initialPath = office.initialPath;
   if (initialPath) {
     try {
       await loadFile(initialPath);
@@ -1139,11 +1313,11 @@ onMounted(async () => {
     }
   }
   try {
-    const entries = Object.keys(localStorage)
+    const entries = Object.keys(office.drafts || {})
       .filter((key) => key.startsWith('vtron-word-draft:'))
       .map((key) => {
         try {
-          return { key, data: JSON.parse(localStorage.getItem(key) || '{}') };
+          return { key, data: JSON.parse(office.drafts?.getItem(key) || '{}') };
         } catch {
           return null;
         }
@@ -1152,17 +1326,20 @@ onMounted(async () => {
       .sort((a, b) => b!.data.time - a!.data.time);
     const recovered = entries[0];
     if (recovered) {
-      const answer = await sys.createDialog().showMessageBox({
+      const answer = await office.showMessageBox({
         title: '恢复未保存文档',
         message: `找到“${recovered.data.name || '新建文档'}”的未保存草稿，是否恢复？`,
         buttons: ['恢复', '忽略'],
         type: 'question',
       });
       if (answer.response === 0) {
-        setContent(recovered.data.html);
+        setDocument({
+          html: recovered.data.html,
+          layout: recovered.data.layout
+            ? wordPageLayout(recovered.data.layout)
+            : legacyLayout(recovered.data.margin, recovered.data.orientation),
+        });
         documentName.value = recovered.data.name || '新建文档';
-        if ([12.7, 25.4, 38.1].includes(recovered.data.margin)) pageMargin.value = recovered.data.margin;
-        orientation.value = recovered.data.orientation === 'landscape' ? 'landscape' : 'portrait';
         markDirty();
         removeDraft(recovered.key);
       } else if (answer.response === 1) removeDraft(recovered.key);
@@ -1484,30 +1661,10 @@ onBeforeUnmount(() => {
   margin-right: 5px;
   accent-color: #185abd;
 }
-.find-bar {
+.word-body {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-  padding: 8px 15px;
-  background: #fff;
-  border-bottom: 1px solid var(--word-line);
-  flex-wrap: wrap;
-}
-.find-bar input {
-  border: 1px solid #cdd5e1;
-  border-radius: 3px;
-  padding: 5px 8px;
-  width: 145px;
-}
-.find-bar span {
-  color: var(--word-muted);
-  font-size: 11px;
-}
-.find-bar .find-close {
-  margin-left: auto;
-  font-size: 19px;
-  line-height: 18px;
+  flex: 1;
+  min-height: 0;
 }
 .word-workspace {
   flex: 1;
@@ -1550,7 +1707,6 @@ onBeforeUnmount(() => {
   box-sizing: border-box;
 }
 .editor-content {
-  min-height: calc(1123px - 50.8mm);
   outline: 0;
   font:
     12pt/1.5 Calibri,
@@ -1561,6 +1717,17 @@ onBeforeUnmount(() => {
   cursor: text;
   color: #18212f;
   white-space: normal;
+}
+.editor-content:deep([data-word-page-break]) {
+  display: block;
+  margin: 8pt 0;
+  border-bottom: 1px dashed #a2acb8;
+  color: #596778;
+  font: 11px/1.5 system-ui, sans-serif;
+  text-align: center;
+}
+.editor-content:deep([data-word-page-break])::before {
+  content: '分页符';
 }
 .editor-content:deep(p) {
   margin: 0 0 8pt;
@@ -1698,7 +1865,7 @@ onBeforeUnmount(() => {
   font-size: 12px;
   margin: 8px 0;
 }
-.file-panel ~ .word-workspace {
+.file-panel ~ .word-body {
   display: none;
 }
 .word-modal-backdrop {
@@ -1779,11 +1946,13 @@ onBeforeUnmount(() => {
   font-size: 12px;
   color: #bd3030;
 }
-.table-fields {
+.table-fields,
+.margin-fields {
   display: flex;
   gap: 15px;
 }
-.table-fields > label {
+.table-fields > label,
+.margin-fields > label {
   flex: 1;
 }
 .recent-files {

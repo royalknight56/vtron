@@ -962,11 +962,33 @@ class VtronFileSystem implements VtronFileInterface {
       };
     });
   }
-  async search(keyword: string): Promise<VtronFileWithoutContent[]> {
+  async search(keyword: string, mode?: 'contains'): Promise<VtronFileWithoutContent[]> {
     const transaction = this.db.transaction('files', 'readonly');
     const objectStore = transaction.objectStore('files');
 
     const index = objectStore.index('name');
+    if (mode === 'contains') {
+      const query = keyword.toLocaleLowerCase();
+      // Scan index keys only. Files may contain large binary payloads.
+      const matches: VtronFileWithoutContent[] = [];
+      return new Promise((resolve, reject) => {
+        const scan = index.openKeyCursor();
+        transaction.oncomplete = () => resolve(matches);
+        transaction.onabort = () => reject(transaction.error);
+        scan.onsuccess = () => {
+          const cursor = scan.result;
+          if (!cursor) return;
+          if (String(cursor.key).toLocaleLowerCase().includes(query)) {
+            const record = objectStore.get(cursor.primaryKey);
+            record.onsuccess = () => {
+              const { content, binary, ...metadata } = record.result as VtronFile;
+              matches.push(metadata);
+            };
+          }
+          cursor.continue();
+        };
+      });
+    }
     const range = IDBKeyRange.bound(keyword, keyword + '\uffff');
     const request = index.getAll(range);
 

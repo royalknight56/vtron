@@ -40,7 +40,7 @@
             <div class="note-time">{{ formatHourMin(note.time) }}</div>
             <div class="note-text">{{ note.text }}</div>
           </div>
-          <span class="note-del" @click="deleteNote(note)">×</span>
+          <span class="note-del" @click.stop="deleteNote(note)">×</span>
         </div>
       </template>
     </div>
@@ -50,131 +50,73 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, inject } from 'vue';
 import { System } from '@packages/kernel';
-import { join } from '@/packages/plug';
+import { addSchedule, changeSchedule, readSchedule, type StoredEntry } from '../../../../utils/schedule';
+import { civilDay, dayMs, reminderInstant, wallClockFormatter, wallTime } from '../../../../utils/calendarTime';
+import { formatDesktopClock } from '../../../../utils/desktopClock';
 import { i18n } from '@/packages/computer/i18n';
 import DateNote from '@/packages/computer/application/DateNote.vue';
 
 const sys = inject<System>('system')!;
 
-const recentNotes = ref<Array<{ text: string; time: number }>>([]);
+const entries = ref<StoredEntry[]>([]);
+const preferences = computed(() => sys.getConfig('desktopPreferences'));
+const zone = computed(() => wallClockFormatter(preferences.value?.timeZone || undefined));
+const now = Date.now();
+const today = computed(() => civilDay(wallTime(now, zone.value)));
+const recentNotes = computed(() => entries.value.filter(note => {
+  const day = civilDay(wallTime(note.time, zone.value));
+  return day >= today.value && day < today.value + 7 * dayMs;
+}).slice(0, 10));
 const showForm = ref(false);
-
-const now = new Date();
-const formDate = ref(formatDateValue(now));
-const formTime = ref(`${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`);
+const formDate = ref(new Date(today.value).toISOString().slice(0, 10));
+const formTime = ref(new Date(wallTime(now, zone.value)).toISOString().slice(11, 16));
 const formText = ref('');
 
-function formatDateValue(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+function formatHourMin(time: number) {
+  return formatDesktopClock(new Date(time), preferences.value).time;
 }
-
-function schedulePath(date: Date) {
-  const fileName = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.json`;
-  return join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule', fileName);
-}
-
-function formatHourMin(timestamp: number) {
-  const d = new Date(timestamp);
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-}
-
-function dayLabel(timestamp: number): string {
-  const d = new Date(timestamp);
-  const today = new Date();
-  const tomorrow = new Date(today.getTime() + 86400000);
-
-  if (d.toDateString() === today.toDateString()) return i18n('schedule.today');
-  if (d.toDateString() === tomorrow.toDateString()) return i18n('schedule.tomorrow');
-
-  return `${d.getMonth() + 1}/${d.getDate()}`;
-}
-
 const groupedNotes = computed(() => {
-  const map = new Map<string, { label: string; items: { text: string; time: number }[] }>();
+  const groups = new Map<number, { label: string; items: StoredEntry[] }>();
   for (const note of recentNotes.value) {
-    const key = new Date(note.time).toDateString();
-    if (!map.has(key)) {
-      map.set(key, { label: dayLabel(note.time), items: [] });
-    }
-    map.get(key)!.items.push(note);
+    const day = civilDay(wallTime(note.time, zone.value));
+    const label = day === today.value ? i18n('schedule.today') : day === today.value + dayMs
+      ? i18n('schedule.tomorrow') : formatDesktopClock(new Date(note.time), preferences.value).date;
+    if (!groups.has(day)) groups.set(day, { label, items: [] });
+    groups.get(day)!.items.push(note);
   }
-  return Array.from(map.values());
+  return Array.from(groups.values());
 });
-
 async function loadRecentNotes() {
-  const today = new Date();
-  const notes: Array<{ text: string; time: number }> = [];
-
-  for (let i = 0; i < 7; i++) {
-    const checkDate = new Date(today.getTime() + i * 86400000);
-    try {
-      const content = await sys.fs.readFile(schedulePath(checkDate));
-      if (content) notes.push(...JSON.parse(content));
-    } catch {
-      continue;
-    }
-  }
-
-  recentNotes.value = notes
-    .filter((n) => n.time >= today.getTime() - 86400000)
-    .sort((a, b) => a.time - b.time)
-    .slice(0, 10);
+  try { entries.value = await readSchedule(sys); }
+  catch { reportError(); }
 }
-
+function reportError() {
+  sys.createNotify({ title: i18n('schedule'), content: i18n('schedule.failed') });
+}
 async function addNote() {
   const text = formText.value.trim();
   if (!text) return;
 
-  const [y, m, d] = formDate.value.split('-').map(Number);
-  const [h, min] = formTime.value.split(':').map(Number);
-  const noteDate = new Date(y, m - 1, d, h, min);
-  const timestamp = noteDate.getTime();
-  const filePath = schedulePath(noteDate);
-
-  let existing: Array<{ text: string; time: number }> = [];
-  try {
-    const content = await sys.fs.readFile(filePath);
-    if (content) existing = JSON.parse(content);
-  } catch {
-    // file doesn't exist yet
-  }
-  existing.push({ text, time: timestamp });
-
-  const dirPath = join(sys.stateManager.options.getOptions('userLocation') || '', '/Schedule');
-  if (!(await sys.fs.exists(dirPath))) {
-    await sys.fs.mkdir(dirPath);
-  }
-  await sys.fs.writeFile(filePath, JSON.stringify(existing));
+  const day = Date.parse(formDate.value);
+  if (!Number.isFinite(day)) return;
+  const timestamp = reminderInstant(day, formTime.value, zone.value);
+  if (!Number.isFinite(timestamp)) return;
+  try { await addSchedule(sys, { text, time: timestamp }); }
+  catch { reportError(); return; }
 
   formText.value = '';
   showForm.value = false;
-  await loadRecentNotes();
 }
 
-async function deleteNote(note: { text: string; time: number }) {
-  const noteDate = new Date(note.time);
-  const filePath = schedulePath(noteDate);
-
-  try {
-    const content = await sys.fs.readFile(filePath);
-    if (content) {
-      let list: Array<{ text: string; time: number }> = JSON.parse(content);
-      list = list.filter((n) => !(n.time === note.time && n.text === note.text));
-      await sys.fs.writeFile(filePath, JSON.stringify(list));
-    }
-  } catch {
-    // ignore
-  }
-
-  await loadRecentNotes();
-  sys.emitEvent('schedule.change');
+async function deleteNote(note: StoredEntry) {
+  try { await changeSchedule(sys, note); } catch { reportError(); }
 }
 
-function openDetail(note: { text: string; time: number }) {
+function openDetail(note: StoredEntry) {
   const win = sys.createWindow({
     title: i18n('schedule.detail'),
     content: DateNote,
-    config: { text: note.text, time: note.time },
+    config: { ...note },
     width: 320,
     height: 260,
     center: true,

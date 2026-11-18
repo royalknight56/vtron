@@ -1,5 +1,5 @@
 <template>
-  <SettingsPanel title="系统" :pages="['显示', '声音', '通知', '存储', '关于']" v-model="page">
+  <SettingsPanel title="系统" :pages="settingPages('system')" v-model="page">
     <template v-if="page === 0">
       <label class="field">
         <span>桌面亮度 {{ brightness }}%</span>
@@ -29,7 +29,7 @@
         class="action"
         type="button"
         :disabled="preferences.showNotifications === false"
-        @click="system.createNotify({ title: '设置', content: '这是一条 Vtron 通知。' })"
+        @click="system.createNotify({ source: '设置', title: '设置', content: '这是一条 Vtron 通知。' })"
       >
         发送测试通知
       </button>
@@ -63,13 +63,16 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { settingPages } from './settingPages';
 import SettingsPanel from './SettingsPanel.vue';
 import SettingAppLink from './SettingAppLink.vue';
 import { useDesktopPreferences } from './preferences';
 
 const { system, preferences, save } = useDesktopPreferences();
-const page = ref(0);
+const props = defineProps<{ initialPage?: number }>();
+const page = ref(props.initialPage ?? 0);
 const brightness = ref(system.getConfig('brightness') ?? 100);
+watch(() => system.getConfig('brightness'), value => { brightness.value = value ?? 100; });
 const volume = ref(preferences.value.mediaVolume ?? 100);
 const displaySize = ref('');
 const storage = ref<{ usage: number; quota: number }>();

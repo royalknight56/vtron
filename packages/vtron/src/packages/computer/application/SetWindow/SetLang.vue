@@ -1,7 +1,7 @@
 <template>
   <SettingsPanel
     :title="i18n('time.and.language')"
-    :pages="['日期和时间', '区域', i18n('language')]"
+    :pages="settingPages('language')"
     v-model="page"
   >
     <template v-if="page === 0">
@@ -65,11 +65,13 @@
 import { computed, ref } from 'vue';
 import { i18n } from '@/packages/computer/i18n';
 import { formatDesktopClock } from '@/packages/computer/utils/desktopClock';
+import { settingPages } from './settingPages';
 import SettingsPanel from './SettingsPanel.vue';
 import { useDesktopPreferences } from './preferences';
 
 const { system, preferences, save } = useDesktopPreferences();
-const page = ref(0);
+const props = defineProps<{ initialPage?: number }>();
+const page = ref(props.initialPage ?? 0);
 const language = ref(system.getConfig('lang'));
 const currentZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const zones = [

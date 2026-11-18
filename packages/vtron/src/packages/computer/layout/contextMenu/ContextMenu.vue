@@ -7,10 +7,12 @@
     class="contextmenu"
     v-if="rootState.contextMenu"
   >
-    <div class="contextmenu-item" v-for="item in menuList" :key="item.label">
+    <div class="contextmenu-item" v-for="(item, index) in menuList" :key="item.label">
       <div class="option-title" @click="handleClick(item)">{{ item.label }}</div>
       <div class="icon-arrow" v-if="item.submenu?.length"></div>
-      <div class="children-item" v-if="item.submenu?.length">
+      <div class="children-item" v-if="item.submenu?.length"
+        :class="{ 'opens-left': opensLeft }"
+        :style="{ top: submenuTop(index, item.submenu.length) + 'px' }">
         <div class="contextmenu-item" v-for="citem in item.submenu" :key="citem.label">
           <div class="option-title" @click="handleClick(citem)">{{ citem.label }}</div>
         </div>
@@ -25,6 +27,7 @@ import type { MenuItem } from '@packages/services';
 
 const x = ref(-100);
 const y = ref(-100);
+const opensLeft = ref(false);
 const menuList = ref<MenuItem[]>([]);
 const sys = inject<System>('system')!;
 const rootState = sys.stateManager;
@@ -53,6 +56,7 @@ watch(
     const contextmenuX = mouseX + contextmenuWidth > innerWidth ? mouseX - contextmenuWidth : mouseX;
     const contextmenuY = mouseY + contextmenuHeight > innerHeight ? mouseY - contextmenuHeight : mouseY;
 
+    opensLeft.value = contextmenuX + 2 * contextmenuWidth > innerWidth && contextmenuX >= contextmenuWidth;
     x.value = contextmenuX;
     y.value = contextmenuY;
     menuList.value = contextMenu?.items || [];
@@ -62,6 +66,12 @@ watch(
 sys.mountEvent('contextMenu.hidden', () => {
   sys.stateManager.contextMenu.setContextMenu(null);
 });
+
+function submenuTop(index: number, count: number) {
+  const itemTop = y.value + 3 + index * 24;
+  const remaining = rootState.rect.getScreenSize().height - itemTop;
+  return Math.max(-itemTop, Math.min(0, remaining - (count * 24 + 6)));
+}
 
 function handleClick(item: MenuItem) {
   if (item?.click) {
@@ -83,6 +93,7 @@ function handleClick(item: MenuItem) {
   user-select: none;
 
   .contextmenu-item {
+    position: relative;
     height: var(--ui-list-item-height);
     font-size: var(--ui-font-size);
     padding: 2px 10px;
@@ -96,7 +107,7 @@ function handleClick(item: MenuItem) {
     .children-item {
       display: none;
       position: absolute;
-      left: var(--contextmenu-width);
+      left: calc(100% - 1px);
       width: var(--contextmenu-width);
       z-index: 100;
       background-color: #eeeeee;
@@ -104,6 +115,8 @@ function handleClick(item: MenuItem) {
       padding: 2px 0px;
       user-select: none;
     }
+
+    .children-item.opens-left { left: auto; right: calc(100% - 1px); }
 
     &:hover {
       background-color: #fefefe;

@@ -3,6 +3,51 @@ import JSZip from 'jszip';
 const W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
 const XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+export const wordPageBreak = '<span data-word-page-break="" contenteditable="false"></span>';
+export const wordMarginSides = ['top', 'right', 'bottom', 'left'] as const;
+export type WordMargins = Record<(typeof wordMarginSides)[number], number>;
+export interface WordPageLayout {
+  width: number;
+  height: number;
+  orientation: 'portrait' | 'landscape';
+  margins: WordMargins;
+}
+export interface WordDocument {
+  html: string;
+  layout: WordPageLayout;
+}
+
+// Store page dimensions and margins in twips, the units used by DOCX.
+export const wordDefaultLayout: WordPageLayout = {
+  width: 11906,
+  height: 16838,
+  orientation: 'portrait',
+  margins: { top: 1440, right: 1440, bottom: 1440, left: 1440 },
+};
+export const wordMmToTwips = (mm: number) => Math.round((mm * 1440) / 25.4);
+export const wordTwipsToMm = (twips: number) => Math.round((twips * 25.4 * 1000) / 1440) / 1000;
+
+export function wordPageLayout(value: Partial<WordPageLayout> = {}): WordPageLayout {
+  const orientation = value.orientation === 'landscape' ? 'landscape' : 'portrait';
+  const landscape = orientation === 'landscape';
+  const dimension = (size: number | undefined, fallback: number) =>
+    size !== undefined && Number.isInteger(size) && size > 0 && size <= 31680 ? size : fallback;
+  const margins = { ...wordDefaultLayout.margins };
+  for (const side of wordMarginSides) {
+    const size = value.margins?.[side];
+    if (
+      size !== undefined && Number.isInteger(size) && Math.abs(size) <= 31680 &&
+      (size >= 0 || side === 'top' || side === 'bottom')
+    ) margins[side] = size;
+  }
+  return {
+    width: dimension(value.width, landscape ? wordDefaultLayout.height : wordDefaultLayout.width),
+    height: dimension(value.height, landscape ? wordDefaultLayout.width : wordDefaultLayout.height),
+    orientation,
+    margins,
+  };
+}
+
 export const wordEscape = (text: string) =>
   text.replace(
     /[&<>"']/g,
@@ -38,6 +83,10 @@ export function wordSanitize(html: string) {
       continue;
     }
     const kept: Record<string, string> = {};
+    if (el.tagName === 'SPAN' && el.hasAttribute('data-word-page-break')) {
+      el.outerHTML = wordPageBreak;
+      continue;
+    }
     if (el instanceof HTMLElement) {
       const declarations: string[] = [];
       for (let i = 0; i < el.style.length; i++) {
@@ -71,7 +120,8 @@ export function wordSanitize(html: string) {
     if (['TD', 'TH'].includes(el.tagName))
       for (const attr of ['rowspan', 'colspan']) {
         const value = Number(el.getAttribute(attr));
-        if (value > 0 && value < 100) kept[attr] = String(value);
+        if (Number.isInteger(value) && value > 0 && value <= (attr === 'rowspan' ? 65534 : 100))
+          kept[attr] = String(value);
       }
     Array.from(el.attributes).forEach((attr) => el.removeAttribute(attr.name));
     Object.entries(kept).forEach(([name, value]) => el.setAttribute(name, value));
@@ -79,7 +129,7 @@ export function wordSanitize(html: string) {
   return body.innerHTML;
 }
 
-export async function wordReadDocx(data: ArrayBuffer | string) {
+export async function wordReadDocx(data: ArrayBuffer | string): Promise<WordDocument> {
   const zip = await JSZip.loadAsync(data, typeof data === 'string' ? { base64: true } : undefined);
   const entry = zip.file('word/document.xml');
   if (!entry) throw new Error('不是有效的 DOCX 文件');
@@ -98,6 +148,33 @@ export async function wordReadDocx(data: ArrayBuffer | string) {
   const attr = (el: Element | undefined | null, name: string) =>
     el?.getAttributeNS(W, name) || el?.getAttribute(`w:${name}`) || '';
   const get = (el: Element, name: string) => el.getElementsByTagNameNS(W, name)[0];
+  const direct = (el: Element | undefined, name: string) => Array.from(el?.children || [])
+    .find(child => child.namespaceURI === W && child.localName === name);
+  const styleRel = Array.from(rels?.getElementsByTagName('Relationship') || [])
+    .find(rel => rel.getAttribute('Type') === R + '/styles');
+  const stylePath = styleRel?.getAttribute('Target') || 'styles.xml';
+  const stylesXml = await zip.file(stylePath.startsWith('/') ? stylePath.slice(1) : 'word/' + stylePath)?.async('string');
+  const stylesDoc = stylesXml ? new DOMParser().parseFromString(stylesXml, 'application/xml') : null;
+  const styles = new Map(Array.from(stylesDoc?.getElementsByTagNameNS(W, 'style') || [])
+    .filter(style => attr(style, 'type') === 'paragraph').map(style => [attr(style, 'styleId'), style]));
+  function headingTag(paragraph: Element) {
+    const props = Array.from(paragraph.children).find(child => child.localName === 'pPr');
+    const styleId = props && attr(get(props, 'pStyle'), 'val');
+    let level = props && attr(get(props, 'outlineLvl'), 'val');
+    let id = styleId || '';
+    const visited = new Set<string>();
+    while (!level && id && !visited.has(id)) {
+      visited.add(id);
+      const style = styles.get(id);
+      level = style && attr(get(style, 'outlineLvl'), 'val');
+      if (level) break;
+      const name = style && attr(get(style, 'name'), 'val');
+      const heading = /^(?:heading|标题)\s*([1-6])$/i.exec(name || '') || /^Heading([1-6])$/i.exec(id);
+      if (heading) return 'h' + heading[1];
+      id = style ? attr(get(style, 'basedOn'), 'val') : '';
+    }
+    return level && /^[0-5]$/.test(level) ? 'h' + (Number(level) + 1) : 'p';
+  }
   async function paragraph(el: Element): Promise<string> {
     const parts: string[] = [];
     for (const child of Array.from(el.children)) {
@@ -111,7 +188,8 @@ export async function wordReadDocx(data: ArrayBuffer | string) {
       let text = '';
       for (const node of Array.from(child.children)) {
         if (node.localName === 't') text += wordEscape(node.textContent || '');
-        if (node.localName === 'br') text += '<br>';
+        if (node.localName === 'br' || node.localName === 'cr')
+          text += attr(node, 'type') === 'page' ? wordPageBreak : '<br>';
         if (node.localName === 'tab') text += '&emsp;';
         if (node.localName === 'drawing') {
           const blip = node.getElementsByTagNameNS(
@@ -142,16 +220,13 @@ export async function wordReadDocx(data: ArrayBuffer | string) {
       parts.push(style.length ? `<span style="${style.join(';')}">${text}</span>` : text);
     }
     const align = attr(get(el, 'jc'), 'val');
-    const pStyle = attr(get(el, 'pStyle'), 'val');
-    const tag = /^Heading[1-6]$/i.test(pStyle)
-      ? `h${pStyle.slice(-1)}`
-      : /^Title$/i.test(pStyle)
-        ? 'h1'
-        : 'p';
+    const tag = headingTag(el);
     const pStyleValues: string[] = [];
     if (['left', 'right', 'center', 'both'].includes(align))
       pStyleValues.push(`text-align:${align === 'both' ? 'justify' : align}`);
-    if (get(el, 'pageBreakBefore')) pStyleValues.push('break-before:page;page-break-before:always');
+    const breakBefore = direct(direct(el, 'pPr'), 'pageBreakBefore');
+    if (breakBefore && !['0', 'false', 'off'].includes(attr(breakBefore, 'val')))
+      pStyleValues.push('break-before:page');
     const spacing = get(el, 'spacing');
     const after = Number(attr(spacing, 'after'));
     if (attr(spacing, 'after') && after >= 0) pStyleValues.push(`margin-bottom:${after / 20}pt`);
@@ -160,36 +235,63 @@ export async function wordReadDocx(data: ArrayBuffer | string) {
       pStyleValues.push(`line-height:${line / 240}`);
     return `<${tag}${pStyleValues.length ? ` style="${pStyleValues.join(';')}"` : ''}>${parts.join('') || '<br>'}</${tag}>`;
   }
-  const result: string[] = [];
+  async function readBlocks(parent: Element): Promise<string> {
+    const blocks: string[] = [];
+    for (const child of Array.from(parent.children)) {
+      if (child.localName === 'p') blocks.push(await paragraph(child));
+      if (child.localName === 'tbl') blocks.push(await readTable(child));
+    }
+    return blocks.join('');
+  }
+  async function readTable(source: Element): Promise<string> {
+    const table = document.createElement('table');
+    table.style.cssText = 'border-collapse:collapse;width:100%';
+    const body = table.createTBody();
+    let previous = new Map<number, HTMLTableCellElement>();
+    for (const row of Array.from(source.children).filter((node) => node.localName === 'tr')) {
+      const tr = body.insertRow();
+      const continuing = new Map<number, HTMLTableCellElement>();
+      const rowProps = Array.from(row.children).find((node) => node.localName === 'trPr');
+      let column = rowProps ? Math.max(0, Number(attr(get(rowProps, 'gridBefore'), 'val')) || 0) : 0;
+      if (column) tr.insertCell().colSpan = column;
+      for (const cell of Array.from(row.children).filter((node) => node.localName === 'tc')) {
+        const props = Array.from(cell.children).find((node) => node.localName === 'tcPr');
+        const span = Math.max(1, Number(props && attr(get(props, 'gridSpan'), 'val')) || 1);
+        const merge = props && get(props, 'vMerge');
+        const origin = previous.get(column);
+        if (merge && attr(merge, 'val') !== 'restart' && origin && origin.colSpan === span) {
+          origin.rowSpan++;
+          continuing.set(column, origin);
+        } else {
+          const td = tr.insertCell();
+          if (span > 1) td.colSpan = span;
+          td.innerHTML = await readBlocks(cell);
+          if (merge) continuing.set(column, td);
+        }
+        column += span;
+      }
+      previous = continuing;
+    }
+    return table.outerHTML;
+  }
   const body = doc.getElementsByTagNameNS(W, 'body')[0];
   if (!body) throw new Error('无法读取文档内容');
-  for (const child of Array.from(body.children)) {
-    if (child.localName === 'p') result.push(await paragraph(child));
-    if (child.localName === 'tbl') {
-      const rows: string[] = [];
-      for (const row of Array.from(child.children).filter((n) => n.localName === 'tr')) {
-        const cells: string[] = [];
-        for (const cell of Array.from(row.children).filter((n) => n.localName === 'tc'))
-          cells.push(
-            `<td>${(
-              await Promise.all(
-                Array.from(cell.children)
-                  .filter((n) => n.localName === 'p')
-                  .map(paragraph)
-              )
-            ).join('')}</td>`
-          );
-        rows.push(`<tr>${cells.join('')}</tr>`);
-      }
-      result.push(
-        `<table style="border-collapse:collapse;width:100%"><tbody>${rows.join('')}</tbody></table>`
-      );
-    }
-  }
-  return wordSanitize(result.join(''));
+  const section = direct(body, 'sectPr');
+  const size = direct(section, 'pgSz');
+  const pgMar = direct(section, 'pgMar');
+  const width = Number(attr(size, 'w'));
+  const height = Number(attr(size, 'h'));
+  const orient = attr(size, 'orient');
+  const layout = wordPageLayout({
+    width,
+    height,
+    orientation: orient === 'landscape' || (!orient && width > height && height > 0) ? 'landscape' : 'portrait',
+    margins: Object.fromEntries(wordMarginSides.map(side => [side, Number(attr(pgMar, side) || NaN)])) as WordMargins,
+  });
+  return { html: wordSanitize(await readBlocks(body)), layout };
 }
 
-export async function wordWriteDocx(html: string, landscape: boolean, margin: number) {
+export async function wordWriteDocx(html: string, layout: WordPageLayout) {
   const zip = new JSZip();
   const body = new DOMParser().parseFromString(wordSanitize(html), 'text/html').body;
   const relationships: string[] = [];
@@ -199,6 +301,7 @@ export async function wordWriteDocx(html: string, landscape: boolean, margin: nu
     if (node.nodeType === Node.TEXT_NODE)
       return `<w:r><w:rPr>${inherited}</w:rPr><w:t xml:space="preserve">${wordEscape(node.textContent || '')}</w:t></w:r>`;
     if (!(node instanceof HTMLElement)) return '';
+    if (node.hasAttribute('data-word-page-break')) return '<w:r><w:br w:type="page"/></w:r>';
     if (node.tagName === 'BR') return '<w:r><w:br/></w:r>';
     if (node.tagName === 'IMG') {
       const src = node.getAttribute('src') || '';
@@ -270,9 +373,10 @@ export async function wordWriteDocx(html: string, landscape: boolean, margin: nu
       node.style.breakBefore === 'page' || node.style.pageBreakBefore === 'always'
         ? '<w:pageBreakBefore/>'
         : '';
-    return `<w:p><w:pPr>${heading}${alignment}${indent}${pageBreak}<w:spacing w:after="${after}"${line}/></w:pPr>${node.tagName === 'LI' ? '<w:r><w:t>• </w:t></w:r>' : ''}${runs(node, headingRun)}</w:p>`;
+    return `<w:p><w:pPr>${heading}${pageBreak}<w:spacing w:after="${after}"${line}/>${indent}${alignment}</w:pPr>${node.tagName === 'LI' ? '<w:r><w:t>• </w:t></w:r>' : ''}${runs(node, headingRun)}</w:p>`;
   }
-  const pageContentWidth = Math.max(1440, (landscape ? 16838 : 11906) - Math.round(margin * 56.7) * 2);
+  const { width, height, orientation, margins } = layout;
+  const pageContentWidth = Math.max(1440, width - margins.left - margins.right);
   function table(node: HTMLElement, availableWidth: number): string {
     type Cell = { element?: HTMLElement; span: number; merge?: 'restart' | 'continue' };
     const rows = Array.from(node.querySelectorAll<HTMLTableRowElement>('tr')).filter(
@@ -366,11 +470,18 @@ export async function wordWriteDocx(html: string, landscape: boolean, margin: nu
       .join('');
   }
   const content = blocks(body);
-  const pgMargin = Math.round(margin * 56.7);
+  const pgMargins = wordMarginSides.map(side => `w:${side}="${margins[side]}"`).join(' ');
   zip.file(
     'word/document.xml',
-    `${XML}<w:document xmlns:w="${W}" xmlns:r="${R}"><w:body>${content}<w:sectPr><w:pgSz w:w="${landscape ? 16838 : 11906}" w:h="${landscape ? 11906 : 16838}"${landscape ? ' w:orient="landscape"' : ''}/><w:pgMar w:top="${pgMargin}" w:right="${pgMargin}" w:bottom="${pgMargin}" w:left="${pgMargin}"/></w:sectPr></w:body></w:document>`
+    `${XML}<w:document xmlns:w="${W}" xmlns:r="${R}"><w:body>${content}<w:sectPr><w:pgSz w:w="${width}" w:h="${height}" w:orient="${orientation}"/><w:pgMar ${pgMargins} w:header="720" w:footer="720" w:gutter="0"/></w:sectPr></w:body></w:document>`
   );
+  const headingStyles = Array.from(new Set(Array.from(body.querySelectorAll('h1,h2,h3,h4,h5,h6'), el => Number(el.tagName[1]))));
+  if (headingStyles.length) {
+    relationships.push(`<Relationship Id="rIdStyles" Type="${R}/styles" Target="styles.xml"/>`);
+    zip.file('word/styles.xml', `${XML}<w:styles xmlns:w="${W}"><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style>${headingStyles.map(level =>
+      `<w:style w:type="paragraph" w:styleId="Heading${level}"><w:name w:val="heading ${level}"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:keepNext/><w:outlineLvl w:val="${level - 1}"/></w:pPr></w:style>`
+    ).join('')}</w:styles>`);
+  }
   zip.file(
     'word/_rels/document.xml.rels',
     `${XML}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${relationships.join('')}</Relationships>`
@@ -387,7 +498,7 @@ export async function wordWriteDocx(html: string, landscape: boolean, margin: nu
       .map((ext) => `<Default Extension="${ext}" ContentType="image/${ext === 'jpg' ? 'jpeg' : ext}"/>`)
       .join(
         ''
-      )}<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`
+      )}${headingStyles.length ? '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>' : ''}<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`
   );
   return zip.generateAsync({
     type: 'blob',

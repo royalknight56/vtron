@@ -7,6 +7,11 @@ const localBackend = 'http://127.0.0.1:8787';
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
+  build: {
+    rollupOptions: {
+      input: ['index.html', 'word/index.html', 'excel/index.html', 'ppt/index.html'].map(file => path.resolve(__dirname, file)),
+    },
+  },
   // Demo 始终使用工作区源码，避免内核和编辑器的改动被旧的 npm 包覆盖。
   resolve: {
     alias: [

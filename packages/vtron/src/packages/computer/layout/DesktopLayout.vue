@@ -1,6 +1,9 @@
 <template>
   <div
     class="desktop"
+    tabindex="-1"
+    @keydown.ctrl.esc.exact.stop.prevent="sys.emitEvent('taskbar.startmenu.leftClick', $event)"
+    @keydown.meta.a.exact="actionCenterShortcut"
     @dragenter.prevent
     @dragover.prevent
     @drop="dragFileToDrop($event, `${sys._options.userLocation}Desktop`)"
@@ -33,8 +36,9 @@ import NotificationGroup from './notifyGroup/NotifyGroup.vue';
 import MessageCenterPop from './taskbar/popover/MessageCenterPop.vue';
 import { useFileDrag } from '@/packages/computer/hook/useFileDrag';
 import { Rect, useRectChosen } from '@/packages/computer/hook/useRectChosen';
-import { inject, onErrorCaptured, onMounted } from 'vue';
+import { inject, onErrorCaptured, onMounted, onUnmounted } from 'vue';
 import { createDesktopContextMenu } from '@/packages/computer/utils/createContextMenu';
+import { startScheduleReminders } from '../utils/schedule';
 import { initComputer } from '../mount';
 
 const { choseStart, chosing, choseEnd, getRect, Chosen } = useRectChosen();
@@ -48,6 +52,11 @@ let chosenCallback: (rect: Rect) => void = () => {
 };
 function onChosen(callback: (rect: Rect) => void) {
   chosenCallback = callback;
+}
+function actionCenterShortcut(event: KeyboardEvent) {
+  if (!showMessageCenter || /Mac|iPhone|iPad/.test(navigator.platform) || event.repeat) return;
+  event.preventDefault();
+  sys.emitEvent('messagecenter.show');
 }
 function userareaDown(e: MouseEvent) {
   sys.emitEvent('desktop.background.leftClick', e);
@@ -94,8 +103,11 @@ function handleRightClick(e: MouseEvent) {
 onErrorCaptured((err) => {
   sys.emitError(err.message.toString());
 });
+let stopReminders: (() => void) | undefined;
+onUnmounted(() => stopReminders?.());
 onMounted(() => {
   initComputer(sys);
+  stopReminders = startScheduleReminders(sys);
 });
 </script>
 <style lang="scss" scoped>

@@ -26,7 +26,7 @@ export class OptionsState {
   assignOptions(options: SystemOptions) {
     Object.assign(this.options, options);
   }
-  pickOptions<T extends keyof SystemOptionsCertainly>(keys: T[]): Pick<SystemOptionsCertainly, T> {
+  pickOptions<T extends keyof SystemOptionsCertainly>(keys: readonly T[]): Pick<SystemOptionsCertainly, T> {
     return pick(this.options, ...keys);
   }
 }

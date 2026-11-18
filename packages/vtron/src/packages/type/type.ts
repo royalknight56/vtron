@@ -30,16 +30,30 @@ export interface Setting {
   title: string;
   desc: string;
   icon: string;
+  glyph?: string;
   content: any;
 }
 export type SafeAny = unknown;
-export const Saveablekey: ('lang' | 'logo' | 'background' | 'rootStyle')[] = [
+export const Saveablekey = [
   'lang',
   'logo',
   'background',
   'rootStyle',
-];
+  'brightness',
+  'desktopPreferences',
+] as const;
 export type SystemOptionsSaveable = Pick<SystemOptionsCertainly, (typeof Saveablekey)[number]>;
+
+export interface DesktopPreferences {
+  mediaVolume?: number;
+  showNotifications?: boolean;
+  lockScreenColor?: string;
+  showStartTiles?: boolean;
+  showTaskbarClock?: boolean;
+  timeZone?: string;
+  region?: string;
+  dateFormat?: 'short' | 'long';
+}
 
 export interface ScriptRuntimeOptions {
   /** 终端脚本的请求实现；未配置时使用原生 fetch。仅初始化时生效。 */
@@ -69,6 +83,8 @@ export interface SystemOptionsCertainly {
   shell?: ShellInterface;
   scriptRuntime?: ScriptRuntimeOptions;
   brightness?: number;
+  desktopPreferences?: DesktopPreferences;
+  mobileDemoUrl?: string;
   login?: {
     username: string;
     password: string;
@@ -77,6 +93,10 @@ export interface SystemOptionsCertainly {
   contextMenus?: Array<MenuItemConstructorOptions | MenuItem>;
   noPassword?: boolean;
   loginCallback?: (username: string, password: string) => Promise<boolean>;
+  startMenuAccount?: {
+    label: () => string;
+    open: () => void;
+  };
   /**
    * 不立即挂载系统，默认为false
    */

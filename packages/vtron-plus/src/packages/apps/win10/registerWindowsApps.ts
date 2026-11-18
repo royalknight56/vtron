@@ -10,6 +10,7 @@ import QuickAssist from './accessibility/QuickAssist.vue';
 import ManagementConsole from './management/ManagementConsole.vue';
 import CommandPrompt from './CommandPrompt.vue';
 import { windowsAppIcons } from './icons';
+import { imageExtensions } from './media/mediaFiles';
 
 const definitions = [
   { id: 'wordpad', name: '写字板', component: WordPad, width: 1000, height: 680 },
@@ -32,7 +33,7 @@ const definitions = [
   { id: 'quickAssist', name: '快速助手', component: QuickAssist, width: 360, height: 530 },
 ] as const;
 
-export function registerWindowsApps(system: System) {
+export function registerWindowsApps(system: System, photosOnly = false) {
   const options = (definition: (typeof definitions)[number], path?: string) => {
     const root = system.rootRef;
     const areaWidth = root?.clientWidth || window.innerWidth;
@@ -61,21 +62,30 @@ export function registerWindowsApps(system: System) {
     };
   };
   for (const definition of definitions) {
+    if (photosOnly && definition.id !== 'photos') continue;
     const app: WinAppOptions = {
       name: definition.name,
       icon: windowsAppIcons[definition.name],
       multiple: definition.id === 'wordpad' || definition.id === 'paint',
       window: options(definition),
     };
-    system.addApp(app);
     system.addMenuList(app);
+    if (definition.id === 'photos') system.addApp(app);
+    // Older copies of desktop shortcuts still target the Desktop registry.
+    else system.stateManager.windowMap.set('Desktop', app.name, app);
+    if (definition.id === 'photos') {
+      for (const location of ['Desktop', 'Menulist', 'Magnet'] as const) {
+        system.stateManager.windowMap.set(location, '图库', app);
+      }
+    }
   }
   const photos = definitions.find((item) => item.id === 'photos')!;
   const player = definitions.find((item) => item.id === 'mediaPlayer')!;
   for (const [definition, extensions] of [
-    [photos, ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp']],
+    [photos, imageExtensions],
     [player, ['.mp3', '.wav', '.ogg', '.m4a', '.mp4', '.webm']],
   ] as const) {
+    if (photosOnly && definition.id !== 'photos') continue;
     system.registerFileOpener([...extensions], {
       name: definition.name,
       icon: windowsAppIcons[definition.name],

@@ -1,5 +1,5 @@
 <template>
-  <div class="notify">
+  <div v-if="sys.getConfig('desktopPreferences')?.showNotifications !== false" class="notify">
     <TransitionGroup name="list" tag="div">
       <div class="notify-item" v-for="notify in notifyGroup.current" :key="notify.id" v-glowing @click="notify._onClickFn">
         <div class="notify-item-title">

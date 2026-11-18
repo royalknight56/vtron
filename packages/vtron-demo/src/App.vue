@@ -26,6 +26,9 @@ import onetocicon from './assets/onetoc.png';
 import OpenSource from './components/apps/OpenSource.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
 import BackgroundStore from './components/apps/BackgroundStore.vue';
+import OnlineAccount from './components/OnlineAccount.vue';
+import accountIcon from '@/assets/icon/e77b.png';
+import { account, updateAccount } from './onlineAccount';
 
 import { mountWebdav } from './hook/mountWebdav';
 // import { mountOpener } from './hook/mountOpener';
@@ -35,9 +38,14 @@ import { mountWebdav } from './hook/mountWebdav';
 const iconsReady = ref(false);
 const signalicon = desktopIcons['创建网络链接'];
 const backgroundstoreicon = desktopIcons['背景Store'];
+let accountWindow: BrowserWindow | undefined;
 
 const system = new System({
   id: 0,
+  startMenuAccount: {
+    label: () => account.value?.username ?? '在线账户',
+    open: openOnlineAccount,
+  },
   desktop: [
     ...addListToDesktop(desktopConfig),
     {
@@ -82,7 +90,24 @@ const system = new System({
   ],
   background: "#65b8e0",
   lang: 'zh-CN',
+  mobileDemoUrl: 'https://vtronjs.com/win/',
 });
+
+function openOnlineAccount() {
+  if (!accountWindow) {
+    const settings = system.stateManager.windowMap.get('Builtin', '设置');
+    if (!settings || settings.type === 'group') return;
+    accountWindow = system.createWindow({
+      ...settings.window,
+      config: { ...settings.window.config, router: 'account' },
+    });
+    accountWindow.on('close', () => { accountWindow = undefined; });
+  }
+  if (accountWindow.isMinimized()) accountWindow.restore();
+  accountWindow.show();
+}
+
+void updateAccount();
 
 enableVirtualPreview(system, {
   scope: `${import.meta.env.BASE_URL}__vtron_preview__/`,
@@ -95,6 +120,13 @@ system.whenReady().then(async (readySystem) => {
   // }
 
   readySystem.use(vtronPlus());
+  readySystem.registerSettingPanel({
+    key: 'account',
+    title: '在线账户',
+    desc: '你的信息、登录选项',
+    icon: accountIcon,
+    content: OnlineAccount,
+  });
   try {
     const keyboard = menuConfig[0];
     const userLocation = readySystem.getConfig('userLocation') || '/C/Users/';
@@ -146,9 +178,9 @@ system.whenReady().then(async (readySystem) => {
 
 在右下角日历中可以添加日程，到时间时会提醒
 
-## 更新图库和音乐库
+## 照片和音乐库
 
-可以简单的管理图片和音乐
+在「照片」中可以导入、浏览和管理图片。
 
 ## NoteMd
 

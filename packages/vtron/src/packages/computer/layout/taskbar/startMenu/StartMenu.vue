@@ -6,7 +6,7 @@
     <div class="startmenu-item">
       <MenuList></MenuList>
     </div>
-    <div class="startmenu-item">
+    <div v-if="sys.getConfig('desktopPreferences')?.showStartTiles !== false" class="startmenu-item">
       <Magnet></Magnet>
     </div>
   </div>

@@ -1,3 +1,4 @@
+import { openRegisteredApp } from '../utils/openRegisteredApp';
 import myComputerLogoIcon from '@packages/assets/computer.png?url';
 import imageicon from '@packages/assets/image.png';
 import unknownIcon from '@packages/assets/unknown.png';
@@ -50,23 +51,7 @@ export function initBuiltinFileOpener(system: System) {
         exeContent[1] as 'Desktop' | 'Magnet' | 'Menulist' | 'Builtin',
         exeContent[2]
       );
-      if (winopt && winopt.type !== 'group') {
-        if (winopt.multiple ?? true) {
-          const win = system.createWindow(winopt.window);
-          win.show();
-        } else {
-          if (winopt._hasShow) {
-            return;
-          } else {
-            winopt._hasShow = true;
-            const win = system.createWindow(winopt.window);
-            win.show();
-            win.on('close', () => {
-              winopt._hasShow = false;
-            });
-          }
-        }
-      }
+      openRegisteredApp(system, winopt);
     },
   });
 

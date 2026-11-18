@@ -1,6 +1,6 @@
 <template>
   <div class="custom-outer">
-    <div class="state-item" v-for="item in traylst" :key="item._id">
+    <div class="state-item" v-for="item in visibleTrays" :key="item._id">
       <div class="state-icon" @click="($event) => handleClick(item, $event)">
         <div class="inner">
           <VtronImage v-if="typeof item.image === 'string'" :path="item.image"></VtronImage>
@@ -26,11 +26,16 @@
 import VtronImage from '@/packages/computer/application/components/VtronImage.vue';
 import { System } from '@/packages/kernel';
 import { Tray, Menu } from '@/packages/services';
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
+import DateTime from '@/packages/computer/application/trayItems/DateTime.vue';
 
 const sys = inject<System>('system')!;
 
 const traylst = sys.stateManager.trayState.current;
+const visibleTrays = computed(() => sys.getConfig('desktopPreferences')?.showTaskbarClock === false
+  ? traylst.filter((tray) => tray.image !== DateTime)
+  : traylst
+);
 function handleClick(item: Tray, ev: MouseEvent) {
   if (item._contextMenu instanceof Menu) {
     item._contextMenu.popup(ev);

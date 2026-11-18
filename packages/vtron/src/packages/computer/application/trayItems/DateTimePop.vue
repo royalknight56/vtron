@@ -75,7 +75,10 @@ import DateNote from '@/packages/computer/application/DateNote.vue';
 import { vGlowing } from '@/packages/computer/utils/glowingBorder';
 import { initAlertEvent } from '../../mount/initEventListener';
 
+import { formatDesktopClock } from '@/packages/computer/utils/desktopClock';
+
 const sys = inject<System>('system')!;
+
 const timeDisplay = ref('00:00:00');
 const dateDisplay = ref('0000/00/00');
 const weekLabels = computed(() => [
@@ -117,9 +120,9 @@ function onDayClick(weekIndex: number, dayIndex: number) {
 }
 
 function updateTime() {
-  const d = new Date();
-  timeDisplay.value = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-  dateDisplay.value = `${today.year}/${today.month}/${today.day}`;
+  const display = formatDesktopClock(new Date(), sys.getConfig('desktopPreferences'), true);
+  timeDisplay.value = display.time;
+  dateDisplay.value = display.date;
 }
 
 const firstDay = new Date(today.year, today.month - 1, 1).getDay();

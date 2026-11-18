@@ -1,6 +1,6 @@
 import { System, dirname, extname } from 'vtron';
 import { FileStat, createClient } from 'webdav';
-import WebdavSetVue from '../components/apps/WebdavSet.vue';
+
 export function mountWebdav(system: System) {
   if (localStorage.getItem('webdav_url')) {
     const client = createClient(localStorage.getItem('webdav_url') || '', {
@@ -110,11 +110,4 @@ export function mountWebdav(system: System) {
       registerWatcher(path, callback) {},
     });
   }
-  system.registerSettingPanel({
-    key: 'webdav',
-    title: 'webdav 设置',
-    desc: '设置文件系统webdav',
-    icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAk0lEQVRYw2P8z0AZYBw1YHgYcLF9JVk6wyv1wQZccHxPpt2C+0EmMIavJNv14StABlDi//8wA8gJSMYRbMCKLIZpEZQYIPSeQfDdgBpAsRdG08HwNYDiAmWIG/CfiIAiu2Ya4gYwogXWSDXgPxEBORwNYMST2/4PUwNwFRTEKPw/TAz4T0ygkBsLQ9SA0U7XiDQAAHeffgFWSH/RAAAAAElFTkSuQmCC',
-    content: WebdavSetVue,
-  });
 }

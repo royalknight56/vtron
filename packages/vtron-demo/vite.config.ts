@@ -1,6 +1,9 @@
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import { defineConfig } from 'vite';
+
+const localBackend = 'http://127.0.0.1:8787';
+
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
@@ -26,6 +29,22 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    proxy: {
+      '/api/account': {
+        target: localBackend,
+        changeOrigin: true,
+        configure(proxy) {
+          proxy.on('proxyReq', (outgoing, incoming) => {
+            // The Worker sees the upstream URL. Preserve its same-origin check for local Demo requests.
+            if (incoming.headers.origin === `http://${incoming.headers.host}`) {
+              outgoing.setHeader('Origin', localBackend);
+            } else {
+              outgoing.removeHeader('Origin');
+            }
+          });
+        },
+      },
+    },
   },
   plugins: [
     vue(),

@@ -64,7 +64,8 @@ export function textContent(value: string) {
     ? new TextDecoder().decode(Uint8Array.from(atob(value.slice(comma + 1)), (c) => c.charCodeAt(0)))
     : decodeURIComponent(value.slice(comma + 1));
 }
-export const imagePattern = /\.(png|jpe?g|gif|webp|bmp|vtimg)$/i;
+export const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.avif', '.ico', '.svg', '.vtimg'];
+export const imagePattern = new RegExp(`\\.(${imageExtensions.map((extension) => extension.slice(1)).join('|')})$`, 'i');
 export const mediaPattern = /\.(mp3|wav|ogg|m4a|aac|flac|mp4|webm|m4v|ogv|mov)$/i;
 const mimeTypes: Record<string, string> = {
   png: 'image/png',
@@ -73,6 +74,9 @@ const mimeTypes: Record<string, string> = {
   gif: 'image/gif',
   webp: 'image/webp',
   bmp: 'image/bmp',
+  avif: 'image/avif',
+  ico: 'image/x-icon',
+  svg: 'image/svg+xml',
   vtimg: 'image/png',
   mp3: 'audio/mpeg',
   wav: 'audio/wav',
@@ -99,7 +103,7 @@ export async function virtualMedia(sys: System, path: string, kind: 'image' | 'm
   }
   const dataPattern =
     kind === 'image'
-      ? /^data:image\/(png|jpe?g|gif|webp|bmp);base64,[a-z\d+/=\s]+$/i
+      ? /^data:image\/(png|jpe?g|gif|webp|bmp|avif|x-icon|vnd\.microsoft\.icon|svg\+xml);base64,[a-z\d+/=\s]+$/i
       : /^data:(audio|video)\/[\w.+-]+;base64,[a-z\d+/=\s]+$/i;
   if (text && dataPattern.test(text)) return { url: text, release: () => {} };
   let bytes: Uint8Array | null = null;

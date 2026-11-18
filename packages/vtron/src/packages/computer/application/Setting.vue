@@ -8,7 +8,15 @@
   >
     <div class="upbar" v-dragable>
       <div class="upbar-left">
-        <div class="back-arr" v-if="currentRouter !== 'main'" @click="back">←</div>
+        <button
+          class="back-arr"
+          v-if="currentRouter !== 'main'"
+          type="button"
+          :aria-label="i18n('windows.setting')"
+          @click="back"
+        >
+          ←
+        </button>
         <div class="upbar-text">
           {{ i18n('setting') }}
         </div>
@@ -17,54 +25,45 @@
         <WinUpButtonGroup :browser-window="browserWindow"></WinUpButtonGroup>
       </div>
     </div>
-    <Transition v-for="item in setList" :key="item.key" name="fade" appear>
-      <component :is="item.content" v-if="currentRouter === item.key" />
-    </Transition>
-    <Transition name="fade" appear>
-      <div class="outer" v-if="currentRouter === 'main'">
-        <div class="uper_tab">
-          <div class="tab">
-            {{ i18n('windows.setting') }}
-          </div>
-        </div>
-        <div class="outer_main">
-          <div class="main_uper">
-            <div
-              class="set_item"
-              v-for="item in setList"
-              :key="item.title"
-              @click="openSet(item.key)"
-              v-glowing="{
-                color: '#3c3c3ce4',
-                scale: 0.6,
-              }"
-            >
-              <div class="set_item-img">
-                <img class="set_item-img-img" :src="item.icon" />
-              </div>
-              <div class="set_item-right">
-                <div class="set_item-title">{{ item.title }}</div>
-                <div class="set_item-desc">{{ item.desc }}</div>
-              </div>
-            </div>
-          </div>
+    <Transition name="fade" mode="out-in" appear>
+      <component v-if="activePanel" :is="activePanel.content" :key="activePanel.key" />
+      <div v-else class="outer">
+        <h1 class="settings-title">{{ i18n('windows.setting') }}</h1>
+        <div class="main_uper">
+          <button
+            v-for="item in setList"
+            :key="item.key"
+            class="set_item"
+            type="button"
+            @click="openSet(item.key)"
+            v-glowing="{ color: '#3c3c3ce4', scale: 0.6 }"
+          >
+            <span class="set_item-img">
+              <span v-if="item.glyph" class="SEGOEUIMDL" aria-hidden="true">{{ item.glyph }}</span>
+              <img v-else :src="item.icon" alt="" />
+            </span>
+            <span class="set_item-right">
+              <span class="set_item-title">{{ item.title }}</span>
+              <span class="set_item-desc">{{ item.desc }}</span>
+            </span>
+          </button>
         </div>
       </div>
     </Transition>
   </div>
 </template>
 <script lang="ts" setup>
-import { inject, ref, markRaw } from 'vue';
+import { computed, defineComponent, h, inject, ref, markRaw } from 'vue';
 import SetCustom from '@/packages/computer/application/SetWindow/SetCustom.vue';
 import SetSystem from '@/packages/computer/application/SetWindow/SetSystem.vue';
 import SetLang from '@/packages/computer/application/SetWindow/SetLang.vue';
 import SetAccount from '@/packages/computer/application/SetWindow/SetAccount.vue';
+import SetWeb, { type WebSettingsCategory } from './SetWindow/SetWeb.vue';
+import type { Setting } from '@/packages/type/type';
 
 import WinUpButtonGroup from '@/packages/components/WinUpButtonGroup.vue';
 import e7f8 from '@/assets/icon/e7f8.png'; //系统设置
-// import e774 from '../../../assets/icon/e774.png'; //网络
 import e771 from '@/assets/icon/e771.png'; //个性化
-// import e895 from '../../../assets/icon/e895.png'; //更新
 import e775 from '@/assets/icon/e775.png'; //语言
 import e77b from '@/assets/icon/e77b.png'; //账户
 
@@ -94,79 +93,102 @@ function back() {
 function openSet(key: string) {
   currentRouter.value = key;
 }
-const setList = ref([
-  // {
-  //   key: 'system',
-  //   title: i18n('system'),
-  //   // desc: '显示，声音，通知，电源',
-  //   desc: i18n('brightness'),
-  //   icon: e7f8,
-  //   content: markRaw(SetSystem),
-  // },
-  // {
-  //     title: '网络和Internet',
-  //     desc: 'WLAN，飞行模式，VPN',
-  //     icon: e774
-  // },
-  ...(sys._options.builtinFeature?.includes('Setting-Personalization')
-    ? [
-        {
-          key: 'custom',
-          title: i18n('personalization'),
-          desc: i18n('background.lockscreen.color'),
-          icon: e771,
-          content: markRaw(SetCustom),
-        },
-      ]
-    : []),
+function webSetting(key: WebSettingsCategory, title: string, desc: string, glyph: string): Setting {
+  return {
+    key,
+    title,
+    desc,
+    glyph,
+    icon: '',
+    content: markRaw(defineComponent(() => () => h(SetWeb, { category: key }))),
+  };
+}
+const webSettings = [
+  webSetting('devices', '设备', '音频和视频设备', '\uE772'),
+  webSetting('phone', '手机', '在手机上使用 Vtron', '\uE8EA'),
+  webSetting('network', '网络和 Internet', '网络状态', '\uE774'),
+  webSetting('gaming', '游戏', '全屏显示', '\uE7FC'),
+  webSetting('accessibility', '轻松使用', '放大镜、屏幕键盘', '\uE776'),
+  webSetting('search', '搜索', '文件和文件夹', '\uE721'),
+  webSetting('privacy', '隐私', '站点权限', '\uE72E'),
+];
+const order = [
+  'system',
+  'devices',
+  'phone',
+  'network',
+  'custom',
+  'account',
+  'language',
+  'gaming',
+  'accessibility',
+  'search',
+  'privacy',
+  '备份与恢复',
+];
 
-  //  {
-  //     title: '软件商店',
-  //     desc: '获取网络上的应用',
-  //     icon: e771,
-  //     content:appstore
-  // },
-  ...(sys._options.builtinFeature?.includes('Setting-Language')
-    ? [
-        {
-          key: 'language',
-          title: i18n('time.and.language'),
-          desc: i18n('language'),
-          icon: e775,
-          content: markRaw(SetLang),
-        },
-      ]
-    : []),
-
-  ...(sys._options.builtinFeature?.includes('Setting-Account')
-    ? [
-        {
-          key: 'account',
-          title: i18n('account'),
-          desc: i18n('your.account'),
-          icon: e77b,
-          content: markRaw(SetAccount),
-        },
-      ]
-    : []),
-
-  // {
-  //   key: 'update',
-  //   // title: '更新和安全',
-  //   title: i18n('update.security'),
-  //   // desc: 'Windows 更新，恢复，备份',
-  //   desc: i18n('windows.update.recover.backup'),
-  //   icon: e895,
-  //   content: markRaw(SetUpdate),
-  // },
-  ...sys.stateManager.settings.getSettings(),
-]);
+const setList = computed<Setting[]>(() => {
+  const customSettings = sys.stateManager.settings.getSettings();
+  const features = sys._options.builtinFeature;
+  const panels = [
+    {
+      key: 'system',
+      title: i18n('system'),
+      desc: '显示、声音、通知、存储、关于',
+      icon: e7f8,
+      content: markRaw(SetSystem),
+    },
+    ...webSettings.filter(({ key }) => {
+      if (key === 'phone') return Boolean(sys.getConfig('mobileDemoUrl'));
+      if (key === 'accessibility') return Boolean(sys.stateManager.windowMap.get('Menulist', '放大镜'));
+      return true;
+    }),
+    ...(features?.includes('Setting-Personalization')
+      ? [
+          {
+            key: 'custom',
+            title: i18n('personalization'),
+            desc: '背景、锁屏、主题、开始菜单、任务栏',
+            icon: e771,
+            content: markRaw(SetCustom),
+          },
+        ]
+      : []),
+    ...(features?.includes('Setting-Language')
+      ? [
+          {
+            key: 'language',
+            title: i18n('time.and.language'),
+            desc: '时区、区域、语言',
+            icon: e775,
+            content: markRaw(SetLang),
+          },
+        ]
+      : []),
+    ...(features?.includes('Setting-Account') && !customSettings.some(({ key }) => key === 'account')
+      ? [
+          {
+            key: 'account',
+            title: i18n('account'),
+            desc: i18n('your.account'),
+            icon: e77b,
+            content: markRaw(SetAccount),
+          },
+        ]
+      : []),
+    ...customSettings,
+  ];
+  const position = (key: string) => (order.includes(key) ? order.indexOf(key) : order.length);
+  return panels.sort((a, b) => position(a.key) - position(b.key));
+});
+const activePanel = computed(() => setList.value.find((item) => item.key === currentRouter.value));
 </script>
 
 <style lang="scss" scoped>
 @import '@packages/main.css';
 
 .window-outer {
+  --settings-sidebar-width: 200px;
   background-color: white;
   width: 100%;
   height: 100%;
@@ -198,6 +220,9 @@ const setList = ref([
 
     .back-arr {
       padding: 0 6px;
+      border: 0;
+      background: transparent;
+      color: inherit;
       margin-right: 3px;
       font-size: 14px;
       width: 40px;
@@ -219,7 +244,7 @@ const setList = ref([
   }
 
   .upbar-right {
-    width: calc(100% - 200px);
+    width: calc(100% - var(--settings-sidebar-width));
     display: flex;
     justify-content: flex-end;
     height: 100%;
@@ -228,140 +253,80 @@ const setList = ref([
 }
 
 .outer {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  background-color: #ffffff;
-  user-select: none;
-  /* background-color: rgb(241, 241, 241); */
+  height: calc(100% - 40px);
+  overflow: auto;
+  background: white;
 }
 
-.outer_main {
-  height: 100%;
-  margin: 0px 10px 00px 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.settings-title {
+  margin: 22px 18px 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 400;
 }
 
 .main_uper {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-  align-items: center;
-  height: 50px;
-  width: 90%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 174px), 1fr));
+  gap: 8px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 20px 20px;
 }
 
 .set_item {
-  margin: 10px 20px;
-  padding: 2px 8px 10px 2px;
-  width: 200px;
+  min-width: 0;
+  min-height: 76px;
   display: flex;
-  align-items: center;
-  background-color: white;
-  border: 1px solid #99999900;
-  transition: all 0.1s;
-  position: relative;
-  z-index: 2;
-
-  .set_item-img {
-    width: 30px;
-    margin: 10px 16px;
-    flex-shrink: 0;
-
-    img {
-      width: 100%;
-    }
-  }
-
-  .set_item-right {
-    flex: 1;
-  }
-
-  .set_item-title {
-    padding: 4px 0px;
-  }
-
-  .set_item-desc {
-    font-size: 10px;
-    color: #999999;
-  }
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 8px;
+  background: white;
+  border: 1px solid transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
 }
 
 .set_item:hover {
-  border: 1px solid #99999954;
-  box-shadow: 0 0 0 1px #999999 inset;
+  border-color: #999;
 }
 
-.uper_tab {
-  /* width: 90%; */
-  margin: 10px 10px -1px 10px;
+.set_item-img {
+  width: 28px;
+  flex-shrink: 0;
+  color: #0078d7;
+  font-size: 24px;
+  text-align: center;
+}
+
+.set_item-img img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.set_item-title {
+  display: block;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.set_item-desc {
+  display: block;
+  margin-top: 4px;
   font-size: 12px;
-
-  z-index: 1;
-  display: flex;
-}
-
-.tab {
-  text-align: center;
-  width: 100%;
-  height: 40px;
-  font-size: 20px;
-  font-weight: 200;
-  /* border: 1px solid #d9d9d9; */
-  border-bottom: none;
-}
-
-.tab_unactive {
-  text-align: center;
-  width: 40px;
-  background-color: rgb(241, 241, 241);
-
-  border: 1px solid #d9d9d9;
-  /* border-bottom:none; */
-}
-
-.bottom {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  flex-shrink: 0;
-  width: 90%;
-  margin: 6px auto;
-  // background-color: #f0f0f0;
-}
-
-.bottom_button {
-  width: 80px;
-  height: 26px;
-  line-height: 26px;
-  text-align: center;
-  font-size: 13px;
-  background-color: #e1e1e1;
-  border: 1px solid #999999;
-  transition: all 0.2s;
-  box-sizing: border-box;
-  margin: 0 0 0 10px;
-}
-
-.bottom_button:first-child {
-  border: 1px solid #0078d7;
-  box-shadow: 0 0 0px 1px #0078d7 inset;
-}
-
-.bottom_button:hover {
-  border: 1px solid #0078d7;
-  background-color: #e5f1fb;
-  box-shadow: 0 0 0 0px #0078d7 inset;
+  line-height: 1.4;
+  color: #595959;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.2s ease;
+  transition: opacity 0.12s ease;
+}
+
+.fade-leave-active {
+  pointer-events: none;
 }
 
 .fade-enter-to,

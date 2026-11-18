@@ -22,6 +22,7 @@
       </Transition>
       <DesktopLayout v-if="powerState == PowerStateEnum.open"></DesktopLayout>
     </template>
+    <div v-if="dimming > 0" class="desktop-dimming" :style="{ opacity: dimming }" aria-hidden="true"></div>
   </div>
 </template>
 
@@ -33,7 +34,7 @@ import LockDesktop from '@packages/computer/layout/desktop/LockDesktop.vue';
 import DesktopBackground from '@packages/computer/layout/desktop/components/DesktopBackground.vue';
 import { PowerStateEnum } from '@/packages/kernel/state/subStates/PowerState';
 import { System } from '@packages/kernel';
-import { inject, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
 
 const screenref = ref();
 const props = defineProps<{
@@ -43,6 +44,7 @@ const sys = inject<System>('system')!;
 onMounted(() => {
   sys.rootRef = screenref.value;
 });
+const dimming = computed(() => 1 - Math.max(30, Math.min(100, sys.getConfig('brightness') ?? 100)) / 100);
 const powerState = ref(props.system.stateManager.powerState.current);
 </script>
 <style lang="scss" scoped>
@@ -53,5 +55,12 @@ const powerState = ref(props.system.stateManager.powerState.current);
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+.desktop-dimming {
+  position: absolute;
+  inset: 0;
+  background: black;
+  pointer-events: none;
+  z-index: 10000;
 }
 </style>

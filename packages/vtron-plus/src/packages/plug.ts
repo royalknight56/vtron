@@ -14,7 +14,6 @@ import pythonIcon from './assets/Python.png';
 import chromeicon from './assets/chromeicon.png';
 import docxIcon from './assets/office-word.svg';
 import backupIcon from './assets/e895.png';
-import galleryIcon from './assets/gallery.svg';
 import storeIcon from './assets/vtron-stroe-icon-nobg.png';
 import musicAppIcon from './assets/musicApp.png';
 import pdfIcon from './assets/pdf.png';
@@ -29,7 +28,6 @@ import WordEditorVue from './apps/WordEditor.vue';
 import PPTEditorVue from './apps/PPTEditor.vue';
 // import MusicStoreVue from './apps/MusicStore.vue';
 import MusicViewerVue from './apps/MusicViewer.vue';
-import PictureStoreVue from './apps/PictureStore.vue';
 import PythonVue from './apps/Python.vue';
 import Terminal from './apps/Terminal.vue';
 import VideoViewerVue from './apps/VideoViewer.vue';
@@ -464,27 +462,6 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
     //       content: MusicStoreVue,
     //     },
     //   });
-    config.features.includes('gallery') &&
-      system.addApp({
-        name: '图库',
-        icon: galleryIcon,
-        multiple: false,
-        window: {
-          title: '图库',
-          width: 800,
-          height: 600,
-          frame: false,
-          fullDragable: false,
-          resizable: true,
-          backgroundColor: 'transparent',
-          radius: 8,
-          style: { boxShadow: '0 12px 36px rgb(0 0 0 / 24%)' },
-          icon: galleryIcon,
-          center: true,
-          content: PictureStoreVue,
-        },
-      });
-
     config.features.includes('store') &&
       system.addApp({
         name: 'AppStore',
@@ -680,14 +657,16 @@ function vtronPlus(configIn?: { features?: VtronFeature[]; npm?: NpmOptions | fa
 
     //#endregion
 
-    if (config.features.includes('windows')) registerWindowsApps(system);
+    if (config.features.includes('windows') || config.features.includes('gallery')) {
+      registerWindowsApps(system, !config.features.includes('windows'));
+    }
 
     /**------------------ 设置面板 ------------ */
     //#region
     system.registerSettingPanel({
       key: '备份与恢复',
-      title: `备份与恢复`,
-      desc: '备份和恢复系统文件',
+      title: '更新和安全',
+      desc: '版本、备份和恢复、ZIP 导入',
       content: ZipBackupVue,
       icon: backupIcon,
     });

@@ -37,7 +37,7 @@ async function onLogin() {
 </script>
 
 <template>
-  <div class="lockscreen" :class="lockClassName">
+  <div class="lockscreen" :class="lockClassName" :style="{ backgroundColor: sys.getConfig('desktopPreferences')?.lockScreenColor }">
     <!---->
     <div class="login-box">
       <span

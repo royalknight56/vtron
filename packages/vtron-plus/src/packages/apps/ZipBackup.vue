@@ -1,19 +1,24 @@
 <template>
   <div class="container">
     <div class="nav">
-      <ul>
-        <li
-          v-for="(item, index) in items"
-          :key="index"
-          @click="selectItem(index)"
-          :class="{ active: index === activeIndex }"
-        >
-          {{ item }}
-        </li>
-      </ul>
+      <h2>更新和安全</h2>
+      <button
+        v-for="(item, index) in items"
+        :key="item"
+        type="button"
+        :aria-current="index === activeIndex ? 'page' : undefined"
+        @click="activeIndex = index"
+      >
+        {{ item }}
+      </button>
     </div>
     <div class="setting">
-      <div v-if="0 === activeIndex">
+      <div v-if="activeIndex === 0">
+        <h1 class="setting-title">版本</h1>
+        <p>当前版本 Vtron {{ sys.version }}</p>
+        <p>Vtron 随站点更新，刷新页面后加载。</p>
+      </div>
+      <div v-else-if="activeIndex === 1">
         <div class="setting-item">
           <h1 class="setting-title">备份与恢复</h1>
         </div>
@@ -38,13 +43,9 @@
           </div>
         </div>
       </div>
-      <div v-if="1 === activeIndex">
+      <div v-else>
         <div class="setting-item">
-          <h1 class="setting-title">导入文件</h1>
-        </div>
-        <div class="setting-item">
-          <label>导入 </label>
-          <div></div>
+          <h1 class="setting-title">ZIP 导入</h1>
         </div>
         <div class="setting-item">
           <label>目标本机路径 </label>
@@ -76,14 +77,7 @@ import FileSaver from 'file-saver';
 import FileUploader from '../components/FileUploader.vue';
 
 const activeIndex = ref(0);
-const items = [
-  '备份和恢复',
-  '导入文件',
-  // '版本',
-];
-const selectItem = (index: number) => {
-  activeIndex.value = index;
-};
+const items = ['版本', '备份与恢复', 'ZIP 导入'];
 
 const sys = inject<System>('system')!;
 async function exportBackup() {
@@ -199,14 +193,6 @@ async function importZipFile() {
 }
 </script>
 <style scoped>
-.outer {
-  position: absolute;
-  width: calc(100% - 200px);
-  height: 100%;
-  left: 200px;
-  background-color: #fff;
-}
-
 .container {
   display: flex;
   flex-direction: row;
@@ -215,53 +201,55 @@ async function importZipFile() {
 }
 
 .nav {
-  width: 200px;
+  width: var(--settings-sidebar-width, 200px);
   flex-shrink: 0;
+  overflow: auto;
+  background: #f0f0f0;
 }
-.nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.nav h2 {
+  margin: 22px 16px 14px;
+  font-size: 15px;
+  font-weight: 600;
 }
-
-.nav li {
-  cursor: pointer;
-  padding: 10px 20px;
-  font-size: 14px;
+.nav button {
   position: relative;
-}
-
-.nav li.active {
-  background-color: #cccccc62;
-  transition: all 0.1s;
-}
-.nav li.active:hover {
-  background-color: var(--color-dark-light);
-}
-.nav li.active::after {
-  content: '';
   display: block;
-  width: 4px;
-  height: 60%;
-  background-color: var(--color-dark);
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+}
+.nav button:hover,
+.nav button:focus-visible {
+  background: #e1e1e1;
+}
+.nav button[aria-current]::before {
+  content: '';
   position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  inset: 11px auto 11px 0;
+  width: 3px;
+  background: #0078d7;
 }
 
 .setting {
   /* flex: 1; */
-  padding: 0 20px;
+  min-width: 0;
+  padding: 18px 28px 30px;
   width: 100%;
   background-color: white;
   overflow-y: auto;
 }
 
 .setting-title {
-  font-size: 24px;
-  font-weight: 300;
-  margin-bottom: 20px;
+  margin: 0 0 22px;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.3;
   display: flex;
   justify-content: flex-start;
   width: 100%;

@@ -297,9 +297,13 @@ const visibleTracks = computed(() =>
       track.name.toLocaleLowerCase().includes(search.value.toLocaleLowerCase())
   )
 );
-watch([volume, muted], () => {
+const effectiveVolume = computed(() => {
+  const preferences = sys.getConfig('desktopPreferences') as { mediaVolume?: number } | undefined;
+  return volume.value * (Math.min(100, Math.max(0, preferences?.mediaVolume ?? 100)) / 100);
+});
+watch([effectiveVolume, muted], () => {
   if (player.value) {
-    player.value.volume = volume.value;
+    player.value.volume = effectiveVolume.value;
     player.value.muted = muted.value;
   }
 });
@@ -317,7 +321,7 @@ function metadata() {
   const element = player.value!;
   duration.value = Number.isFinite(element.duration) ? element.duration : 0;
   isVideo.value = element.videoWidth > 0;
-  element.volume = volume.value;
+  element.volume = effectiveVolume.value;
   element.muted = muted.value;
 }
 function timeUpdated() {

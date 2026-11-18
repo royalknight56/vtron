@@ -1,32 +1,22 @@
 <template>
   <div class="date-time">
-    <span class="time">{{ timeDisplay }}</span>
-    <span class="date">{{ dateDisplay }}</span>
+    <span class="time">{{ display.time }}</span>
+    <span class="date">{{ display.date }}</span>
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, inject, onMounted, onUnmounted, ref } from 'vue';
+import { System } from '@packages/kernel';
+import { formatDesktopClock } from '@/packages/computer/utils/desktopClock';
 
-const timeDisplay = ref(`00:00`);
-const dateDisplay = ref(`0000-00-00`);
-function updateTime() {
-  const date = new Date();
-  const time = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
-  const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-  timeDisplay.value = time;
-  dateDisplay.value = dateStr;
-}
-
+const system = inject<System>('system')!;
+const now = ref(new Date());
+const display = computed(() => formatDesktopClock(now.value, system.getConfig('desktopPreferences')));
+let timer: ReturnType<typeof setInterval>;
 onMounted(() => {
-  updateTime();
-  setInterval(() => {
-    updateTime();
-  }, 5000);
+  timer = setInterval(() => { now.value = new Date(); }, 5000);
 });
-// 把数字补齐两位
-function pad(num: number) {
-  return num.toString().padStart(2, '0');
-}
+onUnmounted(() => clearInterval(timer));
 </script>
 <style lang="scss" scoped>
 .date-time {

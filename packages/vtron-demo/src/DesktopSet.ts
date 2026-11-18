@@ -7,9 +7,6 @@ import winv3icon from './assets/winv3.png';
 import Tmusicicon from './assets/t-music.png';
 import { desktopIcons } from './desktopIcons';
 import softkeyboardbase from './assets/softkeyboard.base?raw';
-import gamebase from './assets/game.base?raw';
-import touzi from './assets/touzi.base?raw';
-import coin from './assets/coin.base?raw';
 import type { WinAppOptions } from 'vtron';
 
 const signalicon = desktopIcons['创建网络链接'];
@@ -19,7 +16,6 @@ import GitStars from './components/apps/GitStars.vue';
 import GotoReadMe from './components/apps/GotoReadMe.vue';
 import CreateUrl from './components/apps/CreateUrl.vue';
 import SoftKeyboard from './components/apps/SoftKeyboard.vue';
-// import Gallery from './components/apps/Gallery.vue';
 
 // 提取通用配置
 const commonConfig = {
@@ -67,42 +63,6 @@ const magnetConfig = [
     center: true,
     content: 'https://w0akxkb81ek.feishu.cn/share/base/form/shrcnxXNS3dN7XpIfPdXNknjxNf',
   },
-  {
-    title: '2048',
-    icon: gamebase,
-    width: 800,
-    height: 800,
-    center: true,
-    content: 'https://vtronjs.com/subapps/react/#/2048',
-  },
-  {
-    title: '井字棋',
-    icon: gamebase,
-    width: 800,
-    height: 800,
-    center: true,
-    content: 'https://vtronjs.com/subapps/react/#/tic-tac-toe',
-  },
-  {
-    title: '抛硬币',
-    icon: coin,
-    width: 800,
-    height: 700,
-    center: true,
-    content: 'https://vtronjs.com/subapps/coin/',
-    resizable: true,
-    backgroundColor: '#444',
-  },
-  {
-    title: '掷骰子',
-    icon: touzi,
-    width: 800,
-    height: 700,
-    center: true,
-    content: 'https://vtronjs.com/subapps/dice/',
-    resizable: true,
-    backgroundColor: '#444',
-  },
 ];
 
 // 重构 desktopConfig
@@ -147,16 +107,6 @@ const desktopConfig = [
     content: 'https://slinote.com/',
   },
 
-  // {
-  //   title: '图库',
-  //   icon: galleryicon,
-  //   width: 800,
-  //   height: 600,
-  //   center: true,
-  //   content: Gallery,
-
-  //   resizable: true,
-  // },
   {
     title: '创建网络链接',
     icon: signalicon,

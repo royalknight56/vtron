@@ -11,7 +11,7 @@
       }"
     >
       <FileIcon class="magnet-item_img" :file="item" />
-      <span class="magnet-item_title">{{ basename(item.path) }}</span>
+      <span class="magnet-item_title">{{ basename(item.path).replace(/\.exe$/i, '') }}</span>
     </div>
   </div>
 </template>

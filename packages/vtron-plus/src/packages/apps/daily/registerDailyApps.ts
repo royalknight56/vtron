@@ -38,9 +38,10 @@ export function registerDailyApps(system: System, features: readonly string[]) {
       multiple: definition.feature === 'notepad',
       window: options(definition),
     };
-    system.addApp(app);
     system.addMenuList(app);
-    if (definition.feature === 'calc') system.addMagnet(app);
+    // Keep older shortcuts resolvable without adding new ones to the desktop or tiles.
+    system.stateManager.windowMap.set('Desktop', app.name, app);
+    if (definition.feature === 'calc') system.stateManager.windowMap.set('Magnet', app.name, app);
   }
   if (features.includes('notepad')) {
     const definition = definitions.find((item) => item.feature === 'notepad')!;

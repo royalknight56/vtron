@@ -4,8 +4,8 @@
     class="excel-app office-window"
     tabindex="0"
     @keydown="onKeyDown"
-    @copy="onCopy"
-    @cut="onCut"
+    @copy="writeCopyEvent($event)"
+    @cut="writeCopyEvent($event, true)"
     @paste="onPaste"
   >
     <OfficeTitlebar class="office-title" @close="closeWindow">
@@ -38,12 +38,12 @@
       <template v-if="tab === 'home'">
         <div class="ribbon-group clipboard-group">
           <div class="group-controls">
-            <button class="large-tool" @click="pasteClipboard">
+            <button class="large-tool" @click="pasteClipboard()">
               <span class="large-symbol">▣</span>粘贴
             </button>
             <div class="stack">
               <button @click="copySelection(true)">剪切</button><button @click="copySelection()">复制</button
-              ><button @click="clearValues">清除内容</button>
+              ><button @click="pasteClipboard(true)">粘贴值</button><button @click="clearValues">清除内容</button>
             </div>
           </div>
           <small>剪贴板</small>
@@ -137,20 +137,28 @@
         <div class="ribbon-group">
           <div class="group-controls stack">
             <select
-              :value="currentCell.fmt || 'general'"
+              :value="numberFormatLabel"
               aria-label="数字格式"
-              @change="format({ fmt: eventValue($event) as CellData['fmt'] })"
+              @change="selectNumberFormat($event)"
             >
               <option value="general">常规</option>
               <option value="number">数值</option>
               <option value="currency">货币</option>
               <option value="percent">百分比</option>
               <option value="date">日期</option>
+              <option value="time">时间</option>
+              <option value="datetime">日期和时间</option>
+              <option value="duration">累计时长</option>
+              <option value="text">文本</option>
+              <option v-if="numberFormatLabel === 'custom'" value="custom" disabled>自定义</option>
+              <option value="edit">自定义格式…</option>
             </select>
             <div class="format-row">
               <button title="货币格式" @click="format({ fmt: 'currency' })">¥</button
-              ><button title="百分比格式" @click="format({ fmt: 'percent' })">%</button
+              ><button title="百分比格式" @click="format({ fmt: 'percent', decimals: 0 })">%</button
               ><button title="千位分隔数值" @click="format({ fmt: 'number' })">,</button>
+              <button title="增加小数位数" aria-label="增加小数位数" @click="changeDecimals(1)">.0←</button>
+              <button title="减少小数位数" aria-label="减少小数位数" @click="changeDecimals(-1)">→.0</button>
             </div>
           </div>
           <small>数字</small>
@@ -168,6 +176,13 @@
             <button title="向右填充 Ctrl+R" @click="fillSelection('right')">向右填充</button>
           </div>
           <small>填充</small>
+        </div>
+        <div class="ribbon-group">
+          <div class="group-controls stack">
+            <button :disabled="visibleSheets.length <= 1" @click="hideSheet">隐藏工作表</button>
+            <button :disabled="!hiddenSheets.length" @click="openUnhide">取消隐藏</button>
+          </div>
+          <small>工作表</small>
         </div>
       </template>
       <template v-else-if="tab === 'insert'">
@@ -204,6 +219,13 @@
           </div>
           <small>工作表</small>
         </div>
+        <div class="ribbon-group">
+          <div class="group-controls stack">
+            <button title="插入或编辑超链接 Ctrl+K" @click="openLinkDialog">链接</button>
+            <button :disabled="!currentCell.link" @click="removeLink">删除链接</button>
+          </div>
+          <small>链接</small>
+        </div>
       </template>
       <template v-else-if="tab === 'formulas'">
         <div class="ribbon-group">
@@ -233,7 +255,7 @@
         </div>
         <p v-if="formulaHelp" class="function-help">
           支持
-          SUM、AVERAGE、MIN、MAX、COUNT、COUNTA、COUNTIF、SUMIF、AVERAGEIF、COUNTIFS、SUMIFS、AVERAGEIFS、VLOOKUP、HLOOKUP、INDEX、MATCH、IF、IFERROR、ROUND、ABS、AND、OR、NOT、LEN、CONCAT、UPPER、LOWER。<br />示例：=SUMIF(A1:A5,"华东",B1:B5)　=IF(B2&gt;=60,"及格","待改进")　='Sheet
+          SUM、AVERAGE、MIN、MAX、COUNT、COUNTA、COUNTBLANK、COUNTIF、SUMIF、AVERAGEIF、COUNTIFS、SUMIFS、AVERAGEIFS、VLOOKUP、HLOOKUP、INDEX、MATCH、DATE、DATEVALUE、TIME、TIMEVALUE、HOUR、MINUTE、SECOND、YEAR、MONTH、DAY、EDATE、EOMONTH、IF、IFERROR、HYPERLINK、ROUND、ABS、AND、OR、NOT、LEN、TEXT、CONCAT、UPPER、LOWER、TRIM、CLEAN、EXACT、LEFT、RIGHT、MID、FIND、SEARCH、REPLACE、SUBSTITUTE。<br />示例：=SUMIF(A1:A5,"华东",B1:B5)　=IF(B2&gt;=60,"及格","待改进")　='Sheet
           2'!A1
         </p>
       </template>
@@ -246,12 +268,13 @@
               <span class="large-symbol">Z↓</span>降序</button
             ><button
               class="large-tool"
-              :class="{ pressed: filterEnabled }"
-              @click="filterEnabled = !filterEnabled"
+              :class="{ pressed: activeSheet.autoFilter }"
+              :aria-pressed="!!activeSheet.autoFilter"
+              @click="toggleFilter"
             >
-              <span class="large-symbol">▽</span>筛选</button
-            ><button class="large-tool" @click="filters = {}">
-              <span class="large-symbol">×</span>清除筛选
+              <span class="large-symbol" aria-hidden="true">▽</span>筛选</button
+            ><button class="large-tool" :disabled="!Object.keys(activeSheet.autoFilter?.columns || {}).length" @click="clearFilters">
+              <span class="large-symbol" aria-hidden="true">×</span>清除筛选
             </button>
           </div>
           <small>排序与筛选</small>
@@ -287,10 +310,18 @@
         <div class="ribbon-group">
           <div class="group-controls stack">
             <label><input v-model="gridLines" type="checkbox" />网格线</label
-            ><label><input v-model="freezeRow" type="checkbox" />冻结首行</label
             ><label><input v-model="showFormulas" type="checkbox" />显示公式</label>
           </div>
           <small>显示</small>
+        </div>
+        <div class="ribbon-group">
+          <div class="group-controls stack">
+            <button v-if="frozenRows || frozenCols" @click="freezePanes(0, 0)">取消冻结窗格</button>
+            <button v-else :disabled="!selectedRow && !selectedCol" @click="freezePanes(selectedRow, selectedCol)">冻结窗格</button>
+            <button @click="freezePanes(1, 0)">冻结首行</button>
+            <button @click="freezePanes(0, 1)">冻结首列</button>
+          </div>
+          <small>窗口</small>
         </div>
         <div class="ribbon-group">
           <div class="group-controls stack">
@@ -350,7 +381,7 @@
             focusGrid();
           "
           @keydown.escape.prevent="
-            formulaValue = currentCell.v;
+            formulaValue = editableValue(currentCell);
             formulaFocused = false;
             focusGrid();
           "
@@ -362,7 +393,7 @@
       <div
         ref="gridContainer"
         class="grid-container"
-        :class="{ 'hide-grid': !gridLines, 'freeze-row': freezeRow }"
+        :class="{ 'hide-grid': !gridLines }"
         @pointerup="selecting = false"
         @pointerleave="selecting = false"
       >
@@ -385,6 +416,8 @@
                 v-for="c in colList"
                 :key="c"
                 class="col-header"
+                :data-frozen-col="c < frozenCols ? c : undefined"
+                :style="frozenPosition(-1, c)"
                 :class="{ highlight: c >= range.c && c <= range.ec }"
                 @click="selectColumn(c, $event.shiftKey)"
               >
@@ -396,22 +429,20 @@
                 ></span>
               </th>
             </tr>
-            <tr v-if="filterEnabled" class="filter-row">
-              <th></th>
-              <th v-for="c in colList" :key="c">
-                <input v-model="filters[c]" :aria-label="`筛选 ${colName(c)} 列`" placeholder="筛选" />
-              </th>
-            </tr>
           </thead>
-          <tbody>
-            <tr
-              v-for="r in rowList"
+          <tbody v-for="block in rowBlocks" :key="block.rows[0]" :data-first-row="block.rows[0]">
+            <tr v-if="!renderBlock(block.rows)" aria-hidden="true">
+              <td :colspan="colCount + 1" :style="{ height: block.height + 'px', padding: 0, border: 0 }"></td>
+            </tr>
+            <template v-else><tr
+              v-for="r in block.rows"
               :key="r"
-              :class="{ 'first-data-row': r === 0 }"
+              :data-frozen-row="r < frozenRows ? r : undefined"
               :style="{ height: `${activeSheet.heights?.[r] || 27}px` }"
             >
               <th
                 class="row-header"
+                :style="frozenPosition(r, -1)"
                 :class="{ highlight: r >= range.r && r <= range.er }"
                 @click="selectRow(r, $event.shiftKey)"
               >
@@ -427,7 +458,8 @@
                     'in-range': inRange(r, c),
                     'error-cell': isError(r, c),
                   }"
-                  :style="cellStyle(r, c)"
+                  :data-frozen-col="c < frozenCols ? c : undefined"
+                  :style="[cellStyle(r, c), frozenPosition(r, c)]"
                   :rowspan="mergeAt(r, c)?.er !== undefined ? mergeAt(r, c)!.er - r + 1 : 1"
                   :colspan="mergeAt(r, c)?.ec !== undefined ? mergeAt(r, c)!.ec - c + 1 : 1"
                   role="gridcell"
@@ -445,10 +477,20 @@
                     @pointerdown.stop
                     @blur="commitEdit"
                     @keydown="onEditKey"
-                  /><span v-else class="cell-display">{{ displayValue(r, c) }}</span>
+                  /><span v-else class="cell-display">
+                    <a v-if="!showFormulas && cellLink(r, c)" :href="linkHref(r, c)" target="_blank" rel="noopener noreferrer"
+                      :title="cellLink(r, c)?.tooltip || linkAddress(cellLink(r, c)!)"
+                      @click="followLink($event, r, c)" @keydown.enter.stop>{{ displayValue(r, c) }}</a>
+                    <template v-else>{{ displayValue(r, c) }}</template>
+                  </span>
+                  <button v-if="r === activeSheet.autoFilter?.r && c >= activeSheet.autoFilter.c && c <= activeSheet.autoFilter.ec"
+                    class="filter-arrow" :class="{ active: activeSheet.autoFilter.columns[c] }"
+                    :aria-label="`筛选 ${colName(c)} 列`" aria-haspopup="dialog" @pointerdown.stop @dblclick.stop
+                    @click.stop="openFilter(c, $event.currentTarget as HTMLElement)">{{ activeSheet.autoFilter.columns[c] ? '▼' : '▾' }}</button>
                 </td></template
               >
             </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -456,21 +498,21 @@
         <button
           title="上一张工作表"
           aria-label="上一张工作表"
-          :disabled="sheetIdx === 0"
-          @click="switchSheet(sheetIdx - 1)"
+          :disabled="previousSheet === undefined"
+          @click="switchSheet(previousSheet)"
         >
           ‹</button
         ><button
           title="下一张工作表"
           aria-label="下一张工作表"
-          :disabled="sheetIdx === wb.sheets.length - 1"
-          @click="switchSheet(sheetIdx + 1)"
+          :disabled="nextSheet === undefined"
+          @click="switchSheet(nextSheet)"
         >
           ›
         </button>
         <div class="sheet-tabs" role="tablist" aria-label="工作表">
           <button
-            v-for="(sheet, index) in wb.sheets"
+            v-for="index in visibleSheets"
             :key="index"
             class="sheet-tab"
             :class="{ active: sheetIdx === index }"
@@ -479,26 +521,26 @@
             @click="switchSheet(index)"
             @dblclick="renameSheet(index)"
           >
-            {{ sheet.name }}
+            {{ wb.sheets[index].name }}
           </button>
         </div>
         <button class="add-sheet" title="新建工作表" aria-label="新建工作表" @click="addSheet">+</button
         ><button title="重命名当前工作表" @click="renameSheet(sheetIdx)">重命名</button
-        ><button title="删除当前工作表" :disabled="wb.sheets.length === 1" @click="removeSheet">删除</button>
+        ><button title="删除当前工作表" :disabled="visibleSheets.length <= 1" @click="removeSheet">删除</button>
       </div>
       <footer class="status-bar">
         <span>{{ editRow >= 0 ? '输入' : '就绪' }}</span
         ><span class="selection-stats">{{ selectionStats }}</span
         ><span class="zoom-controls"
-          ><button aria-label="缩小" @click="zoom = Math.max(60, zoom - 10)">−</button
+          ><button aria-label="缩小" @click="zoom = Math.max(10, zoom - 10)">−</button
           ><input
             v-model.number="zoom"
             type="range"
-            min="60"
-            max="150"
-            step="10"
+            min="10"
+            max="400"
+            step="1"
             aria-label="缩放比例"
-          /><button aria-label="放大" @click="zoom = Math.min(150, zoom + 10)">+</button
+          /><button aria-label="放大" @click="zoom = Math.min(400, zoom + 10)">+</button
           ><button @click="zoom = 100">{{ zoom }}%</button></span
         >
       </footer>
@@ -510,6 +552,8 @@
       hidden
       @change="importFile"
     />
+    <ExcelFilterMenu v-if="filterMenu" :title="filterMenu.title" :anchor="filterMenu.anchor" :choices="filterMenu.choices"
+      :selected="filterMenu.selected" :numeric-column="filterMenu.numericColumn" @apply="applyFilter" @close="closeFilter" />
     <div v-if="dialog" class="modal-backdrop" @keydown.esc.stop="closeDialog">
       <form
         class="office-dialog"
@@ -530,14 +574,24 @@
             ><button type="button" class="primary" @click="resolveConfirm('save')">保存</button>
           </div></template
         ><template v-else
-          ><label
+          ><label v-if="dialog.kind === 'unhide'">工作表
+            <select ref="unhideList" v-model="unhideSelection" multiple :size="Math.min(8, Math.max(2, hiddenSheets.length))">
+              <option v-for="sheet in hiddenSheets" :key="sheet.name" :value="sheet.name">{{ sheet.name }}</option>
+            </select>
+          </label><label v-else
             >{{ dialog.label
             }}<input
               ref="dialogInputRef"
               v-model="dialog.value"
               :type="dialog.kind === 'width' || dialog.kind === 'height' ? 'number' : 'text'"
+              :placeholder="dialog.kind === 'link' ? 'https://… 或 #Sheet1!A1' : undefined"
               required /></label
           ><label v-if="dialog.kind === 'find'">替换为<input v-model="replaceValue" /></label>
+          <template v-if="dialog.kind === 'link'">
+            <label>显示文字<input v-model="dialog.text" :disabled="!linkTextEditable" /></label>
+            <label>屏幕提示<input v-model="dialog.tooltip" /></label>
+          </template>
+          <p v-if="dialog.kind === 'numberFormat'">示例　<output aria-label="格式示例">{{ formatPreview ?? '格式无效' }}</output></p>
           <div v-if="dialog.kind === 'open'" class="open-file-list">
             <button
               v-for="item in openFiles"
@@ -553,7 +607,7 @@
           <div class="dialog-actions">
             <button type="button" @click="closeDialog">取消</button
             ><button v-if="dialog.kind === 'find'" type="button" @click="replaceAll">全部替换</button
-            ><button class="primary" type="submit">
+            ><button class="primary" type="submit" :disabled="dialog.kind === 'unhide' && !unhideSelection.length">
               {{ dialog.kind === 'find' ? '查找下一个' : dialog.kind === 'open' ? '打开' : '确定' }}
             </button>
           </div></template
@@ -565,23 +619,36 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import ExcelFilterMenu from './office/ExcelFilterMenu.vue';
+import { filterArea, filterRows, type ColumnFilter } from './office/excelFilter';
 import OfficeTitlebar from './office/OfficeTitlebar.vue';
 import { saveOfficeDownload, useOfficeFiles } from './office/officeFiles';
 import {
   address,
   cellKey,
+  cellFromInput,
+  externalLink,
+  linkAddress,
+  type CellLink,
+  numericInput,
   CellData,
   colName,
   formatValue,
   makeEvaluator,
   parseAddress,
   parseDelimited,
-  shiftFormula,
+  copyCell,
+  isFormulaCell,
+  isBlankCell,
   Sheet,
   toDelimited,
   validateWorkbook,
+  updateSheetReferences,
   Workbook,
 } from './office/excelModel';
+import { temporalEditValue } from './office/excelDates';
+import { adjustFormatDecimals, decimalPlaces, maxDecimals, numberFormatCode, numberFormatColor, readNumberStyle, renderFormatCode, scaleDecimal } from './office/excelNumberFormats';
+import { copyRange, readCopiedRange } from './office/excelClipboard';
 import { adjustFormulaForEdit, resizeSpan } from './office/excelStructure';
 import { decodeDataText, exportXlsx, importXlsx } from './office/excelWorkbook';
 
@@ -605,8 +672,15 @@ const alignments = [
   { id: 'right' as const, label: '右对齐', path: 'M3 4h14M8 8h9M3 12h14M8 16h9' },
 ];
 const tab = ref('home'),
-  wb = reactive<Workbook>({ sheets: [{ name: 'Sheet1', cells: {} }] }),
+  wb = reactive<Workbook>({ compatibility: { setVersion: 2 }, sheets: [{ name: 'Sheet1', cells: {} }] }),
   sheetIdx = ref(0);
+const visibleSheets = computed(() => wb.sheets.flatMap((sheet, index) => sheet.state ? [] : [index]));
+const hiddenSheets = computed(() => wb.sheets.filter(sheet => sheet.state === 'hidden'));
+const visibleIndex = computed(() => visibleSheets.value.indexOf(sheetIdx.value));
+const previousSheet = computed(() => visibleSheets.value[visibleIndex.value - 1]);
+const nextSheet = computed(() => visibleSheets.value[visibleIndex.value + 1]);
+const unhideList = ref<HTMLSelectElement>();
+const unhideSelection = ref<string[]>([]);
 const activeSheet = computed(() => wb.sheets[sheetIdx.value]);
 const documentName = ref('新建工作簿'),
   filePath = ref(''),
@@ -615,7 +689,9 @@ const documentName = ref('新建工作簿'),
   importWarning = ref('');
 const office = useOfficeFiles();
 const { win } = office;
-const selectedRow = ref(0),
+const anchorRow = ref(0),
+  anchorCol = ref(0),
+  selectedRow = ref(0),
   selectedCol = ref(0),
   endRow = ref(0),
   endCol = ref(0),
@@ -628,17 +704,43 @@ const rowCount = ref(100),
 const formulaValue = ref(''),
   formulaFocused = ref(false),
   nameBox = ref('A1'),
-  zoom = ref(100),
-  showFormulas = ref(false),
   formulaHelp = ref(false),
-  gridLines = ref(true),
-  freezeRow = ref(false),
-  filterEnabled = ref(false),
-  hasHeaders = ref(true),
-  filters = ref<Record<number, string>>({});
+  hasHeaders = ref(true);
+const filterMenu = ref<{ col: number; title: string; anchor: DOMRect; choices: string[]; numericColumn: boolean; selected?: ColumnFilter }>();
+const filterValue = (r: number, c: number) => evaluator.value.formatted(sheetIdx.value, r, c);
+const gridLines = computed({
+  get: () => activeSheet.value.showGridLines !== false,
+  set: (visible: boolean) => { activeSheet.value.showGridLines = visible ? undefined : false; },
+});
+const showFormulas = computed({
+  get: () => !!activeSheet.value.showFormulas,
+  set: (visible: boolean) => { activeSheet.value.showFormulas = visible || undefined; },
+});
+const zoom = computed({
+  get: () => activeSheet.value.zoom || 100,
+  set: (scale: number) => { activeSheet.value.zoom = scale === 100 ? undefined : scale; },
+});
+const frozenRows = computed(() => activeSheet.value.frozenRows || 0);
+const frozenCols = computed(() => activeSheet.value.frozenCols || 0);
+function freezePanes(rows: number, cols: number) {
+  activeSheet.value.frozenRows = rows || undefined;
+  activeSheet.value.frozenCols = cols || undefined;
+}
+function frozenPosition(row: number, col: number) {
+  const top = row >= 0 && row < frozenRows.value;
+  const left = col >= 0 && col < frozenCols.value;
+  if (top || left) return {
+    top: top ? `var(--frozen-row-${row})` : undefined,
+    left: left ? `var(--frozen-col-${col})` : undefined,
+  };
+}
 const undoStack = ref<string[]>([]),
   redoStack = ref<string[]>([]);
-const snapshot = computed(() => JSON.stringify({ sheets: wb.sheets }));
+// Moving the cursor or switching sheets is saved with the file, but does not dirty its contents.
+function contentSnapshot(book: Workbook) {
+  return JSON.stringify({ sheets: book.sheets.map(({ selection, ...sheet }) => sheet), date1904: book.date1904, compatibility: book.compatibility });
+}
+const snapshot = computed(() => contentSnapshot(wb));
 const dirty = computed(() => snapshot.value !== savedSnapshot.value);
 const evaluator = computed(() => {
   // The evaluator caches cell results, so invalidate it for every workbook edit, including other sheets and undo.
@@ -646,15 +748,15 @@ const evaluator = computed(() => {
   return makeEvaluator(wb);
 });
 const range = computed(() => ({
-  r: Math.min(selectedRow.value, endRow.value),
-  c: Math.min(selectedCol.value, endCol.value),
-  er: Math.max(selectedRow.value, endRow.value),
-  ec: Math.max(selectedCol.value, endCol.value),
+  r: Math.min(anchorRow.value, endRow.value),
+  c: Math.min(anchorCol.value, endCol.value),
+  er: Math.max(anchorRow.value, endRow.value),
+  ec: Math.max(anchorCol.value, endCol.value),
 }));
 const selectionAddress = computed(
   () =>
-    address(selectedRow.value, selectedCol.value) +
-    (selectedRow.value !== endRow.value || selectedCol.value !== endCol.value
+    address(anchorRow.value, anchorCol.value) +
+    (anchorRow.value !== endRow.value || anchorCol.value !== endCol.value
       ? `:${address(endRow.value, endCol.value)}`
       : '')
 );
@@ -665,20 +767,84 @@ const currentMerge = computed(() =>
   (activeSheet.value.merges || []).find((m) => m.r === selectedRow.value && m.c === selectedCol.value)
 );
 const colList = computed(() => Array.from({ length: colCount.value }, (_, i) => i));
-const rowList = computed(() =>
-  Array.from({ length: rowCount.value }, (_, i) => i).filter(
-    (r) =>
-      !filterEnabled.value ||
-      r === 0 ||
-      Object.entries(filters.value).every(
-        ([c, word]) =>
-          !word ||
-          String(evaluator.value(sheetIdx.value, r, +c))
-            .toLowerCase()
-            .includes(word.toLowerCase())
-      )
-  )
-);
+const hiddenRows = computed(() => {
+  const hidden = filterRows(activeSheet.value.autoFilter, evaluator.value, sheetIdx.value);
+  for (const row of activeSheet.value.hiddenRows || []) hidden.add(row);
+  return hidden;
+});
+const rowList = computed(() => Array.from({ length: rowCount.value }, (_, r) => r).filter(r => !hiddenRows.value.has(r)));
+// Distant saved cells can require thousands of rows. Keep their scroll space without mounting every cell.
+const virtualRows = computed(() => rowList.value.length * colCount.value > 30000);
+const visibleBlocks = ref(new Set<number>());
+const rowBlocks = computed(() => {
+  const rows = rowList.value;
+  if (!virtualRows.value) return [{ rows, height: 0 }];
+  const blocks: { rows: number[]; height: number }[] = [];
+  const merges = [...(activeSheet.value.merges || [])].sort((a, b) => a.r - b.r);
+  let start = 0, height = 0, merge = 0, mergeEnd = -1;
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    height += activeSheet.value.heights?.[r] || 27;
+    while (merge < merges.length && merges[merge].r <= r) mergeEnd = Math.max(mergeEnd, merges[merge++].er);
+    if (i + 1 === rows.length || (i - start >= 23 && r >= mergeEnd && r + 1 >= frozenRows.value)) {
+      blocks.push({ rows: rows.slice(start, i + 1), height });
+      start = i + 1;
+      height = 0;
+    }
+  }
+  return blocks;
+});
+function renderBlock(rows: number[]) {
+  return !virtualRows.value || rows[0] < frozenRows.value || visibleBlocks.value.has(rows[0]) ||
+    (rows[0] <= selectedRow.value && selectedRow.value <= rows[rows.length - 1]) ||
+    (rows[0] <= endRow.value && endRow.value <= rows[rows.length - 1]);
+}
+watch([gridContainer, rowBlocks], (_, __, onCleanup) => {
+  const root = gridContainer.value;
+  if (!root || !virtualRows.value) return;
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      const first = Number((entry.target as HTMLElement).dataset.firstRow);
+      if (entry.isIntersecting) visibleBlocks.value.add(first);
+      else visibleBlocks.value.delete(first);
+    }
+  }, { root, rootMargin: '250px 0px' });
+  root.querySelectorAll('tbody[data-first-row]').forEach(body => observer.observe(body));
+  onCleanup(() => { observer.disconnect(); visibleBlocks.value.clear(); });
+}, { flush: 'post' });
+// Use rendered sizes so wrapped text, merged cells, filters and resized columns all share the same offsets.
+watch([gridContainer, frozenRows, frozenCols, rowList, colCount, zoom], (_, __, onCleanup) => {
+  const grid = gridContainer.value;
+  const head = grid?.querySelector('thead');
+  if (!grid || !head || (!frozenRows.value && !frozenCols.value)) return;
+  const rows = Array.from(grid.querySelectorAll<HTMLElement>('tr[data-frozen-row]'));
+  const cols = Array.from(head.querySelectorAll<HTMLElement>('.col-header[data-frozen-col]'));
+  const corner = head.querySelector<HTMLElement>('.corner-header')!;
+  const measure = () => {
+    const scale = zoom.value / 100;
+    let top = head.getBoundingClientRect().height / scale;
+    for (const row of rows) {
+      grid.style.setProperty('--frozen-row-' + row.dataset.frozenRow, top + 'px');
+      top += row.getBoundingClientRect().height / scale;
+    }
+    let left = corner.getBoundingClientRect().width / scale;
+    for (const col of cols) {
+      grid.style.setProperty('--frozen-col-' + col.dataset.frozenCol, left + 'px');
+      left += col.getBoundingClientRect().width / scale;
+    }
+    grid.style.scrollPaddingTop = top * scale + 'px';
+    grid.style.scrollPaddingLeft = left * scale + 'px';
+  };
+  const observer = new ResizeObserver(measure);
+  for (const element of [head, corner, ...rows, ...cols]) observer.observe(element);
+  measure();
+  onCleanup(() => {
+    observer.disconnect();
+    grid.style.scrollPaddingTop = grid.style.scrollPaddingLeft = '';
+    for (const row of rows) grid.style.removeProperty('--frozen-row-' + row.dataset.frozenRow);
+    for (const col of cols) grid.style.removeProperty('--frozen-col-' + col.dataset.frozenCol);
+  });
+}, { flush: 'post' });
 const populatedCells = computed(() =>
   wb.sheets.reduce((sum, sheet) => sum + Object.keys(sheet.cells).length, 0)
 );
@@ -686,7 +852,7 @@ const selectionStats = computed(() => {
   const values: (string | number | boolean)[] = [];
   for (const [key, cell] of Object.entries(activeSheet.value.cells)) {
     const [r, c] = key.split(',').map(Number);
-    if (inRange(r, c) && cell.v !== '') values.push(evaluator.value(sheetIdx.value, r, c));
+    if (inRange(r, c) && !isBlankCell(cell)) values.push(evaluator.value(sheetIdx.value, r, c));
   }
   const nums = values.filter((v) => typeof v === 'number') as number[];
   return values.length > 1
@@ -707,32 +873,41 @@ const hiddenMerged = (r: number, c: number) =>
 const isError = (r: number, c: number) => evaluator.value.isError(sheetIdx.value, r, c);
 function displayValue(r: number, c: number) {
   const cell = activeSheet.value.cells[cellKey(r, c)];
-  return showFormulas.value ? cell?.v || '' : formatValue(evaluator.value(sheetIdx.value, r, c), cell?.fmt);
+  return showFormulas.value ? cell?.v || '' : evaluator.value.formatted(sheetIdx.value, r, c);
 }
 function cellStyle(r: number, c: number): Record<string, string> {
   const cell = activeSheet.value.cells[cellKey(r, c)] || { v: '' };
-  const numeric = typeof evaluator.value(sheetIdx.value, r, c) === 'number';
+  const value = evaluator.value(sheetIdx.value, r, c);
+  const type = typeof value;
   return {
     fontFamily: cell.ff || 'Calibri, 等线, sans-serif',
     fontSize: `${cell.fs || 11}pt`,
     fontWeight: cell.b ? '700' : '400',
     fontStyle: cell.i ? 'italic' : 'normal',
     textDecoration: cell.u ? 'underline' : 'none',
-    textAlign: cell.a || (numeric ? 'right' : 'left'),
+    textAlign: cell.a || (type === 'number' ? 'right' : type === 'boolean' ? 'center' : 'left'),
     backgroundColor: cell.bg || '',
-    color: cell.fc || '',
+    color: (!isError(r, c) && numberFormatColor(cell, value)) || cell.fc || '',
     whiteSpace: cell.wrap ? 'pre-wrap' : 'nowrap',
     boxShadow: cell.border ? 'inset 0 0 0 .5px #808080' : '',
     lineHeight: cell.wrap ? '1.4' : '',
   };
 }
+function editableValue(cell?: CellData) {
+  if (cell?.fmt === 'percent' && !cell.type && numericInput.test(cell.v))
+    return String(scaleDecimal(cell.v, 2)) + '%';
+  if (cell && !cell.type && numericInput.test(cell.v) &&
+      (cell.fmt === 'date' || cell.fmt === 'time' || cell.fmt === 'datetime' || cell.fmt === 'duration'))
+    return temporalEditValue(Number(cell.v), cell.fmt, wb.date1904);
+  return cell?.v ?? '';
+}
 function syncFormula() {
-  if (!formulaFocused.value) formulaValue.value = currentCell.value.v;
+  if (!formulaFocused.value) formulaValue.value = editableValue(currentCell.value);
   nameBox.value = selectionAddress.value;
 }
-watch([selectionAddress, () => currentCell.value.v], syncFormula, { immediate: true });
+watch([selectionAddress, () => editableValue(currentCell.value)], syncFormula, { immediate: true });
 function history() {
-  undoStack.value.push(snapshot.value);
+  undoStack.value.push(JSON.stringify(workbookForSave()));
   if (undoStack.value.length > 40) undoStack.value.shift();
   redoStack.value = [];
 }
@@ -746,20 +921,44 @@ function undo() {
   commitEdit();
   const data = undoStack.value.pop();
   if (!data) return;
-  redoStack.value.push(snapshot.value);
+  redoStack.value.push(JSON.stringify(workbookForSave()));
   restore(data);
 }
 function redo() {
   const data = redoStack.value.pop();
   if (!data) return;
-  undoStack.value.push(snapshot.value);
+  undoStack.value.push(JSON.stringify(workbookForSave()));
   restore(data);
 }
 function restore(data: string) {
-  wb.sheets = JSON.parse(data).sheets;
-  sheetIdx.value = Math.min(sheetIdx.value, wb.sheets.length - 1);
+  const book: Workbook = JSON.parse(data);
+  wb.sheets = book.sheets;
+  wb.compatibility = book.compatibility;
+  wb.date1904 = book.date1904;
   formulaFocused.value = false;
-  syncFormula();
+  activateSheet(book.activeTab ?? 0);
+}
+function setRange(r: number, c: number, er = r, ec = c, activeR = r, activeC = c) {
+  anchorRow.value = r;
+  anchorCol.value = c;
+  endRow.value = er;
+  endCol.value = ec;
+  selectedRow.value = activeR;
+  selectedCol.value = activeC;
+}
+function currentSelection() {
+  const { r, c, er, ec } = range.value;
+  const sqref = address(r, c) + (r === er && c === ec ? '' : ':' + address(er, ec));
+  return { activeCell: address(selectedRow.value, selectedCol.value), sqref };
+}
+function workbookForSave(): Workbook {
+  return {
+    ...wb,
+    activeTab: sheetIdx.value,
+    sheets: wb.sheets.map((sheet, index) =>
+      index === sheetIdx.value ? { ...sheet, selection: currentSelection() } : sheet
+    ),
+  };
 }
 function eachSelected(fn: (r: number, c: number) => void) {
   const { r, c, er, ec } = range.value;
@@ -769,16 +968,54 @@ function format(data: Partial<CellData>) {
   mutate(() =>
     eachSelected((r, c) => {
       const key = cellKey(r, c);
-      activeSheet.value.cells[key] = { ...(activeSheet.value.cells[key] || { v: '' }), ...data };
+      const cell = { ...(activeSheet.value.cells[key] || { v: '' }), ...data };
+      if (data.fmt) {
+        cell.decimals = data.decimals;
+        cell.grouping = data.grouping;
+        cell.xlsxFormat = data.xlsxFormat;
+      }
+      activeSheet.value.cells[key] = cell;
     })
   );
   focusGrid();
 }
+function changeDecimals(delta: number) {
+  mutate(() => eachSelected((r, c) => {
+    const key = cellKey(r, c);
+    const cell = activeSheet.value.cells[key] ?? { v: '' };
+    if (cell.fmt && !['general', 'number', 'percent', 'currency'].includes(cell.fmt)) return;
+    if (cell.xlsxFormat !== undefined) {
+      const code = numberFormatCode(cell);
+      const next = adjustFormatDecimals(code, delta);
+      if (next !== code) {
+        const style = readNumberStyle(0, next);
+        activeSheet.value.cells[key] = { ...cell, ...style, xlsxFormat: style.xlsxFormat, decimals: style.decimals, grouping: style.grouping };
+      }
+      return;
+    }
+    if (!cell.fmt || cell.fmt === 'general') {
+      const value = evaluator.value(sheetIdx.value, r, c);
+      cell.decimals = typeof value === 'number' ? decimalPlaces(String(value)) : 0;
+      cell.fmt = 'number';
+      cell.grouping = false;
+    }
+    delete cell.xlsxFormat;
+    cell.decimals = Math.max(0, Math.min(maxDecimals, (cell.decimals ?? 2) + delta));
+    activeSheet.value.cells[key] = cell;
+  }));
+  focusGrid();
+}
 function clearValues() {
+  const hidden = hiddenRows.value;
   mutate(() =>
     eachSelected((r, c) => {
+      if (hidden.has(r)) return;
       const cell = activeSheet.value.cells[cellKey(r, c)];
-      if (cell) cell.v = '';
+      if (cell) {
+        cell.v = '';
+        delete cell.type;
+        delete cell.link;
+      }
     })
   );
   focusGrid();
@@ -790,12 +1027,7 @@ function selectCell(r: number, c: number, extend = false) {
     r = merge.r;
     c = merge.c;
   }
-  if (!extend) {
-    selectedRow.value = r;
-    selectedCol.value = c;
-  }
-  endRow.value = r;
-  endCol.value = c;
+  setRange(extend ? selectedRow.value : r, extend ? selectedCol.value : c, r, c);
   selecting.value = true;
   focusGrid();
 }
@@ -807,40 +1039,32 @@ function extendSelection(r: number, c: number) {
 }
 function selectRow(r: number, extend = false) {
   commitEdit();
-  if (!extend) selectedRow.value = r;
-  selectedCol.value = 0;
-  endRow.value = r;
-  endCol.value = colCount.value - 1;
+  setRange(extend ? selectedRow.value : r, 0, r, colCount.value - 1);
   focusGrid();
 }
 function selectColumn(c: number, extend = false) {
   commitEdit();
-  if (!extend) selectedCol.value = c;
-  selectedRow.value = 0;
-  endRow.value = rowCount.value - 1;
-  endCol.value = c;
+  setRange(0, extend ? selectedCol.value : c, rowCount.value - 1, c);
   focusGrid();
 }
 function selectAll() {
-  selectedRow.value = selectedCol.value = 0;
-  endRow.value = rowCount.value - 1;
-  endCol.value = colCount.value - 1;
+  setRange(0, 0, rowCount.value - 1, colCount.value - 1);
   focusGrid();
 }
 function move(dr: number, dc: number, extend = false) {
-  const row = Math.min(9999, Math.max(0, (extend ? endRow.value : selectedRow.value) + dr)),
-    col = Math.min(255, Math.max(0, (extend ? endCol.value : selectedCol.value) + dc));
+  const current = extend ? endRow.value : selectedRow.value;
+  let row = Math.min(9999, Math.max(0, current + dr));
+  if (dr) {
+    while (row >= 0 && row < 10000 && hiddenRows.value.has(row)) row += dr;
+    if (row < 0 || row >= 10000) row = current;
+  }
+  const col = Math.min(255, Math.max(0, (extend ? endCol.value : selectedCol.value) + dc));
   moveTo(row, col, extend);
 }
 function moveTo(row: number, col: number, extend: boolean) {
   rowCount.value = Math.max(rowCount.value, row + 1);
   colCount.value = Math.max(colCount.value, col + 1);
-  if (!extend) {
-    selectedRow.value = row;
-    selectedCol.value = col;
-  }
-  endRow.value = row;
-  endCol.value = col;
+  setRange(extend ? selectedRow.value : row, extend ? selectedCol.value : col, row, col);
   nextTick(() =>
     gridContainer.value
       ?.querySelector(`[data-address="${address(row, col)}"]`)
@@ -873,10 +1097,7 @@ function goToAddress() {
     syncFormula();
     return;
   }
-  selectedRow.value = refs[0].r;
-  selectedCol.value = refs[0].c;
-  endRow.value = refs[1]?.r ?? refs[0].r;
-  endCol.value = refs[1]?.c ?? refs[0].c;
+  setRange(refs[0].r, refs[0].c, refs[1]?.r, refs[1]?.c);
   rowCount.value = Math.max(rowCount.value, range.value.er + 1);
   colCount.value = Math.max(colCount.value, range.value.ec + 1);
   focusGrid();
@@ -887,11 +1108,11 @@ function goToAddress() {
   );
 }
 function startEdit(r: number, c: number, initial?: string) {
-  selectCell(r, c);
+  if (r !== selectedRow.value || c !== selectedCol.value) selectCell(r, c);
   selecting.value = false;
   editRow.value = r;
   editCol.value = c;
-  editValue.value = initial ?? activeSheet.value.cells[cellKey(r, c)]?.v ?? '';
+  editValue.value = initial ?? editableValue(activeSheet.value.cells[cellKey(r, c)]);
   nextTick(() => {
     const input = gridContainer.value?.querySelector('.cell-editor') as HTMLInputElement;
     input?.focus();
@@ -901,9 +1122,9 @@ function startEdit(r: number, c: number, initial?: string) {
 function commitEdit() {
   if (editRow.value < 0) return;
   const key = cellKey(editRow.value, editCol.value);
-  if ((activeSheet.value.cells[key]?.v || '') !== editValue.value) {
+  if (editableValue(activeSheet.value.cells[key]) !== editValue.value) {
     history();
-    activeSheet.value.cells[key] = { ...activeSheet.value.cells[key], v: editValue.value };
+    activeSheet.value.cells[key] = cellFromInput(activeSheet.value.cells[key], editValue.value, wb.date1904);
   }
   editRow.value = editCol.value = -1;
   syncFormula();
@@ -915,22 +1136,42 @@ function cancelEdit() {
   focusGrid();
 }
 function commitFormula() {
-  if (formulaFocused.value && formulaValue.value !== currentCell.value.v) {
+  if (formulaFocused.value && formulaValue.value !== editableValue(currentCell.value)) {
     history();
-    activeSheet.value.cells[cellKey(selectedRow.value, selectedCol.value)] = {
-      ...currentCell.value,
-      v: formulaValue.value,
-    };
+    activeSheet.value.cells[cellKey(selectedRow.value, selectedCol.value)] = cellFromInput(currentCell.value, formulaValue.value, wb.date1904);
   }
   formulaFocused.value = false;
   syncFormula();
+}
+function advanceCell(byColumn: boolean, backwards: boolean) {
+  const { r, c, er, ec } = range.value;
+  const direction = backwards ? -1 : 1;
+  if (r === er && c === ec) {
+    move(byColumn ? 0 : direction, byColumn ? direction : 0);
+    return;
+  }
+  const rows = rowList.value.filter(row => row >= r && row <= er);
+  const width = ec - c + 1, height = rows.length, total = width * height;
+  const row = rows.indexOf(selectedRow.value), col = selectedCol.value - c;
+  const current = byColumn ? row * width + col : col * height + row;
+  for (let step = 1; step <= total; step++) {
+    const index = (current + direction * step + total) % total;
+    const nextR = rows[byColumn ? Math.floor(index / width) : index % height];
+    const nextC = c + (byColumn ? index % width : Math.floor(index / height));
+    if (hiddenMerged(nextR, nextC)) continue;
+    selectedRow.value = nextR;
+    selectedCol.value = nextC;
+    nextTick(() => gridContainer.value?.querySelector(`[data-address="${address(nextR, nextC)}"]`)
+      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' }));
+    break;
+  }
 }
 function onEditKey(e: KeyboardEvent) {
   if (e.key === 'Enter' || e.key === 'Tab') {
     e.preventDefault();
     e.stopPropagation();
     commitEdit();
-    move(e.key === 'Enter' ? (e.shiftKey ? -1 : 1) : 0, e.key === 'Tab' ? (e.shiftKey ? -1 : 1) : 0);
+    advanceCell(e.key === 'Tab', e.shiftKey);
     focusGrid();
   } else if (e.key === 'Escape') {
     e.preventDefault();
@@ -938,65 +1179,63 @@ function onEditKey(e: KeyboardEvent) {
     cancelEdit();
   }
 }
-let internalClipboard: { text: string; cells: CellData[][]; r: number; c: number } | null = null;
-function selectedRows() {
-  const rows: string[][] = [];
-  for (let r = range.value.r; r <= range.value.er; r++) {
-    const row: string[] = [];
-    for (let c = range.value.c; c <= range.value.ec; c++)
-      row.push(activeSheet.value.cells[cellKey(r, c)]?.v || '');
-    rows.push(row);
-  }
-  return rows;
-}
-function cacheClipboard() {
-  commitEdit();
-  const rows = selectedRows(),
-    cells: CellData[][] = [];
-  for (let r = range.value.r; r <= range.value.er; r++) {
-    const row: CellData[] = [];
-    for (let c = range.value.c; c <= range.value.ec; c++)
-      row.push({ ...(activeSheet.value.cells[cellKey(r, c)] || { v: '' }) });
-    cells.push(row);
-  }
-  const text = toDelimited(rows, '\t');
-  internalClipboard = { text, cells, r: range.value.r, c: range.value.c };
-  return text;
-}
 function isTextTarget(target: EventTarget | null) {
   return (
     target instanceof HTMLElement &&
     (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) || target.isContentEditable)
   );
 }
-function onCopy(e: ClipboardEvent) {
-  if (isTextTarget(e.target)) return;
-  e.preventDefault();
-  e.clipboardData?.setData('text/plain', cacheClipboard());
+function selectionClipboard(cut: boolean) {
+  commitEdit();
+  return copyRange(activeSheet.value, sheetIdx.value, range.value, evaluator.value, cut, hiddenRows.value);
 }
-function onCut(e: ClipboardEvent) {
-  if (isTextTarget(e.target)) return;
-  onCopy(e);
-  clearValues();
+function writeCopyEvent(e: ClipboardEvent, cut = false) {
+  if (isTextTarget(e.target) || !e.clipboardData) return;
+  const { text, html } = selectionClipboard(cut);
+  e.clipboardData.setData('text/plain', text);
+  e.clipboardData.setData('text/html', html);
+  e.preventDefault();
+  if (cut) clearValues();
 }
 function onPaste(e: ClipboardEvent) {
-  if (isTextTarget(e.target)) return;
+  if (isTextTarget(e.target) || !e.clipboardData) return;
   e.preventDefault();
-  pasteText(e.clipboardData?.getData('text/plain') || '');
+  pasteCells(e.clipboardData.getData('text/plain'), e.clipboardData.getData('text/html'));
 }
 async function copySelection(cut = false) {
   try {
-    await navigator.clipboard.writeText(cacheClipboard());
-    if (cut) clearValues();
+    if (typeof ClipboardItem === 'undefined' || !navigator.clipboard?.write) {
+      appRef.value?.focus();
+      if (!document.execCommand(cut ? 'cut' : 'copy')) throw new Error();
+    } else {
+      const { text, html } = selectionClipboard(cut);
+      const source = activeSheet.value, selected = selectionAddress.value, before = snapshot.value;
+      await navigator.clipboard.write([new ClipboardItem({
+        'text/plain': new Blob([text], { type: 'text/plain' }),
+        'text/html': new Blob([html], { type: 'text/html' }),
+      })]);
+      if (cut && (source !== activeSheet.value || selected !== selectionAddress.value || before !== snapshot.value)) {
+        notice.value = '选区已变化，已复制原选区';
+        return;
+      }
+      if (cut) clearValues();
+    }
     notice.value = cut ? '已剪切选区' : '已复制选区';
   } catch {
     notice.value = '请在网格中使用 Ctrl+C / Ctrl+X 复制或剪切';
   }
   focusGrid();
 }
-async function pasteClipboard() {
+async function pasteClipboard(valuesOnly = false) {
   try {
-    pasteText(await navigator.clipboard.readText());
+    if (navigator.clipboard?.read) {
+      const items = await navigator.clipboard.read();
+      const item = items.find(i => i.types.includes('text/html') || i.types.includes('text/plain'));
+      if (!item) return;
+      const get = async (type: string) => item.types.includes(type) ? (await item.getType(type)).text() : '';
+      const [text, html] = await Promise.all([get('text/plain'), get('text/html')]);
+      pasteCells(text, html, valuesOnly);
+    } else pasteCells(await navigator.clipboard.readText(), '', valuesOnly);
   } catch {
     notice.value = '请在网格中使用 Ctrl+V 粘贴';
   }
@@ -1024,35 +1263,54 @@ function fillSelection(direction: 'down' | 'right') {
       if (row === fromRow && col === fromCol) return;
       const source = sheet.cells[cellKey(fromRow, fromCol)];
       const key = cellKey(row, col);
-      if (source) sheet.cells[key] = { ...source, v: shiftFormula(source.v, row - fromRow, col - fromCol) };
+      if (source) sheet.cells[key] = copyCell(source, row - fromRow, col - fromCol);
       else delete sheet.cells[key];
     })
   );
   focusGrid();
 }
-function pasteText(text: string) {
-  if (!text) return;
+function pasteCells(text: string, html: string, valuesOnly = false) {
+  const clip = readCopiedRange(html);
+  if (!clip && !text) return;
   commitEdit();
-  const rows = parseDelimited(text, '\t');
-  if (rows.length > 10000 - selectedRow.value || rows.some((row) => row.length > 256 - selectedCol.value)) {
+  const rows = clip ? [] : parseDelimited(text, '\t');
+  const height = clip?.height ?? rows.length;
+  const width = clip?.width ?? rows.reduce((max, row) => Math.max(max, row.length), 0);
+  const { r, c, er, ec } = range.value;
+  const single = r === er && c === ec;
+  const destHeight = single ? height : er - r + 1, destWidth = single ? width : ec - c + 1;
+  if (destHeight % height || destWidth % width || (clip?.cut && (destHeight !== height || destWidth !== width))) {
+    notice.value = '请选择一个起始单元格，或与复制区域大小匹配的选区';
+    return;
+  }
+  if (r + destHeight > 10000 || c + destWidth > 256) {
     notice.value = '粘贴内容超出 10000 行、256 列限制';
     return;
   }
-  const clip = internalClipboard?.text === text ? internalClipboard : null;
+  const cells = activeSheet.value.cells;
   mutate(() => {
-    rows.forEach((row, ri) =>
-      row.forEach((v, ci) => {
-        const r = selectedRow.value + ri,
-          c = selectedCol.value + ci,
-          source = clip?.cells[ri]?.[ci];
-        activeSheet.value.cells[cellKey(r, c)] = source
-          ? { ...source, v: shiftFormula(source.v, selectedRow.value - clip!.r, selectedCol.value - clip!.c) }
-          : { ...activeSheet.value.cells[cellKey(r, c)], v };
-      })
-    );
+    for (let dy = 0; dy < destHeight; dy++) {
+      for (let dx = 0; dx < destWidth; dx++) {
+        const y = dy % height, x = dx % width;
+        const key = cellKey(r + dy, c + dx);
+        const previous = cells[key];
+        if (clip) {
+          const entry = clip.cells[cellKey(y, x)];
+          if (valuesOnly) {
+            const value = entry?.result ?? entry?.source;
+            if (previous || value) cells[key] = { ...previous, v: value?.v ?? '', type: value?.type };
+          } else if (entry) {
+            cells[key] = clip.cut ? { ...entry.source } : copyCell(entry.source, r + dy - (clip.sourceRows?.[y] ?? clip.r + y), c + dx - clip.c - x);
+          } else delete cells[key];
+        } else {
+          const value = rows[y][x] ?? '';
+          cells[key] = valuesOnly && value.startsWith('=') ? { ...previous, v: value, type: 'text' }
+            : cellFromInput(previous, value, wb.date1904);
+        }
+      }
+    }
   });
-  endRow.value = selectedRow.value + rows.length - 1;
-  endCol.value = selectedCol.value + Math.max(...rows.map((row) => row.length)) - 1;
+  setRange(r, c, r + destHeight - 1, c + destWidth - 1);
   rowCount.value = Math.max(rowCount.value, endRow.value + 1);
   colCount.value = Math.max(colCount.value, endCol.value + 1);
   focusGrid();
@@ -1087,8 +1345,7 @@ async function mergeSelection() {
       a: 'center',
     };
   });
-  selectedRow.value = r;
-  selectedCol.value = c;
+  setRange(r, c, er, ec);
 }
 function applyTable() {
   mutate(() =>
@@ -1105,6 +1362,54 @@ function applyTable() {
     })
   );
 }
+function toggleFilter() {
+  commitFormula();
+  mutate(() => {
+    const sheet = activeSheet.value;
+    if (sheet.autoFilter) delete sheet.autoFilter;
+    else sheet.autoFilter = { ...filterArea(sheet, range.value), columns: {} };
+  });
+  focusGrid();
+}
+function clearFilters() {
+  const filter = activeSheet.value.autoFilter;
+  if (filter) mutate(() => { filter.columns = {}; });
+  focusGrid();
+}
+function openFilter(col: number, button: HTMLElement) {
+  commitEdit();
+  const sheet = activeSheet.value, filter = sheet.autoFilter;
+  if (!filter) return;
+  const excluded = filterRows(filter, evaluator.value, sheetIdx.value, col);
+  for (const row of sheet.hiddenRows || []) excluded.add(row);
+  const values = new Map<string, string>();
+  let numbers = 0, other = 0;
+  for (let r = filter.r + 1; r <= filter.er; r++) {
+    if (excluded.has(r)) continue;
+    const value = filterValue(r, col), key = value.toLowerCase();
+    if (typeof evaluator.value(sheetIdx.value, r, col) === 'number') numbers++;
+    else if (value) other++;
+    if (!values.has(key)) values.set(key, value);
+  }
+  const choices = [...values.values()].sort((a, b) => !a ? 1 : !b ? -1 : a.localeCompare(b, undefined, { numeric: true }));
+  const condition = filter.columns[col];
+  const selected = Array.isArray(condition) ? condition.map(v => values.get(v.toLowerCase()) ?? v) : condition;
+  filterMenu.value = { col, choices, selected, numericColumn: numbers > other, anchor: button.getBoundingClientRect(), title: filterValue(filter.r, col) || colName(col) };
+}
+function closeFilter() {
+  filterMenu.value = undefined;
+  focusGrid();
+}
+function applyFilter(values?: ColumnFilter) {
+  const menu = filterMenu.value, filter = activeSheet.value.autoFilter;
+  if (!menu || !filter) return;
+  mutate(() => {
+    if (values) filter.columns[menu.col] = values;
+    else delete filter.columns[menu.col];
+  });
+  if (hiddenRows.value.has(selectedRow.value)) setRange(filter.r, menu.col);
+  closeFilter();
+}
 function usedBounds(sheet = activeSheet.value) {
   let er = 0,
     ec = 0;
@@ -1113,7 +1418,7 @@ function usedBounds(sheet = activeSheet.value) {
     er = Math.max(er, r);
     ec = Math.max(ec, c);
   }
-  return { er, ec };
+  return { er: Math.max(er, sheet.autoFilter?.er || 0), ec: Math.max(ec, sheet.autoFilter?.ec || 0) };
 }
 function dataRange() {
   if (range.value.r !== range.value.er || range.value.c !== range.value.ec) return { ...range.value };
@@ -1151,10 +1456,7 @@ function sortSelection(desc: boolean) {
       row.cells.forEach((cell, ci) => {
         const key = cellKey(area.r + ri, area.c + ci);
         if (cell)
-          activeSheet.value.cells[key] = {
-            ...cell,
-            v: shiftFormula(cell.v, area.r + ri - row.originalRow, 0),
-          };
+          activeSheet.value.cells[key] = copyCell(cell, area.r + ri - row.originalRow, 0);
         else delete activeSheet.value.cells[key];
       })
     );
@@ -1199,8 +1501,7 @@ function insertFunction(name: string) {
   const selected = range.value;
   const multiple = selected.r !== selected.er || selected.c !== selected.ec;
   if (multiple && selected.er < 9999) {
-    selectedRow.value = endRow.value = selected.er + 1;
-    selectedCol.value = endCol.value = selected.c;
+    setRange(selected.er + 1, selected.c);
     rowCount.value = Math.max(rowCount.value, selected.er + 2);
   }
   formulaValue.value =
@@ -1222,8 +1523,7 @@ function autoSum() {
     const target = er + 1;
     if (target > 9999) return;
     const expr = `=SUM(${address(r, c)}:${address(er, c)})`;
-    selectedRow.value = endRow.value = target;
-    selectedCol.value = endCol.value = c;
+    setRange(target, c);
     mutate(() => (activeSheet.value.cells[cellKey(target, c)] = { v: expr }));
     rowCount.value = Math.max(rowCount.value, target + 1);
     return;
@@ -1254,6 +1554,8 @@ function insertDimension(axis: 'row' | 'col', remove: boolean) {
   if (!remove && (
     Object.keys(sheet.cells).some(key => +key.split(',')[axis === 'row' ? 0 : 1] >= limit - count) ||
     sheet.merges?.some(merge => merge[hi] >= limit - count) ||
+    (sheet.autoFilter && sheet.autoFilter[hi] >= limit - count) ||
+    (axis === 'row' && sheet.hiddenRows?.some(row => row >= limit - count)) ||
     Object.keys(sizes || {}).some(key => +key >= limit - count)
   )) {
     notice.value = '插入后将超出工作表范围';
@@ -1277,6 +1579,24 @@ function insertDimension(axis: 'row' | 'col', remove: boolean) {
       const resized = { ...merge, [lo]: span[0], [hi]: span[1] };
       return resized.r === resized.er && resized.c === resized.ec ? [] : [resized];
     });
+    const filter = sheet.autoFilter;
+    if (filter) {
+      const span = resizeSpan(filter[lo], filter[hi], edit);
+      if (!span || (axis === 'row' && remove && start <= filter.r && end >= filter.r)) delete sheet.autoFilter;
+      else {
+        [filter[lo], filter[hi]] = span;
+        if (axis === 'col') {
+          const columns: typeof filter.columns = {};
+          for (const [key, values] of Object.entries(filter.columns)) {
+            const shifted = resizeSpan(+key, +key, edit);
+            if (shifted) columns[shifted[0]] = values;
+          }
+          filter.columns = columns;
+        }
+      }
+    }
+    if (axis === 'row' && sheet.hiddenRows)
+      sheet.hiddenRows = sheet.hiddenRows.flatMap(row => resizeSpan(row, row, edit)?.slice(0, 1) || []);
     if (sizes) {
       const mapped: Record<number, number> = {};
       for (const [key, size] of Object.entries(sizes)) {
@@ -1288,8 +1608,12 @@ function insertDimension(axis: 'row' | 'col', remove: boolean) {
       else activeSheet.value.widths = mapped;
     }
     for (const owner of wb.sheets)
-      for (const cell of Object.values(owner.cells))
-        if (cell.v.startsWith('=')) cell.v = adjustFormulaForEdit(cell.v, owner.name, sheet.name, edit);
+      for (const cell of Object.values(owner.cells)) {
+        if (isFormulaCell(cell)) cell.v = adjustFormulaForEdit(cell.v, owner.name, sheet.name, edit);
+        if (cell.link?.location && !cell.link.target) {
+          cell.link = { ...cell.link, location: adjustFormulaForEdit(cell.link.location, owner.name, sheet.name, edit) };
+        }
+      }
   });
   notice.value = `已${remove ? '删除' : '插入'} ${count} ${axis === 'row' ? '行' : '列'}`;
 }
@@ -1312,15 +1636,31 @@ function startResize(event: PointerEvent, c: number) {
   resizeCleanup = stop;
 }
 let resizeCleanup: (() => void) | undefined;
-function switchSheet(index: number) {
+function switchSheet(index: number | undefined) {
+  if (index === undefined || !wb.sheets[index] || wb.sheets[index].state) return;
   commitEdit();
-  if (index < 0 || index >= wb.sheets.length) return;
+  if (index === sheetIdx.value) return;
+  activeSheet.value.selection = currentSelection();
+  activateSheet(index);
+}
+function activateSheet(index: number) {
   sheetIdx.value = index;
-  selectedRow.value = selectedCol.value = endRow.value = endCol.value = 0;
-  filters.value = {};
+  const selection = activeSheet.value.selection;
+  const [first, last] = (selection?.sqref || 'A1').split(':').map(parseAddress);
+  const active = parseAddress(selection?.activeCell || 'A1')!;
+  const end = last || first!;
+  // Keep the opposite corner as anchor when the selection was made upwards or to the left.
+  const reverseR = active.r === end.r, reverseC = active.c === end.c;
+  setRange(reverseR ? end.r : first!.r, reverseC ? end.c : first!.c,
+    reverseR ? first!.r : end.r, reverseC ? first!.c : end.c, active.r, active.c);
+  filterMenu.value = undefined;
   expandImportedGrid();
+  rowCount.value = Math.max(rowCount.value, range.value.er + 1);
+  colCount.value = Math.max(colCount.value, range.value.ec + 1);
   syncFormula();
   focusGrid();
+  nextTick(() => gridContainer.value?.querySelector(`[data-address="${address(active.r, active.c)}"]`)
+    ?.scrollIntoView({ block: 'nearest', inline: 'nearest' }));
 }
 function uniqueSheetName(name = 'Sheet') {
   let n = 1;
@@ -1332,22 +1672,41 @@ function addSheet() {
   switchSheet(wb.sheets.length - 1);
 }
 function duplicateSheet() {
+  commitEdit();
   const data = JSON.parse(JSON.stringify(activeSheet.value)) as Sheet;
+  data.selection = currentSelection();
   data.name = uniqueSheetName(activeSheet.value.name.slice(0, 25) + ' 副本');
+  updateSheetReferences([data], activeSheet.value.name, data.name);
   mutate(() => wb.sheets.push(data));
   switchSheet(wb.sheets.length - 1);
 }
+function hideSheet() {
+  const adjacent = nextSheet.value ?? previousSheet.value;
+  if (adjacent === undefined) return;
+  mutate(() => {
+    activeSheet.value.state = 'hidden';
+    switchSheet(adjacent);
+  });
+}
+function openUnhide() {
+  if (!hiddenSheets.value.length) return;
+  unhideSelection.value = [hiddenSheets.value[0].name];
+  openDialog({ kind: 'unhide', title: '取消隐藏工作表' });
+  nextTick(() => unhideList.value?.focus());
+}
 async function removeSheet() {
-  if (wb.sheets.length <= 1) return;
+  const adjacent = nextSheet.value ?? previousSheet.value;
+  if (adjacent === undefined) return;
   const choice = await confirmAction('删除工作表', `删除“${activeSheet.value.name}”？可用撤销恢复。`);
   if (choice === 'cancel') return;
   if (choice === 'save' && !(await saveFile())) return;
   const index = sheetIdx.value;
   mutate(() => {
-    wb.sheets.splice(index, 1);
-    sheetIdx.value = Math.min(index, wb.sheets.length - 1);
+    const [deleted] = wb.sheets.splice(index, 1);
+    updateSheetReferences(wb.sheets, deleted.name);
+    sheetIdx.value = adjacent > index ? adjacent - 1 : adjacent;
   });
-  switchSheet(sheetIdx.value);
+  activateSheet(sheetIdx.value);
 }
 function renameSheet(index: number) {
   openDialog({
@@ -1377,12 +1736,14 @@ function renameDocument() {
 }
 
 type DialogState = {
-  kind: 'open' | 'save' | 'rename' | 'find' | 'width' | 'height' | 'confirm';
+  kind: 'open' | 'save' | 'rename' | 'find' | 'width' | 'height' | 'confirm' | 'unhide' | 'numberFormat' | 'link';
   title: string;
   label?: string;
   value?: string;
   index?: number;
   message?: string;
+  text?: string;
+  tooltip?: string;
 };
 const dialog = ref<DialogState | null>(null),
   dialogError = ref(''),
@@ -1433,6 +1794,8 @@ async function createNew() {
   if (!(await mayReplace())) return;
   removeDraft();
   wb.sheets = [{ name: 'Sheet1', cells: {} }];
+  wb.compatibility = { setVersion: 2 };
+  wb.date1904 = undefined;
   filePath.value = '';
   draftScope.value = 'new';
   documentName.value = '新建工作簿';
@@ -1440,7 +1803,7 @@ async function createNew() {
   undoStack.value = [];
   redoStack.value = [];
   savedSnapshot.value = snapshot.value;
-  switchSheet(0);
+  activateSheet(0);
   tab.value = 'home';
 }
 async function openVirtual() {
@@ -1472,6 +1835,77 @@ function askSize(kind: 'width' | 'height') {
     ),
   });
 }
+const cellLink = (r: number, c: number) => evaluator.value.hyperlink(sheetIdx.value, r, c);
+const linkTextEditable = computed(() => !isFormulaCell(currentCell.value) &&
+  typeof evaluator.value(sheetIdx.value, selectedRow.value, selectedCol.value) === 'string' &&
+  !isError(selectedRow.value, selectedCol.value));
+function linkHref(r: number, c: number) {
+  const link = cellLink(r, c)!;
+  return link.target ? externalLink(linkAddress(link)) : '#';
+}
+function locationInWorkbook(location: string) {
+  const split = location.lastIndexOf('!');
+  const name = split < 0 ? activeSheet.value.name : location.slice(0, split).replace(/^'|'$/g, '').replace(/''/g, "'");
+  const index = wb.sheets.findIndex(s => s.name.toLowerCase() === name.toLowerCase());
+  const ref = location.slice(split + 1);
+  const parts = ref.split(':');
+  if (index < 0 || parts.length > 2 || !parts.every(p => parseAddress(p))) return;
+  return { index, ref };
+}
+function followLink(e: MouseEvent, r: number, c: number) {
+  const link = cellLink(r, c)!;
+  if (link.target && externalLink(linkAddress(link))) return;
+  e.preventDefault();
+  if (link.target) { notice.value = '此链接无法在浏览器中打开'; return; }
+  const destination = locationInWorkbook(link.location || '');
+  if (!destination || wb.sheets[destination.index].state) {
+    notice.value = '找不到链接指向的可见工作表或单元格';
+    return;
+  }
+  switchSheet(destination.index);
+  nameBox.value = destination.ref;
+  goToAddress();
+}
+function openLinkDialog() {
+  commitEdit();
+  const cell = currentCell.value, link = cell.link;
+  openDialog({ kind: 'link', title: link ? '编辑超链接' : '插入超链接', label: '链接地址',
+    value: link ? linkAddress(link) : '', tooltip: link?.tooltip || '',
+    text: evaluator.value.formatted(sheetIdx.value, selectedRow.value, selectedCol.value) || link?.display || '' });
+}
+function removeLink() {
+  const cell = currentCell.value;
+  if (!cell.link) return;
+  const text = cell.link.display || linkAddress(cell.link);
+  mutate(() => {
+    if (isBlankCell(cell)) { cell.v = text; cell.type = 'text'; }
+    delete cell.link;
+  });
+  focusGrid();
+}
+const numberFormatLabel = computed(() => typeof currentCell.value.xlsxFormat === 'string' ? 'custom' : currentCell.value.fmt || 'general');
+function openNumberFormat() {
+  openDialog({ kind: 'numberFormat', title: '自定义数字格式', label: '格式代码', value: numberFormatCode(currentCell.value) });
+}
+function selectNumberFormat(event: Event) {
+  const select = event.target as HTMLSelectElement;
+  if (select.value === 'edit') {
+    select.value = numberFormatLabel.value;
+    openNumberFormat();
+  } else format({ fmt: select.value as CellData['fmt'] });
+}
+const formatPreview = computed(() => {
+  if (dialog.value?.kind !== 'numberFormat') return;
+  const code = dialog.value.value || '';
+  if (!code || code.length > 255) return;
+  try {
+    // Check all four common sections, even if the selected cell only exercises one.
+    for (const sample of [1, -1, 0, 'x']) renderFormatCode(code, sample, wb.date1904);
+    const value = isBlankCell(currentCell.value) ? 1234.56 : evaluator.value(sheetIdx.value, selectedRow.value, selectedCol.value);
+    if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
+    return isError(selectedRow.value, selectedCol.value) ? String(value) : renderFormatCode(code, value, wb.date1904);
+  } catch { return; }
+});
 function openFind() {
   openDialog({ kind: 'find', title: '查找与替换', label: '查找内容', value: '' });
   replaceValue.value = '';
@@ -1481,6 +1915,49 @@ async function submitDialog() {
   const d = { ...dialog.value },
     value = (d.value || '').trim();
   dialogError.value = '';
+  if (d.kind === 'link') {
+    const original = currentCell.value.link;
+    let link: CellLink;
+    if (original && linkAddress(original) === value) link = { ...original };
+    else if (value.startsWith('#') && locationInWorkbook(value.slice(1))) link = { location: value.slice(1) };
+    else if (externalLink(value)) link = { target: value };
+    else {
+      dialogError.value = '请输入网页、邮件地址或有效的工作表位置，例如 #Sheet1!A1';
+      return;
+    }
+    link.tooltip = d.tooltip?.trim() || undefined;
+    const key = cellKey(selectedRow.value, selectedCol.value);
+    const display = evaluator.value.formatted(sheetIdx.value, selectedRow.value, selectedCol.value);
+    const text = d.text || value;
+    const changeText = linkTextEditable.value && text !== display;
+    mutate(() => {
+      const cell = activeSheet.value.cells[key] ??= { v: '' };
+      if (changeText) { cell.v = text; cell.type = 'text'; link.display = undefined; }
+      cell.link = link;
+    });
+    closeDialog();
+    return;
+  }
+  if (d.kind === 'numberFormat') {
+    if (formatPreview.value === undefined) {
+      dialogError.value = '请输入有效的 Excel 数字格式代码，最多 255 个字符';
+      return;
+    }
+    const code = d.value!;
+    format(code.toLowerCase() === 'general' ? { fmt: 'general' } : readNumberStyle(0, code));
+    dialog.value = null;
+    return;
+  }
+  if (d.kind === 'unhide') {
+    const selected = hiddenSheets.value.filter(sheet => unhideSelection.value.includes(sheet.name));
+    if (!selected.length) return;
+    mutate(() => {
+      for (const sheet of selected) delete sheet.state;
+      switchSheet(wb.sheets.indexOf(selected[0]));
+    });
+    dialog.value = null;
+    return;
+  }
   if (!value) {
     dialogError.value = '请输入内容';
     return;
@@ -1524,24 +2001,7 @@ async function submitDialog() {
     const previous = wb.sheets[d.index!].name;
     mutate(() => {
       wb.sheets[d.index!].name = value;
-      for (const sheet of wb.sheets)
-        for (const cell of Object.values(sheet.cells))
-          if (cell.v.startsWith('='))
-            cell.v = cell.v
-              .split(/("(?:[^"]|"")*")/g)
-              .map((part, i) =>
-                i % 2
-                  ? part
-                  : part.replace(
-                      /('(?:[^']|'')+'|[A-Za-z_\u4e00-\u9fff][\w.\u4e00-\u9fff]*)!/g,
-                      (full, name: string) =>
-                        name.replace(/^'|'$/g, '').replace(/''/g, "'").toLowerCase() ===
-                        previous.toLowerCase()
-                          ? `'${value.replace(/'/g, "''")}'!`
-                          : full
-                    )
-              )
-              .join('');
+      updateSheetReferences(wb.sheets, previous, value);
     });
     dialog.value = null;
     return;
@@ -1578,8 +2038,7 @@ async function submitDialog() {
       dialogError.value = '未找到匹配内容';
       return;
     }
-    selectedRow.value = endRow.value = next[0];
-    selectedCol.value = endCol.value = next[1];
+    setRange(next[0], next[1]);
     rowCount.value = Math.max(rowCount.value, next[0] + 1);
     colCount.value = Math.max(colCount.value, next[1] + 1);
     notice.value = `找到 ${entries.length} 处匹配`;
@@ -1595,10 +2054,12 @@ function replaceAll() {
   if (!query) return;
   let count = 0;
   mutate(() => {
-    for (const cell of Object.values(activeSheet.value.cells))
+    for (const [key, cell] of Object.entries(activeSheet.value.cells))
       if (cell.v.includes(query)) {
         count += cell.v.split(query).length - 1;
-        cell.v = cell.v.split(query).join(replaceValue.value);
+        const replaced = cell.v.split(query).join(replaceValue.value);
+        if (cell.type === 'boolean') activeSheet.value.cells[key] = cellFromInput(cell, replaced, wb.date1904);
+        else cell.v = replaced;
       }
   });
   dialogError.value = `已替换 ${count} 处`;
@@ -1615,7 +2076,7 @@ async function nextAvailablePath() {
 async function writeNative(path: string) {
   try {
     const saved = snapshot.value;
-    await office.fs.writeFile(path, saved);
+    await office.fs.writeFile(path, JSON.stringify(workbookForSave()));
     removeDraft();
     filePath.value = path;
     draftScope.value = path;
@@ -1640,7 +2101,7 @@ async function saveFile(as = false): Promise<boolean> {
   if (office.standalone) {
     try {
       const saved = snapshot.value;
-      const name = await saveOfficeDownload(documentName.value, 'xlsx', as, () => exportXlsx(JSON.parse(saved)));
+      const name = await saveOfficeDownload(documentName.value, 'xlsx', as, () => exportXlsx(workbookForSave()));
       if (!name) return false;
       documentName.value = name;
       filePath.value = name + '.xlsx';
@@ -1670,6 +2131,8 @@ function expandImportedGrid() {
 function applyWorkbook(data: Workbook, name: string, path = '', sourcePath = '') {
   removeDraft();
   wb.sheets = data.sheets;
+  wb.compatibility = data.compatibility;
+  wb.date1904 = data.date1904;
   filePath.value = path;
   draftScope.value = path || sourcePath || 'new';
   documentName.value = name.replace(/\.(xlsx|vtxls|csv|tsv|txt|json)$/i, '') || '新建工作簿';
@@ -1677,7 +2140,7 @@ function applyWorkbook(data: Workbook, name: string, path = '', sourcePath = '')
   undoStack.value = [];
   redoStack.value = [];
   savedSnapshot.value = path ? snapshot.value : '';
-  switchSheet(0);
+  activateSheet(data.activeTab ?? 0);
   tab.value = 'home';
 }
 function decodeText(raw: string) {
@@ -1699,10 +2162,10 @@ function fromText(text: string, name: string) {
     const cells: Record<string, CellData> = {};
     rows.forEach((row, r) =>
       row.forEach((v, c) => {
-        if (v !== '') cells[cellKey(r, c)] = { v };
+        if (v !== '') cells[cellKey(r, c)] = cellFromInput(undefined, v);
       })
     );
-    return validateWorkbook({ sheets: [{ name: 'Sheet1', cells }] });
+    return validateWorkbook({ compatibility: { setVersion: 2 }, sheets: [{ name: 'Sheet1', cells }] });
   }
   return validateWorkbook(JSON.parse(text));
 }
@@ -1757,14 +2220,14 @@ async function download(type: 'xlsx' | 'csv' | 'vtxls') {
   commitFormula();
   try {
     const name = documentName.value || '工作簿';
-    if (type === 'xlsx') downloadBlob(await exportXlsx(wb), name + '.xlsx');
+    if (type === 'xlsx') downloadBlob(await exportXlsx(workbookForSave()), name + '.xlsx');
     else if (type === 'vtxls')
-      downloadBlob(new Blob([snapshot.value], { type: 'application/json' }), name + '.vtxls');
+      downloadBlob(new Blob([JSON.stringify(workbookForSave())], { type: 'application/json' }), name + '.vtxls');
     else {
       const { er, ec } = usedBounds(),
         rows = Array.from({ length: er + 1 }, (_, r) =>
           Array.from({ length: ec + 1 }, (_, c) =>
-            formatValue(evaluator.value(sheetIdx.value, r, c), activeSheet.value.cells[cellKey(r, c)]?.fmt)
+            evaluator.value.formatted(sheetIdx.value, r, c)
           )
         );
       downloadBlob(
@@ -1790,6 +2253,7 @@ function printSheet() {
   const table = doc.createElement('table');
   table.style.cssText = 'border-collapse:collapse;width:100%;font:11pt Calibri,sans-serif';
   for (let r = area.r; r <= area.er; r++) {
+    if (hiddenRows.value.has(r)) continue;
     const tr = doc.createElement('tr');
     for (let c = area.c; c <= area.ec; c++) {
       if (hiddenMerged(r, c)) continue;
@@ -1827,7 +2291,27 @@ function onKeyDown(e: KeyboardEvent) {
     void openVirtual();
     return;
   }
-  if (isTextTarget(e.target) || dialog.value) return;
+  if (isTextTarget(e.target) || dialog.value || filterMenu.value) return;
+  if (mod && e.shiftKey && key === 'l') {
+    e.preventDefault();
+    toggleFilter();
+    return;
+  }
+  if (mod && !e.shiftKey && !e.altKey && key === 'k') {
+    e.preventDefault();
+    openLinkDialog();
+    return;
+  }
+  if (mod && !e.shiftKey && !e.altKey && key === '1') {
+    e.preventDefault();
+    openNumberFormat();
+    return;
+  }
+  if (mod && !e.shiftKey && !e.altKey && (key === 'pageup' || key === 'pagedown')) {
+    e.preventDefault();
+    switchSheet(key === 'pageup' ? previousSheet.value : nextSheet.value);
+    return;
+  }
   if (e.key === 'Process' || e.keyCode === 229) {
     startEdit(selectedRow.value, selectedCol.value, '');
     return;
@@ -1885,10 +2369,10 @@ function onKeyDown(e: KeyboardEvent) {
   }
   if (e.key === 'Tab') {
     e.preventDefault();
-    move(0, e.shiftKey ? -1 : 1);
+    advanceCell(true, e.shiftKey);
   } else if (e.key === 'Enter') {
     e.preventDefault();
-    move(e.shiftKey ? -1 : 1, 0);
+    advanceCell(false, e.shiftKey);
   } else if (e.key === 'F2') {
     e.preventDefault();
     startEdit(selectedRow.value, selectedCol.value);
@@ -1912,7 +2396,7 @@ function persistDraft() {
     if (dirty.value)
       office.drafts?.setItem(
         draftKey(),
-        JSON.stringify({ workbook: wb, name: documentName.value, path: filePath.value, time: Date.now() })
+        JSON.stringify({ workbook: workbookForSave(), name: documentName.value, path: filePath.value, time: Date.now() })
       );
     else removeDraft();
   } catch {}
@@ -1943,13 +2427,15 @@ onMounted(async () => {
     try {
       const data = JSON.parse(draft),
         book = validateWorkbook(data.workbook);
-      if (JSON.stringify(book) !== snapshot.value) {
+      if (contentSnapshot(book) !== snapshot.value) {
         wb.sheets = book.sheets;
+        wb.compatibility = book.compatibility;
+        wb.date1904 = book.date1904;
         documentName.value = data.name || documentName.value;
         filePath.value = data.path || filePath.value;
         savedSnapshot.value = '';
         notice.value = '已恢复上次未保存的草稿';
-        switchSheet(0);
+        activateSheet(book.activeTab ?? 0);
       }
     } catch {}
   }
@@ -2428,6 +2914,7 @@ onBeforeUnmount(() => {
   background: var(--accent);
   border: 1px solid #fff;
 }
+.cell-display a { color: #0563c1; text-decoration: underline; }
 .cell-display {
   display: block;
   min-height: 24px;
@@ -2457,43 +2944,23 @@ onBeforeUnmount(() => {
 .hide-grid td {
   border-color: transparent;
 }
-.freeze-row .first-data-row td,
-.freeze-row .first-data-row th {
+.grid-table tr[data-frozen-row] > *,
+.grid-table [data-frozen-col] {
   position: sticky;
-  top: 26px;
   z-index: 2;
-  background: #fff;
-  border-bottom: 2px solid #aebbb2;
 }
-.freeze-row .first-data-row th {
-  z-index: 4;
-  background: #f5f6f5;
-}
-.filter-row th {
-  position: sticky;
-  top: 26px;
-  z-index: 3;
-  background: #f3f6f3;
-  padding: 3px;
-}
-.filter-row input {
-  width: 100%;
-  min-width: 0;
-  border: 1px solid #cbd5ce;
-  height: 23px;
-  background: white;
-  padding: 2px 4px;
-  font-size: 11px;
-  user-select: text;
-}
-.filter-row th:first-child {
-  left: 0;
-  z-index: 5;
-}
-.freeze-row:has(.filter-row) .first-data-row td,
-.freeze-row:has(.filter-row) .first-data-row th {
-  top: 56px;
-}
+.grid-table tr[data-frozen-row] > .cell[data-frozen-col] { z-index: 3; }
+.grid-table .row-header { z-index: 4; }
+.grid-table tr[data-frozen-row] > .row-header { z-index: 5; }
+.grid-table .col-header { z-index: 6; }
+.grid-table thead [data-frozen-col] { z-index: 7; }
+.grid-table .corner-header { z-index: 8; }
+.grid-table tr[data-frozen-row]:not(:has(+ tr[data-frozen-row])) > * { border-bottom-color: #87998d; }
+.grid-table [data-frozen-col]:not(:has(+ [data-frozen-col])) { border-right-color: #87998d; }
+.cell:has(.filter-arrow) .cell-display { padding-right: 20px; }
+.filter-arrow { position: absolute; right: 1px; bottom: 1px; width: 17px; height: 17px; padding: 0;
+  border: 1px solid #b4bcb6; background: #f7f8f7; color: #333; font: 12px/14px sans-serif; }
+.filter-arrow.active { color: var(--accent); border-color: var(--accent); }
 .sheet-bar {
   height: 36px;
   flex: none;

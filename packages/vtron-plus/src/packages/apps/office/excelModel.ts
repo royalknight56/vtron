@@ -1,5 +1,30 @@
+import { criterionMatcher, numericInput, wildcardMatch } from './excelCriteria';
+export { numericInput } from './excelCriteria';
+import { validFilter, type AutoFilter } from './excelFilter';
+import { calculateText, joinText, textArity } from './excelText';
+import { decimalPlaces, displayClock, displayNumber, maxDecimals, renderFormatCode, scaleDecimal } from './excelNumberFormats';
+import { calendarSerial, dateParts, parseCalendarInput, parseClockInput, type ClockFormat } from './excelDates';
+
+export interface CellLink {
+  target?: string;
+  location?: string;
+  tooltip?: string;
+  display?: string;
+}
+export function linkAddress(link: CellLink) {
+  return (link.target || '') + (link.location ? '#' + link.location : '');
+}
+export function externalLink(address: string) {
+  try {
+    const url = new URL(address);
+    return ['https:', 'http:', 'mailto:'].includes(url.protocol) ? url.href : undefined;
+  } catch { return; }
+}
+
 export interface CellData {
+  link?: CellLink;
   v: string;
+  type?: 'text' | 'boolean';
   b?: boolean;
   i?: boolean;
   u?: boolean;
@@ -10,7 +35,19 @@ export interface CellData {
   fs?: number;
   wrap?: boolean;
   border?: boolean;
-  fmt?: 'general' | 'number' | 'currency' | 'percent' | 'date';
+  xlsxFormat?: string | number;
+  decimals?: number;
+  grouping?: boolean;
+  fmt?: 'general' | 'number' | 'currency' | 'percent' | 'date' | 'text' | ClockFormat;
+}
+export function isFormulaCell(cell: CellData) {
+  return !cell.type && cell.v.startsWith('=');
+}
+export function isBlankCell(cell?: CellData) {
+  return !cell || (cell.v === '' && !cell.type);
+}
+export function copyCell(cell: CellData, dr: number, dc: number): CellData {
+  return { ...cell, v: isFormulaCell(cell) ? shiftFormula(cell.v, dr, dc) : cell.v };
 }
 export interface Merge {
   r: number;
@@ -18,7 +55,15 @@ export interface Merge {
   er: number;
   ec: number;
 }
+export interface SheetSelection {
+  activeCell: string;
+  sqref: string;
+}
 export interface Sheet {
+  autoFilter?: AutoFilter;
+  hiddenRows?: number[];
+  state?: 'hidden' | 'veryHidden';
+  selection?: SheetSelection;
   name: string;
   cells: Record<string, CellData>;
   widths?: Record<number, number>;
@@ -31,6 +76,9 @@ export interface Sheet {
   zoom?: number;
 }
 export interface Workbook {
+  compatibility?: { setVersion: number; warnBelowVersion?: number };
+  activeTab?: number;
+  date1904?: boolean;
   sheets: Sheet[];
 }
 export const cellKey = (r: number, c: number) => `${r},${c}`;
@@ -49,6 +97,20 @@ export function parseAddress(value: string): { r: number; c: number } | null {
   for (const ch of match[1].toUpperCase()) col = col * 26 + ch.charCodeAt(0) - 64;
   const r = Number(match[2]) - 1;
   return r < 10000 && col <= 256 ? { r, c: col - 1 } : null;
+}
+export function sheetSelection(activeCell: string, sqref: string): SheetSelection | undefined {
+  const active = parseAddress(activeCell);
+  const refs = sqref.split(':');
+  const first = parseAddress(refs[0]);
+  const last = refs.length === 2 ? parseAddress(refs[1]) : first;
+  if (!active && !first) return;
+  const cell = active || first!;
+  const label = address(cell.r, cell.c);
+  if (!first || !last || refs.length > 2) return { activeCell: label, sqref: label };
+  const r = Math.min(first.r, last.r), c = Math.min(first.c, last.c);
+  const er = Math.max(first.r, last.r), ec = Math.max(first.c, last.c);
+  if (cell.r < r || cell.r > er || cell.c < c || cell.c > ec) return { activeCell: label, sqref: label };
+  return { activeCell: label, sqref: address(r, c) + (r === er && c === ec ? '' : ':' + address(er, ec)) };
 }
 interface FormulaRef {
   qualifier: string;
@@ -71,6 +133,39 @@ export function mapFormulaAreas(
     return map({ qualifier: sheet1 || '', address: a1 }, last, separator || '') ?? token;
   });
 }
+const sheetQualifiers = new RegExp(
+  `"(?:[^"]|"")*"|(?<![\\w.\\u0080-\\uFFFF])(${sheetPrefix})|\\[[^\\]]*\\]`, 'g'
+);
+
+export function updateSheetReferences(sheets: Sheet[], previous: string, replacement?: string) {
+  const oldName = previous.toLowerCase();
+  const matches = (qualifier: string) =>
+    qualifier.slice(0, -1).replace(/^'|'$/g, '').replace(/''/g, "'").toLowerCase() === oldName;
+  const prefix = replacement === undefined ? '#REF!' : `'${replacement.replace(/'/g, "''")}'!`;
+  for (const sheet of sheets) {
+    for (const cell of Object.values(sheet.cells)) {
+      const link = cell.link;
+      if (link?.location && !link.target) {
+        const split = link.location.lastIndexOf('!') + 1;
+        if (split && matches(link.location.slice(0, split))) {
+          cell.link = { ...link, location: replacement === undefined ? '#REF!' : prefix + link.location.slice(split) };
+        }
+      }
+      if (!isFormulaCell(cell) || !cell.v.includes('!')) continue;
+      let formula = cell.v;
+      if (replacement === undefined) {
+        formula = mapFormulaAreas(formula, (first, last) =>
+          matches(first.qualifier) || (last && matches(last.qualifier)) ? '#REF!' : undefined
+        );
+      }
+      // Keep references to names and whole rows/columns in step with ordinary A1 references.
+      cell.v = formula.replace(sheetQualifiers, (token, qualifier) =>
+        qualifier && matches(qualifier) ? prefix : token
+      );
+    }
+  }
+}
+
 export function shiftFormula(value: string, dr: number, dc: number) {
   if (!value.startsWith('=')) return value;
   function shift(ref: FormulaRef) {
@@ -121,6 +216,31 @@ export function toDelimited(rows: string[][], delimiter = ',') {
     )
     .join('\r\n');
 }
+export function normalizeCell(input: unknown): CellData | undefined {
+  if (!input || typeof input !== 'object') return;
+  const raw = input as Partial<CellData>;
+  const cell: CellData = { v: String(raw.v ?? '').slice(0, 32767) };
+  if (raw.link && typeof raw.link === 'object') {
+    const link: CellLink = {};
+    for (const key of ['target', 'location', 'tooltip', 'display'] as const)
+      if (typeof raw.link[key] === 'string' && raw.link[key]) link[key] = raw.link[key];
+    if (link.target || link.location) cell.link = link;
+  }
+  if (raw.type === 'text' || (raw.type === 'boolean' && /^(TRUE|FALSE)$/.test(cell.v))) cell.type = raw.type;
+  for (const prop of ['b', 'i', 'u', 'wrap', 'border'] as const) if (raw[prop]) cell[prop] = true;
+  for (const prop of ['bg', 'fc'] as const)
+    if (typeof raw[prop] === 'string' && /^#[0-9a-f]{6}$/i.test(raw[prop]!)) cell[prop] = raw[prop];
+  if (['left', 'center', 'right'].includes(raw.a || '')) cell.a = raw.a;
+  if (typeof raw.ff === 'string') cell.ff = raw.ff.slice(0, 80);
+  if (typeof raw.fs === 'number') cell.fs = Math.min(72, Math.max(8, raw.fs));
+  if (['general', 'number', 'currency', 'percent', 'date', 'time', 'duration', 'datetime', 'text'].includes(raw.fmt || '')) cell.fmt = raw.fmt;
+  if (Number.isInteger(raw.decimals) && raw.decimals! >= 0 && raw.decimals! <= maxDecimals)
+    cell.decimals = raw.decimals;
+  if (typeof raw.xlsxFormat === 'string' || (typeof raw.xlsxFormat === 'number' &&
+      Number.isInteger(raw.xlsxFormat) && raw.xlsxFormat >= 0 && raw.xlsxFormat < 164)) cell.xlsxFormat = raw.xlsxFormat;
+  if (typeof raw.grouping === 'boolean') cell.grouping = raw.grouping;
+  return cell;
+}
 export function validateWorkbook(input: unknown): Workbook {
   const data = input as Workbook;
   if (!Array.isArray(data?.sheets) || !data.sheets.length || data.sheets.length > 100)
@@ -148,16 +268,8 @@ export function validateWorkbook(input: unknown): Workbook {
       const [r, c] = key.split(',').map(Number);
       if (r > 9999 || c > 255) throw new Error('支持最多 10000 行、256 列');
       if (++count > 100000) throw new Error('工作簿最多支持 100000 个非空单元格');
-      if (!raw || typeof raw !== 'object') continue;
-      const cell: CellData = { v: String(raw.v ?? '').slice(0, 32767) };
-      for (const prop of ['b', 'i', 'u', 'wrap', 'border'] as const) if (raw[prop]) cell[prop] = true;
-      for (const prop of ['bg', 'fc'] as const)
-        if (typeof raw[prop] === 'string' && /^#[0-9a-f]{6}$/i.test(raw[prop]!)) cell[prop] = raw[prop];
-      if (['left', 'center', 'right'].includes(raw.a || '')) cell.a = raw.a;
-      if (typeof raw.ff === 'string') cell.ff = raw.ff.slice(0, 80);
-      if (typeof raw.fs === 'number') cell.fs = Math.min(72, Math.max(8, raw.fs));
-      if (['general', 'number', 'currency', 'percent', 'date'].includes(raw.fmt || '')) cell.fmt = raw.fmt;
-      cells[key] = cell;
+      const cell = normalizeCell(raw);
+      if (cell) cells[key] = cell;
     }
     const widths: Record<number, number> = {},
       heights: Record<number, number> = {};
@@ -182,6 +294,11 @@ export function validateWorkbook(input: unknown): Workbook {
         merges.push({ ...item });
     }
     const result: Sheet = { name, cells, widths, heights, merges };
+    const filter = validFilter(sheet.autoFilter);
+    if (filter) result.autoFilter = filter;
+    if (Array.isArray(sheet.hiddenRows) && sheet.hiddenRows.length)
+      result.hiddenRows = [...new Set(sheet.hiddenRows.filter(r => Number.isInteger(r) && r >= 0 && r < 10000))];
+    if (sheet.state === 'hidden' || sheet.state === 'veryHidden') result.state = sheet.state;
     if (Number.isInteger(sheet.frozenRows) && sheet.frozenRows! > 0 && sheet.frozenRows! < 10000)
       result.frozenRows = sheet.frozenRows;
     if (Number.isInteger(sheet.frozenCols) && sheet.frozenCols! > 0 && sheet.frozenCols! < 256)
@@ -190,14 +307,32 @@ export function validateWorkbook(input: unknown): Workbook {
     if (sheet.showFormulas === true) result.showFormulas = true;
     if (Number.isInteger(sheet.zoom) && sheet.zoom! >= 10 && sheet.zoom! <= 400 && sheet.zoom !== 100)
       result.zoom = sheet.zoom;
+    if (typeof sheet.selection?.activeCell === 'string' && typeof sheet.selection.sqref === 'string')
+      result.selection = sheetSelection(sheet.selection.activeCell, sheet.selection.sqref);
     return result;
   });
-  return { sheets };
+  const book: Workbook = { sheets };
+  if (data.compatibility) {
+    const { setVersion, warnBelowVersion } = data.compatibility;
+    if (Number.isInteger(setVersion) && setVersion >= 1 && setVersion <= 0xffffffff) {
+      book.compatibility = { setVersion };
+      if (warnBelowVersion && Number.isInteger(warnBelowVersion) && warnBelowVersion > 0 && warnBelowVersion <= setVersion)
+        book.compatibility.warnBelowVersion = warnBelowVersion;
+    }
+  }
+  if (data.date1904 === true) book.date1904 = true;
+  const firstVisible = sheets.findIndex(sheet => !sheet.state);
+  if (firstVisible < 0) throw new Error('工作簿至少需要一张可见工作表');
+  const requested = data.activeTab ?? 0;
+  const active = Number.isInteger(requested) && sheets[requested] && !sheets[requested].state ? requested : firstVisible;
+  if (active > 0) book.activeTab = active;
+  return book;
 }
 
-export const numericInput = /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
 type Scalar = string | number | boolean;
-type Value = Scalar | Scalar[];
+// An empty reference is distinct from a formula or text cell containing an empty string.
+type CellValue = Scalar | undefined;
+type Value = CellValue | CellValue[];
 type Token = { kind: 'number' | 'string' | 'ref' | 'name' | 'op' | 'error'; value: string };
 type Node =
   | { kind: 'literal'; value: Scalar }
@@ -208,6 +343,9 @@ type Node =
   | { kind: 'binary'; op: string; left: Node; right: Node }
   | { kind: 'call'; name: string; args: Node[] };
 class FormulaError extends Error {}
+function isReference(node: Node) {
+  return node.kind === 'ref' || node.kind === 'range' || (node.kind === 'call' && node.name === 'INDEX');
+}
 function tokenize(text: string): Token[] {
   const tokens: Token[] = [];
   let input = text,
@@ -331,72 +469,63 @@ function parseFormula(text: string): Node {
   if (pos < tokens.length) throw new FormulaError('#VALUE!');
   return result;
 }
-export const cellErrorCode = /^#(?:REF!|VALUE!|DIV\/0!|N\/A|NAME\?|NUM!|NULL!|CYCLE!)$/i;
-// Match Excel wildcards without treating user-supplied criteria as regular expressions.
-function wildcardMatch(tokens: string[], text: string) {
-  let i = 0,
-    j = 0,
-    star = -1,
-    restart = 0;
-  while (i < text.length) {
-    const token = tokens[j];
-    if (token === '*') {
-      star = j++;
-      restart = i;
-    } else if (
-      token === '?' ||
-      (token !== undefined && (token.length === 2 ? token[1] : token) === text[i])
-    ) {
-      i++;
-      j++;
-    } else if (star >= 0) {
-      j = star + 1;
-      i = ++restart;
-    } else return false;
+export function cellFromInput(previous: CellData | undefined, input: string, date1904 = false): CellData {
+  const cell: CellData = { ...previous, v: input };
+  delete cell.type;
+  if (!input || input.startsWith("'")) return cell;
+  if (cell.fmt === 'text') return { ...cell, type: 'text' };
+  if (/^(true|false)$/i.test(input)) return { ...cell, v: input.toUpperCase(), type: 'boolean' };
+  const trimmed = input.trim();
+  const explicitPercent = /[%％]$/.test(trimmed);
+  const amount = explicitPercent ? trimmed.slice(0, -1).trim() : trimmed;
+  if ((explicitPercent || cell.fmt === 'percent') && numericInput.test(amount)) {
+    const value = explicitPercent || Math.abs(Number(amount)) >= 1 ? scaleDecimal(amount, -2) : Number(amount);
+    if (Number.isFinite(value)) {
+      if (cell.fmt !== 'percent' && cell.xlsxFormat === undefined) {
+        cell.fmt = 'percent';
+        cell.decimals = decimalPlaces(amount);
+        delete cell.grouping;
+        delete cell.xlsxFormat;
+      }
+      cell.v = String(value);
+      return cell;
+    }
   }
-  return tokens.slice(j).every((token) => token === '*');
+  const clock = parseClockInput(input, date1904);
+  if (clock) {
+    const temporal = cell.fmt === 'date' || cell.fmt === 'time' || cell.fmt === 'duration' || cell.fmt === 'datetime';
+    if (!temporal && cell.xlsxFormat === undefined) {
+      cell.fmt = clock.fmt;
+      cell.xlsxFormat = clock.code;
+    }
+    cell.v = String(clock.serial);
+    return cell;
+  }
+  const serial = parseCalendarInput(input, date1904);
+  if (serial !== null) {
+    if (cell.fmt !== 'date' && cell.fmt !== 'datetime' && cell.xlsxFormat === undefined) {
+      cell.fmt = 'date';
+      delete cell.xlsxFormat;
+    }
+    cell.v = String(serial);
+    return cell;
+  }
+  if (cell.xlsxFormat === undefined && (!previous?.fmt || previous.fmt === 'general') && /^=\s*(DATE|EDATE|EOMONTH|TIME)\s*\(/i.test(input)) {
+    try {
+      const formula = parseFormula(input.slice(1));
+      if (formula.kind === 'call' && formula.name === 'TIME') return { ...cell, fmt: 'time', xlsxFormat: undefined };
+      if (formula.kind === 'call' && ['DATE', 'EDATE', 'EOMONTH'].includes(formula.name))
+        return { ...cell, fmt: 'date', xlsxFormat: undefined };
+    } catch { /* Incomplete formulas are displayed by the evaluator. */ }
+  }
+  return cell;
 }
-function criterionMatcher(criterion: Scalar) {
-  const [, op = '=', operand] = /^(<=|>=|<>|<|>|=)?([\s\S]*)$/.exec(String(criterion))!;
-  const text = operand.toLowerCase();
-  const numeric = /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(text);
-  const wildcard = (op === '=' || op === '<>') && /[?*~]/.test(text);
-  const tokens = wildcard ? text.match(/~[?*~]|[\s\S]/g) || [] : [];
-  return (value: Scalar) => {
-    if (wildcard) {
-      const match = typeof value === 'string' && value !== '' && wildcardMatch(tokens, value.toLowerCase());
-      return op === '<>' ? !match : match;
-    }
-    let comparison: number;
-    if (numeric) {
-      if (value === '' || typeof value === 'boolean' || !Number.isFinite(Number(value))) return op === '<>';
-      comparison = Number(value) - Number(text);
-    } else if (typeof criterion === 'boolean') {
-      return value === criterion;
-    } else {
-      if (typeof value !== 'string') return op === '<>';
-      const actual = value.toLowerCase();
-      comparison = actual === text ? 0 : actual < text ? -1 : 1;
-    }
-    switch (op) {
-      case '<>':
-        return comparison !== 0;
-      case '<':
-        return comparison < 0;
-      case '<=':
-        return comparison <= 0;
-      case '>':
-        return comparison > 0;
-      case '>=':
-        return comparison >= 0;
-      default:
-        return comparison === 0;
-    }
-  };
-}
+
+export const cellErrorCode = /^#(?:REF!|VALUE!|DIV\/0!|N\/A|NAME\?|NUM!|NULL!|CYCLE!)$/i;
 export function makeEvaluator(workbook: Workbook) {
   const cache = new Map<string, Scalar | FormulaError>(),
     visiting = new Set<string>();
+  const formulaLinks = new Map<string, CellLink>();
   let budget = 100000;
   function refParts(ref: string, sheet: number) {
     const split = ref.lastIndexOf('!');
@@ -444,23 +573,31 @@ export function makeEvaluator(workbook: Workbook) {
     if (col) area.c = area.ec = area.c + col - 1;
     return area;
   }
-  function rangeValues(area: ReturnType<typeof rangeBounds>): Scalar[] {
-    const values: Scalar[] = [];
+  function referenceValue(sheet: number, r: number, c: number): CellValue {
+    return isBlankCell(workbook.sheets[sheet].cells[cellKey(r, c)]) ? undefined : read(sheet, r, c);
+  }
+  function rangeValues(area: ReturnType<typeof rangeBounds>): CellValue[] {
+    const values: CellValue[] = [];
     for (let r = area.r; r <= area.er; r++)
       for (let c = area.c; c <= area.ec; c++) {
         if (--budget < 0) throw new FormulaError('#NUM!');
-        values.push(read(area.sheet, r, c));
+        values.push(referenceValue(area.sheet, r, c));
       }
     return values;
   }
-  const scalar = (value: Value): Scalar => (Array.isArray(value) ? value[0] ?? 0 : value);
+  const firstValue = (value: Value): CellValue => Array.isArray(value) ? value[0] : value;
+  const scalar = (value: Value): Scalar => firstValue(value) ?? 0;
   function number(value: Value): number {
     const raw = scalar(value);
     const result = Number(raw);
     if (!Number.isFinite(result)) throw new FormulaError('#VALUE!');
     return result;
   }
-  function evaluate(node: Node, sheet: number): Value {
+  function checkedText<T>(value: T | null): T {
+    if (value === null) throw new FormulaError('#VALUE!');
+    return value;
+  }
+  function evaluate(node: Node, sheet: number, linkCell?: string): Value {
     if (--budget < 0) throw new FormulaError('#NUM!');
     switch (node.kind) {
       case 'error':
@@ -469,7 +606,7 @@ export function makeEvaluator(workbook: Workbook) {
         return node.value;
       case 'ref': {
         const ref = refParts(node.value, sheet);
-        return read(ref.sheet, ref.r, ref.c);
+        return referenceValue(ref.sheet, ref.r, ref.c);
       }
       case 'range':
         return rangeValues(rangeBounds(node, sheet));
@@ -482,10 +619,12 @@ export function makeEvaluator(workbook: Workbook) {
           r = evaluate(node.right, sheet);
         const sl = scalar(l),
           sr = scalar(r);
-        if (node.op === '&') return String(sl) + String(sr);
+        if (node.op === '&') return checkedText(joinText([firstValue(l), firstValue(r)]));
         if (['=', '<>', '<', '>', '<=', '>='].includes(node.op)) {
-          const a = typeof sl === 'string' ? sl.toLowerCase() : sl,
-            b = typeof sr === 'string' ? sr.toLowerCase() : sr;
+          const left = firstValue(l) ?? (typeof sr === 'string' ? '' : typeof sr === 'boolean' ? false : 0);
+          const right = firstValue(r) ?? (typeof sl === 'string' ? '' : typeof sl === 'boolean' ? false : 0);
+          const a = typeof left === 'string' ? left.toLowerCase() : left;
+          const b = typeof right === 'string' ? right.toLowerCase() : right;
           switch (node.op) {
             case '=':
               return a === b;
@@ -519,27 +658,57 @@ export function makeEvaluator(workbook: Workbook) {
         throw new FormulaError('#VALUE!');
       }
       case 'call': {
-        if (node.name === 'INDEX') {
-          const area = rangeBounds(node, sheet);
-          if (area.r === area.er && area.c === area.ec && !workbook.sheets[area.sheet].cells[cellKey(area.r, area.c)]?.v)
-            return 0;
-          return rangeValues(area);
+        if (['ISBLANK', 'ISNUMBER', 'ISTEXT', 'ISNONTEXT', 'ISLOGICAL', 'ISERROR', 'ISERR', 'ISNA'].includes(node.name))
+          return checkType(node, sheet);
+        if (node.name === 'HYPERLINK') {
+          if (!node.args.length || node.args.length > 2) throw new FormulaError('#VALUE!');
+          const target = String(scalar(evaluate(node.args[0], sheet)));
+          const label = node.args[1] ? scalar(evaluate(node.args[1], sheet)) : target;
+          if (linkCell && target) formulaLinks.set(linkCell, target.startsWith('#') ? { location: target.slice(1) } : { target });
+          return label;
         }
+        const arity = textArity.get(node.name);
+        if (arity) {
+          if (node.args.length < arity[0] || node.args.length > arity[1]) throw new FormulaError('#VALUE!');
+          const args = node.args.map(arg => firstValue(evaluate(arg, sheet)));
+          return checkedText(calculateText(node.name, args, (workbook.compatibility?.setVersion ?? 1) >= 2));
+        }
+        if (node.name === 'TEXT') {
+          if (node.args.length !== 2) throw new FormulaError('#VALUE!');
+          const value = scalar(evaluate(node.args[0], sheet));
+          const code = scalar(evaluate(node.args[1], sheet));
+          if (typeof code !== 'string') throw new FormulaError('#VALUE!');
+          const input = typeof value === 'string' && numericInput.test(value.trim()) ? Number(value) : value;
+          if (typeof input === 'boolean') return input ? 'TRUE' : 'FALSE';
+          try { return renderFormatCode(code, input, workbook.date1904); }
+          catch { throw new FormulaError('#VALUE!'); }
+        }
+        if (node.name === 'TRUE' || node.name === 'FALSE') {
+          if (node.args.length) throw new FormulaError('#VALUE!');
+          return node.name === 'TRUE';
+        }
+        if (node.name === 'INDEX') return rangeValues(rangeBounds(node, sheet));
+        if (node.name === 'COUNT' || node.name === 'COUNTA' || node.name === 'COUNTBLANK')
+          return countValues(node, sheet);
+        if (['TIME', 'TIMEVALUE', 'HOUR', 'MINUTE', 'SECOND'].includes(node.name))
+          return evaluateTime(node, sheet);
+        if (['DATE', 'DATEVALUE', 'YEAR', 'MONTH', 'DAY', 'EDATE', 'EOMONTH'].includes(node.name))
+          return evaluateDate(node, sheet);
         if (node.name === 'IF') {
           if (node.args.length < 2 || node.args.length > 3) throw new FormulaError('#VALUE!');
           const condition = scalar(evaluate(node.args[0], sheet));
           return condition
-            ? evaluate(node.args[1], sheet)
+            ? evaluate(node.args[1], sheet, linkCell)
             : node.args[2]
-              ? evaluate(node.args[2], sheet)
+              ? evaluate(node.args[2], sheet, linkCell)
               : false;
         }
         if (node.name === 'IFERROR') {
           if (node.args.length !== 2) throw new FormulaError('#VALUE!');
           try {
-            return evaluate(node.args[0], sheet);
+            return evaluate(node.args[0], sheet, linkCell);
           } catch {
-            return evaluate(node.args[1], sheet);
+            return evaluate(node.args[1], sheet, linkCell);
           }
         }
         if (['COUNTIF', 'SUMIF', 'AVERAGEIF', 'COUNTIFS', 'SUMIFS', 'AVERAGEIFS'].includes(node.name))
@@ -558,10 +727,6 @@ export function makeEvaluator(workbook: Workbook) {
             return nums.length ? Math.min(...nums) : 0;
           case 'MAX':
             return nums.length ? Math.max(...nums) : 0;
-          case 'COUNT':
-            return nums.length;
-          case 'COUNTA':
-            return values.filter((v) => v !== '').length;
           case 'ABS':
             return Math.abs(number(values[0] ?? 0));
           case 'ROUND': {
@@ -576,17 +741,139 @@ export function makeEvaluator(workbook: Workbook) {
             return !values[0];
           case 'CONCAT':
           case 'CONCATENATE':
-            return values.join('');
-          case 'LEN':
-            return String(values[0] ?? '').length;
-          case 'UPPER':
-            return String(values[0] ?? '').toUpperCase();
-          case 'LOWER':
-            return String(values[0] ?? '').toLowerCase();
+            return checkedText(joinText(values));
           default:
             throw new FormulaError('#NAME?');
         }
       }
+    }
+  }
+  function evaluateTime(node: Extract<Node, { kind: 'call' }>, sheet: number): number {
+    const { args, name } = node;
+    if (args.length !== (name === 'TIME' ? 3 : 1)) throw new FormulaError('#VALUE!');
+    if (name === 'TIME') {
+      const parts = args.map(arg => Math.trunc(number(evaluate(arg, sheet))));
+      const total = parts[0] * 3600 + parts[1] * 60 + parts[2];
+      if (total < 0 || parts.some(n => Math.abs(n) > 32767)) throw new FormulaError('#NUM!');
+      return (total % 86400) / 86400;
+    }
+    const input = scalar(evaluate(args[0], sheet));
+    const parsed = typeof input === 'string' ? parseClockInput(input, workbook.date1904) : null;
+    if (name === 'TIMEVALUE') {
+      if (!parsed) throw new FormulaError('#VALUE!');
+      return parsed.time;
+    }
+    const serial = parsed?.serial ?? number(input);
+    if (!dateParts(serial, workbook.date1904)) throw new FormulaError('#NUM!');
+    const seconds = Math.floor(Math.round(serial * 86400000) / 1000);
+    return name === 'HOUR' ? Math.floor(seconds / 3600) % 24 : name === 'MINUTE' ? Math.floor(seconds / 60) % 60 : seconds % 60;
+  }
+  function evaluateDate(node: Extract<Node, { kind: 'call' }>, sheet: number): number {
+    const { name, args } = node;
+    const shiftMonth = name === 'EDATE' || name === 'EOMONTH';
+    if (args.length !== (name === 'DATE' ? 3 : shiftMonth ? 2 : 1)) throw new FormulaError('#VALUE!');
+    const system = workbook.date1904;
+    const arg = (i: number) => scalar(evaluate(args[i], sheet));
+    const integer = (i: number) => Math.trunc(number(arg(i)));
+    let serial: number;
+    if (name === 'DATE') {
+      const year = integer(0);
+      if (year < 0 || year > 9999) throw new FormulaError('#NUM!');
+      serial = calendarSerial(year < 1900 ? year + 1900 : year, integer(1), integer(2), system);
+    } else {
+      const input = arg(0);
+      const clock = typeof input === 'string' ? parseClockInput(input, system) : null;
+      const text = typeof input === 'string'
+        ? parseCalendarInput(input, system) ?? (clock?.fmt === 'datetime' ? Math.floor(clock.serial) : null)
+        : null;
+      if (name === 'DATEVALUE') {
+        if (text === null) throw new FormulaError('#VALUE!');
+        return text;
+      }
+      const parts = dateParts(text ?? number(input), system);
+      if (!parts) throw new FormulaError('#NUM!');
+      if (name === 'YEAR') return parts.year;
+      if (name === 'MONTH') return parts.month;
+      if (name === 'DAY') return parts.day;
+      const month = parts.month + integer(1);
+      const end = calendarSerial(parts.year, month + 1, 0, system);
+      serial = name === 'EOMONTH' ? end : Math.min(end, calendarSerial(parts.year, month, parts.day, system));
+    }
+    if (!dateParts(serial, system)) throw new FormulaError('#NUM!');
+    return serial;
+  }
+  function countValues(node: Extract<Node, { kind: 'call' }>, sheet: number) {
+    const { name, args } = node;
+    if (args.length > 255 || (name === 'COUNTBLANK' && args.length !== 1)) throw new FormulaError('#VALUE!');
+    let count = 0;
+    function visitArea(area: ReturnType<typeof rangeBounds>) {
+      const cells = workbook.sheets[area.sheet].cells;
+      const size = (area.er - area.r + 1) * (area.ec - area.c + 1);
+      if (name === 'COUNTBLANK') count += size;
+      function visit(r: number, c: number) {
+        if (--budget < 0) throw new FormulaError('#NUM!');
+        if (isBlankCell(cells[cellKey(r, c)])) return;
+        const value = resultAt(area.sheet, r, c);
+        if (value instanceof FormulaError && value.message === '#CYCLE!') throw value;
+        if (name === 'COUNTBLANK') {
+          if (value !== '') count--;
+        } else if (name === 'COUNTA' || typeof value === 'number') count++;
+      }
+      // For large areas the empty cells are already accounted for in the area size.
+      if (size > 10000) {
+        for (const key of Object.keys(cells)) {
+          const [r, c] = key.split(',').map(Number);
+          if (r >= area.r && r <= area.er && c >= area.c && c <= area.ec) visit(r, c);
+        }
+      } else {
+        for (let r = area.r; r <= area.er; r++)
+          for (let c = area.c; c <= area.ec; c++) visit(r, c);
+      }
+    }
+    for (const arg of args) {
+      try {
+        if (isReference(arg)) {
+          visitArea(rangeBounds(arg, sheet));
+        } else if (name === 'COUNTBLANK') {
+          throw new FormulaError(arg.kind === 'error' ? arg.value : '#VALUE!');
+        } else {
+          const result = evaluate(arg, sheet);
+          if (Array.isArray(result)) {
+            count += result.filter(value => name === 'COUNTA' ? value !== undefined : typeof value === 'number').length;
+          } else if (name === 'COUNTA' || typeof result === 'number' || typeof result === 'boolean' ||
+              (typeof result === 'string' && numericInput.test(result.trim()))) count++;
+        }
+      } catch (error) {
+        if (!(error instanceof FormulaError) || name === 'COUNTBLANK' || error.message === '#CYCLE!') throw error;
+        if (name === 'COUNTA') count++;
+      }
+      if (budget < 0) throw new FormulaError('#NUM!');
+    }
+    return count;
+  }
+  function checkType(node: Extract<Node, { kind: 'call' }>, sheet: number): boolean {
+    if (node.args.length !== 1) throw new FormulaError('#VALUE!');
+    const arg = node.args[0];
+    let value: Scalar | undefined;
+    try {
+      if (isReference(arg)) {
+        const area = rangeBounds(arg, sheet);
+        if (!isBlankCell(workbook.sheets[area.sheet].cells[cellKey(area.r, area.c)]))
+          value = read(area.sheet, area.r, area.c);
+      } else value = scalar(evaluate(arg, sheet));
+    } catch (error) {
+      if (!(error instanceof FormulaError)) throw error;
+      return node.name === 'ISERROR' || node.name === 'ISNONTEXT' ||
+        (node.name === 'ISNA' && error.message === '#N/A') ||
+        (node.name === 'ISERR' && error.message !== '#N/A');
+    }
+    switch (node.name) {
+      case 'ISBLANK': return value === undefined;
+      case 'ISNUMBER': return typeof value === 'number';
+      case 'ISTEXT': return typeof value === 'string';
+      case 'ISNONTEXT': return typeof value !== 'string';
+      case 'ISLOGICAL': return typeof value === 'boolean';
+      default: return false;
     }
   }
   function lookup(node: Extract<Node, { kind: 'call' }>, sheet: number): Scalar {
@@ -618,7 +905,7 @@ export function makeEvaluator(workbook: Workbook) {
       if (--budget < 0) throw new FormulaError('#NUM!');
       const row = area.r + (horizontal ? 0 : i);
       const col = area.c + (horizontal ? i : 0);
-      if (!workbook.sheets[area.sheet].cells[cellKey(row, col)]?.v) continue;
+      if (isBlankCell(workbook.sheets[area.sheet].cells[cellKey(row, col)])) continue;
       const value = read(area.sheet, row, col);
       if (typeof value !== typeof key) continue;
       const candidate = typeof value === 'string' ? value.toLowerCase() : value;
@@ -640,7 +927,7 @@ export function makeEvaluator(workbook: Workbook) {
     if (positionOnly) return found + 1;
     const row = area.r + (horizontal ? offset : found);
     const col = area.c + (horizontal ? found : offset);
-    return workbook.sheets[area.sheet].cells[cellKey(row, col)]?.v ? read(area.sheet, row, col) : 0;
+    return isBlankCell(workbook.sheets[area.sheet].cells[cellKey(row, col)]) ? 0 : read(area.sheet, row, col);
   }
   function aggregateIf(node: Extract<Node, { kind: 'call' }>, sheet: number) {
     const { name, args } = node;
@@ -662,8 +949,7 @@ export function makeEvaluator(workbook: Workbook) {
       const range = i === 0 ? area : rangeBounds(pairs[i], sheet);
       if (!sameSize(range)) throw new FormulaError('#VALUE!');
       const criterionNode = pairs[i + 1];
-      let criterion = scalar(evaluate(criterionNode, sheet));
-      if (criterionNode.kind === 'ref' && criterion === '') criterion = 0;
+      const criterion = scalar(evaluate(criterionNode, sheet));
       conditions.push({ range, matches: criterionMatcher(criterion) });
     }
     let sum = 0, count = 0;
@@ -695,18 +981,21 @@ export function makeEvaluator(workbook: Workbook) {
     if (cache.has(key)) return cache.get(key)!;
     if (!visiting.size) budget = 100000;
     if (visiting.has(key) || visiting.size > 100) return new FormulaError('#CYCLE!');
-    const value = workbook.sheets[sheet]?.cells[cellKey(r, c)]?.v ?? '';
+    const cell = workbook.sheets[sheet]?.cells[cellKey(r, c)];
+    const value = cell?.v ?? '';
     let result: Scalar | FormulaError = value;
-    if (value.startsWith('=')) {
+    if (cell?.type === 'boolean') result = value === 'TRUE';
+    else if (cell && isFormulaCell(cell)) {
       visiting.add(key);
       try {
-        result = scalar(evaluate(parseFormula(value.slice(1)), sheet));
+        result = scalar(evaluate(parseFormula(value.slice(1)), sheet, key));
         if (typeof result === 'number' && !Number.isFinite(result)) result = new FormulaError('#NUM!');
       } catch (error) {
         result = error instanceof FormulaError ? error : new FormulaError('#VALUE!');
       }
       visiting.delete(key);
-    } else if (cellErrorCode.test(value)) result = new FormulaError(value.toUpperCase());
+    } else if (cell?.type === 'text') result = value;
+    else if (cellErrorCode.test(value)) result = new FormulaError(value.toUpperCase());
     else if (value !== '' && numericInput.test(value))
       result = Number(value);
     else if (value.startsWith("'")) result = value.slice(1);
@@ -723,19 +1012,41 @@ export function makeEvaluator(workbook: Workbook) {
     return value instanceof FormulaError ? value.message : value;
   }
   return Object.assign(display, {
+    hyperlink(sheet: number, r: number, c: number) {
+      const cell = workbook.sheets[sheet].cells[cellKey(r, c)];
+      if (!cell || cell.link || !isFormulaCell(cell)) return cell?.link;
+      resultAt(sheet, r, c);
+      return formulaLinks.get(`${sheet}!${r},${c}`);
+    },
+    formatted(sheet: number, r: number, c: number) {
+      const value = resultAt(sheet, r, c);
+      if (value instanceof FormulaError) return value.message;
+      const cell = workbook.sheets[sheet].cells[cellKey(r, c)];
+      if (cell?.link && isBlankCell(cell)) return cell.link.display || linkAddress(cell.link);
+      return formatValue(value, cell, workbook.date1904);
+    },
     isError: (sheet: number, r: number, c: number) => resultAt(sheet, r, c) instanceof FormulaError,
   });
 }
-export function formatValue(value: Scalar, format?: CellData['fmt']): string {
+export function formatValue(value: Scalar, style?: Pick<CellData, 'fmt' | 'decimals' | 'grouping' | 'xlsxFormat'>, date1904 = false): string {
+  const format = style?.fmt;
   if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
+  if (style?.xlsxFormat !== undefined) {
+    try {
+      const rendered = renderFormatCode(style.xlsxFormat, value, date1904);
+      if (!rendered && typeof value === 'number' && value < 0 &&
+          (format === 'date' || format === 'time' || format === 'datetime' || format === 'duration')) return '########';
+      return rendered;
+    } catch { /* Use the format category when SSF cannot render an imported code. */ }
+  }
   if (typeof value !== 'number') return value;
-  if (format === 'number')
-    return value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  if (format === 'currency') return value.toLocaleString('zh-CN', { style: 'currency', currency: 'CNY' });
-  if (format === 'percent') return `${+(value * 100).toFixed(2)}%`;
+  if (style && (format === 'number' || format === 'currency' || format === 'percent'))
+    return displayNumber(value, style);
+  if (style && (format === 'time' || format === 'duration' || format === 'datetime'))
+    return displayClock(value, style, date1904);
   if (format === 'date') {
-    const date = new Date(Date.UTC(1899, 11, 30) + value * 86400000);
-    return Number.isNaN(date.getTime()) ? '#VALUE!' : date.toISOString().slice(0, 10);
+    const date = dateParts(value, date1904);
+    return date ? `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}` : '########';
   }
   return String(Number(value.toPrecision(12)));
 }

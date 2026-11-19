@@ -1,18 +1,27 @@
+import { filterRows, isFilterOperator, type AutoFilter, type FilterRule } from './excelFilter';
+import { readNumberStyle, writeNumberStyle } from './excelNumberFormats';
 import JSZip from 'jszip';
+import { parseCalendarInput, parseClockInput, serialFromTimestamp } from './excelDates';
 import {
   address,
+  colName,
   cellKey,
   cellErrorCode,
   CellData,
+  CellLink,
   makeEvaluator,
+  isFormulaCell,
   parseAddress,
   numericInput,
   shiftFormula,
+  sheetSelection,
   Sheet,
   validateWorkbook,
   Workbook,
 } from './excelModel';
 
+const rowVisibilityNamespace = 'urn:vtron:spreadsheet:row-visibility:1';
+const compatibilityNamespace = 'http://schemas.microsoft.com/office/spreadsheetml/2024/workbookCompatibilityVersion';
 const NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
 const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
 const xml = (value: unknown) =>
@@ -25,6 +34,18 @@ const xml = (value: unknown) =>
 const header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 const tags = (root: Document | Element, name: string) => Array.from(root.getElementsByTagNameNS('*', name));
 const first = (root: Document | Element, name: string) => tags(root, name)[0];
+function decodeCellText(value: string) {
+  return value.replace(/_x([0-9a-f]{4})_/gi, (_, code) => String.fromCharCode(parseInt(code, 16)));
+}
+function readCellText(item: Element) {
+  return tags(item, 't').filter(el => el.parentElement?.localName !== 'rPh')
+    .map(el => decodeCellText(el.textContent || '')).join('');
+}
+function encodeCellText(value: string) {
+  const escaped = value.replace(/_(?=x[0-9a-f]{4}_)|[\x00-\x08\x0b-\x1f\ud800-\udfff\ufffe\uffff]/giu,
+    ch => '_x' + ch.charCodeAt(0).toString(16).padStart(4, '0') + '_');
+  return xml(escaped);
+}
 function parseXML(value: string) {
   const doc = new DOMParser().parseFromString(value, 'application/xml');
   if (doc.getElementsByTagName('parsererror').length) throw new Error('工作簿 XML 损坏');
@@ -53,6 +74,12 @@ export async function importXlsx(input: ArrayBuffer | string): Promise<Workbook>
     return parseXML(await file.async('string'));
   };
   const workbook = await read('xl/workbook.xml');
+  const version = workbook.getElementsByTagNameNS(compatibilityNamespace, 'version')[0];
+  const compatibility = version && {
+    setVersion: Number(version.getAttribute('setVersion')),
+    warnBelowVersion: Number(version.getAttribute('warnBelowVersion')) || undefined,
+  };
+  const date1904 = ['1', 'true'].includes(first(workbook, 'workbookPr')?.getAttribute('date1904') || '');
   const relations = await read('xl/_rels/workbook.xml.rels');
   const rels = new Map(
     tags(relations, 'Relationship')
@@ -62,11 +89,7 @@ export async function importXlsx(input: ArrayBuffer | string): Promise<Workbook>
   const strings: string[] = [];
   if (zip.file('xl/sharedStrings.xml'))
     for (const item of tags(await read('xl/sharedStrings.xml'), 'si'))
-      strings.push(
-        tags(item, 't')
-          .map((el) => el.textContent || '')
-          .join('')
-      );
+      strings.push(readCellText(item));
   const styles: Partial<CellData>[] = [];
   if (zip.file('xl/styles.xml')) {
     const doc = await read('xl/styles.xml');
@@ -102,20 +125,12 @@ export async function importXlsx(input: ArrayBuffer | string): Promise<Workbook>
           : undefined,
         wrap: align?.getAttribute('wrapText') === '1',
         border: !!border && Array.from(border.children).some((el) => el.hasAttribute('style')),
-        fmt:
-          fmt === 9 || fmt === 10 || code.includes('%')
-            ? 'percent'
-            : (fmt >= 14 && fmt <= 22) || /[ymd]/i.test(code.replace(/"[^"]*"/g, ''))
-              ? 'date'
-              : /[¥￥$]/.test(code) || (fmt >= 5 && fmt <= 8)
-                ? 'currency'
-                : fmt === 2 || fmt === 4
-                  ? 'number'
-                  : 'general',
+        ...readNumberStyle(fmt, code),
       };
       styles.push(style);
     }
   }
+  const manualHidden = new Map<number, Set<number>>();
   const sheets: Sheet[] = [];
   for (const [index, info] of tags(workbook, 'sheet').entries()) {
     if (index >= 100) throw new Error('最多支持 100 张工作表');
@@ -135,7 +150,10 @@ export async function importXlsx(input: ArrayBuffer | string): Promise<Workbook>
       heights: {},
       merges: [],
     };
-    const view = first(doc, 'sheetViews')?.firstElementChild;
+    const state = info.getAttribute('state');
+    if (state === 'hidden' || state === 'veryHidden') sheet.state = state;
+    const views = tags(doc, 'sheetView');
+    const view = views.find(v => v.getAttribute('workbookViewId') === '0') || views[0];
     if (view) {
       sheet.showGridLines = !['false', '0'].includes(view.getAttribute('showGridLines') || '');
       sheet.showFormulas = ['true', '1'].includes(view.getAttribute('showFormulas') || '');
@@ -144,6 +162,13 @@ export async function importXlsx(input: ArrayBuffer | string): Promise<Workbook>
       if (pane && ['frozen', 'frozenSplit'].includes(pane.getAttribute('state') || '')) {
         sheet.frozenRows = Number(pane.getAttribute('ySplit'));
         sheet.frozenCols = Number(pane.getAttribute('xSplit'));
+      }
+      const activePane = pane?.getAttribute('activePane') || 'topLeft';
+      const selection = tags(view, 'selection').find(s => (s.getAttribute('pane') || 'topLeft') === activePane);
+      if (selection) {
+        const ranges = (selection.getAttribute('sqref') || '').trim().split(/\s+/);
+        const current = Number(selection.getAttribute('activeCellId') || 0);
+        sheet.selection = sheetSelection(selection.getAttribute('activeCell') || '', ranges[current] || '');
       }
     }
     const shared = new Map<string, { r: number; c: number; formula: string }>();
@@ -164,15 +189,25 @@ export async function importXlsx(input: ArrayBuffer | string): Promise<Workbook>
           else followers.push({ ...coord, id });
         }
       } else if (t === 's') text = strings[+value] || '';
-      else if (t === 'inlineStr')
-        text = tags(item, 't')
-          .map((el) => el.textContent || '')
-          .join('');
-      else if (t === 'b') text = value === '1' ? '=TRUE' : '=FALSE';
-      else if (t === 'd') text = String((new Date(value).getTime() - Date.UTC(1899, 11, 30)) / 86400000);
-      if (!formula && (t === 's' || t === 'inlineStr' || t === 'str') &&
-          (text.startsWith('=') || text.startsWith("'") || numericInput.test(text) || cellErrorCode.test(text))) text = "'" + text;
-      sheet.cells[cellKey(coord.r, coord.c)] = { v: text, ...styles[+(item.getAttribute('s') || 0)] };
+      else if (t === 'inlineStr') text = readCellText(item);
+      else if (t === 'str') text = decodeCellText(value);
+      else if (t === 'b') text = value === '1' || value === 'true' ? 'TRUE' : 'FALSE';
+      else if (t === 'd') {
+        // A timezone-free XLSX datetime is a calendar value; do not apply the browser's timezone.
+        const zoned = value.includes('T') && !/(Z|[+-]\d\d:\d\d)$/i.test(value) ? value + 'Z' : value;
+        const serial = parseCalendarInput(value, date1904) ?? parseClockInput(value, date1904)?.serial ??
+          serialFromTimestamp(Date.parse(zoned), date1904);
+        if (!Number.isFinite(serial)) throw new Error(`单元格 ${address(coord.r, coord.c)} 的日期无效`);
+        text = String(serial);
+      }
+      const cell: CellData = { v: text, ...styles[+(item.getAttribute('s') || 0)] };
+      if (!formula && (t === 's' || t === 'inlineStr' || t === 'str')) cell.type = 'text';
+      if (!formula && t === 'b') cell.type = 'boolean';
+      if (t === 'd' && (!cell.fmt || cell.fmt === 'general')) {
+        cell.fmt = parseClockInput(value, date1904)?.fmt ?? (value.includes('T') ? 'datetime' : 'date');
+        delete cell.xlsxFormat;
+      }
+      sheet.cells[cellKey(coord.r, coord.c)] = cell;
     }
     for (const { r, c, id } of followers) {
       const master = shared.get(id);
@@ -186,30 +221,126 @@ export async function importXlsx(input: ArrayBuffer | string): Promise<Workbook>
         c++
       )
         sheet.widths![c] = +(item.getAttribute('width') || 12) * 7 + 5;
-    for (const item of tags(doc, 'row'))
+    for (const item of tags(doc, 'row')) {
+      const row = Number(item.getAttribute('r')) - 1;
+      if (['1', 'true'].includes(item.getAttribute('hidden') || '')) (sheet.hiddenRows ??= []).push(row);
       if (item.hasAttribute('ht'))
-        sheet.heights![+(item.getAttribute('r') || 1) - 1] = (+(item.getAttribute('ht') || 18) * 4) / 3;
+        sheet.heights![row] = (Number(item.getAttribute('ht')) * 4) / 3;
+    }
+    const manualRows = doc.getElementsByTagNameNS(rowVisibilityNamespace, 'manualRows')[0];
+    if (manualRows?.textContent)
+      manualHidden.set(index, new Set(manualRows.textContent.trim().split(/\s+/).map(n => Number(n) - 1)));
+    const auto = Array.from(doc.documentElement.children).find(el => el.localName === 'autoFilter');
+    if (auto) {
+      const [start, end = start] = (auto.getAttribute('ref') || '').split(':').map(parseAddress);
+      if (start && end) {
+        const columns: AutoFilter['columns'] = {};
+        for (const field of tags(auto, 'filterColumn')) {
+          const col = start.c + Number(field.getAttribute('colId'));
+          const custom = first(field, 'customFilters');
+          if (custom) {
+            const rules: FilterRule[] = [];
+            for (const item of tags(custom, 'customFilter')) {
+              const operator = item.getAttribute('operator') || 'equal';
+              if (isFilterOperator(operator) && item.hasAttribute('val'))
+                rules.push({ operator, value: decodeCellText(item.getAttribute('val')!) });
+            }
+            columns[col] = { and: ['true', '1'].includes(custom.getAttribute('and') || ''), rules };
+            continue;
+          }
+          const filters = first(field, 'filters');
+          if (!filters || tags(filters, 'dateGroupItem').length) continue;
+          const values = tags(filters, 'filter').map(el => decodeCellText(el.getAttribute('val') || ''));
+          if (['1', 'true'].includes(filters.getAttribute('blank') || '')) values.push('');
+          columns[col] = values;
+        }
+        sheet.autoFilter = { ...start, er: end.r, ec: end.c, columns };
+      }
+    }
     for (const item of tags(doc, 'mergeCell')) {
       const [a, b] = (item.getAttribute('ref') || '').split(':').map(parseAddress);
       if (a && b) sheet.merges!.push({ ...a, er: b.r, ec: b.c });
     }
+    const hyperlinks = tags(doc, 'hyperlink');
+    if (hyperlinks.length) {
+      const filename = normalized.pop()!;
+      const relPath = [...normalized, '_rels', filename + '.rels'].join('/');
+      const targets = new Map<string | null, string | null>();
+      if (zip.file(relPath)) {
+        for (const rel of tags(await read(relPath), 'Relationship'))
+          if (rel.getAttribute('Type')?.endsWith('/hyperlink') && rel.getAttribute('TargetMode') === 'External')
+            targets.set(rel.getAttribute('Id'), rel.getAttribute('Target'));
+      }
+      let linkedCells = 0;
+      for (const element of hyperlinks) {
+        const [start, end = start] = (element.getAttribute('ref') || '').split(':').map(parseAddress);
+        if (!start || !end || end.r < start.r || end.c < start.c) continue;
+        const id = element.getAttributeNS(REL, 'id') || element.getAttribute('r:id');
+        const target = id ? targets.get(id) : undefined;
+        const location = element.getAttribute('location');
+        if ((id && !target) || (!target && !location)) continue;
+        const link: CellLink = { target: target || undefined, location: location || undefined,
+          tooltip: element.getAttribute('tooltip') || undefined, display: element.getAttribute('display') || undefined };
+        linkedCells += (end.r - start.r + 1) * (end.c - start.c + 1);
+        if (linkedCells > 100000) throw new Error('工作表中的超链接区域过大');
+        for (let r = start.r; r <= end.r; r++) for (let c = start.c; c <= end.c; c++) {
+          const cell = sheet.cells[cellKey(r, c)] ??= { v: '' };
+          cell.link = link;
+        }
+      }
+    }
     sheets.push(sheet);
   }
-  return validateWorkbook({ sheets });
+  const activeTab = Number(first(workbook, 'workbookView')?.getAttribute('activeTab') || 0);
+  const book = validateWorkbook({ sheets, date1904, activeTab, compatibility });
+  const evaluator = makeEvaluator(book);
+  book.sheets.forEach((sheet, index) => {
+    if (!sheet.hiddenRows || !sheet.autoFilter) return;
+    const filtered = filterRows(sheet.autoFilter, evaluator, index);
+    sheet.hiddenRows = sheet.hiddenRows.filter(row => !filtered.has(row) || manualHidden.get(index)?.has(row));
+    if (!sheet.hiddenRows.length) delete sheet.hiddenRows;
+  });
+  return book;
 }
-function sheetViewXml(sheet: Sheet) {
+function sheetViewXml(sheet: Sheet, selected: boolean) {
   const rows = sheet.frozenRows || 0, cols = sheet.frozenCols || 0;
   const attributes = ['workbookViewId="0"'];
+  if (selected) attributes.push('tabSelected="1"');
   if (sheet.showGridLines === false) attributes.push('showGridLines="0"');
   if (sheet.showFormulas) attributes.push('showFormulas="1"');
   if (sheet.zoom && sheet.zoom !== 100) attributes.push(`zoomScale="${sheet.zoom}"`);
-  let pane = '';
+  const selection = sheet.selection || { activeCell: 'A1', sqref: 'A1' };
+  const active = parseAddress(selection.activeCell)!;
+  let pane = '', paneAttribute = '';
   if (rows || cols) {
-    const activePane = rows && cols ? 'bottomRight' : rows ? 'bottomLeft' : 'topRight';
-    const firstCell = address(rows, cols);
-    pane = `<pane${cols ? ` xSplit="${cols}"` : ''}${rows ? ` ySplit="${rows}"` : ''} topLeftCell="${firstCell}" activePane="${activePane}" state="frozen"/><selection pane="${activePane}" activeCell="${firstCell}" sqref="${firstCell}"/>`;
+    const right = cols > 0 && active.c >= cols;
+    const bottom = rows > 0 && active.r >= rows;
+    const activePane = bottom ? (right ? 'bottomRight' : 'bottomLeft') : (right ? 'topRight' : 'topLeft');
+    paneAttribute = ` pane="${activePane}"`;
+    pane = `<pane${cols ? ` xSplit="${cols}"` : ''}${rows ? ` ySplit="${rows}"` : ''} topLeftCell="${address(rows, cols)}" activePane="${activePane}" state="frozen"/>`;
   }
-  return `<sheetViews><sheetView ${attributes.join(' ')}>${pane}</sheetView></sheetViews>`;
+  return `<sheetViews><sheetView ${attributes.join(' ')}>${pane}<selection${paneAttribute} activeCell="${xml(selection.activeCell)}" sqref="${xml(selection.sqref)}"/></sheetView></sheetViews>`;
+}
+
+function filterRef(filter: AutoFilter, absolute = false) {
+  const cell = (r: number, c: number) => absolute ? '$' + colName(c) + '$' + (r + 1) : address(r, c);
+  return cell(filter.r, filter.c) + ':' + cell(filter.er, filter.ec);
+}
+function filterXml(filter?: AutoFilter) {
+  if (!filter) return '';
+  const attribute = (value: string) => encodeCellText(value).replace(/\n/g, '_x000a_').replace(/\t/g, '_x0009_');
+  const columns = Object.entries(filter.columns).map(([col, condition]) => {
+    let content: string;
+    if (Array.isArray(condition)) {
+      const items = condition.filter(v => v !== '').map(v => `<filter val="${attribute(v)}"/>`).join('');
+      content = `<filters${condition.includes('') ? ' blank="1"' : ''}>${items}</filters>`;
+    } else {
+      const rules = condition.rules.map(rule => `<customFilter operator="${rule.operator}" val="${attribute(rule.value)}"/>`).join('');
+      content = `<customFilters${condition.and && condition.rules.length === 2 ? ' and="1"' : ''}>${rules}</customFilters>`;
+    }
+    return `<filterColumn colId="${+col - filter.c}">${content}</filterColumn>`;
+  });
+  return `<autoFilter ref="${filterRef(filter)}">${columns.join('')}</autoFilter>`;
 }
 
 export async function exportXlsx(workbook: Workbook): Promise<Blob> {
@@ -219,7 +350,7 @@ export async function exportXlsx(workbook: Workbook): Promise<Blob> {
     styleMap = new Map<string, number>([['{}', 0]]);
   const styleId = (cell: CellData) => {
     const style: Partial<CellData> = {};
-    for (const key of ['b', 'i', 'u', 'a', 'bg', 'fc', 'ff', 'fs', 'wrap', 'border', 'fmt'] as const)
+    for (const key of ['b', 'i', 'u', 'a', 'bg', 'fc', 'ff', 'fs', 'wrap', 'border', 'fmt', 'decimals', 'grouping', 'xlsxFormat'] as const)
       if (cell[key] !== undefined) Object.assign(style, { [key]: cell[key] });
     const key = JSON.stringify(style);
     if (!styleMap.has(key)) {
@@ -235,10 +366,17 @@ export async function exportXlsx(workbook: Workbook): Promise<Blob> {
     header +
       `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${REL}/officeDocument" Target="xl/workbook.xml"/></Relationships>`
   );
+  const filterNames = workbook.sheets.map((sheet, index) => sheet.autoFilter
+    ? `<definedName name="_xlnm._FilterDatabase" localSheetId="${index}" hidden="1">${xml("'" + sheet.name.replace(/'/g, "''") + "'!" + filterRef(sheet.autoFilter, true))}</definedName>`
+    : '').join('');
+  const version = workbook.compatibility;
+  const extension = version
+    ? `<extLst><ext uri="{D14903EA-33C4-47F7-8F05-3474C54BE107}" xmlns:xlwcv="${compatibilityNamespace}"><xlwcv:version setVersion="${version.setVersion}"${version.warnBelowVersion ? ` warnBelowVersion="${version.warnBelowVersion}"` : ''}/></ext></extLst>`
+    : '';
   zip.file(
     'xl/workbook.xml',
     header +
-      `<workbook xmlns="${NS}" xmlns:r="${REL}"><bookViews><workbookView/></bookViews><sheets>${workbook.sheets.map((s, i) => `<sheet name="${xml(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')}</sheets><calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>`
+      `<workbook xmlns="${NS}" xmlns:r="${REL}">${workbook.date1904 ? '<workbookPr date1904="1"/>' : ''}<bookViews><workbookView activeTab="${workbook.activeTab ?? 0}"/></bookViews><sheets>${workbook.sheets.map((s, i) => `<sheet name="${xml(s.name)}" sheetId="${i + 1}"${s.state ? ` state="${s.state}"` : ''} r:id="rId${i + 1}"/>`).join('')}</sheets>${filterNames ? `<definedNames>${filterNames}</definedNames>` : ''}<calcPr calcId="191029" fullCalcOnLoad="1"/>${extension}</workbook>`
   );
   zip.file(
     'xl/_rels/workbook.xml.rels',
@@ -247,6 +385,15 @@ export async function exportXlsx(workbook: Workbook): Promise<Blob> {
   );
   workbook.sheets.forEach((sheet, index) => {
     const rows = new Map<number, string[]>();
+    const hidden = filterRows(sheet.autoFilter, read, index);
+    // SpreadsheetML uses the same hidden flag for both causes. Keep the overlap so clearing a filter
+    // after reopening our workbook can restore the original manual row visibility.
+    const overlap = sheet.hiddenRows?.filter(row => hidden.has(row)).map(row => row + 1);
+    const visibilityExtension = overlap?.length
+      ? `<extLst><ext uri="{82C50885-2BC0-43F8-A662-226BD1A54C70}"><manualRows xmlns="${rowVisibilityNamespace}">${overlap.join(' ')}</manualRows></ext></extLst>`
+      : '';
+    for (const row of sheet.hiddenRows || []) hidden.add(row);
+    const hyperlinks: string[] = [], linkRels: string[] = [];
     let maxR = 0,
       maxC = 0;
     for (const [key, cell] of Object.entries(sheet.cells).sort(([a], [b]) => {
@@ -258,9 +405,22 @@ export async function exportXlsx(workbook: Workbook): Promise<Blob> {
         s = styleId(cell);
       maxR = Math.max(maxR, r);
       maxC = Math.max(maxC, c);
+      if (cell.link) {
+        const { target, location, tooltip, display } = cell.link;
+        let rel = '';
+        if (target) {
+          const id = 'rId' + (linkRels.length + 1);
+          linkRels.push(`<Relationship Id="${id}" Type="${REL}/hyperlink" Target="${xml(target)}" TargetMode="External"/>`);
+          rel = ` r:id="${id}"`;
+        }
+        hyperlinks.push(`<hyperlink ref="${address(r, c)}"${rel}${location ? ` location="${xml(location)}"` : ''}${tooltip ? ` tooltip="${xml(tooltip)}"` : ''}${display ? ` display="${xml(display)}"` : ''}/>`);
+      }
       let content = '',
         type = '';
-      if (cell.v.startsWith('=')) {
+      if (cell.type === 'boolean') {
+        type = ' t="b"';
+        content = `<v>${cell.v === 'TRUE' ? 1 : 0}</v>`;
+      } else if (isFormulaCell(cell)) {
         const result = read(index, r, c);
         const error = read.isError(index, r, c);
         const value = error && result === '#CYCLE!' ? '#REF!' : result;
@@ -272,21 +432,21 @@ export async function exportXlsx(workbook: Workbook): Promise<Blob> {
                 ? ' t="e"'
                 : ' t="str"'
               : '';
-        content = `<f>${xml(cell.v.slice(1))}</f><v>${xml(typeof value === 'boolean' ? +value : value)}</v>`;
-      } else if (cellErrorCode.test(cell.v)) {
+        content = `<f>${xml(cell.v.slice(1))}</f><v>${typeof value === 'string' ? encodeCellText(value) : xml(typeof value === 'boolean' ? +value : value)}</v>`;
+      } else if (!cell.type && cellErrorCode.test(cell.v)) {
         type = ' t="e"';
         content = `<v>${xml(cell.v.toUpperCase() === '#CYCLE!' ? '#REF!' : cell.v.toUpperCase())}</v>`;
-      } else if (cell.v !== '' && numericInput.test(cell.v))
+      } else if (!cell.type && numericInput.test(cell.v))
         content = `<v>${xml(cell.v)}</v>`;
-      else {
+      else if (cell.v !== '' || cell.type === 'text') {
+        const value = !cell.type && cell.v.startsWith("'") ? cell.v.slice(1) : cell.v;
         type = ' t="inlineStr"';
-        content = `<is><t xml:space="preserve">${xml(cell.v.startsWith("'") ? cell.v.slice(1) : cell.v)}</t></is>`;
+        content = `<is><t xml:space="preserve">${encodeCellText(value)}</t></is>`;
       }
       if (!rows.has(r)) rows.set(r, []);
       rows.get(r)!.push(`<c r="${address(r, c)}" s="${s}"${type}>${content}</c>`);
     }
-    for (const key of Object.keys(sheet.heights || {})) {
-      const row = Number(key);
+    for (const row of [...Object.keys(sheet.heights || {}).map(Number), ...hidden]) {
       if (!rows.has(row)) rows.set(row, []);
       maxR = Math.max(maxR, row);
     }
@@ -303,13 +463,21 @@ export async function exportXlsx(workbook: Workbook): Promise<Blob> {
     const merges = (sheet.merges || [])
       .map((m) => `<mergeCell ref="${address(m.r, m.c)}:${address(m.er, m.ec)}"/>`)
       .join('');
+    if (linkRels.length) zip.file(`xl/worksheets/_rels/sheet${index + 1}.xml.rels`, header +
+      `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${linkRels.join('')}</Relationships>`);
     zip.file(
       `xl/worksheets/sheet${index + 1}.xml`,
       header +
-        `<worksheet xmlns="${NS}"><dimension ref="A1:${address(maxR, maxC)}"/>${sheetViewXml(sheet)}<sheetFormatPr defaultRowHeight="18"/>${cols ? `<cols>${cols}</cols>` : ''}<sheetData>${[...rows].sort(([a], [b]) => a - b).map(([r, cells]) => `<row r="${r + 1}"${sheet.heights?.[r] ? ` ht="${sheet.heights[r] * 0.75}" customHeight="1"` : ''}>${cells.join('')}</row>`).join('')}</sheetData>${merges ? `<mergeCells count="${sheet.merges!.length}">${merges}</mergeCells>` : ''}<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>`
+        `<worksheet xmlns="${NS}" xmlns:r="${REL}">${Object.keys(sheet.autoFilter?.columns || {}).length ? '<sheetPr filterMode="1"/>' : ''}<dimension ref="A1:${address(maxR, maxC)}"/>${sheetViewXml(sheet, index === (workbook.activeTab ?? 0))}<sheetFormatPr defaultRowHeight="18"/>${cols ? `<cols>${cols}</cols>` : ''}<sheetData>${[...rows].sort(([a], [b]) => a - b).map(([r, cells]) => `<row r="${r + 1}"${hidden.has(r) ? ' hidden="1"' : ''}${sheet.heights?.[r] ? ` ht="${sheet.heights[r] * 0.75}" customHeight="1"` : ''}>${cells.join('')}</row>`).join('')}</sheetData>${filterXml(sheet.autoFilter)}${merges ? `<mergeCells count="${sheet.merges!.length}">${merges}</mergeCells>` : ''}${hyperlinks.length ? `<hyperlinks>${hyperlinks.join('')}</hyperlinks>` : ''}<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>${visibilityExtension}</worksheet>`
     );
   });
-  const formats: Record<string, number> = { general: 0, number: 4, currency: 164, percent: 10, date: 14 };
+  const customFormats = new Map<string, number>();
+  function numberFormatId(style: Partial<CellData>) {
+    const format = writeNumberStyle(style);
+    if (typeof format === 'number') return format;
+    if (!customFormats.has(format)) customFormats.set(format, 164 + customFormats.size);
+    return customFormats.get(format)!;
+  }
   const fonts = styles
     .map(
       (s) =>
@@ -329,13 +497,13 @@ export async function exportXlsx(workbook: Workbook): Promise<Blob> {
   const xfs = styles
     .map(
       (s, i) =>
-        `<xf numFmtId="${formats[s.fmt || 'general']}" fontId="${i}" fillId="${s.bg ? i + 2 : 0}" borderId="${s.border ? 1 : 0}" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyNumberFormat="1" applyAlignment="1"><alignment vertical="center"${s.a ? ` horizontal="${s.a}"` : ''}${s.wrap ? ' wrapText="1"' : ''}/></xf>`
+        `<xf numFmtId="${numberFormatId(s)}" fontId="${i}" fillId="${s.bg ? i + 2 : 0}" borderId="${s.border ? 1 : 0}" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyNumberFormat="1" applyAlignment="1"><alignment vertical="center"${s.a ? ` horizontal="${s.a}"` : ''}${s.wrap ? ' wrapText="1"' : ''}/></xf>`
     )
     .join('');
   zip.file(
     'xl/styles.xml',
     header +
-      `<styleSheet xmlns="${NS}"><numFmts count="1"><numFmt numFmtId="164" formatCode="&quot;¥&quot;#,##0.00"/></numFmts><fonts count="${styles.length}">${fonts}</fonts><fills count="${styles.length + 2}">${fills}</fills><borders count="2">${borders}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${styles.length}">${xfs}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`
+      `<styleSheet xmlns="${NS}"><numFmts count="${customFormats.size}">${[...customFormats].map(([code, id]) => `<numFmt numFmtId="${id}" formatCode="${xml(code)}"/>`).join('')}</numFmts><fonts count="${styles.length}">${fonts}</fonts><fills count="${styles.length + 2}">${fills}</fills><borders count="2">${borders}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${styles.length}">${xfs}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`
   );
   return zip.generateAsync({
     type: 'blob',

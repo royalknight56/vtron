@@ -27,6 +27,10 @@ export function searchDocument(editor: HTMLElement, query: string) {
       if (node.length) nodes.push(node);
       return;
     }
+    if (node instanceof HTMLElement && node.matches('[data-word-toc],sup[data-word-note],[data-word-change]')) {
+      flush();
+      return;
+    }
     const boundary = block.test(node.nodeName) ||
       (node instanceof HTMLElement && node.hasAttribute('data-word-page-break'));
     if (boundary) flush();

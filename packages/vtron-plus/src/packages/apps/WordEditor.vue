@@ -211,6 +211,21 @@
         </div>
         <div class="ribbon-group">
           <div class="ribbon-controls">
+            <button class="large-tool" :disabled="readOnly" @mousedown.prevent @click="insertToc">自动目录</button>
+            <button class="large-tool" :disabled="readOnly" @click="openModal('header')">页眉</button>
+            <button class="large-tool" :disabled="readOnly" @click="openModal('footer')">页脚</button>
+          </div>
+          <span class="group-label">文档结构</span>
+        </div>
+        <div class="ribbon-group">
+          <div class="ribbon-controls">
+            <button v-for="kind in noteKinds" :key="kind" class="large-tool"
+              :disabled="readOnly" @mousedown.prevent @click="openNote(kind)">插入{{ noteLabels[kind] }}</button>
+          </div>
+          <span class="group-label">注释</span>
+        </div>
+        <div class="ribbon-group">
+          <div class="ribbon-controls">
             <button class="large-tool" @click="imageRef?.click()"><b>▧</b>图片</button
             ><button class="large-tool" @click="openModal('link')"><b>↗</b>链接</button
             ><button class="large-tool" @mousedown.prevent @click="exec('unlink')"><b>⌁</b>取消链接</button>
@@ -282,7 +297,18 @@
             </label>
             <button :disabled="readOnly" @click="openModal('margins')">自定义页边距</button>
           </div>
-          <span class="group-label">页面设置</span>
+          <span class="group-label">{{ sections.length ? '页面设置 · 第 ' + (sectionIndex + 1) + ' 节' : '页面设置' }}</span>
+        </div>
+        <div class="ribbon-group">
+          <div class="stack">
+            <button :disabled="readOnly" @mousedown.prevent @click="insertSection">插入下一页分节符</button>
+            <button :disabled="readOnly || sectionIndex < 1" @mousedown.prevent @click="mergeSection">合并上一节</button>
+            <select v-if="sections.length" aria-label="当前节" :value="sectionIndex"
+              @change="goToSection(sections[Number(($event.target as HTMLSelectElement).value)])">
+              <option v-for="(_, index) in sections" :key="index" :value="index">第 {{ index + 1 }} 节</option>
+            </select>
+          </div>
+          <span class="group-label">分节</span>
         </div>
         <div class="ribbon-group">
           <div class="ribbon-controls">
@@ -301,6 +327,43 @@
             >
           </div>
           <span class="group-label">段落</span>
+        </div>
+      </template>
+      <template v-else-if="activeTab === '审阅'">
+        <div class="ribbon-group">
+          <div class="stack">
+            <button :disabled="readOnly" @mousedown.prevent @click="openComment()">新建批注</button>
+            <button :aria-pressed="showComments" @click="showComments = !showComments">批注窗格</button>
+          </div>
+          <span class="group-label">批注</span>
+        </div>
+        <div class="ribbon-group">
+          <div class="ribbon-controls">
+            <div class="stack">
+              <button :disabled="readOnly" :aria-pressed="tracking" :class="{ pressed: tracking }" @mousedown.prevent @click="toggleTracking">修订</button>
+              <button :disabled="readOnly" @mousedown.prevent @click="openModal('suggest')">建议修改</button>
+            </div>
+            <button :disabled="!changes.length" @mousedown.prevent @click="stepChange(-1)">上一处</button>
+            <button :disabled="!changes.length" @mousedown.prevent @click="stepChange(1)">下一处</button>
+          </div>
+          <span class="group-label">正文修订</span>
+        </div>
+        <div class="ribbon-group">
+          <div class="ribbon-controls">
+            <div class="stack">
+              <button :disabled="readOnly || !changes.length" @mousedown.prevent @click="resolveChange(true)">接受</button>
+              <button :disabled="readOnly || !changes.length" @mousedown.prevent @click="resolveChange(false)">拒绝</button>
+            </div>
+            <div class="stack">
+              <button :disabled="readOnly || !changes.length" @mousedown.prevent @click="resolveChange(true, true)">全部接受</button>
+              <button :disabled="readOnly || !changes.length" @mousedown.prevent @click="resolveChange(false, true)">全部拒绝</button>
+            </div>
+          </div>
+          <span class="group-label">处理修订</span>
+        </div>
+        <div v-if="currentChange" class="ribbon-group">
+          <span>{{ currentChange.tagName === 'INS' ? '插入' : '删除' }} · {{ currentChange.dataset.author || '未知作者' }}</span>
+          <span class="group-label">{{ changeIndex + 1 }} / {{ changes.length }}</span>
         </div>
       </template>
       <template v-else-if="activeTab === '视图'">
@@ -329,7 +392,7 @@
       <WordNavigation v-if="navigationOpen" ref="navigationRef" :editor="editorRef" :workspace="workspaceRef"
         :revision="revision" :read-only="readOnly" @close="closeNavigation" @replace="replaceMatches" @report="report" />
     <main ref="workspaceRef" class="word-workspace">
-      <div class="document-spread" :style="{ width: `${(pageWidth * zoom) / 100}px` }">
+      <div class="document-spread" :class="{ sectioned: sections.length }" :style="{ width: `${((spreadWidth || pageWidth) * zoom) / 100}px` }">
         <div
           v-if="showRuler"
           class="word-ruler"
@@ -342,36 +405,76 @@
         </div>
         <div
           class="page-shell"
-          :style="{ width: `${(pageWidth * zoom) / 100}px`, minHeight: `${(pageHeight * zoom) / 100}px` }"
+          :style="{ width: `${((spreadWidth || pageWidth) * zoom) / 100}px`, minHeight: sections.length ? 0 : `${(pageHeight * zoom) / 100}px` }"
         >
           <article
             ref="pageRef"
             class="word-page"
             :style="{
-              width: `${pageWidth}px`,
-              minHeight: `${pageHeight}px`,
-              padding: pagePaddingCss,
+              width: `${spreadWidth || pageWidth}px`,
+              minHeight: sections.length ? 0 : `${pageHeight}px`,
+              padding: sections.length ? 0 : pagePaddingCss,
               zoom: `${zoom}%`,
             }"
           >
+            <template v-for="kind in pageTextKinds" :key="kind">
+              <div v-if="!sections.length && layout[kind].text" class="page-text" :aria-label="kind === 'header' ? '页眉' : '页脚'"
+                :style="{
+                  [kind === 'header' ? 'top' : 'bottom']: layout[kind].distance / 15 + 'px',
+                  left: pagePadding.left + 'px', right: pagePadding.right + 'px',
+                  textAlign: layout[kind].align,
+                }" @dblclick="!readOnly && openModal(kind)">{{ layout[kind].text }}</div>
+            </template>
             <div
+              :id="draftKey"
               ref="editorRef"
               class="editor-content"
               role="textbox"
               aria-label="文档正文"
               aria-multiline="true"
-              :style="{ minHeight: `${Math.max(0, pageHeight - pagePadding.top - pagePadding.bottom)}px` }"
+              :style="{ minHeight: `${notes.length ? 0 : Math.max(0, pageHeight - pagePadding.top - pagePadding.bottom)}px` }"
               :contenteditable="!readOnly"
               spellcheck="false"
+              @beforeinput="onBeforeInput"
+              @compositionstart="onCompositionStart"
+              @compositionend="onCompositionEnd"
               @input="onInput"
               @paste="onPaste"
               @drop="onDrop"
               @click="onEditorClick"
             ></div>
+            <aside v-if="notes.length" class="word-notes" aria-label="注释">
+              <template v-for="kind in noteKinds" :key="kind">
+                <section v-if="notes.some(note => note.kind === kind)">
+                  <h3>{{ noteLabels[kind] }}</h3>
+                  <ol>
+                    <li v-for="note in notes.filter(item => item.kind === kind)" :key="note.number">
+                      <button @click="openNote(kind, note.element)">{{ note.text || '（空）' }}</button>
+                    </li>
+                  </ol>
+                </section>
+              </template>
+            </aside>
           </article>
         </div>
       </div>
     </main>
+      <aside v-if="showComments" class="comment-pane" aria-label="批注窗格">
+        <header><strong>批注（{{ comments.length }}）</strong>
+          <button aria-label="关闭批注窗格" @click="showComments = false">×</button></header>
+        <p v-if="!comments.length">暂无批注</p>
+        <article v-for="(entry, index) in comments" :key="entry.start.dataset.wordComment"
+          :class="{ current: selectedComment === entry.start }">
+          <button class="comment-link" :aria-label="'定位批注 ' + (index + 1)"
+            @click="locateComment(entry)">
+            <strong>{{ entry.author || '未知作者' }}</strong><span>{{ entry.text }}</span>
+          </button>
+          <div v-if="selectedComment === entry.start && !readOnly">
+            <button @click="openComment(entry)">编辑</button>
+            <button @click="deleteComment(entry)">删除</button>
+          </div>
+        </article>
+      </aside>
     </div>
     <footer class="word-status">
       <span>{{ charCount }} 字</span><span>{{ paragraphCount }} 段</span
@@ -453,6 +556,29 @@
           ><label>显示文本<input v-model="linkText" /></label
           ><label>链接地址<input v-model="modalValue" placeholder="https://" required /></label
         ></template>
+        <template v-else-if="modal === 'comment'">
+          <label>批注作者<input v-model="commentAuthor" :readonly="!!editingComment" required /></label>
+          <label>批注内容<textarea v-model="modalValue" rows="4" required /></label>
+        </template>
+        <template v-else-if="modal === 'suggest'">
+          <label>作者<input v-model="suggestAuthor" required maxlength="120" /></label>
+          <label>修改后文字<textarea v-model="modalValue" rows="4" /></label>
+        </template>
+        <template v-else-if="modal === 'note'">
+          <label>{{ noteLabels[noteKind] }}内容<textarea v-model="modalValue" rows="4" :readonly="readOnly" required /></label>
+          <button v-if="editingNote && !readOnly" type="button" @click="removeNote">删除{{ noteLabels[noteKind] }}</button>
+        </template>
+        <template v-else-if="modal === 'header' || modal === 'footer'">
+          <label v-if="sectionIndex > 0"><span><input type="checkbox" v-model="pageTextLinked" />同前节</span></label>
+          <label>{{ modalTitle }}内容<textarea :disabled="pageTextLinked" ref="pageTextInput" v-model="pageTextDraft.text" rows="3" /></label>
+          <div class="tool-row">
+            <button type="button" :disabled="pageTextLinked" @click="insertPageField('{页码}')">插入页码</button>
+            <button type="button" :disabled="pageTextLinked" @click="insertPageField('{总页数}')">插入总页数</button>
+          </div>
+          <label>对齐方式<select :disabled="pageTextLinked" v-model="pageTextDraft.align" aria-label="对齐方式">
+            <option value="left">左对齐</option><option value="center">居中</option><option value="right">右对齐</option>
+          </select></label>
+        </template>
         <div v-else-if="modal === 'margins'" class="margin-fields">
           <label v-for="side in wordMarginSides" :key="side">
             {{ marginLabels[side] }}（毫米）
@@ -501,11 +627,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, shallowRef } from 'vue';
+import { compositionRange, editRange, inlineEdit, ownInsertion, recordTextChange, revisionNode, textFragment } from './office/wordTracking';
+import { sectionPrintCss, splitWordSection, styleWordSections } from './office/wordSections';
+import { commentMarker, rekeyComments, wordComments, type WordComment } from './office/wordComments';
+import { collectWordNotes, noteKinds, noteLabels, noteListHtml, noteMarker, type NoteKind, type WordNote } from './office/wordNotes';
+import { refreshWordListStarts } from './office/wordNumbering';
+import { refreshWordToc, tocMarker, wordHeadings } from './office/wordToc';
+import { pageText, type PageTextKind } from './office/wordPageText';
 import OfficeTitlebar from './office/OfficeTitlebar.vue';
 import { saveOfficeDownload, useOfficeFiles } from './office/officeFiles';
 import WordNavigation from './office/WordNavigation.vue';
 import {
+  documentSections,
+  sectionLayout,
   wordDefaultLayout,
   wordEscape,
   wordMarginSides,
@@ -528,7 +663,7 @@ const pageRef = ref<HTMLElement>();
 const workspaceRef = ref<HTMLElement>();
 const importRef = ref<HTMLInputElement>();
 const imageRef = ref<HTMLInputElement>();
-const tabs = ['文件', '开始', '插入', '布局', '视图'];
+const tabs = ['文件', '开始', '插入', '布局', '审阅', '视图'];
 const activeTab = ref('开始');
 const documentName = ref('新建文档');
 const filePath = ref('');
@@ -544,6 +679,11 @@ const highlightColor = ref('#fff29a');
 const lineHeight = ref('1.5');
 const paragraphSpacing = ref('8pt');
 const layout = ref(wordPageLayout());
+const sections = shallowRef<HTMLElement[]>([]);
+const currentSection = shallowRef<HTMLElement>();
+const sectionIndex = computed(() => currentSection.value ? sections.value.indexOf(currentSection.value) : -1);
+const pageTextLinked = ref(false);
+const spreadWidth = ref(0);
 const marginPresets = [
   { name: '普通', margins: wordDefaultLayout.margins },
   { name: '窄', margins: { top: 720, right: 720, bottom: 720, left: 720 } },
@@ -627,8 +767,25 @@ let replacing = false;
 let draftTimer: ReturnType<typeof setTimeout> | undefined;
 let messageTimer: ReturnType<typeof setTimeout> | undefined;
 const draftKey = `vtron-word-draft:${Date.now()}:${Math.random().toString(36).slice(2)}`;
-type Modal = '' | 'rename' | 'save' | 'open' | 'table' | 'link' | 'symbol' | 'margins';
+type Modal = '' | 'rename' | 'save' | 'open' | 'table' | 'link' | 'symbol' | 'margins' | PageTextKind | 'note' | 'suggest' | 'comment';
 const modal = ref<Modal>('');
+const comments = shallowRef<WordComment[]>([]);
+const selectedComment = shallowRef<HTMLElement>();
+const editingComment = shallowRef<WordComment>();
+const showComments = ref(false);
+const commentAuthor = ref('作者');
+const changes = shallowRef<HTMLElement[]>([]);
+const changeIndex = ref(0);
+const currentChange = computed(() => changes.value[changeIndex.value]);
+const suggestAuthor = ref('作者');
+const tracking = ref(false);
+let composingOriginal: DocumentFragment | undefined;
+const notes = shallowRef<WordNote[]>([]);
+const noteKind = ref<NoteKind>('footnote');
+const editingNote = shallowRef<HTMLElement>();
+const pageTextKinds = ['header', 'footer'] as const;
+const pageTextInput = ref<HTMLTextAreaElement>();
+const pageTextDraft = ref(pageText());
 const modalValue = ref('');
 const modalError = ref('');
 const linkText = ref('');
@@ -644,7 +801,12 @@ const modalTitle = computed(
       table: '插入表格',
       link: '插入链接',
       symbol: '插入符号',
+      note: noteLabels[noteKind.value],
+      suggest: '建议修改',
+      comment: editingComment.value ? '编辑批注' : '新建批注',
       margins: '自定义页边距',
+      header: '页眉',
+      footer: '页脚',
       '': '',
     })[modal.value]
 );
@@ -667,6 +829,25 @@ function currentText() {
   return editorRef.value?.innerText || '';
 }
 function updateStats() {
+  if (editorRef.value) {
+    const current = documentSections(editorRef.value);
+    if (current.length !== sections.value.length || current.some((node, i) => node !== sections.value[i]))
+      refreshSections();
+    comments.value = wordComments(editorRef.value);
+    if (selectedComment.value && !editorRef.value.contains(selectedComment.value)) selectedComment.value = undefined;
+    const previous = currentChange.value;
+    changes.value = Array.from(editorRef.value.querySelectorAll<HTMLElement>('[data-word-change]'))
+      .filter(node => !node.parentElement?.closest('[data-word-change]'));
+    for (const node of changes.value) {
+      if (node.tagName === 'INS' && tracking.value && node.dataset.author === suggestAuthor.value.trim()) node.removeAttribute('contenteditable');
+      else node.contentEditable = 'false';
+    }
+    const index = previous ? changes.value.indexOf(previous) : -1;
+    changeIndex.value = index < 0 ? Math.max(0, Math.min(changeIndex.value, changes.value.length - 1)) : index;
+    notes.value = collectWordNotes(editorRef.value);
+    refreshWordListStarts(editorRef.value);
+    refreshWordToc(editorRef.value);
+  }
   plainText.value = currentText();
   revision.value++;
 }
@@ -680,6 +861,7 @@ function persistDraft() {
         name: documentName.value,
         html: editorRef.value?.innerHTML || '',
         layout: layout.value,
+        tracking: tracking.value,
         time: Date.now(),
       })
     );
@@ -698,8 +880,65 @@ function orientedSize(width: number, height: number): [number, number] {
 function marginsFit(width: number, height: number, margins = layout.value.margins) {
   return margins.left + margins.right < width && Math.abs(margins.top) + Math.abs(margins.bottom) < height;
 }
+function refreshSections() {
+  const editor = editorRef.value;
+  if (!editor) return;
+  sections.value = documentSections(editor);
+  styleWordSections(sections.value);
+  spreadWidth.value = sections.value.reduce((width, el) => Math.max(width, sectionLayout(el).width / 15), 0);
+  if (!currentSection.value || !sections.value.includes(currentSection.value))
+    currentSection.value = sections.value[0];
+  if (currentSection.value) layout.value = sectionLayout(currentSection.value);
+}
+function goToSection(section: HTMLElement) {
+  if (!section) return;
+  currentSection.value = section;
+  layout.value = sectionLayout(section);
+  const range = document.createRange();
+  range.selectNodeContents(section.firstElementChild || section);
+  range.collapse(true);
+  selectEditorRange(range);
+  section.scrollIntoView({ block: 'start', inline: 'nearest' });
+}
+function insertSection() {
+  if (readOnly.value || !editorRef.value) return;
+  restoreSelection();
+  if (!savedRange) return;
+  try {
+    const next = splitWordSection(editorRef.value, savedRange, layout.value);
+    refreshSections();
+    goToSection(next);
+    onInput();
+  } catch (error) {
+    report(error instanceof Error ? error.message : '无法插入分节符');
+  }
+}
+function mergeSection() {
+  const current = currentSection.value;
+  const previous = sections.value[sectionIndex.value - 1];
+  if (readOnly.value || !current || !previous) return;
+  // On removing a section break Word applies the following section's setup.
+  const previousPage = sectionLayout(previous);
+  const merged = sectionLayout(current);
+  merged.sectionStart = previousPage.sectionStart;
+  for (const kind of pageTextKinds) if (merged.linked[kind]) merged.linked[kind] = previousPage.linked[kind];
+  current.dataset.wordSection = JSON.stringify(merged);
+  current.prepend(...Array.from(previous.childNodes));
+  previous.remove();
+  if (sections.value.length === 2) {
+    layout.value = merged;
+    current.replaceWith(...Array.from(current.childNodes));
+  }
+  refreshSections();
+  if (currentSection.value) goToSection(currentSection.value);
+  onInput();
+}
 function applyLayout(value: WordPageLayout) {
   layout.value = value;
+  if (currentSection.value) {
+    currentSection.value.dataset.wordSection = JSON.stringify(value);
+    refreshSections();
+  }
   markDirty();
 }
 function onInput() {
@@ -719,6 +958,12 @@ function rememberSelection() {
 function trackSelection() {
   rememberSelection();
   if (!savedRange || !editorRef.value?.contains(window.getSelection()?.anchorNode || null)) return;
+  const node = savedRange.startContainer;
+  const section = (node instanceof Element ? node : node.parentElement)?.closest<HTMLElement>('div[data-word-section]');
+  if (section && section !== currentSection.value && sections.value.includes(section)) {
+    currentSection.value = section;
+    layout.value = sectionLayout(section);
+  }
   for (const key of ['bold', 'italic', 'underline'] as const) formats[key] = document.queryCommandState(key);
 }
 function restoreSelection() {
@@ -781,6 +1026,13 @@ function applyParagraphStyle(property: 'lineHeight' | 'marginBottom', value: str
 function insertHtml(html: string) {
   exec('insertHTML', wordSanitize(html));
 }
+function insertToc() {
+  restoreSelection();
+  const node = window.getSelection()?.anchorNode;
+  if ((node instanceof Element ? node : node?.parentElement)?.closest('table,li'))
+    return report('请在正文段落插入目录');
+  insertHtml(tocMarker + '<p><br></p>');
+}
 function insertPageBreak() {
   if (readOnly.value) return;
   restoreSelection();
@@ -808,10 +1060,66 @@ async function pasteText() {
   if (readOnly.value) return;
   try {
     const text = await navigator.clipboard.readText();
-    insertHtml(wordEscape(text).replace(/\r?\n/g, '<br>'));
+    restoreSelection();
+    if (!pasteTrackedText(text)) insertHtml(wordEscape(text).replace(/\r?\n/g, '<br>'));
   } catch {
     report('请在正文中使用 Ctrl+V 粘贴');
   }
+}
+function toggleTracking() {
+  if (readOnly.value) return;
+  tracking.value = !tracking.value;
+  updateStats();
+  markDirty();
+}
+function onBeforeInput(event: Event) {
+  if (!(event instanceof InputEvent)) return;
+  const editor = editorRef.value;
+  if (!editor || !tracking.value || readOnly.value || replacing || event.isComposing || !event.cancelable) return;
+  const deletion = /^delete(Content|Word|SoftLine|HardLine|EntireSoftLine|ByCut)/.test(event.inputType);
+  if (!deletion && !['insertText', 'insertReplacementText', 'insertLineBreak'].includes(event.inputType)) return;
+  const range = editRange(editor, event);
+  if (!range || ownInsertion(range, suggestAuthor.value.trim())) return;
+  event.preventDefault();
+  if (!inlineEdit(range)) return report('此选区包含段落边界或已有修订，请分段编辑或先处理修订');
+  if (deletion && range.collapsed) return;
+  const value = event.inputType === 'insertLineBreak' ? '\n' : event.data ?? event.dataTransfer?.getData('text/plain');
+  if (!deletion && !value) return;
+  recordTextChange(editor, range, range.cloneContents(), deletion ? document.createDocumentFragment() : textFragment(value!),
+    suggestAuthor.value.trim(), event.inputType.endsWith('Backward'));
+  rememberSelection();
+  onInput();
+}
+function onCompositionStart() {
+  const editor = editorRef.value;
+  const range = editor && tracking.value && !readOnly.value && editRange(editor);
+  composingOriginal = range && !ownInsertion(range, suggestAuthor.value.trim()) && inlineEdit(range)
+    ? range.cloneContents() : undefined;
+}
+function onCompositionEnd(event: CompositionEvent) {
+  const editor = editorRef.value;
+  const original = composingOriginal;
+  composingOriginal = undefined;
+  if (!editor || !original || !event.data) return;
+  const range = compositionRange(editor, event.data);
+  if (range) {
+    recordTextChange(editor, range, original, textFragment(event.data), suggestAuthor.value.trim());
+    rememberSelection();
+    onInput();
+  }
+}
+function pasteTrackedText(text: string) {
+  const editor = editorRef.value;
+  if (!editor || !tracking.value) return false;
+  const range = editRange(editor);
+  if (!range || ownInsertion(range, suggestAuthor.value.trim())) return false;
+  if (!inlineEdit(range)) report('请先选择同一段中的文字');
+  else if (text) {
+    recordTextChange(editor, range, range.cloneContents(), textFragment(text), suggestAuthor.value.trim());
+    rememberSelection();
+    onInput();
+  }
+  return true;
 }
 function onPaste(event: ClipboardEvent) {
   if (readOnly.value) return;
@@ -819,14 +1127,45 @@ function onPaste(event: ClipboardEvent) {
   const html = event.clipboardData?.getData('text/html');
   const text = event.clipboardData?.getData('text/plain') || '';
   rememberSelection();
-  insertHtml(html || wordEscape(text).replace(/\r?\n/g, '<br>'));
+  if (!html && pasteTrackedText(text)) return;
+  if (html?.includes('data-word-comment')) {
+    const copy = new DOMParser().parseFromString(wordSanitize(html), 'text/html').body;
+    rekeyComments(copy, () => newCommentId());
+    insertHtml(copy.innerHTML);
+  } else insertHtml(html || wordEscape(text).replace(/\r?\n/g, '<br>'));
 }
 function onDrop(event: DragEvent) {
   event.preventDefault();
   report(office.standalone ? '请通过“插入 → 图片”或“文件 → 打开文件”添加文件' : '请通过“插入 → 图片”或“文件 → 从电脑导入”添加文件');
 }
 function onEditorClick(event: MouseEvent) {
-  const anchor = (event.target as HTMLElement).closest('a');
+  const target = event.target as HTMLElement;
+  const marker = target.closest<HTMLElement>('span[data-word-comment]');
+  if (marker) {
+    const entry = comments.value.find(item => item.start === marker);
+    if (entry) locateComment(entry);
+    return;
+  }
+  const change = target.closest<HTMLElement>('[data-word-change]');
+  if (change && !(tracking.value && change.tagName === 'INS' && change.dataset.author === suggestAuthor.value.trim())) {
+    event.preventDefault();
+    activeTab.value = '审阅';
+    focusChange(changes.value.findIndex(node => node.contains(change)));
+    return;
+  }
+  const note = target.closest<HTMLElement>('sup[data-word-note]');
+  if (note && (note.dataset.wordNote === 'footnote' || note.dataset.wordNote === 'endnote')) {
+    event.preventDefault();
+    openNote(note.dataset.wordNote, note);
+    return;
+  }
+  const entry = target.closest<HTMLElement>('[data-word-toc] [data-toc-entry]');
+  if (entry && editorRef.value) {
+    event.preventDefault();
+    wordHeadings(editorRef.value, 3)[Number(entry.dataset.tocEntry)]?.scrollIntoView({ block: 'start' });
+    return;
+  }
+  const anchor = target.closest('a');
   if (anchor) {
     event.preventDefault();
     if ((event.ctrlKey || event.metaKey) && wordSafeUrl(anchor.href))
@@ -872,6 +1211,7 @@ async function createNew() {
   filePath.value = '';
   documentName.value = '新建文档';
   layout.value = wordPageLayout();
+  tracking.value = false;
   setContent('<p><br></p>');
   dirty.value = false;
   activeTab.value = '开始';
@@ -879,11 +1219,182 @@ async function createNew() {
 function setContent(html: string) {
   if (editorRef.value) editorRef.value.innerHTML = wordSanitize(html) || '<p><br></p>';
   savedRange = null;
+  composingOriginal = undefined;
   updateStats();
 }
 function setDocument(doc: WordDocument) {
+  tracking.value = !!doc.tracking;
   layout.value = doc.layout;
   setContent(doc.html);
+}
+function selectEditorRange(range: Range) {
+  editorRef.value?.focus();
+  const selection = window.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
+  rememberSelection();
+}
+function newCommentId() {
+  return typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : 'c' + Date.now() + Math.random().toString(36).slice(2);
+}
+function locateComment(entry: WordComment) {
+  showComments.value = true;
+  selectedComment.value = entry.start;
+  const range = document.createRange();
+  if (entry.end) {
+    range.setStartAfter(entry.start);
+    range.setEndBefore(entry.end);
+  } else range.selectNode(entry.start);
+  selectEditorRange(range);
+  entry.start.scrollIntoView({ block: 'nearest' });
+  nextTick(() => appRef.value?.querySelector('.comment-pane article.current')?.scrollIntoView({ block: 'nearest' }));
+}
+function openComment(entry?: WordComment) {
+  if (readOnly.value) return;
+  editingComment.value = entry;
+  openModal('comment');
+  commentAuthor.value = entry?.author || suggestAuthor.value;
+  modalValue.value = entry?.text || '';
+}
+function deleteComment(entry: WordComment) {
+  if (readOnly.value || !editorRef.value?.contains(entry.start)) return;
+  const range = document.createRange();
+  range.selectNode(entry.start);
+  selectEditorRange(range);
+  // The inactive end marker makes undo restore the original range in one step.
+  exec('delete');
+}
+function saveComment() {
+  if (readOnly.value) return;
+  const text = modalValue.value.trim();
+  if (!text) throw new Error('请输入批注内容');
+  const editor = editorRef.value!;
+  restoreSelection();
+  const selection = window.getSelection();
+  if (!selection?.rangeCount) throw new Error('请先选择批注位置');
+  const range = selection.getRangeAt(0).cloneRange();
+  const entry = editingComment.value;
+  const id = entry?.start.dataset.wordComment || newCommentId();
+  if (entry) {
+    if (!editor.contains(entry.start)) throw new Error('批注已删除');
+    range.selectNode(entry.start);
+  } else {
+    for (const node of [range.startContainer, range.endContainer]) {
+      const element = node instanceof Element ? node : node.parentElement;
+      if (!editor.contains(node) || element?.closest('[contenteditable="false"]')) throw new Error('请选择可编辑的正文');
+    }
+    if (!range.collapsed) {
+      const end = range.cloneRange();
+      range.collapse(true);
+      end.collapse(false);
+      // insertNode splits the last text node without reformatting the selected
+      // text. The live start range then still points to the original character.
+      end.insertNode(end.createContextualFragment(commentMarker(id)));
+    }
+  }
+  selectEditorRange(range);
+  const author = entry?.author ?? commentAuthor.value.trim();
+  exec('insertHTML', commentMarker(id, { text, author, date: entry?.date || new Date().toISOString(), initials: entry?.initials || '' }));
+  const saved = comments.value.find(item => item.start.dataset.wordComment === id);
+  if (saved) locateComment(saved);
+}
+function focusChange(index: number) {
+  const change = changes.value[index];
+  if (!change) return;
+  changeIndex.value = index;
+  const range = document.createRange();
+  range.selectNode(change);
+  selectEditorRange(range);
+  change.scrollIntoView({ block: 'nearest' });
+}
+function stepChange(direction: number) {
+  const count = changes.value.length;
+  if (count) focusChange((changeIndex.value + direction + count) % count);
+}
+function resolveChange(accept: boolean, all = false) {
+  const change = currentChange.value;
+  const editor = editorRef.value;
+  if (readOnly.value || !editor || !change) return;
+  const targets = all ? [...changes.value].reverse() : [change];
+  replacing = true;
+  try {
+    for (const node of targets) {
+      const range = document.createRange();
+      range.selectNode(node);
+      selectEditorRange(range);
+      let html = '';
+      if ((node.tagName === 'INS') === accept) {
+        const copy = node.cloneNode(true) as HTMLElement;
+        if (all) {
+          for (const nested of Array.from(copy.querySelectorAll('[data-word-change]')).reverse()) {
+            if ((nested.tagName === 'INS') === accept) nested.replaceWith(...Array.from(nested.childNodes));
+            else nested.remove();
+          }
+        }
+        html = copy.innerHTML;
+      }
+      document.execCommand(html ? 'insertHTML' : 'delete', false, html);
+    }
+  } finally {
+    replacing = false;
+    onInput();
+    rememberSelection();
+  }
+  if (currentChange.value) focusChange(changeIndex.value);
+}
+function insertSuggestion() {
+  if (readOnly.value) return;
+  restoreSelection();
+  const selection = window.getSelection();
+  if (!selection?.rangeCount) throw new Error('请在正文中选择修改位置');
+  const range = selection.getRangeAt(0);
+  const parent = (node: Node) => node instanceof Element ? node : node.parentElement;
+  const block = (node: Node) => parent(node)?.closest('p,div,li,h1,h2,h3,h4,h5,h6,td,th');
+  const fragment = range.cloneContents();
+  if (block(range.startContainer) !== block(range.endContainer) ||
+    parent(range.startContainer)?.closest('[contenteditable="false"]') ||
+    parent(range.endContainer)?.closest('[contenteditable="false"]') ||
+    fragment.querySelector('[contenteditable="false"],p,div,li,table,br,img'))
+    throw new Error('请选择同一段中的普通文字');
+  const original = range.toString();
+  if (modalValue.value === original) throw new Error('请修改文字后再提交');
+  const wrapper = document.createElement('div');
+  const date = new Date().toISOString();
+  const author = suggestAuthor.value.trim();
+  if (!range.collapsed) wrapper.append(revisionNode('del', fragment, author, date));
+  if (modalValue.value) wrapper.append(revisionNode('ins', textFragment(modalValue.value), author, date));
+  insertHtml(wrapper.innerHTML);
+}
+function openNote(kind: NoteKind, marker?: HTMLElement) {
+  if (readOnly.value && !marker) return;
+  noteKind.value = kind;
+  editingNote.value = marker;
+  openModal('note');
+  modalValue.value = marker?.title || '';
+}
+function selectNotePosition() {
+  restoreSelection();
+  const selection = window.getSelection();
+  if (!editorRef.value || !selection?.rangeCount) return false;
+  const range = selection.getRangeAt(0);
+  if (editingNote.value) {
+    if (!editorRef.value.contains(editingNote.value)) return false;
+    range.selectNode(editingNote.value);
+  } else {
+    range.collapse(false);
+    const container = range.endContainer;
+    if ((container instanceof Element ? container : container.parentElement)?.closest('[contenteditable="false"]'))
+      return false;
+  }
+  selection.removeAllRanges();
+  selection.addRange(range);
+  rememberSelection();
+  return true;
+}
+function removeNote() {
+  if (readOnly.value || !editingNote.value || !selectNotePosition()) return;
+  exec('delete');
+  closeModal();
 }
 function openModal(type: Modal) {
   rememberSelection();
@@ -891,15 +1402,29 @@ function openModal(type: Modal) {
   modalError.value = '';
   modalValue.value = type === 'rename' || type === 'save' ? documentName.value : '';
   linkText.value = window.getSelection()?.toString() || '';
+  if (type === 'suggest') modalValue.value = savedRange?.toString() || '';
+  if (type === 'header' || type === 'footer') {
+    pageTextDraft.value = { ...layout.value[type] };
+    pageTextLinked.value = sectionIndex.value > 0 && layout.value.linked[type];
+  }
   if (type === 'margins') {
     for (const side of wordMarginSides)
       marginInputs[side] = wordTwipsToMm(layout.value.margins[side]);
   }
-  nextTick(() => appRef.value?.querySelector<HTMLInputElement>('.word-modal input')?.focus());
+  nextTick(() => appRef.value?.querySelector<HTMLElement>('.word-modal input, .word-modal textarea')?.focus());
+}
+function insertPageField(field: string) {
+  const input = pageTextInput.value;
+  if (!input) return;
+  input.setRangeText(field, input.selectionStart, input.selectionEnd, 'end');
+  pageTextDraft.value.text = input.value;
+  input.focus();
 }
 function closeModal() {
   modal.value = '';
   modalError.value = '';
+  editingNote.value = undefined;
+  editingComment.value = undefined;
 }
 async function showOpen() {
   if (office.standalone) return importRef.value?.click();
@@ -960,6 +1485,16 @@ async function submitModal() {
       if (!wordSafeUrl(url)) throw new Error('请输入 http、https、mailto 或 tel 链接');
       insertHtml(`<a href="${wordEscape(url)}">${wordEscape(linkText.value || url)}</a>`);
     }
+    if (modal.value === 'comment') saveComment();
+    if (modal.value === 'suggest') insertSuggestion();
+    if (modal.value === 'note' && !readOnly.value) {
+      if (!modalValue.value.trim()) throw new Error('请输入注释内容');
+      if (!selectNotePosition()) throw new Error('请先在正文中选择注释位置');
+      insertHtml(noteMarker(noteKind.value, modalValue.value));
+    }
+    if (modal.value === 'header' || modal.value === 'footer')
+      applyLayout({ ...layout.value, [modal.value]: { ...pageTextDraft.value },
+        linked: { ...layout.value.linked, [modal.value]: pageTextLinked.value } });
     if (modal.value === 'margins') {
       const margins = Object.fromEntries(
         wordMarginSides.map((side) => [side, wordMmToTwips(marginInputs[side])])
@@ -974,8 +1509,12 @@ async function submitModal() {
     modalError.value = error instanceof Error ? error.message : '操作失败';
   }
 }
+function documentLayout() {
+  const last = sections.value[sections.value.length - 1];
+  return last ? sectionLayout(last) : layout.value;
+}
 function serializeHtml() {
-  return `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><title>${wordEscape(documentName.value)}</title><meta name="vtron-word-layout" content="${wordEscape(JSON.stringify(layout.value))}"><style>${printLayoutCss()}</style></head><body>${wordSanitize(editorRef.value?.innerHTML || '')}</body></html>`;
+  return `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><title>${wordEscape(documentName.value)}</title><meta name="vtron-word-tracking" content="${tracking.value}"><meta name="vtron-word-layout" content="${wordEscape(JSON.stringify(documentLayout()))}"><style>${printLayoutCss()}</style></head><body>${wordSanitize(editorRef.value?.innerHTML || '')}${noteListHtml(notes.value)}</body></html>`;
 }
 async function writeFile(path: string, name: string) {
   busy.value = true;
@@ -1005,13 +1544,14 @@ async function saveFile(saveAs = false) {
     if (office.standalone) {
       busy.value = true;
       const html = editorRef.value?.innerHTML || '';
-      const snapshotLayout = layout.value;
+      const snapshotLayout = documentLayout();
+      const snapshotTracking = tracking.value;
       const name = await saveOfficeDownload(documentName.value, 'docx', saveAs,
-        () => wordWriteDocx(html, snapshotLayout));
+        () => wordWriteDocx(html, snapshotLayout, snapshotTracking));
       if (!name) return;
       documentName.value = name;
       filePath.value = name + '.docx';
-      dirty.value = html !== editorRef.value?.innerHTML || snapshotLayout !== layout.value;
+      dirty.value = snapshotTracking !== tracking.value || html !== editorRef.value?.innerHTML || JSON.stringify(snapshotLayout) !== JSON.stringify(documentLayout());
       report(`已发起下载 ${filePath.value}`);
       return;
     }
@@ -1072,7 +1612,7 @@ async function readContent(content: string, name: string): Promise<WordDocument>
       // Keep the legacy layout when the new metadata cannot be read.
     }
   }
-  return { html: doc.body.innerHTML, layout: page };
+  return { html: doc.body.innerHTML, layout: page, tracking: doc.querySelector('meta[name="vtron-word-tracking"]')?.getAttribute('content') === 'true' };
 }
 async function loadFile(path: string) {
   if (!/\.(vtdoc|html?|txt|docx)$/i.test(path)) throw new Error('支持 VTDOC、DOCX、HTML 和 TXT 文档');
@@ -1135,8 +1675,8 @@ async function exportDocument(type: 'docx' | 'html' | 'txt') {
   try {
     const blob =
       type === 'docx'
-        ? await wordWriteDocx(editorRef.value?.innerHTML || '', layout.value)
-        : new Blob([type === 'txt' ? currentText() : serializeHtml()], {
+        ? await wordWriteDocx(editorRef.value?.innerHTML || '', documentLayout(), tracking.value)
+        : new Blob([type === 'txt' ? [currentText(), ...notes.value.map(note => noteLabels[note.kind] + ' ' + note.number + '　' + note.text)].join('\n') : serializeHtml()], {
             type: type === 'txt' ? 'text/plain;charset=utf-8' : 'text/html;charset=utf-8',
           });
     const url = URL.createObjectURL(blob);
@@ -1152,7 +1692,7 @@ async function exportDocument(type: 'docx' | 'html' | 'txt') {
 }
 function printLayoutCss() {
   // The final empty block keeps a page break at the end of the document printable.
-  return `@page{size:${pageWidth.value}px ${pageHeight.value}px;margin:${pagePaddingCss.value}}
+  return `${sectionPrintCss(sections.value, layout.value)}
     @media print{body{margin:0}body::after{content:"";display:block}[data-word-page-break]{display:block;break-after:page}}`;
 }
 function printDocument() {
@@ -1166,7 +1706,7 @@ function printDocument() {
   }
   doc.open();
   doc.write(
-    `<!DOCTYPE html><html><head><title>${wordEscape(documentName.value)}</title><style>${printLayoutCss()}body{margin:0;font:12pt/1.5 Calibri,"等线",sans-serif;color:#18212f}img{max-width:100%}table{border-collapse:collapse;width:100%}td,th{border:1px solid #aaa;padding:6px}p{margin:0 0 8pt}</style></head><body>${wordSanitize(editorRef.value?.innerHTML || '')}</body></html>`
+    `<!DOCTYPE html><html><head><title>${wordEscape(documentName.value)}</title><style>${printLayoutCss()}body{margin:0;font:12pt/1.5 Calibri,"等线",sans-serif;color:#18212f}img{max-width:100%}table{border-collapse:collapse;width:100%}td,th{border:1px solid #aaa;padding:6px}p{margin:0 0 8pt}</style></head><body>${wordSanitize(editorRef.value?.innerHTML || '')}${noteListHtml(notes.value)}</body></html>`
   );
   doc.close();
   setTimeout(() => {
@@ -1263,12 +1803,27 @@ function moveInTable(backward: boolean) {
 function onKeyDown(event: KeyboardEvent) {
   const mod = event.ctrlKey || event.metaKey;
   const key = event.key.toLowerCase();
-  if (
+  const marker = event.target instanceof HTMLElement && event.target.matches('span[data-word-comment]');
+  if (marker && (key === 'enter' || key === ' ')) {
+    event.preventDefault();
+    (event.target as HTMLElement).click();
+  } else if (mod && event.altKey && !event.shiftKey && !event.isComposing && (key === 'm' || event.code === 'KeyM')
+      && !readOnly.value && editorRef.value?.contains(event.target as Node)) {
+    event.preventDefault();
+    openComment();
+  } else if (
     mod && key === 'enter' && !event.shiftKey && !event.altKey && !event.isComposing &&
     !readOnly.value && editorRef.value?.contains(event.target as Node)
   ) {
     event.preventDefault();
     insertPageBreak();
+  } else if (mod && event.altKey && !event.shiftKey && !event.isComposing &&
+    (key === 'f' || key === 'd') && !readOnly.value && editorRef.value?.contains(event.target as Node)) {
+    event.preventDefault();
+    openNote(key === 'f' ? 'footnote' : 'endnote');
+  } else if (mod && event.shiftKey && !event.altKey && key === 'e' && !event.isComposing && !modal.value) {
+    event.preventDefault();
+    toggleTracking();
   } else if (mod && key === 's') {
     event.preventDefault();
     event.shiftKey ? showSaveAs() : saveFile();
@@ -1335,6 +1890,7 @@ onMounted(async () => {
       if (answer.response === 0) {
         setDocument({
           html: recovered.data.html,
+          tracking: recovered.data.tracking === true,
           layout: recovered.data.layout
             ? wordPageLayout(recovered.data.layout)
             : legacyLayout(recovered.data.margin, recovered.data.orientation),
@@ -1701,7 +2257,38 @@ onBeforeUnmount(() => {
   background: #fff;
   box-shadow: 0 1px 6px #24355221;
 }
+.sectioned .word-page, .sectioned .page-shell { background: transparent; box-shadow: none; }
+.editor-content:deep(> div[data-word-section]) {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0 auto 12px;
+  background: white;
+  box-shadow: 0 1px 6px #24355221;
+}
+.editor-content:deep(> div[data-word-section])::before,
+.editor-content:deep(> div[data-word-section])::after {
+  position: absolute;
+  left: var(--section-left);
+  right: var(--section-right);
+  font: 10pt/1.2 sans-serif;
+  color: #505b67;
+  white-space: pre-wrap;
+  pointer-events: none;
+}
+.editor-content:deep(> div[data-word-section])::before {
+  content: attr(data-header); top: var(--header-distance); text-align: var(--header-align);
+}
+.editor-content:deep(> div[data-word-section])::after {
+  content: attr(data-footer); bottom: var(--footer-distance); text-align: var(--footer-align);
+}
+.page-text {
+  position: absolute;
+  white-space: pre-wrap;
+  font: 10pt/1.2 sans-serif;
+  color: #505b67;
+}
 .word-page {
+  position: relative;
   background: #fff;
   transform-origin: top left;
   box-sizing: border-box;
@@ -1718,6 +2305,60 @@ onBeforeUnmount(() => {
   color: #18212f;
   white-space: normal;
 }
+.editor-content:deep([data-word-comment]) {
+  display: inline-block;
+  color: #185abd;
+  cursor: pointer;
+  font: 10px/1 sans-serif;
+  vertical-align: super;
+}
+.editor-content:deep([data-word-comment])::after { content: '批'; }
+.editor-content:deep([data-word-comment-end]) { display: inline-block; width: 0; }
+.comment-pane {
+  width: 220px;
+  max-width: 35%;
+  overflow: auto;
+  padding: 12px;
+  box-sizing: border-box;
+  background: white;
+  border-left: 1px solid #d6dce5;
+}
+.comment-pane header { display: flex; align-items: center; justify-content: space-between; }
+.comment-pane article { margin-top: 8px; border-left: 2px solid transparent; padding: 6px; }
+.comment-pane article.current { border-color: #185abd; background: #f4f7fb; }
+.comment-pane button { border: 0; background: transparent; cursor: pointer; }
+.comment-link { display: grid; gap: 4px; text-align: left; white-space: pre-wrap; overflow-wrap: anywhere; }
+.editor-content:deep(ins[data-word-change]) {
+  color: #175c37;
+  text-decoration: underline;
+  background: #eef8f1;
+}
+.editor-content:deep(del[data-word-change]) {
+  color: #933333;
+  text-decoration: line-through;
+  background: #fbefef;
+}
+.editor-content:deep(sup[data-word-note]) {
+  cursor: pointer;
+  color: #185abd;
+}
+.word-notes {
+  border-top: 1px solid #bbb;
+  padding-top: 8pt;
+  font-size: 10pt;
+}
+.word-notes h3 { margin: 0; font-size: inherit; }
+.word-notes ol { padding-left: 20pt; }
+.word-notes li button {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  white-space: pre-wrap;
+  text-align: left;
+  cursor: pointer;
+}
 .editor-content:deep([data-word-page-break]) {
   display: block;
   margin: 8pt 0;
@@ -1728,6 +2369,12 @@ onBeforeUnmount(() => {
 }
 .editor-content:deep([data-word-page-break])::before {
   content: '分页符';
+}
+.editor-content:deep([data-toc-entry]) {
+  cursor: pointer;
+}
+.editor-content:deep([data-toc-entry]:hover) {
+  text-decoration: underline;
 }
 .editor-content:deep(p) {
   margin: 0 0 8pt;

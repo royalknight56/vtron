@@ -40,6 +40,7 @@
   </aside>
 </template>
 <script setup lang="ts">
+import { wordHeadings } from './wordToc';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { searchDocument } from './wordSearch';
 
@@ -56,8 +57,7 @@ const collapsed = ref(new Set<HTMLElement>());
 const currentHeading = ref<HTMLElement>();
 const headings = computed(() => {
   props.revision;
-  return Array.from(props.editor?.querySelectorAll<HTMLElement>('h1,h2,h3,h4,h5,h6') || [])
-    .filter(el => !el.closest('table') && el.textContent?.trim())
+  return (props.editor ? wordHeadings(props.editor) : [])
     .map((el, index) => ({ el, index, title: el.textContent!.trim(), level: Number(el.tagName[1]) }));
 });
 const visibleHeadings = computed(() => {

@@ -28,8 +28,7 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - name: Install demo dependencies
-        # Vite aliases load both workspace packages from source, outside the Demo's npm dependency graph.
-        run: pnpm install --frozen-lockfile --filter vtron-demo... --filter vtron... --filter vtron-plus... --ignore-scripts
+        run: pnpm install --frozen-lockfile --filter vtron-demo... --ignore-scripts
       - name: Deploy win to Cloudflare
         run: pnpm -C packages/vtron-demo deploy:cf
         env:

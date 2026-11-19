@@ -9,6 +9,7 @@
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import { readFileSync } from 'node:fs';
+import ts from 'typescript';
 import { build as viteBuild, defineConfig, transformWithEsbuild } from 'vite';
 import dts from 'vite-plugin-dts';
 // import { visualizer } from 'rollup-plugin-visualizer';
@@ -34,18 +35,29 @@ function buildNodeWorker() {
   })();
 }
 export default defineConfig({
-  plugins: [vue(), dts(), {
-    name: 'vtron-virtual-preview-worker',
-    async generateBundle() {
-      for (const file of ['virtual-preview-sw.js', 'virtual-preview-bridge.html']) {
-        this.emitFile({ type: 'asset', fileName: file, source: readFileSync(path.resolve(__dirname, 'src/packages/network/' + file), 'utf8') });
-      }
-      const workerSource = readFileSync(path.resolve(__dirname, 'src/packages/node/syncFsBridge.ts'), 'utf8');
-      const workerModule = await transformWithEsbuild(workerSource, 'syncFsBridge.ts', { loader: 'ts', format: 'esm', target: 'es2019' });
-      this.emitFile({ type: 'asset', fileName: 'sync-fs-worker.mjs', source: workerModule.code });
-      this.emitFile({ type: 'asset', fileName: 'node-worker.mjs', source: await buildNodeWorker() });
+  plugins: [
+    vue(),
+    dts({
+      entryRoot: 'src',
+      afterDiagnostic(diagnostics) {
+        if (diagnostics.some(({ category }) => category === ts.DiagnosticCategory.Error)) {
+          throw new Error('Failed to generate Vtron Plus declarations');
+        }
+      },
+    }),
+    {
+      name: 'vtron-virtual-preview-worker',
+      async generateBundle() {
+        for (const file of ['virtual-preview-sw.js', 'virtual-preview-bridge.html']) {
+          this.emitFile({ type: 'asset', fileName: file, source: readFileSync(path.resolve(__dirname, 'src/packages/network/' + file), 'utf8') });
+        }
+        const workerSource = readFileSync(path.resolve(__dirname, 'src/packages/node/syncFsBridge.ts'), 'utf8');
+        const workerModule = await transformWithEsbuild(workerSource, 'syncFsBridge.ts', { loader: 'ts', format: 'esm', target: 'es2019' });
+        this.emitFile({ type: 'asset', fileName: 'sync-fs-worker.mjs', source: workerModule.code });
+        this.emitFile({ type: 'asset', fileName: 'node-worker.mjs', source: await buildNodeWorker() });
+      },
     },
-  }],
+  ],
   optimizeDeps: {
     exclude: ['worker'],
   },

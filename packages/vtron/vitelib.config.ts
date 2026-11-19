@@ -8,12 +8,23 @@
 
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
+import ts from 'typescript';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 // import { visualizer } from 'rollup-plugin-visualizer';
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), dts()],
+  plugins: [
+    vue(),
+    dts({
+      entryRoot: 'src',
+      afterDiagnostic(diagnostics) {
+        if (diagnostics.some(({ category }) => category === ts.DiagnosticCategory.Error)) {
+          throw new Error('Failed to generate Vtron declarations');
+        }
+      },
+    }),
+  ],
   resolve: {
     alias: [
       {

@@ -1,6 +1,6 @@
 {
   "name": "vtron",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "A Vue 3 component library",
   "files": [
     "distlib",
@@ -46,7 +46,7 @@
     "sass": "^1.45.1",
     "typescript": "^5.1.6",
     "vite": "^4.4.9",
-    "vite-plugin-dts": "^2.0.2",
+    "vite-plugin-dts": "^3.9.1",
     "vite-plugin-style-import": "^1.2.1",
     "vitest": "^0.31.1",
     "vue-eslint-parser": "^9.3.1",

@@ -20,8 +20,16 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ title: string; pages: string[] }>();
-const active = defineModel<number>({ default: 0 });
+import { computed } from 'vue';
+
+const props = withDefaults(defineProps<{ title: string; pages: string[]; modelValue?: number }>(), {
+  modelValue: 0,
+});
+const emit = defineEmits<{ (event: 'update:modelValue', index: number): void }>();
+const active = computed({
+  get: () => props.modelValue,
+  set: (index) => emit('update:modelValue', index),
+});
 </script>
 
 <style scoped>

@@ -26,6 +26,8 @@ const historyIndex = ref(0);
 const isLoading = ref(true);
 const frameKey = ref(0);
 const navigationError = ref('');
+let hasCrx = false;
+let helloTimer: number;
 
 const rawUrl = computed(() => history.value[historyIndex.value]);
 const isHomepage = computed(() => rawUrl.value.replace(/\/$/, '') === startUrl.replace(/\/$/, ''));
@@ -109,11 +111,31 @@ function refresh() {
   frameKey.value++;
 }
 
+function initializeHomepage() {
+  if (isHomepage.value) {
+    frameRef.value?.contentWindow?.postMessage({ type: 'vtron:browser:init', hasCrx }, homepageOrigin);
+  }
+}
+
 function onLoad() {
   isLoading.value = false;
-  if (isHomepage.value) {
-    frameRef.value?.contentWindow?.postMessage({ type: 'vtron:browser:init' }, homepageOrigin);
-  }
+  initializeHomepage();
+}
+
+function checkExtension() {
+  if (!hasCrx) window.postMessage({ type: 'FROM_PAGE', msg: 'HELLO' }, window.location.origin);
+}
+
+function handleExtensionMessage(event: MessageEvent) {
+  if (
+    hasCrx ||
+    event.source !== window ||
+    event.origin !== window.location.origin ||
+    event.data?.type !== 'FROM_VTRON_CRX' ||
+    event.data.msg !== 'HELLO'
+  ) return;
+  hasCrx = true;
+  initializeHomepage();
 }
 
 function handleHomepageMessage(event: MessageEvent) {
@@ -148,10 +170,15 @@ watch([pageTitle, isLoading], ([title, loading]) => emit('change', { title, load
 
 onMounted(() => {
   window.addEventListener('message', handleHomepageMessage);
+  window.addEventListener('message', handleExtensionMessage);
+  checkExtension();
+  helloTimer = window.setTimeout(checkExtension, 500);
   // Scoped to this application so background Chrome windows never steal focus.
   inputRef.value?.closest('.browser')?.addEventListener('keydown', handleShortcut as EventListener);
 });
 onBeforeUnmount(() => {
+  window.clearTimeout(helloTimer);
+  window.removeEventListener('message', handleExtensionMessage);
   window.removeEventListener('message', handleHomepageMessage);
   inputRef.value?.closest('.browser')?.removeEventListener('keydown', handleShortcut as EventListener);
 });

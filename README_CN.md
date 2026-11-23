@@ -381,7 +381,7 @@ Vtron 只有在系统第一次启动的时候，才会在文件系统中添加 a
 
 vtron: 核心项目，包含核心逻辑，vtron核心包。
 
-vtron-demo: demo 项目，线上地址为 [vtronjs.com/win/](https://vtronjs.com/win/)。
+Demo 已迁至 [vtron-home/subapps/win](https://github.com/royalknight56/vtron-home/tree/master/subapps/win)，线上地址为 [vtronjs.com/win/](https://vtronjs.com/win/)。
 
 vtron-e2e: e2e测试监控项目。
 
@@ -414,13 +414,7 @@ pnpm vtron build
 pnpm plus dev
 ```
 
-对于demo项目，运行：
-
-```bash
-pnpm vtron build
-pnpm plus build
-pnpm demo dev
-```
+在 Vtron Home 启动 Demo 的步骤见 [开发说明](https://github.com/royalknight56/vtron-home/tree/master/subapps/win#本地开发)。
 
 文档和应用商店在 `vtron-home` 仓库中启动：
 
